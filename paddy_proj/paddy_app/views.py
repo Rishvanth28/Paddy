@@ -1,12 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
-from .models import AdminTable, CustomerTable
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.hashers import check_password
-from .models import AdminTable, CustomerTable
+from .models import *
 
 def login_view(request):
     if request.method == "POST":
@@ -23,7 +18,7 @@ def login_view(request):
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
                 
-                if user.admin_id >= 1000:  # ✅ Ensure only super admins can log in
+                if user.admin_id >= 1000:  #  Ensure only super admins can log in
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
 
@@ -42,7 +37,7 @@ def login_view(request):
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
 
-                if user.admin_id < 1000:  # ✅ Prevent Super Admins from logging in as Admins
+                if user.admin_id < 1000:  #  Prevent Super Admins from logging in as Admins
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
 
