@@ -1,30 +1,54 @@
 from django.db import models
 
+from django.contrib.auth.hashers import make_password, check_password
+from django.db import models
+
 class AdminTable(models.Model):
-    id = models.BigAutoField(primary_key=True)
+    admin_id = models.BigAutoField(primary_key=True)  # Renamed primary key
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    phone_number = models.BigIntegerField()
+    phone_number = models.CharField(max_length=15)  # Changed to CharField for flexibility
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     user_count = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        """ Hash the password before saving if it's not already hashed """
+        if not self.password.startswith('pbkdf2_sha256$'):  # Avoid double hashing
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+    def check_password(self, raw_password):
+        """ Verify the password using Django's check_password """
+        return check_password(raw_password, self.password)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} (Admin)"
 
 class CustomerTable(models.Model):
-    id = models.BigAutoField(primary_key=True)
+    customer_id = models.BigAutoField(primary_key=True)  # Renamed primary key
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    phone_number = models.BigIntegerField()
+    phone_number = models.CharField(max_length=15)  # Changed to CharField for flexibility
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-    admin = models.ForeignKey(AdminTable, on_delete=models.CASCADE)
+    admin = models.ForeignKey(AdminTable, to_field="admin_id", on_delete=models.CASCADE)  # Foreign key to admin_id
     company_name = models.CharField(max_length=255)
     GST = models.CharField(max_length=50, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        """ Hash the password before saving if it's not already hashed """
+        if not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+    def check_password(self, raw_password):
+        """ Verify the password using Django's check_password """
+        return check_password(raw_password, self.password)
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.company_name}"
+
 
 class Orders(models.Model):
     order_id = models.BigAutoField(primary_key=True)
