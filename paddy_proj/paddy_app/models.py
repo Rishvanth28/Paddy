@@ -1,13 +1,19 @@
-from django.db import models
-
+import re
+from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
 
+def validate_gst(value):
+    """ Validate GST format (15-character alphanumeric) """
+    gst_pattern = re.compile(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$')
+    if value and not gst_pattern.match(value):
+        raise ValidationError("Invalid GST number format.")
+
 class AdminTable(models.Model):
-    admin_id = models.BigAutoField(primary_key=True)  # Renamed primary key
+    admin_id = models.BigAutoField(primary_key=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=15)  # Changed to CharField for flexibility
+    phone_number = models.CharField(max_length=15)  # Supports `+` and leading 0s
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     user_count = models.IntegerField(default=0)
@@ -26,15 +32,15 @@ class AdminTable(models.Model):
         return f"{self.first_name} {self.last_name} (Admin)"
 
 class CustomerTable(models.Model):
-    customer_id = models.BigAutoField(primary_key=True)  # Renamed primary key
+    customer_id = models.BigAutoField(primary_key=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=15)  # Changed to CharField for flexibility
+    phone_number = models.CharField(max_length=15)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-    admin = models.ForeignKey(AdminTable, to_field="admin_id", on_delete=models.CASCADE)  # Foreign key to admin_id
+    admin = models.ForeignKey(AdminTable, to_field="admin_id", on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
-    GST = models.CharField(max_length=50, null=True, blank=True)
+    GST = models.CharField(max_length=15, null=True, blank=True, validators=[validate_gst])  # GST Validation added
 
     def save(self, *args, **kwargs):
         """ Hash the password before saving if it's not already hashed """
