@@ -1,0 +1,155 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    position: relative;
+}
+
+.logo {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.left-section {
+    width: 40%;
+    background-image: url(./login.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+
+}
+
+.light-section h2 {
+    font-size: 24px;
+}
+
+.login-section {
+    margin-top: 30px;
+}
+
+.login-text {
+    color: #8888ff;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 3px;
+}
+
+.signup {
+    margin: 10px 0;
+    color: #999;
+}
+
+.signup a {
+    color: #8888ff;
+    text-decoration: none;
+}
+
+.text{
+    color: gray;
+    opacity: 0.9;
+}
+
+h1 {
+    font-size: 36px;
+    margin: 20px 0;
+}
+
+.highlight {
+    color: #8888ff;
+    font-weight: bold;
+}
+
+form {
+    margin-top: 8vh;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+input {
+    width: 60%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-bottom: 1px solid #000;
+    outline: none;
+}
+
+.remember {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin: 15px 0;
+    gap: 10px;
+}
+
+.remember input {
+    width: auto;
+}
+
+button {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.right-section {
+    width: 60%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.image-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('/static/media/login.png') no-repeat center center/cover;
+}
+
+.login{
+    margin-top: 2vh;
+    border-radius: 10px;
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .left-section {
+        width: 100%;
+        height: 40vh;
+    }
+    .right-section {
+        width: 100%;
+        padding: 20px;
+        z-index: 100;
+        border-radius: 20px;
+        background: white;
+        margin-top: -20px;
+    }
+    input {
+        width: 100%;
+    }
+}

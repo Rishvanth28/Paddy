@@ -14,23 +14,6 @@ from django.contrib import messages
 def home(request):
     return render(request, 'home.html')
 
-
-# Signup View
-def signup_view(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
-        password = request.POST["password"]
-        confirm_password = request.POST["confirm_password"]
-
-        if password == confirm_password:
-            if not User.objects.filter(username=username).exists() and not User.objects.filter(email=email).exists():
-                user = User.objects.create_user(username=username, email=email, password=password)
-                user.save()
-                return redirect("login")
-
-    return render(request, "registration/signup.html")
-
 # Login View
 def login_view(request):
     if request.method == "POST":
@@ -42,12 +25,7 @@ def login_view(request):
             login(request, user)
             return redirect("home")
 
-    return render(request, "registration/login.html")
-
-# Logout View
-def logout_view(request):
-    logout(request)
-    return redirect("login")
+    return render(request, "login.html")
 
 # ✅ Admin Views
 @api_view(['GET', 'POST'])
