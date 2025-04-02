@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="static/css/login.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
+
 <body>
     <div class="container">
         <h2 class="logo">LOGO HERE</h2>
@@ -15,16 +17,23 @@
         <div class="right-section">
             <div class="login-section">
                 <a href="#" class="login-text">LOG IN</a>
-                <br>
-                <br>
-                <!-- <p class="signup">didn’t have an account? <a href="#">Sign Up</a></p> -->
+                <br><br>
                 <h1><span class="highlight">Hey !</span> <br> Welcome Back</h1>
-                <form>
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}  <!-- Security Token -->
+                    
+                    <label class="text" for="role">SELECT ROLE</label>
+                    <select name="role" id="role">
+                        <option value="superadmin">Superadmin</option>
+                        <option value="admin">Admin</option>
+                        <option value="customer">Customer</option>
+                    </select>
+
                     <label class="text" for="username">USERNAME</label>
-                    <input type="text" id="username" placeholder="Your Name Here">
+                    <input type="text" name="username" id="username" placeholder="Your Name Here">
                     
                     <label class="text" for="password">PASSWORD</label>
-                    <input type="password" id="password" placeholder="Password">
+                    <input type="password" name="password" id="password" placeholder="Password">
                     
                     <div class="remember">
                         <input type="checkbox" id="remember"> 
@@ -33,6 +42,15 @@
                     
                     <button class="login" type="submit">LOG IN</button>
                 </form>
+
+                <!-- Show error messages -->
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
         </div>
     </div>

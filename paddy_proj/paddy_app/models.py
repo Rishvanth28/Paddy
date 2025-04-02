@@ -19,9 +19,18 @@ class AdminTable(models.Model):
     user_count = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
-        """ Hash the password before saving if it's not already hashed """
-        if not self.password.startswith('pbkdf2_sha256$'):  # Avoid double hashing
+        """Ensure new admins get an ID >= 1000000 and hash passwords."""
+        if not self.admin_id:  # Only set for new admins
+            last_admin = AdminTable.objects.order_by('-admin_id').first()
+            if last_admin and last_admin.admin_id >= 1000000:
+                self.admin_id = last_admin.admin_id + 1
+            else:
+                self.admin_id = 1000000
+
+        # Hash password if not already hashed
+        if not self.password.startswith('pbkdf2_sha256$'):
             self.password = make_password(self.password)
+
         super().save(*args, **kwargs)
 
     def check_password(self, raw_password):
@@ -32,10 +41,10 @@ class AdminTable(models.Model):
         return f"{self.first_name} {self.last_name} (Admin)"
 
 class CustomerTable(models.Model):
-    customer_id = models.BigAutoField(primary_key=True)
+    customer_id = models.CharField(max_length=15, primary_key=True)  # Store ID as a string (e.g., "C1000000")
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=15)
+    phone_number = models.CharField(max_length=15, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     admin = models.ForeignKey(AdminTable, to_field="admin_id", on_delete=models.CASCADE)
@@ -43,9 +52,20 @@ class CustomerTable(models.Model):
     GST = models.CharField(max_length=15, null=True, blank=True, validators=[validate_gst])  # GST Validation added
 
     def save(self, *args, **kwargs):
-        """ Hash the password before saving if it's not already hashed """
+        """Ensure new customers get an ID >= C1000000 and hash passwords."""
+        if not self.customer_id:  # Assign new ID only for new customers
+            last_customer = CustomerTable.objects.filter(customer_id__startswith="C").order_by('-customer_id').first()
+            if last_customer:
+                last_id = int(last_customer.customer_id[1:])  # Extract numeric part
+                new_id = f"C{last_id + 1}"
+            else:
+                new_id = "C1000000"
+            self.customer_id = new_id
+
+        # Hash password if not already hashed
         if not self.password.startswith('pbkdf2_sha256$'):
             self.password = make_password(self.password)
+
         super().save(*args, **kwargs)
 
     def check_password(self, raw_password):
@@ -53,7 +73,7 @@ class CustomerTable(models.Model):
         return check_password(raw_password, self.password)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.company_name}"
+        return f"{self.first_name} {self.last_name} (Customer)"
 
 
 class Orders(models.Model):
