@@ -3,5 +3,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Django Admin Panel
-    path('api/', include('paddy_app.urls')),  # Include app-level URLs
+    path('api/', include('paddy_app.urls')),  # API routes for your app
+    path('', include('paddy_app.urls')),  # Set paddy_app as the main app
 ]

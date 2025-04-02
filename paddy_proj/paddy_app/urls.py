@@ -1,9 +1,12 @@
 from django.urls import path
-from .views import (
-    admin_list, admin_detail, customer_list, order_list, payment_list, subscription_list
-)
+from .views import admin_list, admin_detail, customer_list, order_list, payment_list, subscription_list ,signup_view, login_view, logout_view,home
+
 
 urlpatterns = [
+    path('', home, name='home'),
+    path('signup/', signup_view, name='signup'),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
     # ✅ Admin URLs
     path('admins/', admin_list, name='admin_list'),
     path('admins/<int:admin_id>/', admin_detail, name='admin_detail'),

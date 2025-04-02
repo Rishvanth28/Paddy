@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/static/css/signup.css">
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo-container">
+            LOGO HERE
+        </div>
+        
+        <div class="signup-header">
+            <h2>SIGN UP</h2>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">USERNAME</label>
+                <input type="text" class="form-control" name="username" placeholder="Your Name Here" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">PASSWORD</label>
+                <div class="password-field">
+                    <input type="password" class="form-control" name="password" placeholder="********" required>
+                    <span class="password-toggle">👁️</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">CONFIRM PASSWORD</label>
+                <div class="password-field">
+                    <input type="password" class="form-control" name="confirm_password" placeholder="********" required>
+                    <span class="password-toggle">👁️</span>
+                </div>
+            </div>
+            
+            <div class="login-link">
+                already have an account ? <a href="{% url 'login' %}">Log in</a>
+            </div>
+            
+            <button type="submit" class="signup-btn">SIGN UP</button>
+        </form>
+    </div>
+    
+    <!-- This is where you should add your image -->
+    <div class="banner-image">
+        <!-- Add your image here. For example: -->
+        <img src="{% static 'media/login.png' %}" alt="Login">
+        
+        <div class="banner-text">
+            <h1>Lorem Impsum</h1>
+            <h2>drit.</h2>
+        </div>
+    </div>
+</body>
+</html>

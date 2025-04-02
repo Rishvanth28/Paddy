@@ -4,6 +4,50 @@ from rest_framework import status
 from django.contrib.auth.hashers import make_password
 from .models import AdminTable, CustomerTable, Orders, Payments, Subscription
 from .serializers import AdminSerializer, CustomerSerializer, OrdersSerializer, PaymentsSerializer, SubscriptionSerializer
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+
+
+def home(request):
+    return render(request, 'home.html')
+
+
+# Signup View
+def signup_view(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        confirm_password = request.POST["confirm_password"]
+
+        if password == confirm_password:
+            if not User.objects.filter(username=username).exists() and not User.objects.filter(email=email).exists():
+                user = User.objects.create_user(username=username, email=email, password=password)
+                user.save()
+                return redirect("login")
+
+    return render(request, "registration/signup.html")
+
+# Login View
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect("home")
+
+    return render(request, "registration/login.html")
+
+# Logout View
+def logout_view(request):
+    logout(request)
+    return redirect("login")
 
 # ✅ Admin Views
 @api_view(['GET', 'POST'])
