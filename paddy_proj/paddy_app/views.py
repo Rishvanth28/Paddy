@@ -89,6 +89,9 @@ def customer_dashboard(request):
     return render(request, "customer_dashboard.html")
 
 def create_admin(request):
+    if request.session.get("role") != "superadmin":
+        messages.error(request, "Unauthorized access.")
+        return redirect("login")
     if request.method == "POST":
         phone_number = request.POST.get("phone_number")
         role = request.POST.get("role")
@@ -98,57 +101,79 @@ def create_admin(request):
             return redirect("superadmin_dashboard")
 
         # check if the phone number already exists
-        if AdminTable.objects.filter(phone_number=phone_number).exists():
+        elif AdminTable.objects.filter(phone_number=phone_number).exists():
             messages.error(request, "Phone number already exists.")
             return redirect("superadmin_dashboard")
         
         # Check if the phone number is valid (e.g., length, format)
-        if len(phone_number) < 10 or not phone_number.isdigit():
+        elif len(phone_number) < 10 or not phone_number.isdigit():
             messages.error(request, "Invalid phone number.")
             return redirect("superadmin_dashboard")
         
+        # Check if admin table has more than 251 entries
+        elif AdminTable.objects.count() >= 251:
+            messages.error(request, "Cannot create any more admins!")
+            return redirect("superadmin_dashboard")
+        else:
+            # Create a new admin
+            try:
+                new_admin = AdminTable.objects.create(
+                    phone_number=phone_number,
+                    password=phone_number,
+                    user_count=50,
+                )
+                new_admin.save()
+                messages.success(request, "Admin created successfully!")
+                return redirect("superadmin_dashboard")
+            except Exception as e:
+                messages.error(request, f"Error creating admin: {str(e)}")
+                return redirect("superadmin_dashboard")
+
+def create_customer(request):
+    if request.session.get("role") not in ["admin", "superadmin"]:
+        messages.error(request, "Unauthorized access.")
+        return redirect("login")
+    if request.method == "POST":
+        phone_number = request.POST.get("phone_number")
+        role = request.POST.get("role")
+        logged_in_user = request.session.get("role")
+        # Validate the role and phone number
+        if not phone_number or role != '1':  # 1 is customer
+            messages.error(request, "All fields are required.")
+            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
+
+        # Check if the phone number already exists
+        elif CustomerTable.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "Phone number already exists.")
+            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
+
+        # Check if the phone number is valid (e.g., length, format)
+        elif len(phone_number) < 10 or not phone_number.isdigit():
+            messages.error(request, "Invalid phone number.")
+            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
+
         # Check if the admin creating the user has sufficient user count
         current_user = request.session.get("user_id")
         current_admin = AdminTable.objects.get(admin_id=current_user)
-        if current_admin.user_count <= 0:
+        # Compare the count of customers under the admin with the admin's user count
+        customer_count = CustomerTable.objects.filter(admin_id=current_user).count()
+        if customer_count >= current_admin.user_count:
             messages.error(request, "Insufficient user count.")
-            return redirect("superadmin_dashboard")
+            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
         
-        # Create a new admin
-        try:
-            new_admin = AdminTable.objects.create(
-                phone_number=phone_number,
-                password=phone_number,
-                user_count=50,
-            )
-            new_admin.save()
-            messages.success(request, "Admin created successfully!")
-            return redirect("superadmin_dashboard")
-        except Exception as e:
-            messages.error(request, f"Error creating admin: {str(e)}")
-            return redirect("superadmin_dashboard")
-
-def create_customer(request):
-    if request.method == "POST":
-        phone_number = request.POST.get("phone_number")
-        password = request.POST.get("password")
-
-        if not phone_number or not password:
-            messages.error(request, "All fields are required.")
-            return redirect("create_customer")
-
         # Create a new customer
         try:
             new_customer = CustomerTable.objects.create(
                 phone_number=phone_number,
-                password=password,
+                password=phone_number,
+                admin_id=request.session.get("user_id"),
             )
             new_customer.save()
             messages.success(request, "Customer created successfully!")
-            return redirect("customer_dashboard")
+            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
         except Exception as e:
             messages.error(request, f"Error creating customer: {str(e)}")
-            return redirect("create_customer")
+            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
 
 def logout_view(request):
     request.session.flush()  # Clears session data

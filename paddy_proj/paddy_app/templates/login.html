@@ -16,8 +16,7 @@
         </div>
         <div class="right-section">
             <div class="login-section">
-                <a href="#" class="login-text">LOG IN</a>
-                <br><br>
+                
                 <h1><span class="highlight">Hey !</span> <br> Welcome Back</h1>
                 <form method="POST" action="{% url 'login' %}">
                     {% csrf_token %}  <!-- Security Token -->
@@ -35,12 +34,7 @@
                     <label class="text" for="password">PASSWORD</label>
                     <input type="password" name="password" id="password">
                     
-                    <div class="remember">
-                        <input type="checkbox" id="remember"> 
-                        <label for="remember">Remember me</label>
-                    </div>
-                    
-                    <button class="login" type="submit">LOG IN</button>
+                    <div></div><button class="login" type="submit">LOG IN</button>
                 </form>
 
                 <!-- Show error messages -->
