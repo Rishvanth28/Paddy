@@ -11,12 +11,10 @@
 <body>
     <div class="container">
         <h2 class="logo">LOGO HERE</h2>
-        <div class="left-section">
-            <div class="image-overlay"></div>
-        </div>
+        
+        <!-- Right section moved to left -->
         <div class="right-section">
             <div class="login-section">
-                
                 <h1><span class="highlight">Hey !</span> <br> Welcome Back</h1>
                 <form method="POST" action="{% url 'login' %}">
                     {% csrf_token %}  <!-- Security Token -->
@@ -34,7 +32,7 @@
                     <label class="text" for="password">PASSWORD</label>
                     <input type="password" name="password" id="password">
                     
-                    <div></div><button class="login" type="submit">LOG IN</button>
+                    <button class="login" type="submit">LOG IN</button>
                 </form>
 
                 <!-- Show error messages -->
@@ -47,7 +45,13 @@
                 {% endif %}
             </div>
         </div>
+
+        <!-- Left section moved to right -->
+        <div class="left-section">
+            <div class="image-overlay"></div>
+        </div>
     </div>
+    
     <script src="{% static 'js/login.js' %}" defer></script>
 </body>
 </html>
