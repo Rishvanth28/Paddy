@@ -74,7 +74,7 @@ h1 {
 }
 
 form {
-    margin-top: 8vh;
+    margin-top: 5vh;
 }
 
 label {
@@ -129,7 +129,7 @@ button {
 
 .login{
     margin-top: 2vh;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 
 /* Responsive Design for Mobile */
@@ -154,7 +154,7 @@ button {
     }
 }
 select {
-    width: 100%;
+    width: 60%;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
