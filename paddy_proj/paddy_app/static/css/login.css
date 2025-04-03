@@ -152,6 +152,9 @@ button {
     input {
         width: 100%;
     }
+    select{
+        width: 100% !important;
+    }
 }
 select {
     width: 60%;
