@@ -162,3 +162,25 @@ select {
     font-size: 16px;
     background: #fff;
 }
+
+/* Style for warning messages */
+.messages {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    list-style: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.messages .error {
+    background-color: #ff4d4d; /* Red background for errors */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
