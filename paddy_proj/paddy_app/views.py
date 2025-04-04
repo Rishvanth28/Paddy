@@ -94,11 +94,10 @@ def validate_gst(gst):
     gst_pattern = r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
     return bool(re.match(gst_pattern, gst))
 
-# 🚀 Onboarding Page - Handles both Admin & Customer Creation
+
 def onboard(request):
     return render(request, "onboard.html")
 
-# 🎯 Create Admin View
 def create_admin(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -132,7 +131,6 @@ def create_admin(request):
     return render(request, "onboard.html")
 
 
-# 🎯 Create Customer View
 def create_customer(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -143,8 +141,18 @@ def create_customer(request):
         company_name = request.POST.get("company_name")
         gst = request.POST.get("gst")
 
-        # Assigning to the first admin for now (Change logic if needed)
-        admin = AdminTable.objects.first()
+        # Retrieve the currently logged-in admin
+        admin_id = request.session.get("user_id")
+          # Debugging line
+        if not admin_id:
+            messages.error(request, "Session expired. Please log in again.")
+            return redirect("login")
+
+        try:
+            admin = AdminTable.objects.get(admin_id=admin_id)
+        except AdminTable.DoesNotExist:
+            messages.error(request, "Admin not found. Please log in again.")
+            return redirect("login")
 
         # Check for duplicate email or phone number
         if CustomerTable.objects.filter(email=email).exists():
@@ -161,23 +169,29 @@ def create_customer(request):
             return redirect("onboard")
 
         try:
-            CustomerTable.objects.create(
+            # Create customer with hashed password
+            customer = CustomerTable.objects.create(
                 first_name=first_name,
                 last_name=last_name,
                 phone_number=phone_number,
                 email=email,
-                password=password,
+                password=make_password(password),  # Hashing the password
                 company_name=company_name,
                 GST=gst if gst else None,  # Store GST only if provided
                 admin=admin,
             )
+
+            # Increment the user_count for the respective admin
+            admin.user_count += 1
+            admin.save()
+            print(admin_id)
             messages.success(request, "Customer created successfully!")
             return redirect("onboard")
+
         except IntegrityError:
             messages.error(request, "Failed to create customer. Please try again.")
 
     return render(request, "onboard.html")
-
 def logout_view(request):
     request.session.flush()  # Clears session data
     messages.success(request, "Logged out successfully.")
