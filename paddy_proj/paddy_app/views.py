@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from .models import *
+from django.db import IntegrityError
 
 def login_view(request):
     if request.method == "POST":
@@ -88,92 +89,94 @@ def customer_dashboard(request):
         return redirect("login")
     return render(request, "customer_dashboard.html")
 
+
+def validate_gst(gst):
+    gst_pattern = r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
+    return bool(re.match(gst_pattern, gst))
+
+# 🚀 Onboarding Page - Handles both Admin & Customer Creation
+def onboard(request):
+    return render(request, "onboard.html")
+
+# 🎯 Create Admin View
 def create_admin(request):
-    if request.session.get("role") != "superadmin":
-        messages.error(request, "Unauthorized access.")
-        return redirect("login")
     if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
         phone_number = request.POST.get("phone_number")
-        role = request.POST.get("role")
-        # Validate the role and phone number
-        if not phone_number or role != '0': # 0  is admin
-            messages.error(request, "All fields are required.")
-            return redirect("superadmin_dashboard")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
 
-        # check if the phone number already exists
-        elif AdminTable.objects.filter(phone_number=phone_number).exists():
-            messages.error(request, "Phone number already exists.")
-            return redirect("superadmin_dashboard")
-        
-        # Check if the phone number is valid (e.g., length, format)
-        elif len(phone_number) < 10 or not phone_number.isdigit():
-            messages.error(request, "Invalid phone number.")
-            return redirect("superadmin_dashboard")
-        
-        # Check if admin table has more than 251 entries
-        elif AdminTable.objects.count() >= 251:
-            messages.error(request, "Cannot create any more admins!")
-            return redirect("superadmin_dashboard")
-        else:
-            # Create a new admin
-            try:
-                new_admin = AdminTable.objects.create(
-                    phone_number=phone_number,
-                    password=phone_number,
-                    user_count=50,
-                )
-                new_admin.save()
-                messages.success(request, "Admin created successfully!")
-                return redirect("superadmin_dashboard")
-            except Exception as e:
-                messages.error(request, f"Error creating admin: {str(e)}")
-                return redirect("superadmin_dashboard")
+        # Check for existing email or phone number
+        if AdminTable.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists for an admin!")
+            return redirect("onboard")
 
-def create_customer(request):
-    if request.session.get("role") not in ["admin", "superadmin"]:
-        messages.error(request, "Unauthorized access.")
-        return redirect("login")
-    if request.method == "POST":
-        phone_number = request.POST.get("phone_number")
-        role = request.POST.get("role")
-        logged_in_user = request.session.get("role")
-        # Validate the role and phone number
-        if not phone_number or role != '1':  # 1 is customer
-            messages.error(request, "All fields are required.")
-            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
+        if AdminTable.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "Phone number already registered for an admin!")
+            return redirect("onboard")
 
-        # Check if the phone number already exists
-        elif CustomerTable.objects.filter(phone_number=phone_number).exists():
-            messages.error(request, "Phone number already exists.")
-            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
-
-        # Check if the phone number is valid (e.g., length, format)
-        elif len(phone_number) < 10 or not phone_number.isdigit():
-            messages.error(request, "Invalid phone number.")
-            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
-
-        # Check if the admin creating the user has sufficient user count
-        current_user = request.session.get("user_id")
-        current_admin = AdminTable.objects.get(admin_id=current_user)
-        # Compare the count of customers under the admin with the admin's user count
-        customer_count = CustomerTable.objects.filter(admin_id=current_user).count()
-        if customer_count >= current_admin.user_count:
-            messages.error(request, "Insufficient user count.")
-            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
-        
-        # Create a new customer
         try:
-            new_customer = CustomerTable.objects.create(
+            AdminTable.objects.create(
+                first_name=first_name,
+                last_name=last_name,
                 phone_number=phone_number,
-                password=phone_number,
-                admin_id=request.session.get("user_id"),
+                email=email,
+                password=password,
             )
-            new_customer.save()
+            messages.success(request, "Admin created successfully!")
+            return redirect("onboard")
+        except IntegrityError:
+            messages.error(request, "Failed to create admin. Please try again.")
+
+    return render(request, "onboard.html")
+
+
+# 🎯 Create Customer View
+def create_customer(request):
+    if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        phone_number = request.POST.get("phone_number")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        company_name = request.POST.get("company_name")
+        gst = request.POST.get("gst")
+
+        # Assigning to the first admin for now (Change logic if needed)
+        admin = AdminTable.objects.first()
+
+        # Check for duplicate email or phone number
+        if CustomerTable.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists for a customer!")
+            return redirect("onboard")
+
+        if CustomerTable.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "Phone number already registered for a customer!")
+            return redirect("onboard")
+
+        # Validate GST format if provided
+        if gst and not validate_gst(gst):
+            messages.error(request, "Invalid GST number format!")
+            return redirect("onboard")
+
+        try:
+            CustomerTable.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                email=email,
+                password=password,
+                company_name=company_name,
+                GST=gst if gst else None,  # Store GST only if provided
+                admin=admin,
+            )
             messages.success(request, "Customer created successfully!")
-            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
-        except Exception as e:
-            messages.error(request, f"Error creating customer: {str(e)}")
-            return redirect("admin_dashboard") if logged_in_user == "admin" else redirect("superadmin_dashboard")
+            return redirect("onboard")
+        except IntegrityError:
+            messages.error(request, "Failed to create customer. Please try again.")
+
+    return render(request, "onboard.html")
 
 def logout_view(request):
     request.session.flush()  # Clears session data

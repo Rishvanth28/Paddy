@@ -14,7 +14,7 @@ class AdminTable(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15)  # Supports `+` and leading 0s
-    email = models.EmailField(unique=True, null=True, blank=True)
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     user_count = models.IntegerField(default=0)
 
@@ -45,7 +45,7 @@ class CustomerTable(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15, unique=True)
-    email = models.EmailField(unique=True,null=True, blank=True)
+    email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     admin = models.ForeignKey(AdminTable, to_field="admin_id", on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
