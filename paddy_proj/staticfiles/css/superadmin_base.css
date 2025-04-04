@@ -1,0 +1,158 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.container {
+  width: 13vw;
+  height: 100vh;
+  background-color: #ffffff;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  padding: 20px 0;
+  border-right: 1px solid #ccc;
+  margin-left: 10px;
+}
+
+.top-section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  gap: 10px;
+}
+
+.top-section img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: 25px;
+}
+
+.top-section span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: black;
+  text-transform: uppercase;
+}
+
+.middle-content {
+  width: 100%;
+  margin-top: -50vh;
+  padding-left: 20px;
+  box-sizing: border-box;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin-top: 60px;
+  width: 100%;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  padding: 8px 18px;
+  /* smaller height */
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  text-transform: capitalize;
+  cursor: pointer;
+  border-radius: 8px;
+  /* more rounded corners */
+}
+
+.menu li:hover {
+  background-color: rgba(7, 6, 6, 0.1);
+  border-radius: 8px;
+  margin-right: 10px;
+  transform: translateX(-8px);
+  /* Expand slightly to the left */
+  transition: all 0.3s ease;
+  border-left: 3px solid black;
+  /* Vertical line on the left */
+  padding-left: 15px;
+  /* Optional, adjust for spacing after line */
+}
+
+.menu li.active {
+  background-color: rgba(7, 6, 6, 0.15);
+  border-left: 3px solid black;
+  padding-left: 15px;
+  transform: translateX(-8px);
+  border-radius: 8px;
+  font-weight: 600;
+  color: black;
+}
+
+
+.icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.submenu {
+  list-style: none;
+  margin-top: 5px;
+  padding-left: 25px;
+  padding-right: 10px;
+  display: block;
+  /* Make it visible by default */
+}
+
+
+.submenu li {
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+}
+
+.submenu li:hover {
+  background-color: black;
+  border-radius: 6px;
+  color: white;
+  padding-left: 10px;
+}
+
+.footer-text {
+  font-size: 16px;
+  color: black;
+  margin-bottom: 50px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  opacity: 0.8;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.chevron {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+  margin-right: -5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+
+
+
+.submenu-toggle {
+  justify-content: space-between;
+}
