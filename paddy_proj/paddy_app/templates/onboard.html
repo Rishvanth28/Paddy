@@ -1,4 +1,3 @@
-
 {% block content %}
 {% if messages %}
     <div id="message-container">
@@ -17,6 +16,7 @@
         }, 3000);
     </script>
 {% endif %}
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -37,14 +37,25 @@
                         <div class="tab-pane fade show active" id="admin-form" role="tabpanel" aria-labelledby="admin-tab">
                             <form method="POST" action="{% url 'create_admin' %}" class="form" novalidate>
                                 {% csrf_token %}
-                                <div class="alert alert-info mb-4">
-                                    Admin users will have full access to the administrative dashboard and management features.
-                                </div>
-                                
                                 <div class="mb-3">
-                                    <label for="id_admin_phone" class="form-label">Phone Number</label>
-                                    <input type="tel" name="phone_number" id="id_admin_phone" class="form-control" required>
-                                    <div class="form-text">A valid phone number is required for account activation.</div>
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" name="first_name" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" name="phone_number" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="text" name="password" class="form-control" required>
                                 </div>
                                 <input type="hidden" name="role" value="0">                                
                                 <div class="d-grid gap-2">
@@ -57,20 +68,39 @@
                         <div class="tab-pane fade" id="customer-form" role="tabpanel" aria-labelledby="customer-tab">
                             <form method="POST" action="{% url 'create_customer' %}" class="form" novalidate>
                                 {% csrf_token %}
-                                <div class="alert alert-info mb-4">
-                                    Customers will have access to customer dashboard with order and payment handling.
-                                </div>
-                                
                                 <div class="mb-3">
-                                    <label for="id_customer_phone" class="form-label">Phone Number</label>
-                                    <input type="tel" name="phone_number" id="id_customer_phone" class="form-control" required>
-                                    <div class="form-text">A valid phone number is required for account activation.</div>
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" name="first_name" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" name="phone_number" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <input type="text" name="password" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Company Name</label>
+                                    <input type="text" name="company_name" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">GST (Optional)</label>
+                                    <input type="text" name="gst" class="form-control">
                                 </div>
                                 <input type="hidden" name="role" value="1">                                
                                 <div class="d-grid gap-2">
                                     <button type="submit" class="btn btn-primary">Create Customer</button>
                                 </div>
-                            </form>     
+                            </form>    
                         </div>
                     </div>
                 </div>
@@ -78,4 +108,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}
