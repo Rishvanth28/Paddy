@@ -195,10 +195,6 @@ def create_customer(request):
     return render(request, "onboard.html")
 
 
-from django.shortcuts import render, redirect
-from datetime import date
-from .models import Orders, CustomerTable, AdminTable
-
 def place_order(request):
     admin_id = request.session.get("user_id")
     if not admin_id:
@@ -211,13 +207,16 @@ def place_order(request):
         product_category_id = request.POST.get('product_category_id')
         quantity = request.POST.get('quantity')
         price_per_unit = request.POST.get('price_per_unit')
-        gst = request.POST.get('GST')
         lorry_number = request.POST.get('lorry_number')
         driver_name = request.POST.get('driver_name')
         driver_ph_no = request.POST.get('driver_ph_no')
         delivery_date = request.POST.get('delivery_date')
 
         try:
+            # Get customer and their GST
+            customer = CustomerTable.objects.get(customer_id=customer_id)
+            gst = customer.GST  # Fetch GST directly from customer model
+
             # Safely convert to float
             quantity = float(quantity) if quantity else 0
             price_per_unit = float(price_per_unit) if price_per_unit else 0
@@ -227,7 +226,7 @@ def place_order(request):
 
             # Create the order
             Orders.objects.create(
-                customer=CustomerTable.objects.get(customer_id=customer_id),
+                customer=customer,
                 admin=AdminTable.objects.get(admin_id=admin_id),
                 payment_status=1,
                 delivery_status=0,
