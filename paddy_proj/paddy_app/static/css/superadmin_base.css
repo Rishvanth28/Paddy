@@ -207,6 +207,10 @@ body {
   .main-content {
     padding-left: 20px;
   }
+  .top-section {
+    margin-top: 30px;
+    margin-bottom: 40px;
+  }
 }
 
 /* Scrollbar for WebKit (Chrome, Safari, Edge) */

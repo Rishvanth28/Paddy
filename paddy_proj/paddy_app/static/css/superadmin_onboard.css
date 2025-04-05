@@ -348,6 +348,7 @@ button[type="submit"]:hover {
     .tab-header {
         flex-direction: column;
         align-items: center;
+        margin-left: 10px;
     }
 
     .tab-button {
