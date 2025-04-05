@@ -13,7 +13,7 @@ class CustomerTableAdmin(admin.ModelAdmin):
 
 admin.site.register(AdminTable, AdminTableAdmin)
 admin.site.register(CustomerTable, CustomerTableAdmin)
-
+admin.site.register(Orders)
 admin.site.register(Payments)
 admin.site.register(Subscription)
 

@@ -10,7 +10,6 @@ urlpatterns = [
     path("logout/", logout_view, name="logout"), 
     path("create-admin/", create_admin, name="create_admin"),
     path("create-customer/", create_customer, name="create_customer"),
-    path("create-admin/", create_admin, name="create_admin"),
-    path("create-customer/", create_customer, name="create_customer"),
-    path("onboard/", create_admin, name="onboard"), 
+    path("onboard/", create_admin, name="onboard"),
+    path('place_order/', place_order, name='place_order'),
 ]

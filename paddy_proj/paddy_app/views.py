@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from .models import *
 from django.db import IntegrityError
+from datetime import date
 
 def login_view(request):
     if request.method == "POST":
@@ -192,6 +193,63 @@ def create_customer(request):
             messages.error(request, "Failed to create customer. Please try again.")
 
     return render(request, "onboard.html")
+
+
+from django.shortcuts import render, redirect
+from datetime import date
+from .models import Orders, CustomerTable, AdminTable
+
+def place_order(request):
+    admin_id = request.session.get("user_id")
+    if not admin_id:
+        return redirect('login')
+
+    customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
+
+    if request.method == 'POST':
+        customer_id = request.POST.get('customer')
+        product_category_id = request.POST.get('product_category_id')
+        quantity = request.POST.get('quantity')
+        price_per_unit = request.POST.get('price_per_unit')
+        gst = request.POST.get('GST')
+        lorry_number = request.POST.get('lorry_number')
+        driver_name = request.POST.get('driver_name')
+        driver_ph_no = request.POST.get('driver_ph_no')
+        delivery_date = request.POST.get('delivery_date')
+
+        try:
+            # Safely convert to float
+            quantity = float(quantity) if quantity else 0
+            price_per_unit = float(price_per_unit) if price_per_unit else 0
+
+            # Calculate overall amount
+            overall_amount = quantity * price_per_unit
+
+            # Create the order
+            Orders.objects.create(
+                customer=CustomerTable.objects.get(customer_id=customer_id),
+                admin=AdminTable.objects.get(admin_id=admin_id),
+                payment_status=1,
+                delivery_status=0,
+                product_category_id=product_category_id,
+                quantity=quantity,
+                price_per_unit=price_per_unit,
+                overall_amount=overall_amount,
+                GST=gst,
+                lorry_number=lorry_number,
+                driver_name=driver_name,
+                delivery_date=delivery_date,
+                driver_ph_no=driver_ph_no,
+                order_date=date.today()
+            )
+
+            return redirect('place_order')
+
+        except Exception as e:
+            print("Error placing order:", e)
+
+    return render(request, 'place_order.html', {'customers': customers})
+
 def logout_view(request):
     request.session.flush()  # Clears session data
     messages.success(request, "Logged out successfully.")
