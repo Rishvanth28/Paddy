@@ -5,7 +5,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sidebar Page</title>
-  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
   <style>
     body {
       margin: 0;
@@ -183,7 +182,12 @@
         <li><img class="icon" src="D:\Downloads\ChartPieSlice.png" alt="Dashboard Icon"> Dashboard</li>
 
         <!-- Onboarding -->
-        <li> <img class="icon" src="D:\Downloads\ShoppingBagOpen.png" alt="Onboarding Icon"> Onboarding</li>
+        <li>
+          <a href="{% url 'onboard' %}">
+            <img class="icon" src="" alt="Onboarding Icon"> Onboarding
+          </a>
+        </li>
+        
         <!-- Subscribers -->
         <!-- Subscribers Toggle -->
         <li class="submenu-toggle">
@@ -206,8 +210,12 @@
 
         <li><img class="icon" src="D:\Downloads\IconSet (2).png" alt="Customers Icon"> Customers</li>
         <li><img class="icon" src="D:\Downloads\Group 2.png" alt="Admins Icon"> Admins</li>
-        <li><img class="icon" src="D:\Downloads\Vector.png" alt="Place Order Icon"> Place Order</li>
-      </ul>
+        <li>
+          <a href="{% url 'place_order' %}">
+            <img class="icon" src="" alt="Place Order Icon"> Place Order
+          </a>
+        </li>
+              </ul>
     </div>
 
     <!-- Footer -->
