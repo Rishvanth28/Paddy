@@ -6,215 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Superadmin</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .containerr {
-      width: 13vw;
-      height: 100vh;
-      background-color: #ffffff;
-      color: black;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      font-size: 1rem;
-      padding: 20px 0;
-      border-right: 1px solid #ccc;
-      margin-left: 10px;
-    }
-
-    .top-section {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      padding: 10px 15px;
-      gap: 10px;
-    }
-
-    .top-section img {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-left: 25px;
-    }
-
-    .top-section span {
-      font-family: 'Inter', sans-serif;
-      font-weight: 400;
-      font-size: 16px;
-      color: black;
-      text-transform: uppercase;
-      text-shadow: 1px 1px 2px rgba(63, 61, 61, 0.3);
-      /* subtle soft shadow */
-
-    }
-
-    .middle-content {
-      width: 100%;
-      margin-top: -50vh;
-      padding-left: 20px;
-      box-sizing: border-box;
-    }
-
-    .menu {
-      list-style: none;
-      padding: 0;
-      margin-top: 60px;
-      width: 100%;
-    }
-
-    .menu li {
-      display: flex;
-      align-items: center;
-      padding: 8px 18px;
-      /* smaller height */
-      gap: 10px;
-      font-family: 'Inter', sans-serif;
-      font-size: 16px;
-      text-transform: capitalize;
-      cursor: pointer;
-      border-radius: 8px;
-      /* more rounded corners */
-    }
-
-    .menu li:hover {
-      background-color: rgba(7, 6, 6, 0.1);
-      border-radius: 8px;
-      margin-right: 10px;
-      transform: translateX(-8px);
-      /* Expand slightly to the left */
-      transition: all 0.3s ease;
-      border-left: 3px solid black;
-      /* Vertical line on the left */
-      padding-left: 15px;
-      /* Optional, adjust for spacing after line */
-    }
-
-    .menu li.active {
-      background-color: rgba(7, 6, 6, 0.15);
-      border-left: 3px solid black;
-      padding-left: 15px;
-      transform: translateX(-8px);
-      border-radius: 8px;
-      font-weight: 600;
-      color: black;
-    }
-
-
-    .icon {
-      width: 18px;
-      height: 18px;
-      object-fit: contain;
-    }
-
-    .submenu {
-      list-style: none;
-      margin-top: 5px;
-      padding-left: 25px;
-      padding-right: 10px;
-      display: block;
-      /* Make it visible by default */
-    }
-
-
-    .submenu li {
-      padding: 5px 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 15px;
-      border-radius: 6px;
-    }
-
-    .submenu li:hover {
-      background-color: black;
-      border-radius: 6px;
-      color: white;
-      padding-left: 10px;
-    }
-
-    .footer-text {
-      font-size: 16px;
-      color: black;
-      margin-bottom: 50px;
-      text-align: center;
-      font-family: 'Inter', sans-serif;
-      opacity: 0.8;
-      text-transform: uppercase;
-      font-weight: 400;
-    }
-
-    .chevron {
-      font-size: 16px;
-      transition: transform 0.3s ease;
-      margin-right: -5px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-    }
-
-
-
-
-    .submenu-toggle {
-      justify-content: space-between;
-    }
-
-    /* Main layout */
-    .main-content {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    /* Hamburger menu button */
-    .hamburger {
-      display: none;
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      background: none;
-      border: none;
-      font-size: 28px;
-      z-index: 1000;
-      cursor: pointer;
-    }
-
-    /* Responsive styles */
-    @media (max-width: 768px) {
-      .containerr {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 70vw;
-        height: 100vh;
-        background-color: #fff;
-        transform: translateX(-100%);
-        z-index: 999;
-      }
-
-      .containerr.open {
-        transform: translateX(0);
-      }
-
-      .hamburger {
-        display: block;
-      }
-
-      .main-content {
-        padding-left: 20px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
 </head>
 
 <body style="display: flex; height: 100vh; overflow: hidden;">
@@ -237,7 +29,7 @@
         <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon"> Dashboard</li>
 
         <!-- Onboarding -->
-        <li>
+        <li class="menu-link">
           <img class="icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding Icon">
           <a href="{% url 'onboard' %}" style="text-decoration: none; color: inherit;">Onboarding</a>
         </li>
@@ -264,7 +56,7 @@
 
         <li><img class="icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers Icon"> Customers</li>
         <li><img class="icon" src="{% static 'media/Group 2.png' %}" alt="Admins Icon"> Admins</li>
-        <li>
+        <li class="menu-link">
           <img class="icon" src="{% static 'media/Vector.png' %}" alt="Place Order Icon">
           <a href="{% url 'place_order' %}" style="text-decoration: none; color: inherit;">Place Order</a>
         </li>
@@ -300,6 +92,17 @@
       const sidebar = document.getElementById('sidebar');
       sidebar.classList.toggle('open');
     }
+    window.addEventListener('DOMContentLoaded', () => {
+      const currentPath = window.location.pathname;
+      const menuItems = document.querySelectorAll('.menu li');
+
+      menuItems.forEach(item => {
+        const link = item.querySelector('a');
+        if (link && link.getAttribute('href') === currentPath) {
+          item.classList.add('active');
+        }
+      });
+    });
   </script>
 </body>
 
