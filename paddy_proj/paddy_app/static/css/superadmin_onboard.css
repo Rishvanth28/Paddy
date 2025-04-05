@@ -1,0 +1,12 @@
+.page-layout {
+    display: flex;
+    min-height: 100vh;
+}
+.side-section {
+    width: 13vw;
+    background-color: #f8f9fa;
+}
+.center-section {
+    flex-grow: 1;
+    padding: 2rem;
+}
