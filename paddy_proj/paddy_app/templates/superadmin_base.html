@@ -13,7 +13,7 @@
       overflow: hidden;
     }
 
-    .container {
+    .containerr {
       width: 13vw;
       height: 100vh;
       background-color: #ffffff;
@@ -168,11 +168,62 @@
     .submenu-toggle {
       justify-content: space-between;
     }
+
+    /* Main layout */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    /* Hamburger menu button */
+    .hamburger {
+      display: none;
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .containerr {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 70vw;
+        height: 100vh;
+        background-color: #fff;
+        transform: translateX(-100%);
+        z-index: 999;
+      }
+
+      .containerr.open {
+        transform: translateX(0);
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .main-content {
+        padding-left: 20px;
+      }
+    }
   </style>
 </head>
 
 <body style="display: flex; height: 100vh; overflow: hidden;">
-  <div class="container">
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+  <!-- Sidebar -->
+  <div class="containerr" id="sidebar">
 
     <!-- Top section -->
     <div class="top-section">
@@ -223,7 +274,9 @@
     <!-- Footer -->
     <div class="footer-text">Logo Here</div>
   </div>
-  <div style="flex: 1; padding: 20px; overflow-y: auto;">
+
+  <!-- Main content -->
+  <div class="main-content">
     {% block content %}
     {% endblock %}
   </div>
@@ -242,6 +295,11 @@
         chevron.classList.toggle('rotate', !isVisible);
       });
     });
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('open');
+    }
   </script>
 </body>
 
