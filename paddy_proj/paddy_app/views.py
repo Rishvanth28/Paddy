@@ -5,6 +5,7 @@ from .models import *
 from django.db import IntegrityError
 from datetime import date
 
+
 def login_view(request):
     if request.method == "POST":
         phone_number = request.POST.get("username")  # Phone number as username
@@ -72,17 +73,20 @@ def login_view(request):
 
     return render(request, "login.html")
 
+
 def superadmin_dashboard(request):
     if request.session.get("role") != "superadmin":
         messages.error(request, "Unauthorized access.")
         return redirect("login")
     return render(request, "superadmin_dashboard.html")
 
+
 def admin_dashboard(request):
     if request.session.get("role") != "admin":
         messages.error(request, "Unauthorized access.")
         return redirect("login")
     return render(request, "admin_dashboard.html")
+
 
 def customer_dashboard(request):
     if request.session.get("role") != "customer":
@@ -98,6 +102,7 @@ def validate_gst(gst):
 
 def onboard(request):
     return render(request, "onboard.html")
+
 
 def create_admin(request):
     if request.method == "POST":
@@ -128,7 +133,9 @@ def create_admin(request):
             return redirect("onboard")
         except IntegrityError:
             messages.error(request, "Failed to create admin. Please try again.")
-
+            messages.warning(request, "This email is already registered.")
+            messages.info(request, "Please fill all required fields.")
+            
     return render(request, "onboard.html")
 
 
@@ -248,6 +255,7 @@ def place_order(request):
             print("Error placing order:", e)
 
     return render(request, 'place_order.html', {'customers': customers})
+
 
 def logout_view(request):
     request.session.flush()  # Clears session data

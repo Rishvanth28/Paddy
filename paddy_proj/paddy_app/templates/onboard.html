@@ -1,113 +1,129 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'css/superadmin_onboard.css' %}">
+</head>
+
 {% if messages %}
-    <div id="message-container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-    <script>
-        setTimeout(() => {
-            const messageContainer = document.getElementById('message-container');
-            if (messageContainer) {
-                messageContainer.style.display = 'none';
-            }
-        }, 3000);
-    </script>
+<div id="message-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+<script>
+    setTimeout(() => {
+        const messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+            messageContainer.style.display = 'none';
+        }
+    }, 3000);
+</script>
 {% endif %}
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs" id="userTypeTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="admin-tab" data-bs-toggle="tab" data-bs-target="#admin-form" type="button" role="tab" aria-controls="admin-form" aria-selected="true">Create Admin</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer-form" type="button" role="tab" aria-controls="customer-form" aria-selected="false">Create Customer</button>
-                        </li>
-                    </ul>
+<!-- Page Header -->
+<div class="page-title">
+    <h1>Onboarding</h1>
+</div>
+
+<!-- Tab Buttons -->
+<div class="tab-header">
+    <button class="tab-button active" onclick="showForm('admin')">Create Admin</button>
+    <button class="tab-button" onclick="showForm('customer')">Create Customer</button>
+</div>
+
+<!-- Forms -->
+<div class="form-container">
+    <!-- Create Admin Form -->
+    <div id="admin-form" class="form-card">
+        <h2>Create Admin</h2>
+        <form method="POST" action="{% url 'create_admin' %}" novalidate>
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" placeholder="Enter your first name" required>
                 </div>
-                <div class="card-body">
-                    <div class="tab-content" id="userTypeTabsContent">
-                        <!-- Admin Form -->
-                        <div class="tab-pane fade show active" id="admin-form" role="tabpanel" aria-labelledby="admin-tab">
-                            <form method="POST" action="{% url 'create_admin' %}" class="form" novalidate>
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label class="form-label">First Name</label>
-                                    <input type="text" name="first_name" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" name="last_name" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" name="phone_number" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Password</label>
-                                    <input type="text" name="password" class="form-control" required>
-                                </div>
-                                <input type="hidden" name="role" value="0">                                
-                                <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-primary">Create Admin User</button>
-                                </div>
-                            </form>
-                        </div>
-                        
-                        <!-- Customer Form -->
-                        <div class="tab-pane fade" id="customer-form" role="tabpanel" aria-labelledby="customer-tab">
-                            <form method="POST" action="{% url 'create_customer' %}" class="form" novalidate>
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label class="form-label">First Name</label>
-                                    <input type="text" name="first_name" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" name="last_name" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" name="phone_number" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" name="email" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Password</label>
-                                    <input type="text" name="password" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Company Name</label>
-                                    <input type="text" name="company_name" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">GST (Optional)</label>
-                                    <input type="text" name="gst" class="form-control">
-                                </div>
-                                <input type="hidden" name="role" value="1">                                
-                                <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-primary">Create Customer</button>
-                                </div>
-                            </form>    
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" placeholder="Enter your last name" required>
                 </div>
             </div>
-        </div>
+
+
+            <label>Phone Number</label>
+            <input type="tel" name="phone_number" placeholder="Enter your phone number" required>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="text" name="password" placeholder="Enter a password" required>
+
+
+            <input type="hidden" name="role" value="0">
+
+            <button type="submit">Create Admin User</button>
+        </form>
     </div>
-</div>
-{% endblock %}
+
+    <!-- Create Customer Form -->
+
+    <div id="customer-form" class="form-card" style="display: none;">
+        <h2>Create Customer</h2>
+        <form method="POST" action="{% url 'create_customer' %}" novalidate>
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" placeholder="Enter your first name" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" placeholder="Enter your last name" required>
+                </div>
+            </div>
+
+            <label>Phone Number</label>
+            <input type="tel" name="phone_number" placeholder="Enter your phone number" required>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="text" name="password" placeholder="Enter a password" required>
+
+            <label>Company Name</label>
+            <input type="text" name="company_name" placeholder="Enter your company name" required>
+
+            <label>GST (Optional)</label>
+            <input type="text" name="gst" placeholder="Enter your GST number (optional)">
+
+            <input type="hidden" name="role" value="1">
+
+            <button type="submit">Create Customer</button>
+        </form>
+    </div>
+
+    <!-- Tab Switch Script -->
+    <script>
+        function showForm(formType) {
+            const adminForm = document.getElementById('admin-form');
+            const customerForm = document.getElementById('customer-form');
+            const buttons = document.querySelectorAll('.tab-button');
+
+            if (formType === 'admin') {
+                adminForm.style.display = 'block';
+                customerForm.style.display = 'none';
+            } else {
+                adminForm.style.display = 'none';
+                customerForm.style.display = 'block';
+            }
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab-button[onclick="showForm('${formType}')"]`).classList.add('active');
+        }
+    </script>
+
+    {% endblock %}
