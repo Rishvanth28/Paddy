@@ -1,3 +1,4 @@
+/* General Reset */
 * {
     margin: 0;
     padding: 0;
@@ -5,23 +6,35 @@
     font-family: Arial, sans-serif;
 }
 
+/* Main Container */
 .container {
     display: flex;
     height: 100vh;
     position: relative;
 }
 
+/* Logo Moved to Left */
 .logo {
     position: absolute;
     top: 50px;
-    right: 50px;
+    left: 50px;
     font-weight: bold;
     font-size: 24px;
 }
 
+/* Right Section (Now on Left) */
+.right-section {
+    width: 100%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Left Section (Now on Right) */
 .left-section {
     width: 40%;
-    background-image: url(./login.png);
+    background-image: url('/static/media/login.png');
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
@@ -29,38 +42,18 @@
     justify-content: center;
     color: white;
     position: relative;
-
 }
 
-.light-section h2 {
-    font-size: 24px;
+.image-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('/static/media/login.png') no-repeat center center/cover;
 }
 
+/* Login Section */
 .login-section {
     margin-top: 30px;
-}
-
-.login-text {
-    color: #8888ff;
-    font-weight: bold;
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-    text-underline-offset: 3px;
-}
-
-.signup {
-    margin: 10px 0;
-    color: #999;
-}
-
-.signup a {
-    color: #8888ff;
-    text-decoration: none;
-}
-
-.text{
-    color: gray;
-    opacity: 0.9;
 }
 
 h1 {
@@ -73,8 +66,16 @@ h1 {
     font-weight: bold;
 }
 
+.text {
+    color: gray;
+    opacity: 0.9;
+}
+
 form {
     margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align input fields to the left */
 }
 
 label {
@@ -83,93 +84,47 @@ label {
     margin-top: 15px;
 }
 
-input {
+input, select {
     width: 60%;
     padding: 10px;
     margin-top: 5px;
     border: none;
     border-bottom: 1px solid #000;
     outline: none;
+    box-sizing: border-box;
 }
 
-.remember {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    margin: 15px 0;
-    gap: 10px;
+select {
+    background-color: #8888ff;
+    opacity: 0.9;
+    font-size: medium;
+    font-weight: bold;
+    appearance: none;        /* Hide default styles */
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
-.remember input {
-    width: auto;
+option{
+    background-color: white;
 }
 
+/* Button - Centered */
 button {
     background-color: black;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 20px;
     border: none;
     cursor: pointer;
-}
-
-.right-section {
-    width: 60%;
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.image-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: url('/static/media/login.png') no-repeat center center/cover;
-}
-
-.login{
-    margin-top: 2vh;
     border-radius: 20px;
+    margin-top: 20px;
+    width: 100px;
+    text-align: center;
 }
 
-/* Responsive Design for Mobile */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-    .left-section {
-        width: 100%;
-        height: 40vh;
-    }
-    .right-section {
-        width: 100%;
-        padding: 20px;
-        z-index: 100;
-        border-radius: 20px;
-        background: white;
-        margin-top: -20px;
-    }
-    input {
-        width: 100%;
-    }
-    select{
-        width: 100% !important;
-    }
-}
-select {
-    width: 60%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    background: #fff;
-}
-
-/* Style for warning messages */
+/* Alert Messages - Moved to Top Right */
 .messages {
-    position: fixed;
-    bottom: 20px;
+    position: absolute;
+    top: 20px;
     right: 20px;
     list-style: none;
     padding: 15px;
@@ -178,12 +133,73 @@ select {
     font-weight: bold;
     z-index: 1000;
     max-width: 300px;
+    background-color: #ff4d4d;
+    color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-.messages .error {
-    background-color: #ff4d4d; /* Red background for errors */
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+input, select {
+    padding: 12px;
+    border-radius: 8px;
+}
+
+/* Mobile View Adjustments */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Background Image Section */
+    .left-section {
+        width: 100%;
+        height: 40vh;
+        background-size: cover;
+        background-position: center;
+    }
+
+    /* Login Form Section */
+    .right-section {
+        width: 100%;
+        padding: 50px;
+        background: white;
+        border-top-left-radius: 40px;
+        border-top-right-radius: 40px;
+        position: absolute;
+        bottom: 0;
+        z-index: 10; /* Ensure form is on top */
+        box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.1); /* Add shadow to separate sections */
+    }
+
+    /* Ensure Form is Pushed Down */
+    .login-section {
+        margin-top: 10px; /* Adjust if needed */
+    }
+
+    /* LOGO Placement */
+    .logo {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        font-weight: bold;
+        font-size: 24px;
+        z-index: 1;
+    }
+
+    /* Full-width Inputs and Buttons */
+    input, select, button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+
+    /* Align Login Button */
+    button {
+        border-radius: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
 }
