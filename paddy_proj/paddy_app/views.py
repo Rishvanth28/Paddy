@@ -6,8 +6,6 @@ from .models import *
 from django.db import IntegrityError
 from datetime import date
 
-
-
 def login_view(request):
     if request.method == "POST":
         phone_number = request.POST.get("username")  # Phone number as username
@@ -75,13 +73,11 @@ def login_view(request):
 
     return render(request, "login.html")
 
-
 def superadmin_dashboard(request):
     if request.session.get("role") != "superadmin":
         messages.error(request, "Unauthorized access.")
         return redirect("login")
     return render(request, "superadmin_dashboard.html")
-
 
 def admin_dashboard(request):
     if request.session.get("role") != "admin":
@@ -89,22 +85,18 @@ def admin_dashboard(request):
         return redirect("login")
     return render(request, "admin_dashboard.html")
 
-
 def customer_dashboard(request):
     if request.session.get("role") != "customer":
         messages.error(request, "Unauthorized access.")
         return redirect("login")
     return render(request, "customer_dashboard.html")
 
-
 def validate_gst(gst):
     gst_pattern = r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
     return bool(re.match(gst_pattern, gst))
 
-
 def onboard(request):
     return render(request, "onboard.html")
-
 
 def create_admin(request):
     if request.method == "POST":
@@ -203,6 +195,68 @@ def create_customer(request):
 
     return render(request, "onboard.html")
 
+def admin_create_customer(request):
+    if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        phone_number = request.POST.get("phone_number")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        company_name = request.POST.get("company_name")
+        gst = request.POST.get("gst")
+        address = request.POST.get("address")  # New address field
+
+        # Retrieve the currently logged-in admin
+        admin_id = request.session.get("user_id")
+        if not admin_id:
+            messages.error(request, "Session expired. Please log in again.")
+            return redirect("login")
+
+        try:
+            admin = AdminTable.objects.get(admin_id=admin_id)
+        except AdminTable.DoesNotExist:
+            messages.error(request, "Admin not found. Please log in again.")
+            return redirect("login")
+
+        # Check for duplicate email or phone number
+        if CustomerTable.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists for a customer!")
+            return redirect("customer_onboard")
+
+        if CustomerTable.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "Phone number already registered for a customer!")
+            return redirect("customer_onboard")
+
+        # Validate GST format if provided
+        if gst and not validate_gst(gst):
+            messages.error(request, "Invalid GST number format!")
+            return redirect("customer_onboard")
+
+        try:
+            # Create customer with hashed password
+            CustomerTable.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                email=email,
+                password=make_password(password),  # Hashing the password
+                company_name=company_name,
+                GST=gst if gst else None,
+                address=address,
+                admin=admin,
+            )
+
+            # Increment the user_count for the respective admin
+            admin.user_count += 1
+            admin.save()
+
+            messages.success(request, "Customer created successfully!")
+            return redirect("customer_onboard")
+
+        except IntegrityError:
+            messages.error(request, "Failed to create customer. Please try again.")
+
+    return render(request, "customer_onboard.html")
 
 def place_order(request):
     admin_id = request.session.get("user_id")
@@ -307,6 +361,9 @@ def customer_delivery_validation(request):
             return redirect('customer_orders')
         except Orders.DoesNotExist:
             return redirect('customer_orders')
+
+def customer_onboard_view(request):
+    return render(request, "customer_onboard.html")
 
 def logout_view(request):
     request.session.flush()  # Clears session data
