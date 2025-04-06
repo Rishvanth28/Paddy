@@ -20,218 +20,291 @@
 {% endif %}
 
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
 </head>
 
 <body>
-    <h2 class="text-center mb-4">Place New Order</h2>
+    <!-- NAVBAR -->
+    <div class="navbar">
+      <div class="navbar-title">Place New Order</div>
+    </div>
 
     <!-- Tab Buttons -->
-    <div class="tab-buttons">
-        <button type="button" data-tab="rice">Rice</button>
-        <button type="button" data-tab="paddy">Paddy</button>
-        <button type="button" data-tab="pesticide">Pesticide</button>
+    <div class="tab-header">
+        <button class="tab-button active" type="button" onclick="showForm('Rice')">Rice</button>
+        <button class="tab-button" type="button" onclick="showForm('Paddy')">Paddy</button>
+        <button class="tab-button" type="button" onclick="showForm('Pesticide')">Pesticide</button>
     </div>
 
-    <!-- RICE FORM -->
-    <div class="tab-content" id="tab-rice">
-        <div class="card mb-4">
-            <div class="card-header bg-success text-white">Rice Order</div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="product_category_id" value="1">
+    
+    <div class="form-container">
+        <!-- RICE FORM -->
+        <div id="rice-form" class="form-card">
+          <!-- Customer Details Section -->
+          <h3>Customer Details <span title="Fill customer information">ⓘ</span></h3>
+          <hr>
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="product_category_id" value="1">
+      
 
-                    <div class="mb-3">
-                        <label class="form-label">Customer</label>
-                        <select name="customer" class="form-select" required>
-                            {% for customer in customers %}
-                                <option value="{{ customer.customer_id }}">
-                                    {{ customer.first_name }} {{ customer.last_name }} ({{ customer.company_name }})
-                                </option>
-                            {% empty %}
-                                <option disabled>No customers found for this admin</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            <div class="form-row">
+                <!-- First Name Dropdown -->
+                <div class="form-group">
+                  <label for="customer_first_name">First Name</label>
+                  <select name="customer" id="customer-select" required>
+                    <option value="" disabled selected>Select a customer</option>
+                    {% for customer in customers %}
+                      <option 
+                        value="{{ customer.customer_id }}" 
+                        data-last-name="{{ customer.last_name }}" 
+                        data-company-name="{{ customer.company_name }}">
+                        {{ customer.first_name }} {{ customer.last_name }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+        
+                <!-- Last Name Input (read-only) -->
+                <div class="form-group">
+                  <label for="customer_last_name">Last Name</label>
+                  <input type="text" id="customer-last-name" readonly>
+                </div>
+              </div>
+              <label for="driver_ph_no">Phone No*</label>
+                <input type="text" name="driver_ph_no" id="driver_ph_no" placeholder="+91 9876543210" required>
 
-                    <div class="mb-3">
-                        <label class="form-label">Quantity</label>
-                        <input type="number" name="quantity" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Price per Unit</label>
-                        <input type="number" name="price_per_unit" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Lorry Number</label>
-                        <input type="text" name="lorry_number" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Driver Name</label>
-                        <input type="text" name="driver_name" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Driver Phone Number</label>
-                        <input type="text" name="driver_ph_no" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Delivery Date</label>
-                        <input type="date" name="delivery_date" class="form-control" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-success">Place Rice Order</button>
-                </form>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="driver_name">Driver Name*</label>
+                <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required>
+              </div>
+              <div class="form-group">
+                <label>Vehicle Number*</label>
+                <input type="text" name="vehicle_number" required>
+              </div>
             </div>
+            
+      
+            <!-- Order Details Section -->
+            <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
+            <hr>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input type="number" name="quantity" id="quantity" placeholder="Enter quantity" required>
+              </div>
+              <div class="form-group">
+                <label for="price_per_unit">Price per Unit</label>
+                <input type="number" name="price_per_unit" id="price_per_unit" placeholder="Enter price" required>
+              </div>
+            </div>
+      
+            <div class="form-row">
+              <div class="form-group">
+                <label for="delivery_date">Order Date</label>
+                <input type="date" name="delivery_date" id="delivery_date" required>
+              </div>
+            </div>
+      
+            <div class="form-actions">
+              <button type="submit">Place Rice Order</button>
+            </div>
+          </form>
+        </div>
+        <!-- PADDY FORM -->
+        <div style="display: none;" id="paddy-form" class="form-card">
+            <!-- Customer Details Section -->
+            <h3>Customer Details <span title="Fill customer information">ⓘ</span></h3>
+            <hr>
+            <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="product_category_id" value="1">
+            
+
+              <div class="form-row">
+                  <!-- First Name Dropdown -->
+                  <div class="form-group">
+                    <label for="customer_first_name">First Name</label>
+                    <select name="customer" id="customer-select" required>
+                      <option value="" disabled selected>Select a customer</option>
+                      {% for customer in customers %}
+                        <option 
+                          value="{{ customer.customer_id }}" 
+                          data-last-name="{{ customer.last_name }}" 
+                          data-company-name="{{ customer.company_name }}">
+                          {{ customer.first_name }} {{ customer.last_name }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+              
+                  <!-- Last Name Input (read-only) -->
+                  <div class="form-group">
+                    <label for="customer_last_name">Last Name</label>
+                    <input type="text" id="customer-last-name" readonly>
+                  </div>
+                </div>
+                <label for="driver_ph_no">Phone No*</label>
+                  <input type="text" name="driver_ph_no" id="driver_ph_no" placeholder="+91 9876543210" required>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="driver_name">Driver Name*</label>
+                  <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required>
+                </div>
+                <div class="form-group">
+                  <label>Vehicle Number*</label>
+                  <input type="text" name="vehicle_number" required>
+                </div>
+              </div>
+
+          
+              <!-- Order Details Section -->
+              <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
+              <hr>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="quantity">Quantity</label>
+                  <input type="number" name="quantity" id="quantity" placeholder="Enter quantity" required>
+                </div>
+                <div class="form-group">
+                  <label for="price_per_unit">Price per Unit</label>
+                  <input type="number" name="price_per_unit" id="price_per_unit" placeholder="Enter price" required>
+                </div>
+              </div>
+          
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="delivery_date">Order Date</label>
+                  <input type="date" name="delivery_date" id="delivery_date" required>
+                </div>
+              </div>
+          
+              <div class="form-actions">
+                <button type="submit">Place Paddy Order</button>
+              </div>
+            </form>
+          </div>
+        <!-- PESTICIDE FORM -->
+        <div style="display: none;" id="pesticide-form" class="form-card">
+          <!-- Customer Details Section -->
+          <h3>Customer Details <span title="Fill customer information">ⓘ</span></h3>
+          <hr>
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="product_category_id" value="1">
+    
+
+            <div class="form-row">
+                <!-- First Name Dropdown -->
+                <div class="form-group">
+                  <label for="customer_first_name">First Name</label>
+                  <select name="customer" id="customer-select" required>
+                    <option value="" disabled selected>Select a customer</option>
+                    {% for customer in customers %}
+                      <option 
+                        value="{{ customer.customer_id }}" 
+                        data-last-name="{{ customer.last_name }}" 
+                        data-company-name="{{ customer.company_name }}">
+                        {{ customer.first_name }} {{ customer.last_name }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+        
+                <!-- Last Name Input (read-only) -->
+                <div class="form-group">
+                  <label for="customer_last_name">Last Name</label>
+                  <input type="text" id="customer-last-name" readonly>
+                </div>
+              </div>
+              <label for="driver_ph_no">Phone No*</label>
+                <input type="text" name="driver_ph_no" id="driver_ph_no" placeholder="+91 9876543210" required>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="driver_name">Driver Name*</label>
+                <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required>
+              </div>
+              <div class="form-group">
+                <label>Vehicle Number*</label>
+                <input type="text" name="vehicle_number" required>
+              </div>
+            </div>
+            
+    
+            <!-- Order Details Section -->
+            <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
+            <hr>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input type="number" name="quantity" id="quantity" placeholder="Enter quantity" required>
+              </div>
+              <div class="form-group">
+                <label for="price_per_unit">Price per Unit</label>
+                <input type="number" name="price_per_unit" id="price_per_unit" placeholder="Enter price" required>
+              </div>
+            </div>
+    
+            <div class="form-row">
+              <div class="form-group">
+                <label for="delivery_date">Order Date</label>
+                <input type="date" name="delivery_date" id="delivery_date" required>
+              </div>
+            </div>
+    
+            <div class="form-actions">
+              <button type="submit">Place Pesticide Order</button>
+            </div>
+          </form>
         </div>
     </div>
+      
 
-    <!-- PADDY FORM -->
-    <div class="tab-content" id="tab-paddy">
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">Paddy Order</div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="product_category_id" value="2">
+    <!-- Tab Switch Script -->
+    <script>
+        function showForm(formType) {
+            const riceForm = document.getElementById('rice-form');
+            const paddyForm = document.getElementById('paddy-form');
+            const pesticideForm = document.getElementById('pesticide-form');
+            const buttons = document.querySelectorAll('.tab-button');
 
-                    <div class="mb-3">
-                        <label class="form-label">Customer</label>
-                        <select name="customer" class="form-select" required>
-                            {% for customer in customers %}
-                                <option value="{{ customer.customer_id }}">
-                                    {{ customer.first_name }} {{ customer.last_name }} ({{ customer.company_name }})
-                                </option>
-                            {% empty %}
-                                <option disabled>No customers found for this admin</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            if (formType === 'Rice') {
+                riceForm.style.display = 'block';
+                paddyForm.style.display = 'none';
+                pesticideForm.style.display = 'none';
+            } else if (formType === 'Paddy') {
+                riceForm.style.display = 'none';
+                paddyForm.style.display = 'block';
+                pesticideForm.style.display = 'none';
+            } else if (formType === 'Pesticide') {
+                riceForm.style.display = 'none';
+                paddyForm.style.display = 'none';
+                pesticideForm.style.display = 'block';
+            } else {
+                riceForm.style.display = 'block';
+                paddyForm.style.display = 'none';
+                pesticideForm.style.display = 'none';
+            }
 
-                    <div class="mb-3">
-                        <label class="form-label">Quantity</label>
-                        <input type="number" name="quantity" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Price per Unit</label>
-                        <input type="number" name="price_per_unit" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Lorry Number</label>
-                        <input type="text" name="lorry_number" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Driver Name</label>
-                        <input type="text" name="driver_name" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Driver Phone Number</label>
-                        <input type="text" name="driver_ph_no" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Delivery Date</label>
-                        <input type="date" name="delivery_date" class="form-control" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Place Paddy Order</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- PESTICIDE FORM -->
-    <div class="tab-content" id="tab-pesticide">
-        <div class="card mb-4">
-            <div class="card-header bg-warning">Pesticide Order</div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="product_category_id" value="3">
-
-                    <div class="mb-3">
-                        <label class="form-label">Customer</label>
-                        <select name="customer" class="form-select" required>
-                            {% for customer in customers %}
-                                <option value="{{ customer.customer_id }}">
-                                    {{ customer.first_name }} {{ customer.last_name }} ({{ customer.company_name }})
-                                </option>
-                            {% empty %}
-                                <option disabled>No customers found for this admin</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Quantity</label>
-                        <input type="number" name="quantity" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Price per Unit</label>
-                        <input type="number" name="price_per_unit" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Lorry Number</label>
-                        <input type="text" name="lorry_number" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Driver Name</label>
-                        <input type="text" name="driver_name" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Driver Phone Number</label>
-                        <input type="text" name="driver_ph_no" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Delivery Date</label>
-                        <input type="date" name="delivery_date" class="form-control" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-warning">Place Pesticide Order</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const buttons = document.querySelectorAll(".tab-buttons button");
-        const tabs = document.querySelectorAll(".tab-content");
-
-        function showTab(tabId) {
-            tabs.forEach(tab => tab.classList.remove("active"));
-            document.getElementById("tab-" + tabId).classList.add("active");
-
-            buttons.forEach(btn => btn.classList.remove("active"));
-            document.querySelector(`[data-tab="${tabId}"]`).classList.add("active");
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab-button[onclick="showForm('${formType}')"]`).classList.add('active');
         }
+    </script>
 
-        // Show default tab
-        showTab("rice");
-
-        buttons.forEach(button => {
-            button.addEventListener("click", () => {
-                const tabId = button.getAttribute("data-tab");
-                showTab(tabId);
-            });
+    <!-- Customer last name script -->
+    <script>
+        const customerSelect = document.getElementById("customer-select");
+        const lastNameInput = document.getElementById("customer-last-name");
+    
+        customerSelect.addEventListener("change", function () {
+          const selectedOption = this.options[this.selectedIndex];
+          const lastName = selectedOption.getAttribute("data-last-name");
+          lastNameInput.value = lastName || "";
         });
-    });
-</script>
+    </script>
+  
 </body>
 {% endblock %}

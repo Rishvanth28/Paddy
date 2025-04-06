@@ -17,7 +17,6 @@ body {
   font-size: 1rem;
   padding: 20px 0;
   border-right: 1px solid #ccc;
-  margin-left: 10px;
 }
 
 .top-section {
@@ -166,7 +165,6 @@ body {
 /* Main layout */
 .main-content {
   flex: 1;
-  padding: 20px;
   overflow-y: auto;
 }
 
@@ -204,9 +202,6 @@ body {
     display: block;
   }
 
-  .main-content {
-    padding-left: 20px;
-  }
   .top-section {
     margin-top: 30px;
     margin-bottom: 40px;
