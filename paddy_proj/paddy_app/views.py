@@ -93,6 +93,10 @@ def superadmin_dashboard(request):
 def admin_dashboard(request):
     return render(request, "admin_dashboard.html")
 
+def upgrade_plan(request):
+    return render(request, "upgrade_plan.html")
+
+
 @role_required(["customer"])
 def customer_dashboard(request):
     return render(request, "customer_dashboard.html")
