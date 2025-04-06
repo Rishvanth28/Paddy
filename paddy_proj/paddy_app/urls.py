@@ -12,4 +12,7 @@ urlpatterns = [
     path("create-customer/", create_customer, name="create_customer"),
     path("onboard/", create_admin, name="onboard"),
     path('place_order/', place_order, name='place_order'),
+    path('customer_orders/', customer_orders, name='customer_orders'),
+    path('customer_orders/payment/', payment, name='payment'),
+    path('customer_orders/delivery/', customer_delivery_validation, name='delivery'),
 ]

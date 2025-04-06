@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
+from django.http import JsonResponse
 from .models import *
 from django.db import IntegrityError
 from datetime import date
+
 
 def login_view(request):
     if request.method == "POST":
@@ -171,7 +173,7 @@ def create_customer(request):
 
         try:
             # Create customer with hashed password
-            customer = CustomerTable.objects.create(
+            CustomerTable.objects.create(
                 first_name=first_name,
                 last_name=last_name,
                 phone_number=phone_number,
@@ -194,10 +196,6 @@ def create_customer(request):
 
     return render(request, "onboard.html")
 
-
-from django.shortcuts import render, redirect
-from datetime import date
-from .models import Orders, CustomerTable, AdminTable
 
 def place_order(request):
     admin_id = request.session.get("user_id")
@@ -229,7 +227,7 @@ def place_order(request):
             Orders.objects.create(
                 customer=CustomerTable.objects.get(customer_id=customer_id),
                 admin=AdminTable.objects.get(admin_id=admin_id),
-                payment_status=1,
+                payment_status=0,
                 delivery_status=0,
                 product_category_id=product_category_id,
                 quantity=quantity,
@@ -250,6 +248,55 @@ def place_order(request):
 
     return render(request, 'place_order.html', {'customers': customers})
 
+def customer_orders(request):
+    customer_id = request.session.get("user_id")
+    if not customer_id:
+        return redirect('login')
+    
+    # Check if it's an AJAX request asking for JSON data
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Fetch all orders for this customer
+        orders = Orders.objects.filter(customer__customer_id=customer_id).order_by('-order_date')
+        
+        # Convert to JSON serializable format
+        orders_data = [{
+            'order_id': order.order_id,
+            'order_date': order.order_date.strftime('%Y-%m-%d'),
+            'delivery_date': order.delivery_date.strftime('%Y-%m-%d') if order.delivery_date else None,
+            'overall_amount': order.overall_amount,
+            'paid_amount': order.paid_amount,
+            'payment_status': order.payment_status,
+            'delivery_status': order.delivery_status,
+            'quantity': order.quantity,
+            'price_per_unit': float(order.price_per_unit),
+            'GST': order.GST,
+            'lorry_number': order.lorry_number,
+            'driver_name': order.driver_name,
+            'driver_ph_no': order.driver_ph_no,
+            'product_category_id': order.product_category_id
+        } for order in orders]
+        
+        return JsonResponse({'orders': orders_data})
+    
+    # For regular page load, just render the template (JS will fetch data)
+    return render(request, 'customer_order.html')
+
+def payment(request):
+    return render(request, 'payment.html')
+
+def customer_delivery_validation(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        delivery_status = request.POST.get('delivery_status')
+
+        try:
+            order = Orders.objects.get(order_id=order_id)
+            order.delivery_status = delivery_status
+            order.save()
+            messages.success(request, "Delivery status updated successfully.")
+            return redirect('customer_orders')
+        except Orders.DoesNotExist:
+            return redirect('customer_orders')
 def logout_view(request):
     request.session.flush()  # Clears session data
     messages.success(request, "Logged out successfully.")
