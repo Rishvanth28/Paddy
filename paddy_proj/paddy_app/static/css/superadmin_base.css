@@ -48,7 +48,7 @@ body {
 
 .middle-content {
   width: 100%;
-  margin-top: -50vh;
+  margin-top: -35vh;
   padding-left: 20px;
   box-sizing: border-box;
 }
@@ -72,6 +72,8 @@ body {
   cursor: pointer;
   border-radius: 8px;
   /* more rounded corners */
+  margin-bottom: 10px;
+  
 }
 
 .menu li:hover {
@@ -139,7 +141,6 @@ body {
   margin-bottom: 50px;
   text-align: center;
   font-family: 'Inter', sans-serif;
-  opacity: 0.8;
   text-transform: uppercase;
   font-weight: 400;
 }
@@ -155,7 +156,17 @@ body {
   height: 16px;
 }
 
-
+.logout-button:hover{
+  background-color: #ff0000!important;
+  color: white;
+  border: none;
+  
+  
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  margin-top: auto;
+}
 
 
 .submenu-toggle {
@@ -181,6 +192,7 @@ body {
   cursor: pointer;
 }
 
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .containerr {
@@ -200,6 +212,10 @@ body {
 
   .hamburger {
     display: block;
+  }
+
+  .main-content {
+    padding-left: 20px;
   }
 
   .top-section {
