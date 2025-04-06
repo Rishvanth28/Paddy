@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from .models import *
 from django.db import IntegrityError
 from datetime import date
+from .decorators import role_required
 
 def login_view(request):
     if request.method == "POST":
@@ -73,31 +74,27 @@ def login_view(request):
 
     return render(request, "login.html")
 
+@role_required(["superadmin"])
 def superadmin_dashboard(request):
-    if request.session.get("role") != "superadmin":
-        messages.error(request, "Unauthorized access.")
-        return redirect("login")
     return render(request, "superadmin_dashboard.html")
 
+@role_required(["admin"])
 def admin_dashboard(request):
-    if request.session.get("role") != "admin":
-        messages.error(request, "Unauthorized access.")
-        return redirect("login")
     return render(request, "admin_dashboard.html")
 
+@role_required(["customer"])
 def customer_dashboard(request):
-    if request.session.get("role") != "customer":
-        messages.error(request, "Unauthorized access.")
-        return redirect("login")
     return render(request, "customer_dashboard.html")
 
 def validate_gst(gst):
     gst_pattern = r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
     return bool(re.match(gst_pattern, gst))
 
+@role_required(["superadmin"])
 def onboard(request):
     return render(request, "onboard.html")
 
+@role_required(["superadmin"])
 def create_admin(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -132,6 +129,7 @@ def create_admin(request):
             
     return render(request, "onboard.html")
 
+@role_required(["superadmin"])
 def create_customer(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -258,6 +256,7 @@ def admin_create_customer(request):
     
     return render(request, "customer_onboard.html")
 
+@role_required(["superadmin"])
 def place_order(request):
     admin_id = request.session.get("user_id")
     if not admin_id:
@@ -312,6 +311,7 @@ def place_order(request):
 
     return render(request, 'place_order.html', {'customers': customers})
 
+@role_required(["admin"])
 def admin_place_order(request):
     admin_id = request.session.get("user_id")
     if not admin_id:
@@ -366,6 +366,7 @@ def admin_place_order(request):
 
     return render(request, 'admin_place_order.html', {'customers': customers})
 
+@role_required(["customer"])
 def customer_orders(request):
     customer_id = request.session.get("user_id")
     if not customer_id:
@@ -416,6 +417,7 @@ def customer_delivery_validation(request):
         except Orders.DoesNotExist:
             return redirect('customer_orders')
 
+@role_required(["admin"])
 def customer_onboard_view(request):
     return render(request, "customer_onboard.html")
 
