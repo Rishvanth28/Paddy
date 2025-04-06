@@ -8,6 +8,16 @@ from datetime import date
 from .decorators import role_required
 
 def login_view(request):
+    # Redirect already logged-in users based on their role
+    if request.session.get("user_id") and request.session.get("role"):
+        role = request.session["role"]
+        if role == "superadmin":
+            return redirect("superadmin_dashboard")
+        elif role == "admin":
+            return redirect("admin_dashboard")
+        elif role == "customer":
+            return redirect("customer_dashboard")
+
     if request.method == "POST":
         phone_number = request.POST.get("username")  # Phone number as username
         password = request.POST.get("password")
@@ -17,16 +27,16 @@ def login_view(request):
             messages.error(request, "All fields are required.")
             return redirect("login")
 
-        # Super Admin Login (admin_id < 1000)
+        # Super Admin Login
         if role == "superadmin":
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
-                
-                if user.admin_id >= 1000:  #  Ensure only super admins can log in
+
+                if user.admin_id >= 1000:
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
 
-                if check_password(password, user.password):  # If password is hashed
+                if check_password(password, user.password):
                     request.session["user_id"] = user.admin_id
                     request.session["role"] = "superadmin"
                     messages.success(request, "Login successful!")
@@ -36,16 +46,16 @@ def login_view(request):
             except AdminTable.DoesNotExist:
                 messages.error(request, "Super Admin not found.")
 
-        # Admin Login (admin_id >= 1000)
+        # Admin Login
         elif role == "admin":
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
 
-                if user.admin_id < 1000:  #  Prevent Super Admins from logging in as Admins
+                if user.admin_id < 1000:
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
 
-                if check_password(password, user.password):  # If password is hashed
+                if check_password(password, user.password):
                     request.session["user_id"] = user.admin_id
                     request.session["role"] = "admin"
                     messages.success(request, "Login successful!")
@@ -59,7 +69,7 @@ def login_view(request):
         elif role == "customer":
             try:
                 user = CustomerTable.objects.get(phone_number=phone_number)
-                if check_password(password, user.password):  # If password is hashed
+                if check_password(password, user.password):
                     request.session["user_id"] = user.customer_id
                     request.session["role"] = "customer"
                     messages.success(request, "Login successful!")
@@ -73,6 +83,7 @@ def login_view(request):
             messages.error(request, "Invalid role selected.")
 
     return render(request, "login.html")
+
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
