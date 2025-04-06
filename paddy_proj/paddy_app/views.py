@@ -140,7 +140,6 @@ def create_admin(request):
             
     return render(request, "onboard.html")
 
-
 def create_customer(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -150,10 +149,10 @@ def create_customer(request):
         password = request.POST.get("password")
         company_name = request.POST.get("company_name")
         gst = request.POST.get("gst")
+        address = request.POST.get("address")  # New address field
 
         # Retrieve the currently logged-in admin
         admin_id = request.session.get("user_id")
-          # Debugging line
         if not admin_id:
             messages.error(request, "Session expired. Please log in again.")
             return redirect("login")
@@ -187,14 +186,15 @@ def create_customer(request):
                 email=email,
                 password=make_password(password),  # Hashing the password
                 company_name=company_name,
-                GST=gst if gst else None,  # Store GST only if provided
+                GST=gst if gst else None,
+                address=address,  # Include address in DB
                 admin=admin,
             )
 
             # Increment the user_count for the respective admin
             admin.user_count += 1
             admin.save()
-            print(admin_id)
+
             messages.success(request, "Customer created successfully!")
             return redirect("onboard")
 

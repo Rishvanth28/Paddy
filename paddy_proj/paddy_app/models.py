@@ -50,7 +50,8 @@ class CustomerTable(models.Model):
     admin = models.ForeignKey(AdminTable, to_field="admin_id", on_delete=models.CASCADE)
     company_name = models.CharField(max_length=255)
     GST = models.CharField(max_length=15, null=True, blank=True, validators=[validate_gst])  # GST Validation added
-
+    address = models.TextField(null=True, blank=True)
+    
     def save(self, *args, **kwargs):
         """Ensure new customers get an ID >= C1000000 and hash passwords."""
         if not self.customer_id:  # Assign new ID only for new customers
