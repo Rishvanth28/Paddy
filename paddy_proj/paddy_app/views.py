@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from datetime import date
 
 
+
 def login_view(request):
     if request.method == "POST":
         phone_number = request.POST.get("username")  # Phone number as username
@@ -74,17 +75,20 @@ def login_view(request):
 
     return render(request, "login.html")
 
+
 def superadmin_dashboard(request):
     if request.session.get("role") != "superadmin":
         messages.error(request, "Unauthorized access.")
         return redirect("login")
     return render(request, "superadmin_dashboard.html")
 
+
 def admin_dashboard(request):
     if request.session.get("role") != "admin":
         messages.error(request, "Unauthorized access.")
         return redirect("login")
     return render(request, "admin_dashboard.html")
+
 
 def customer_dashboard(request):
     if request.session.get("role") != "customer":
@@ -100,6 +104,7 @@ def validate_gst(gst):
 
 def onboard(request):
     return render(request, "onboard.html")
+
 
 def create_admin(request):
     if request.method == "POST":
@@ -130,7 +135,9 @@ def create_admin(request):
             return redirect("onboard")
         except IntegrityError:
             messages.error(request, "Failed to create admin. Please try again.")
-
+            messages.warning(request, "This email is already registered.")
+            messages.info(request, "Please fill all required fields.")
+            
     return render(request, "onboard.html")
 
 
@@ -209,13 +216,16 @@ def place_order(request):
         product_category_id = request.POST.get('product_category_id')
         quantity = request.POST.get('quantity')
         price_per_unit = request.POST.get('price_per_unit')
-        gst = request.POST.get('GST')
         lorry_number = request.POST.get('lorry_number')
         driver_name = request.POST.get('driver_name')
         driver_ph_no = request.POST.get('driver_ph_no')
         delivery_date = request.POST.get('delivery_date')
 
         try:
+            # Get customer and their GST
+            customer = CustomerTable.objects.get(customer_id=customer_id)
+            gst = customer.GST  # Fetch GST directly from customer model
+
             # Safely convert to float
             quantity = float(quantity) if quantity else 0
             price_per_unit = float(price_per_unit) if price_per_unit else 0
@@ -225,7 +235,7 @@ def place_order(request):
 
             # Create the order
             Orders.objects.create(
-                customer=CustomerTable.objects.get(customer_id=customer_id),
+                customer=customer,
                 admin=AdminTable.objects.get(admin_id=admin_id),
                 payment_status=0,
                 delivery_status=0,
@@ -297,6 +307,7 @@ def customer_delivery_validation(request):
             return redirect('customer_orders')
         except Orders.DoesNotExist:
             return redirect('customer_orders')
+
 def logout_view(request):
     request.session.flush()  # Clears session data
     messages.success(request, "Logged out successfully.")
