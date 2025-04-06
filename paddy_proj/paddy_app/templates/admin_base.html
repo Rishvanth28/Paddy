@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Superadmin</title>
+  <title>Admin</title>
   <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
 </head>
 
@@ -20,19 +20,19 @@
     <!-- Top section -->
     <div class="top-section">
       <img src="{% static 'media/IconSet.png' %}" alt="Profile Icon">
-      <span>Super Admin</span>
+      <span>Admin</span>
     </div>
 
     <!-- Sidebar -->
     <div class="middle-content">
       <ul class="menu">
         <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon"> 
-          <a href="{% url 'superadmin_dashboard' %}" style="text-decoration: none; color: inherit;">Dashboard</a></li>
+          <a href="{% url 'admin_dashboard' %}" style="text-decoration: none; color: inherit;">Dashboard</a></li>
 
         <!-- Onboarding -->
         <li >
           <img class="icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding Icon">
-          <a href="{% url 'onboard' %}" style="text-decoration: none; color: inherit;">Onboarding</a>
+          <a href="{% url 'onboard' %}" style="text-decoration: none; color: inherit;">Customer Onboarding</a>
         </li>
 
         <!-- Subscribers -->
