@@ -1,0 +1,38 @@
+services:
+  db:
+    container_name: postgres-server
+    image: postgres
+    environment:
+      POSTGRES_DB: paddy
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      DATABASE_URL: "postgresql://admin:admin@localhost/paddy"
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "8888:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    environment:
+     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+     PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - mynetwork
+    
+    
+volumes:
+  local_pgdata:
+  pgadmin-data:
+
+networks:
+    mynetwork:
