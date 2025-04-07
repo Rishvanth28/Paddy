@@ -60,6 +60,12 @@ body {
   width: 100%;
 }
 
+.menu li a.menu-link {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+}
+
 .menu li {
   display: flex;
   align-items: center;
@@ -73,7 +79,8 @@ body {
   border-radius: 8px;
   /* more rounded corners */
   margin-bottom: 10px;
-  
+  list-style: none;
+  cursor: pointer;
 }
 
 .menu li:hover {
@@ -156,12 +163,12 @@ body {
   height: 16px;
 }
 
-.logout-button:hover{
-  background-color: #ff0000!important;
+.logout-button:hover {
+  background-color: #ff0000 !important;
   color: white;
   border: none;
-  
-  
+
+
   cursor: pointer;
   font-size: 16px;
   text-align: center;

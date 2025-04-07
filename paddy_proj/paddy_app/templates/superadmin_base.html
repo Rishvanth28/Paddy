@@ -19,60 +19,87 @@
 
     <!-- Top section -->
     <div class="top-section">
-      <img src="{% static 'media/IconSet.png' %}" alt="Profile Icon">
-      <span>Super Admin</span>
-    </div>
+  <img src="{% static 'media/IconSet.png' %}" alt="Profile Icon">
+  <span>Super Admin</span>
+</div>
 
-    <!-- Sidebar -->
-    <div class="middle-content">
-      <ul class="menu">
-        <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon"> 
-          <a href="{% url 'superadmin_dashboard' %}" style="text-decoration: none; color: inherit;">Dashboard</a></li>
+<!-- Sidebar -->
+<div class="middle-content">
+  <ul class="menu">
 
-        <!-- Onboarding -->
-        <li>
-          <img class="icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding Icon">
-          <a href="{% url 'onboard' %}" style="text-decoration: none; color: inherit;">Onboarding</a>
-        </li>
+    <!-- Dashboard -->
+    <li>
+      <a href="{% url 'superadmin_dashboard' %}" class="menu-link" style="text-decoration: none;color: inherit;">
+        <img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon">
+        Dashboard
+      </a>
+    </li>
+    
+    <!-- Onboarding -->
+    <li>
+      <a href="{% url 'onboard' %}" class="menu-link" style="text-decoration: none;color: inherit;">
+        <img class="icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding Icon">
+        Onboarding
+      </a>
+    </li>
 
-        <!-- Subscribers -->
-        <!-- Subscribers Toggle -->
-        <li class="submenu-toggle">
-          <div style="display: flex; align-items: center; gap: 8px; margin-left: -17px;">
-            <span class="chevron rotate">
-              <svg width="12" height="12" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                <path
-                  d="M96 96c-8.188 0-16.38 3.125-22.62 9.375c-12.5 12.5-12.5 32.75 0 45.25L178.8 256l-105.4 105.4c-12.5 12.5-12.5 32.75 0 45.25S109.5 419.1 122 406.6l128-128c12.5-12.5 12.5-32.75 0-45.25l-128-128C112.4 99.13 104.2 96 96 96z" />
-              </svg>
-            </span>
-            <img class="icon" src="{% static 'media/IconSet (1).png' %}" alt="Subscribers Icon"> Subscribers
-          </div>
-        </li>
+    <!-- Subscribers (Toggle, not a link) -->
+    <li class="submenu-toggle">
+      <div class="menu-link" style="display: flex; align-items: center; gap: 8px;margin-left: -20px;">
+        <span class="chevron rotate" style="margin-left: 3px;">
+          <svg width="12" height="12" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+            <path
+              d="M96 96c-8.188 0-16.38 3.125-22.62 9.375c-12.5 12.5-12.5 32.75 0 45.25L178.8 256l-105.4 105.4c-12.5 12.5-12.5 32.75 0 45.25S109.5 419.1 122 406.6l128-128c12.5-12.5 12.5-32.75 0-45.25l-128-128C112.4 99.13 104.2 96 96 96z" />
+          </svg>
+        </span>
+        <img class="icon" src="{% static 'media/IconSet (1).png' %}" alt="Subscribers Icon">
+        <span>Subscribers</span>
+      </div>
+    </li>
+    
 
-        <!-- Submenu visible by default -->
-        <ul style="margin-left: 20px;" class="submenu">
-          <li>Status</li>
-        </ul>
+    <!-- Submenu -->
+    <ul style="margin-left: 20px;" class="submenu">
+      <li>
+        <a href="#" class="menu-link" style="text-decoration: none;color: inherit;">Status</a>
+      </li>
+    </ul>
 
+    <!-- Customers -->
+    <li>
+      <a href="#" class="menu-link" style="text-decoration: none;color: inherit;">
+        <img class="icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers Icon">
+        Customers
+      </a>
+    </li>
 
-        <li><img class="icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers Icon"> Customers</li>
-        <li><img class="icon" src="{% static 'media/Group 2.png' %}" alt="Admins Icon"> Admins</li>
-        <li>
-          <img class="icon" src="{% static 'media/Vector.png' %}" alt="Place Order Icon">
-          <a href="{% url 'place_order' %}" style="text-decoration: none; color: inherit;">Place Order</a>
-        </li>
-      </ul>
-    </div>
+    <!-- Admins -->
+    <li>
+      <a href="#" class="menu-link" style="text-decoration: none;color: inherit;">
+        <img class="icon" src="{% static 'media/Group 2.png' %}" alt="Admins Icon">
+        Admins
+      </a>
+    </li>
 
-    <!-- Footer -->
-    <!-- Footer -->
-    <div class="footer-text">
-      Logo Here
-      <form action="{% url 'logout' %}" method="post" style="margin-top: 10px;">
-        {% csrf_token %}
-        <button type="submit" class="logout-button">Logout</button>
-      </form>
-    </div>
+    <!-- Place Order -->
+    <li>
+      <a href="{% url 'place_order' %}" class="menu-link" style="text-decoration: none;color: inherit;">
+        <img class="icon" src="{% static 'media/Vector.png' %}" alt="Place Order Icon">
+        Place Order
+      </a>
+    </li>
+
+  </ul>
+</div>
+
+<!-- Footer -->
+<div class="footer-text">
+  Logo Here
+  <form action="{% url 'logout' %}" method="post" style="margin-top: 10px;">
+    {% csrf_token %}
+    <button type="submit" class="logout-button">Logout</button>
+  </form>
+</div>
 
   </div>
 

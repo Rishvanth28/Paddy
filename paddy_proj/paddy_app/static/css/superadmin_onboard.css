@@ -34,10 +34,10 @@ body {
 
 .page-title h1 {
     font-size: 32px;
-    font-weight: 500;
+    font-weight: 600;
     color: #111;
     text-transform: capitalize;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
 }
 
 
