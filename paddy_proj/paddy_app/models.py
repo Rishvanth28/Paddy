@@ -114,7 +114,6 @@ class Subscription(models.Model):
     sid = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(CustomerTable, on_delete=models.CASCADE)
     admin = models.ForeignKey(AdminTable, on_delete=models.CASCADE)
-    phone_number = models.CharField(max_length=15, null=True, blank=True)
     payment_status = models.IntegerField()
     payment_amount = models.BigIntegerField()
     subscription_type = models.CharField(max_length=255)
