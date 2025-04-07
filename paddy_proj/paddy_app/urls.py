@@ -15,4 +15,8 @@ urlpatterns = [
     path('customer_orders/', customer_orders, name='customer_orders'),
     path('customer_orders/payment/', payment, name='payment'),
     path('customer_orders/delivery/', customer_delivery_validation, name='delivery'),
+    path("admin-create-customer/", admin_create_customer, name="customer_onboard"),
+    path("admin-place-order/", admin_place_order, name="admin_place_order"),
+    path("upgrade-plan/", upgrade_plan, name="upgrade_plan"),
+
 ]

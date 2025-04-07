@@ -24,7 +24,7 @@
 
 <!-- Page Header -->
 <div class="page-title">
-    <h1>Onboarding</h1>
+    <h1>ONBOARDING</h1>
 </div>
 
 <!-- Tab Buttons -->
@@ -37,15 +37,16 @@
 <div class="form-container">
     <!-- Create Admin Form -->
     <div id="admin-form" class="form-card">
-        <h2>Create Admin</h2>
+        <h2 class="form-title" style="margin-bottom: 0px;"><span>Create Admin</span></h2>
+        <hr>
         <form method="POST" action="{% url 'create_admin' %}" novalidate>
             {% csrf_token %}
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-group" style="margin-top: 10px;">
                     <label>First Name</label>
                     <input type="text" name="first_name" placeholder="Enter your first name" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-top: 10px;">
                     <label>Last Name</label>
                     <input type="text" name="last_name" placeholder="Enter your last name" required>
                 </div>
@@ -71,15 +72,16 @@
     <!-- Create Customer Form -->
 
     <div id="customer-form" class="form-card" style="display: none;">
-        <h2>Create Customer</h2>
+        <h2 class="form-title" style="margin-bottom: 0px;"><span>Create Customer</span></h2>
+        <hr>
         <form method="POST" action="{% url 'create_customer' %}" novalidate>
             {% csrf_token %}
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-group" style="margin-top: 10px;">
                     <label>First Name</label>
                     <input type="text" name="first_name" placeholder="Enter your first name" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-top: 10px;">
                     <label>Last Name</label>
                     <input type="text" name="last_name" placeholder="Enter your last name" required>
                 </div>
@@ -96,6 +98,10 @@
 
             <label>Company Name</label>
             <input type="text" name="company_name" placeholder="Enter your company name" required>
+
+            <label>Address</label>
+            <textarea name="address" placeholder="Enter your address" rows="3" required></textarea>
+
 
             <label>GST (Optional)</label>
             <input type="text" name="gst" placeholder="Enter your GST number (optional)">

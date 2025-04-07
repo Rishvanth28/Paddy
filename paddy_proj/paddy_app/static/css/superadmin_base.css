@@ -17,7 +17,6 @@ body {
   font-size: 1rem;
   padding: 20px 0;
   border-right: 1px solid #ccc;
-  margin-left: 10px;
 }
 
 .top-section {
@@ -49,7 +48,7 @@ body {
 
 .middle-content {
   width: 100%;
-  margin-top: -50vh;
+  margin-top: -35vh;
   padding-left: 20px;
   box-sizing: border-box;
 }
@@ -59,6 +58,12 @@ body {
   padding: 0;
   margin-top: 60px;
   width: 100%;
+}
+
+.menu li a.menu-link {
+  width: 100%;
+  display: flex;
+  gap: 8px;
 }
 
 .menu li {
@@ -73,6 +78,9 @@ body {
   cursor: pointer;
   border-radius: 8px;
   /* more rounded corners */
+  margin-bottom: 10px;
+  list-style: none;
+  cursor: pointer;
 }
 
 .menu li:hover {
@@ -140,7 +148,6 @@ body {
   margin-bottom: 50px;
   text-align: center;
   font-family: 'Inter', sans-serif;
-  opacity: 0.8;
   text-transform: uppercase;
   font-weight: 400;
 }
@@ -156,7 +163,17 @@ body {
   height: 16px;
 }
 
+.logout-button:hover {
+  background-color: #ff0000 !important;
+  color: white;
+  border: none;
 
+
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  margin-top: auto;
+}
 
 
 .submenu-toggle {
@@ -166,7 +183,6 @@ body {
 /* Main layout */
 .main-content {
   flex: 1;
-  padding: 20px;
   overflow-y: auto;
 }
 
@@ -182,6 +198,7 @@ body {
   z-index: 1000;
   cursor: pointer;
 }
+
 
 /* Responsive styles */
 @media (max-width: 768px) {
@@ -207,6 +224,7 @@ body {
   .main-content {
     padding-left: 20px;
   }
+
   .top-section {
     margin-top: 30px;
     margin-bottom: 40px;
