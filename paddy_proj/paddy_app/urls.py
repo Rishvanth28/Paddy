@@ -24,8 +24,7 @@ urlpatterns = [
     path('customer-list/',customers_under_admin, name='customer_list'),
     path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'), 
     path('view-admins/', view_admins, name='view_admins'),
-    path('admin/<int:admin_id>/customers/', view_customers_under_admin, name='admin_customers'),
-]
- # dummy view
-]
+   path("view-customers/<int:admin_id>/", view_customers_under_admin, name="admin_customers")]
+
+
 

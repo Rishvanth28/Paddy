@@ -6,8 +6,6 @@ from .models import *
 from django.db import IntegrityError
 from datetime import date
 from .decorators import role_required
-from .models import CustomerTable
-
 
 def login_view(request):
     # Redirect already logged-in users based on their role
@@ -334,7 +332,7 @@ def admin_add_subscription(request):
                     additional_users=50, # 50 is the default value for admin user addition
                 )
                 messages.success(request, "Subscription Request added successfully!")
-            except Error:
+            except Exception:
                 messages.error(request, "Failed to add subscription. Please try again.")
     return render(request, "admin_add_subscription.html", {"user_count": user_count,
                                                         "added_count":user_count+50,
@@ -396,9 +394,6 @@ def logout_view(request):
     messages.success(request, "Logged out successfully.")
     return redirect("login")
 
-from django.shortcuts import render, redirect
-from .models import CustomerTable
-
 def customers_under_admin(request):
     admin_id = request.session.get("user_id")  # session must store admin_id during login
 
@@ -409,6 +404,7 @@ def customers_under_admin(request):
     customers = CustomerTable.objects.filter(admin_id=admin_id)
 
     return render(request, 'customers_list.html', {'customers': customers})
+
 def admin_login_submit(request):
     if request.method == 'POST':
         email = request.POST.get('email')
