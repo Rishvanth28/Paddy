@@ -32,7 +32,7 @@ def login_view(request):
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
 
-                if user.admin_id >= 1000:
+                if user.admin_id > 1000000:
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
 
@@ -51,7 +51,7 @@ def login_view(request):
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
 
-                if user.admin_id < 1000:
+                if user.admin_id == 1000000:
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
 
