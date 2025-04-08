@@ -98,7 +98,6 @@ def admin_dashboard(request):
 def upgrade_plan(request):
     return render(request, "upgrade_plan.html")
 
-
 @role_required(["customer"])
 def customer_dashboard(request):
     return render(request, "customer_dashboard.html")
@@ -345,8 +344,6 @@ def admin_add_subscription(request):
                                                         })
 
 
-
-
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')
 
@@ -371,12 +368,29 @@ def upgrade_to_admin(request):
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
-
 @role_required(["customer"])
 def customer_dashboard(request):
     return render(request, 'customer_dashboard.html')
 
+@role_required(["superadmin"])
+def view_admins(request):
+    admins = AdminTable.objects.exclude(admin_id=1000000)
+    return render(request, 'view_admins.html', {'admins': admins})
 
+@role_required(["superadmin"])
+def view_customers_under_admin(request, admin_id):
+    try:
+        admin = AdminTable.objects.get(admin_id=admin_id)
+    except AdminTable.DoesNotExist:
+        messages.error(request, "Admin not found.")
+        return redirect('view_admins')
+
+    customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
+    return render(request, 'admin_customers.html', {
+        'admin': admin,
+        'customers': customers
+    })
+    
 def logout_view(request):
     request.session.flush()  # Clears session data
     messages.success(request, "Logged out successfully.")

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">
+    Customers of {{ admin.first_name }} {{ admin.last_name }}
+</h2>
+
+<table class="table-auto w-full border border-gray-300">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="px-4 py-2 border">Customer ID</th>
+            <th class="px-4 py-2 border">Name</th>
+            <th class="px-4 py-2 border">Email</th>
+            <th class="px-4 py-2 border">Phone</th>
+            <th class="px-4 py-2 border">Company</th>
+            <th class="px-4 py-2 border">GST</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for customer in customers %}
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-2 border">{{ customer.customer_id }}</td>
+            <td class="px-4 py-2 border">{{ customer.first_name }} {{ customer.last_name }}</td>
+            <td class="px-4 py-2 border">{{ customer.email }}</td>
+            <td class="px-4 py-2 border">{{ customer.phone_number }}</td>
+            <td class="px-4 py-2 border">{{ customer.company_name }}</td>
+            <td class="px-4 py-2 border">{{ customer.GST }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center py-4">No customers found for this admin.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'view_admins' %}" class="mt-4 inline-block text-blue-600 hover:underline">← Back to Admin List</a>
+{% endblock %}
