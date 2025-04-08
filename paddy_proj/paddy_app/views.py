@@ -33,7 +33,7 @@ def login_view(request):
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
 
-                if user.admin_id >= 1000:
+                if user.admin_id > 1000000:
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
 
@@ -52,7 +52,7 @@ def login_view(request):
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
 
-                if user.admin_id < 1000:
+                if user.admin_id == 1000000:
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
 
@@ -135,6 +135,7 @@ def create_admin(request):
                 phone_number=phone_number,
                 email=email,
                 password=password,
+                user_count=50
             )
             messages.success(request, "Admin created successfully!")
             return redirect("onboard")
@@ -145,8 +146,11 @@ def create_admin(request):
             
     return render(request, "onboard.html")
 
-@role_required(["superadmin"])
+@role_required(["superadmin", "admin"])
 def create_customer(request):
+    role = request.session.get("role")
+    is_superadmin = role == "superadmin"
+
     if request.method == "POST":
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
@@ -155,9 +159,8 @@ def create_customer(request):
         password = request.POST.get("password")
         company_name = request.POST.get("company_name")
         gst = request.POST.get("gst")
-        address = request.POST.get("address")  # New address field
+        address = request.POST.get("address")
 
-        # Retrieve the currently logged-in admin
         admin_id = request.session.get("user_id")
         if not admin_id:
             messages.error(request, "Session expired. Please log in again.")
@@ -169,140 +172,74 @@ def create_customer(request):
             messages.error(request, "Admin not found. Please log in again.")
             return redirect("login")
 
-        # Check for duplicate email or phone number
+        # Check if customer limit is reached
+        current_customer_count = CustomerTable.objects.filter(admin=admin).count()
+        if current_customer_count >= admin.user_count:
+            messages.error(request, "Customer limit reached for your account!")
+            return redirect("onboard" if is_superadmin else "customer_onboard")
+
         if CustomerTable.objects.filter(email=email).exists():
             messages.error(request, "Email already exists for a customer!")
-            return redirect("onboard")
+            return redirect("onboard" if is_superadmin else "customer_onboard")
 
         if CustomerTable.objects.filter(phone_number=phone_number).exists():
             messages.error(request, "Phone number already registered for a customer!")
-            return redirect("onboard")
+            return redirect("onboard" if is_superadmin else "customer_onboard")
 
-        # Validate GST format if provided
         if gst and not validate_gst(gst):
             messages.error(request, "Invalid GST number format!")
-            return redirect("onboard")
+            return redirect("onboard" if is_superadmin else "customer_onboard")
 
         try:
-            # Create customer with hashed password
             CustomerTable.objects.create(
                 first_name=first_name,
                 last_name=last_name,
                 phone_number=phone_number,
                 email=email,
-                password=make_password(password),  # Hashing the password
-                company_name=company_name,
-                GST=gst if gst else None,
-                address=address,  # Include address in DB
-                admin=admin,
-            )
-
-            # Increment the user_count for the respective admin
-            admin.user_count += 1
-            admin.save()
-
-            messages.success(request, "Customer created successfully!")
-            return redirect("onboard")
-
-        except IntegrityError:
-            messages.error(request, "Failed to create customer. Please try again.")
-
-    return render(request, "onboard.html")
-
-def admin_create_customer(request):
-    if request.method == "POST":
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        phone_number = request.POST.get("phone_number")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        company_name = request.POST.get("company_name")
-        gst = request.POST.get("gst")
-        address = request.POST.get("address")  # New address field
-
-        # Retrieve the currently logged-in admin
-        admin_id = request.session.get("user_id")
-        if not admin_id:
-            messages.error(request, "Session expired. Please log in again.")
-            return redirect("login")
-
-        try:
-            admin = AdminTable.objects.get(admin_id=admin_id)
-        except AdminTable.DoesNotExist:
-            messages.error(request, "Admin not found. Please log in again.")
-            return redirect("login")
-
-        # Check for duplicate email or phone number
-        if CustomerTable.objects.filter(email=email).exists():
-            messages.error(request, "Email already exists for a customer!")
-            return redirect("customer_onboard")
-
-        if CustomerTable.objects.filter(phone_number=phone_number).exists():
-            messages.error(request, "Phone number already registered for a customer!")
-            return redirect("customer_onboard")
-
-        # Validate GST format if provided
-        if gst and not validate_gst(gst):
-            messages.error(request, "Invalid GST number format!")
-            return redirect("customer_onboard")
-
-        try:
-            # Create customer with hashed password
-            CustomerTable.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                phone_number=phone_number,
-                email=email,
-                password=make_password(password),  # Hashing the password
+                password=make_password(password),
                 company_name=company_name,
                 GST=gst if gst else None,
                 address=address,
                 admin=admin,
             )
 
-            # Increment the user_count for the respective admin
-            admin.user_count += 1
-            admin.save()
-
             messages.success(request, "Customer created successfully!")
-            return redirect("customer_onboard")
+            return redirect("onboard" if is_superadmin else "customer_onboard")
 
         except IntegrityError:
             messages.error(request, "Failed to create customer. Please try again.")
-    
-    return render(request, "customer_onboard.html")
 
-@role_required(["superadmin"])
+    return render(request, "onboard.html" if is_superadmin else "customer_onboard.html")
+
+@role_required(["superadmin", "admin"])
 def place_order(request):
+    role = request.session.get("role")  # adjust based on how role is stored in session
+    is_superadmin = role == "superadmin"
+
     admin_id = request.session.get("user_id")
     if not admin_id:
-        return redirect('login')
+        return redirect("login")
 
     customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
 
-    if request.method == 'POST':
-        customer_id = request.POST.get('customer')
-        product_category_id = request.POST.get('product_category_id')
-        quantity = request.POST.get('quantity')
-        price_per_unit = request.POST.get('price_per_unit')
-        lorry_number = request.POST.get('lorry_number')
-        driver_name = request.POST.get('driver_name')
-        driver_ph_no = request.POST.get('driver_ph_no')
-        delivery_date = request.POST.get('delivery_date')
+    if request.method == "POST":
+        customer_id = request.POST.get("customer")
+        product_category_id = request.POST.get("product_category_id")
+        quantity = request.POST.get("quantity")
+        price_per_unit = request.POST.get("price_per_unit")
+        lorry_number = request.POST.get("lorry_number")
+        driver_name = request.POST.get("driver_name")
+        driver_ph_no = request.POST.get("driver_ph_no")
+        delivery_date = request.POST.get("delivery_date")
 
         try:
-            # Get customer and their GST
             customer = CustomerTable.objects.get(customer_id=customer_id)
-            gst = customer.GST  # Fetch GST directly from customer model
+            gst = customer.GST
 
-            # Safely convert to float
             quantity = float(quantity) if quantity else 0
             price_per_unit = float(price_per_unit) if price_per_unit else 0
-
-            # Calculate overall amount
             overall_amount = quantity * price_per_unit
 
-            # Create the order
             Orders.objects.create(
                 customer=customer,
                 admin=AdminTable.objects.get(admin_id=admin_id),
@@ -320,67 +257,12 @@ def place_order(request):
                 order_date=date.today()
             )
 
-            return redirect('place_order')
+            return redirect("place_order" if is_superadmin else "admin_place_order")
 
         except Exception as e:
             print("Error placing order:", e)
 
-    return render(request, 'place_order.html', {'customers': customers})
-
-@role_required(["admin"])
-def admin_place_order(request):
-    admin_id = request.session.get("user_id")
-    if not admin_id:
-        return redirect('login')
-
-    customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
-
-    if request.method == 'POST':
-        customer_id = request.POST.get('customer')
-        product_category_id = request.POST.get('product_category_id')
-        quantity = request.POST.get('quantity')
-        price_per_unit = request.POST.get('price_per_unit')
-        lorry_number = request.POST.get('lorry_number')
-        driver_name = request.POST.get('driver_name')
-        driver_ph_no = request.POST.get('driver_ph_no')
-        delivery_date = request.POST.get('delivery_date')
-
-        try:
-            # Get customer and their GST
-            customer = CustomerTable.objects.get(customer_id=customer_id)
-            gst = customer.GST  # Fetch GST directly from customer model
-
-            # Safely convert to float
-            quantity = float(quantity) if quantity else 0
-            price_per_unit = float(price_per_unit) if price_per_unit else 0
-
-            # Calculate overall amount
-            overall_amount = quantity * price_per_unit
-
-            # Create the order
-            Orders.objects.create(
-                customer=customer,
-                admin=AdminTable.objects.get(admin_id=admin_id),
-                payment_status=0,
-                delivery_status=0,
-                product_category_id=product_category_id,
-                quantity=quantity,
-                price_per_unit=price_per_unit,
-                overall_amount=overall_amount,
-                GST=gst,
-                lorry_number=lorry_number,
-                driver_name=driver_name,
-                delivery_date=delivery_date,
-                driver_ph_no=driver_ph_no,
-                order_date=date.today()
-            )
-
-            return redirect('admin_place_order')
-
-        except Exception as e:
-            print("Error placing order:", e)
-
-    return render(request, 'admin_place_order.html', {'customers': customers})
+    return render(request, "place_order.html" if is_superadmin else "admin_place_order.html", {"customers": customers})
 
 @role_required(["customer"])
 def customer_orders(request):
@@ -460,6 +342,38 @@ def admin_add_subscription(request):
                                                         "payment_amount": existing_subscription[0].payment_amount,
                                                         "subscription_status": existing_subscription[0].subscription_status if existing_subscription else 0,
                                                         })
+
+
+
+
+def upgrade_to_admin(request):
+    customer_id = request.session.get('user_id')
+
+    customer = CustomerTable.objects.get(customer_id=customer_id)
+
+    if request.method == 'POST':
+        if AdminTable.objects.filter(email=customer.email).exists():
+            messages.info(request, "You are already an admin.")
+            return redirect('customer_dashboard')
+
+        new_admin = AdminTable(
+            first_name=customer.first_name,
+            last_name=customer.last_name,
+            phone_number=customer.phone_number,
+            email=customer.email,
+            password=customer.password,  # already hashed
+            user_count=0,
+        )
+        new_admin.save()
+        messages.success(request, "You have been upgraded to admin!")
+        return redirect('customer_dashboard')
+
+    return render(request, 'upgrade_to_admin.html', {'customer': customer})
+
+
+@role_required(["customer"])
+def customer_dashboard(request):
+    return render(request, 'customer_dashboard.html')
 
 
 def logout_view(request):
