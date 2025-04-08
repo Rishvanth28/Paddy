@@ -112,13 +112,13 @@ class Payments(models.Model):
 
 class Subscription(models.Model):
     sid = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(CustomerTable, on_delete=models.CASCADE)
-    admin = models.ForeignKey(AdminTable, on_delete=models.CASCADE)
-    payment_status = models.IntegerField()
-    payment_amount = models.BigIntegerField()
+    customer_id = models.ForeignKey(CustomerTable,null=True, on_delete=models.CASCADE)
+    admin_id = models.ForeignKey(AdminTable,null=True, on_delete=models.CASCADE)
+    subscription_status = models.IntegerField(default=0)  # 0: Pending, 1: Approved, 2: Rejected
+    payment_amount = models.BigIntegerField(default=0)
     subscription_type = models.CharField(max_length=255)
-    date_approved = models.DateField()
-    additional_users = models.IntegerField()
+    date_approved = models.DateField(null=True, blank=True)
+    additional_users = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"Subscription {self.sid} - {self.subscription_type} for {self.user.first_name}"
+        return f"Subscription {self.sid} - {self.subscription_type}"

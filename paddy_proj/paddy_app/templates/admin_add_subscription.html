@@ -1,0 +1,128 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Subscription</title>
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        .upgrade-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .pricing-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .user-count {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .price-calculation {
+            margin-top: 15px;
+            border-top: 1px dashed #ddd;
+            padding-top: 15px;
+        }
+        .form-check {
+            margin-top: 20px;
+        }
+
+        .alert-info {
+            margin-bottom: 20px;
+        }
+    </style>
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="this.parentElement.style.display='none';"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="container form-container">
+        <div class="upgrade-header">
+            <h2>Upgrade Your Subscription</h2>
+            <p class="text-muted">Increase your user count by 50 users</p>
+        </div>
+        {% if existing_subscription == 0  %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> 
+            This will submit a request to admin. You'll be notified once it's approved.
+        </div>
+        {% elif subscription_status == 0 %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> 
+            Your request is being processed.
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> 
+            Your request has been processed. Please make the payment to complete the upgrade.
+        </div>
+        {% endif %}
+
+        <div class="pricing-info">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>Current User Count: <span class="user-count" id="currentUserCount">{{ user_count }}</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p>New User Count: <span class="user-count text-success" id="newUserCount">{{added_count}}</span></p>
+                </div>
+            </div>
+        {% if subscription_status != 0 %}    
+            <div class="price-calculation">
+                <p><strong>Price:</strong></p>
+                {% if payment_amount == 0 %}
+                <p><span class="text-primary">TBD/month</span></p>
+                <p class="text-muted small">The final price may vary based on your current plan.</p>
+                {% else %}
+                <p><span class="text-primary">₹{{ payment_amount }}/month</span></p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% if existing_subscription == 0 %}
+        <form id="subscriptionUpgradeForm" method="post" action="{% url 'admin_add_subscription' %}">
+            {% csrf_token %}
+            <!-- CSRF Token Placeholder (to be replaced by Django) -->
+            <input type="hidden" name="submission_type" value="0">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="confirmUpgrade" name="confirm_upgrade" required>
+                <label class="form-check-label" for="confirmUpgrade">
+                    I confirm I want to upgrade by 50 users and understand additional charges will apply
+                </label>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6-center">
+                    <button type="submit" class="btn btn-primary w-100">
+                        Submit Upgrade Request
+                    </button>
+                </div>
+            </div>
+        </form>
+        {% elif subscription_status == 1 %}
+        <div class="text">
+                <form method="post" action="{% url 'admin_add_subscription' %}">
+                {% csrf_token %}
+                <input type="hidden" name="submission_type" value="1">    
+                <button class="btn btn-primary" type="submit">Make Payment</button>
+                </form>
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock content %}

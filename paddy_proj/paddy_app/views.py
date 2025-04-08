@@ -320,6 +320,31 @@ def customer_delivery_validation(request):
 def customer_onboard_view(request):
     return render(request, "customer_onboard.html")
 
+@role_required(["admin"])
+def admin_add_subscription(request):
+    user_id = request.session.get("user_id")
+    admin = AdminTable.objects.get(admin_id=user_id)
+    user_count = admin.user_count
+    existing_subscription = Subscription.objects.filter(admin_id=admin, subscription_type=1, subscription_status=0)
+    if request.method == "POST":
+        if request.POST.get("submission_type") == '0': 
+            try:
+                Subscription.objects.create(
+                    admin_id=admin,
+                    subscription_type=1, # 1 is for admin user addition
+                    additional_users=50, # 50 is the default value for admin user addition
+                )
+                messages.success(request, "Subscription Request added successfully!")
+            except Error:
+                messages.error(request, "Failed to add subscription. Please try again.")
+    return render(request, "admin_add_subscription.html", {"user_count": user_count,
+                                                        "added_count":user_count+50,
+                                                        "existing_subscription": 1 if existing_subscription else 0,
+                                                        "payment_amount": existing_subscription[0].payment_amount,
+                                                        "subscription_status": existing_subscription[0].subscription_status if existing_subscription else 0,
+                                                        })
+
+
 
 
 def upgrade_to_admin(request):
