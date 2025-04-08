@@ -26,6 +26,3 @@ urlpatterns = [
     path('view-admins/', view_admins, name='view_admins'),
     path('admin/<int:admin_id>/customers/', view_customers_under_admin, name='admin_customers'),
 ]
- # dummy view
-]
-
