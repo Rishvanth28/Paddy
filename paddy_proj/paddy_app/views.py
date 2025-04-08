@@ -6,6 +6,8 @@ from .models import *
 from django.db import IntegrityError
 from datetime import date
 from .decorators import role_required
+from .models import CustomerTable
+
 
 def login_view(request):
     # Redirect already logged-in users based on their role
@@ -355,3 +357,30 @@ def logout_view(request):
     messages.success(request, "Logged out successfully.")
     return redirect("login")
 
+from django.shortcuts import render, redirect
+from .models import CustomerTable
+
+def customers_under_admin(request):
+    admin_id = request.session.get("user_id")  # session must store admin_id during login
+
+    if not admin_id:
+        return redirect('admin_login')  # redirect if not logged in
+
+    # Fetch customers for the current admin
+    customers = CustomerTable.objects.filter(admin_id=admin_id)
+
+    return render(request, 'customers_list.html', {'customers': customers})
+def admin_login_submit(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        try:
+            admin = AdminTable.objects.get(email=email)
+            if admin.check_password(password):
+                request.session['user_id'] = admin.admin_id
+                return redirect('customers_under_admin')
+        except AdminTable.DoesNotExist:
+            pass
+
+    return render(request, 'login.html', {'error': 'Invalid credentials'})

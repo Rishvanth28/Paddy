@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customers Under You</title>
+</head>
+<body>
+    <h1>Customer List</h1>
+
+    {% if customers %}
+        <table border="1">
+            <tr>
+                <th>Customer ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Company</th>
+                <th>GST</th>
+            </tr>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.customer_id }}</td>
+                <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.phone_number }}</td>
+                <td>{{ customer.company_name }}</td>
+                <td>{{ customer.GST }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No customers found for this admin.</p>
+    {% endif %}
+</body>
+</html>

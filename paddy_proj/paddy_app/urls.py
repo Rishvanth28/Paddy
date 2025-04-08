@@ -19,5 +19,7 @@ urlpatterns = [
     path("admin-place-order/", place_order, name="admin_place_order"),
     path("upgrade-plan/", upgrade_plan, name="upgrade_plan"),
     path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'),
-    path('customer/dashboard/',customer_dashboard, name='customer_dashboard'),  # dummy view
+    path('customer/dashboard/',customer_dashboard, name='customer_dashboard'), 
+         path('customer-list/',customers_under_admin, name='customer_list'),
+ # dummy view
 ]
