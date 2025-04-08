@@ -6,7 +6,6 @@ from .models import *
 from django.db import IntegrityError
 from datetime import date
 from .decorators import role_required
-from django.db import DatabaseError as Error
 
 def login_view(request):
     # Redirect already logged-in users based on their role
@@ -96,7 +95,6 @@ def admin_dashboard(request):
 
 def upgrade_plan(request):
     return render(request, "upgrade_plan.html")
-
 
 @role_required(["customer"])
 def customer_dashboard(request):
@@ -334,7 +332,7 @@ def admin_add_subscription(request):
                     additional_users=50, # 50 is the default value for admin user addition
                 )
                 messages.success(request, "Subscription Request added successfully!")
-            except Error:
+            except Exception:
                 messages.error(request, "Failed to add subscription. Please try again.")
     return render(request, "admin_add_subscription.html", {"user_count": user_count,
                                                         "added_count":user_count+50,
@@ -342,8 +340,6 @@ def admin_add_subscription(request):
                                                         "payment_amount": existing_subscription[0].payment_amount,
                                                         "subscription_status": existing_subscription[0].subscription_status if existing_subscription else 0,
                                                         })
-
-
 
 
 def upgrade_to_admin(request):
@@ -370,14 +366,58 @@ def upgrade_to_admin(request):
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
-
 @role_required(["customer"])
 def customer_dashboard(request):
     return render(request, 'customer_dashboard.html')
 
+@role_required(["superadmin"])
+def view_admins(request):
+    admins = AdminTable.objects.exclude(admin_id=1000000)
+    return render(request, 'view_admins.html', {'admins': admins})
 
+@role_required(["superadmin", "admin"])
+def view_customers_under_admin(request, admin_id):
+    try:
+        admin = AdminTable.objects.get(admin_id=admin_id)
+    except AdminTable.DoesNotExist:
+        messages.error(request, "Admin not found.")
+        return redirect('view_admins')
+
+    customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
+    return render(request, 'admin_customers.html', {
+        'admin': admin,
+        'customers': customers
+    })
+    
 def logout_view(request):
     request.session.flush()  # Clears session data
     messages.success(request, "Logged out successfully.")
     return redirect("login")
 
+@role_required(["superadmin", "admin"])
+def customers_under_admin(request):
+    admin_id = request.session.get("user_id")  # session must store admin_id during login
+    role = request.session.get("role")  # adjust based on how role is stored in session
+    is_superadmin = role == "superadmin"
+    if not admin_id:
+        return redirect('admin_login')  # redirect if not logged in
+
+    # Fetch customers for the current admin
+    customers = CustomerTable.objects.filter(admin_id=admin_id)
+
+    return render(request, "customer_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
+
+def admin_login_submit(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        try:
+            admin = AdminTable.objects.get(email=email)
+            if admin.check_password(password):
+                request.session['user_id'] = admin.admin_id
+                return redirect('customers_under_admin')
+        except AdminTable.DoesNotExist:
+            pass
+
+    return render(request, 'login.html', {'error': 'Invalid credentials'})

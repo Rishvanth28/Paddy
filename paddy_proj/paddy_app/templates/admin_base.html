@@ -55,8 +55,12 @@
           <li>Status</li>
         </ul>
 
-
-        <li><img class="icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers Icon"> Customers</li>
+        <li>
+          <a href="{% url 'admin_customer_list' %}" class="menu-link" style="text-decoration: none;color: inherit;">
+            <img class="icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers Icon">
+            Customers
+          </a>
+        </li>
         <li><img class="icon" src="{% static 'media/Group 2.png' %}" alt="Admins Icon"> Admins</li>
         <li >
           <img class="icon" src="{% static 'media/Vector.png' %}" alt="Place Order Icon">
@@ -68,7 +72,13 @@
     </div>
    
     <!-- Footer -->
-    <div class="footer-text">Logo Here</div>
+    <div class="footer-text">
+      Logo Here
+      <form action="{% url 'logout' %}" method="post" style="margin-top: 10px;">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+      </form>
+    </div>
   </div>
 
   <!-- Main content -->

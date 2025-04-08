@@ -1,0 +1,48 @@
+{% extends 'superadmin_base.html' %}
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+    <div style="background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 24px;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; color: #1a1a1a;">
+            Customers of {{ admin.first_name }} {{ admin.last_name }}
+        </h2>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: white;">
+                <thead style="background: #f8f9fa;">
+                    <tr>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Customer ID</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Name</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Email</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Phone</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Company</th>
+                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">GST</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr style="border-bottom: 1px solid #e0e0e0; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                        <td style="padding: 12px; color: #333;">{{ customer.customer_id }}</td>
+                        <td style="padding: 12px; color: #333;">{{ customer.first_name }} {{ customer.last_name }}</td>
+                        <td style="padding: 12px; color: #333;">{{ customer.email }}</td>
+                        <td style="padding: 12px; color: #333;">{{ customer.phone_number }}</td>
+                        <td style="padding: 12px; color: #333;">{{ customer.company_name }}</td>
+                        <td style="padding: 12px; color: #333;">{{ customer.GST }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="padding: 16px; text-align: center; color: #666;">No customers found for this admin.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 24px;">
+            <a href="{% url 'view_admins' %}" style="display: inline-flex; align-items: center; color: #1a1a1a; text-decoration: none; font-weight: 500;">
+                <span style="display: inline-block; margin-right: 4px;">←</span>
+                Back to Admin List
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
