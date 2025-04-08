@@ -436,6 +436,38 @@ def customer_delivery_validation(request):
 def customer_onboard_view(request):
     return render(request, "customer_onboard.html")
 
+
+
+def upgrade_to_admin(request):
+    customer_id = request.session.get('user_id')
+
+    customer = CustomerTable.objects.get(customer_id=customer_id)
+
+    if request.method == 'POST':
+        if AdminTable.objects.filter(email=customer.email).exists():
+            messages.info(request, "You are already an admin.")
+            return redirect('customer_dashboard')
+
+        new_admin = AdminTable(
+            first_name=customer.first_name,
+            last_name=customer.last_name,
+            phone_number=customer.phone_number,
+            email=customer.email,
+            password=customer.password,  # already hashed
+            user_count=0,
+        )
+        new_admin.save()
+        messages.success(request, "You have been upgraded to admin!")
+        return redirect('customer_dashboard')
+
+    return render(request, 'upgrade_to_admin.html', {'customer': customer})
+
+
+@role_required(["customer"])
+def customer_dashboard(request):
+    return render(request, 'customer_dashboard.html')
+
+
 def logout_view(request):
     request.session.flush()  # Clears session data
     messages.success(request, "Logged out successfully.")

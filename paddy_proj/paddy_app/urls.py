@@ -18,5 +18,6 @@ urlpatterns = [
     path("admin-create-customer/", admin_create_customer, name="customer_onboard"),
     path("admin-place-order/", admin_place_order, name="admin_place_order"),
     path("upgrade-plan/", upgrade_plan, name="upgrade_plan"),
-
+    path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'),
+    path('customer/dashboard/',customer_dashboard, name='customer_dashboard'),  # dummy view
 ]
