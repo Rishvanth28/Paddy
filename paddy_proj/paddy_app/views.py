@@ -375,7 +375,7 @@ def view_admins(request):
     admins = AdminTable.objects.exclude(admin_id=1000000)
     return render(request, 'view_admins.html', {'admins': admins})
 
-@role_required(["superadmin"])
+@role_required(["superadmin", "admin"])
 def view_customers_under_admin(request, admin_id):
     try:
         admin = AdminTable.objects.get(admin_id=admin_id)
@@ -394,16 +394,18 @@ def logout_view(request):
     messages.success(request, "Logged out successfully.")
     return redirect("login")
 
+@role_required(["superadmin", "admin"])
 def customers_under_admin(request):
     admin_id = request.session.get("user_id")  # session must store admin_id during login
-
+    role = request.session.get("role")  # adjust based on how role is stored in session
+    is_superadmin = role == "superadmin"
     if not admin_id:
         return redirect('admin_login')  # redirect if not logged in
 
     # Fetch customers for the current admin
     customers = CustomerTable.objects.filter(admin_id=admin_id)
 
-    return render(request, 'customers_list.html', {'customers': customers})
+    return render(request, "customer_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
 
 def admin_login_submit(request):
     if request.method == 'POST':

@@ -22,6 +22,7 @@ urlpatterns = [
     path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'),
     path('customer/dashboard/',customer_dashboard, name='customer_dashboard'), 
     path('customer-list/',customers_under_admin, name='customer_list'),
+    path('admin_customer-list/',customers_under_admin, name='admin_customer_list'),
     path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'), 
     path('view-admins/', view_admins, name='view_admins'),
    path("view-customers/<int:admin_id>/", view_customers_under_admin, name="admin_customers")]

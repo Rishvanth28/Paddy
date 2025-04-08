@@ -67,7 +67,7 @@
 
     <!-- Customers -->
     <li>
-      <a href="#" class="menu-link" style="text-decoration: none;color: inherit;">
+      <a href="{% url 'customer_list' %}" class="menu-link" style="text-decoration: none;color: inherit;">
         <img class="icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers Icon">
         Customers
       </a>
@@ -75,7 +75,7 @@
 
     <!-- Admins -->
     <li>
-      <a href="#" class="menu-link" style="text-decoration: none;color: inherit;">
+      <a href="{% url 'view_admins' %}" class="menu-link" style="text-decoration: none;color: inherit;">
         <img class="icon" src="{% static 'media/Group 2.png' %}" alt="Admins Icon">
         Admins
       </a>
