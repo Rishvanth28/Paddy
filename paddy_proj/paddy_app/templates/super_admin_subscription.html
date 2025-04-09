@@ -1,0 +1,181 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h4>Subscription Upgrade Requests</h4>
+                    <p class="text-muted">Review and process pending subscription upgrade requests</p>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    {% if messages %}
+                    <div class="mx-4 mt-3">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Admin</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Type</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Additional Users</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subscription in subscriptions %}
+                                <tr>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">{{ subscription.admin_id.first_name}} {{subscription.admin_id.last_name }} </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">
+                                            {% if subscription.subscription_type == '1' %}
+                                                User Upgrade
+                                            {% else %}
+                                                {{ subscription.subscription_type }}
+                                            {% endif %}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">{{ subscription.additional_users|default:"50" }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm {% if subscription.subscription_status == 0 %}bg-warning{% elif subscription.subscription_status == 1 %}bg-success{% else %}bg-danger{% endif %}">
+                                            {% if subscription.subscription_status == 0 %}
+                                                Pending
+                                            {% elif subscription.subscription_status == 1 %}
+                                                Approved
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if subscription.subscription_status == 0 %}
+                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#approveModal{{ subscription.sid }}">
+                                            Review
+                                        </button>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                                <!-- Approval Modal -->
+                                <div class="modal fade" id="approveModal{{ subscription.sid }}" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="approveModalLabel">Review Subscription Request</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <h6>Request Details</h6>
+                                                    <p><strong>Admin:</strong> {{ subscription.admin_id.first_name }} {{subscription.admin_id.last_name}}</p>
+                                                    <p><strong>Type:</strong> User Upgrade</p>
+                                                    <p><strong>Additional Users:</strong> {{ subscription.additional_users|default:"50" }}</p>
+                                                </div>
+                                                
+                                                <form id="reviewForm{{ subscription.sid }}" method="post" action="{% url 'superadmin_subscription_review' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="subscription_id" value="{{ subscription.sid }}">
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="paymentAmount" class="form-label">Payment Amount (₹)</label>
+                                                        <input type="number" class="form-control" id="paymentAmount" name="payment_amount" required min="0">
+                                                        <small class="text-muted">Set the monthly payment amount for this upgrade</small>
+                                                    </div>
+                                                    
+                                                    <input type="hidden" id="decision" name="subscription_status" value="1">
+                                        
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" form="reviewForm{{ subscription.sid }}" class="btn btn-primary">Submit Decision</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <p class="text-muted">No subscription requests found</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter and Pagination Controls -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <form method="get" class="d-flex align-items-center">
+                <div class="me-2">
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="" {% if not request.GET.status %}selected{% endif %}>All Statuses</option>
+                        <option value="0" {% if request.GET.status == '0' %}selected{% endif %}>Pending</option>
+                        <option value="1" {% if request.GET.status == '1' %}selected{% endif %}>Approved</option>
+                        <option value="2" {% if request.GET.status == '2' %}selected{% endif %}>Active</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <nav aria-label="Page navigation">
+                {% if subscriptions.has_other_pages %}
+                <ul class="pagination justify-content-end">
+                    {% if subscriptions.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ subscriptions.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true">&laquo;</span>
+                    </li>
+                    {% endif %}
+                    
+                    {% for i in subscriptions.paginator.page_range %}
+                        {% if subscriptions.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if subscriptions.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ subscriptions.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true">&raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock content %}
