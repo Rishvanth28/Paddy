@@ -476,3 +476,5 @@ def admin_login_submit(request):
             pass
     return render(request, 'login.html', {'error': 'Invalid credentials'})
 
+def demo(request):
+    return render(request, 'demo.html')
