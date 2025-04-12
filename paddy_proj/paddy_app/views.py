@@ -6,7 +6,7 @@ from .models import *
 from django.db import IntegrityError
 from datetime import date
 from .decorators import role_required
-
+import json
 def login_view(request):
     # Redirect already logged-in users based on their role
     if request.session.get("user_id") and request.session.get("role"):
@@ -322,7 +322,13 @@ def admin_add_subscription(request):
     user_id = request.session.get("user_id")
     admin = AdminTable.objects.get(admin_id=user_id)
     user_count = admin.user_count
+    flag=0
     existing_subscription = Subscription.objects.filter(admin_id=admin, subscription_type=1, subscription_status=0)
+    print("Existing Subscription:", existing_subscription,len(existing_subscription))
+    if len(existing_subscription) == 0:
+        flag=1
+        existing_subscription = json.loads('[{"payment_amount": 0, "subscription_status": 0}]')
+    print("existing_subscription:", existing_subscription)
     if request.method == "POST":
         if request.POST.get("submission_type") == '0': 
             try:
@@ -336,9 +342,9 @@ def admin_add_subscription(request):
                 messages.error(request, "Failed to add subscription. Please try again.")
     return render(request, "admin_add_subscription.html", {"user_count": user_count,
                                                         "added_count":user_count+50,
-                                                        "existing_subscription": 1 if existing_subscription else 0,
+                                                        "existing_subscription": 0 if flag==1 else 1,
                                                         "payment_amount": existing_subscription[0].payment_amount,
-                                                        "subscription_status": existing_subscription[0].subscription_status if existing_subscription else 0,
+                                                        "subscription_status": existing_subscription[0].subscription_status,
                                                         })
 
 
@@ -405,7 +411,7 @@ def customers_under_admin(request):
     # Fetch customers for the current admin
     customers = CustomerTable.objects.filter(admin_id=admin_id)
 
-    return render(request, "customer_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
+    return render(request, "customers_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
 
 def admin_login_submit(request):
     if request.method == 'POST':
