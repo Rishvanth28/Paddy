@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from .models import *
 from django.db import IntegrityError
 from datetime import date
+from django.core.paginator import Paginator
+from django.utils import timezone
 from .decorators import role_required
 import json
 def login_view(request):
@@ -322,13 +324,8 @@ def admin_add_subscription(request):
     user_id = request.session.get("user_id")
     admin = AdminTable.objects.get(admin_id=user_id)
     user_count = admin.user_count
-    flag=0
-    existing_subscription = Subscription.objects.filter(admin_id=admin, subscription_type=1, subscription_status=0)
-    print("Existing Subscription:", existing_subscription,len(existing_subscription))
-    if len(existing_subscription) == 0:
-        flag=1
-        existing_subscription = json.loads('[{"payment_amount": 0, "subscription_status": 0}]')
-    print("existing_subscription:", existing_subscription)
+    existing_subscription = Subscription.objects.filter(admin_id=user_id, subscription_type=1).first()
+    print(existing_subscription)
     if request.method == "POST":
         if request.POST.get("submission_type") == '0': 
             try:
@@ -342,12 +339,63 @@ def admin_add_subscription(request):
                 messages.error(request, "Failed to add subscription. Please try again.")
     return render(request, "admin_add_subscription.html", {"user_count": user_count,
                                                         "added_count":user_count+50,
-                                                        "existing_subscription": 0 if flag==1 else 1,
-                                                        "payment_amount": existing_subscription[0].payment_amount,
-                                                        "subscription_status": existing_subscription[0].subscription_status,
+                                                        "existing_subscription": 1 if existing_subscription else 0,
+                                                        "payment_amount": existing_subscription.payment_amount if existing_subscription else 0,
+                                                        "subscription_status": existing_subscription.subscription_status if existing_subscription else 0,
                                                         })
 
+@role_required(["superadmin"])
+def super_admin_subscription(request):
+    # Get filter parameters
+    status_filter = request.GET.get('status', '')
+    
+    # Base queryset
+    subscriptions_queryset = Subscription.objects.filter(subscription_type='1').order_by('-sid')
+    
+    # Apply status filter if provided
+    if status_filter != '':
+        subscriptions_queryset = subscriptions_queryset.filter(subscription_status=status_filter)
+    
+    # Pagination
+    paginator = Paginator(subscriptions_queryset, 10)  # 10 items per page
+    page_number = request.GET.get('page', 1)
+    subscriptions = paginator.get_page(page_number)
+    
+    context = {
+        'subscriptions': subscriptions,
+    }
+    
+    return render(request, 'super_admin_subscription.html', context)
 
+@role_required(["superadmin"])
+def superadmin_subscription_review(request):
+    if request.method == 'POST':
+        subscription_id = request.POST.get('subscription_id')
+        subscription_status = request.POST.get('subscription_status')
+        payment_amount = request.POST.get('payment_amount')
+        try:
+            subscription = Subscription.objects.get(sid=subscription_id)
+            
+            # Update subscription
+            subscription.subscription_status = subscription_status
+            
+            if subscription_status == '1':  # If approved
+                subscription.payment_amount = payment_amount
+                messages.success(request, f"Subscription request #{subscription_id} has been approved.")
+            elif subscription_status == '2':  # If rejected
+                messages.info(request, f"Subscription request #{subscription_id} has been rejected.")
+            
+            subscription.save()
+            
+        except Subscription.DoesNotExist:
+            messages.error(request, "Subscription request not found.")
+        
+        return redirect('superadmin_subscription_review')
+    
+    # If not POST, redirect to the list view
+    return redirect('superadmin_subscription_review')
+
+@role_required(["customer"])
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')
 
@@ -394,6 +442,7 @@ def view_customers_under_admin(request, admin_id):
         'admin': admin,
         'customers': customers
     })
+
     
 def logout_view(request):
     request.session.flush()  # Clears session data
@@ -425,5 +474,7 @@ def admin_login_submit(request):
                 return redirect('customers_under_admin')
         except AdminTable.DoesNotExist:
             pass
-
     return render(request, 'login.html', {'error': 'Invalid credentials'})
+
+def demo(request):
+    return render(request, 'demo.html')
