@@ -463,7 +463,16 @@ def view_customers_under_admin(request, admin_id):
         'customers': customers
     })
 
-
+@role_required(["superadmin", "admin"])
+def delete_customer(request, customer_id):
+    if request.method == "POST":
+        try:
+            customer = CustomerTable.objects.get(customer_id=customer_id)
+            customer.delete()
+            messages.success(request, "Customer deleted successfully.")
+        except CustomerTable.DoesNotExist:
+            messages.error(request, "Customer not found.")
+    return redirect(request.META.get("HTTP_REFERER", "view_admins"))
     
 def logout_view(request):
     request.session.flush()  # Clears session data

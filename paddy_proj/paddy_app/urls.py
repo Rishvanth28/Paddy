@@ -29,6 +29,10 @@ urlpatterns = [
     path('superadmin/subscription-review/', super_admin_subscription, name='super_admin_subscription'),
     path('superadmin/review-subscription/', superadmin_subscription_review, name='superadmin_subscription_review'),
     path('demo/', demo, name='demo'),
+    path("delete-admin/<int:admin_id>/", delete_admin, name="delete_admin"),
+    path("delete-customer/<str:customer_id>/", delete_customer, name="delete_customer"),
+
+
     ]
 
 
