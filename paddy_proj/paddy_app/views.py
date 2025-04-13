@@ -8,6 +8,7 @@ from datetime import date
 from django.core.paginator import Paginator
 from django.utils import timezone
 from .decorators import role_required
+from .helpers import *
 import json
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -301,8 +302,23 @@ def customer_orders(request):
     
     # For regular page load, just render the template (JS will fetch data)
     return render(request, 'customer_order.html')
-
+@role_required(["customer"])
 def payment(request):
+    order = Orders.objects.get(pk=request.get.order_id)
+    
+    # Assuming you have a related model for order items/products
+    # If not, you'll need to create one to store multiple products per order
+    order_items = OrderItems.objects.filter(order=order)
+    
+    # context = {
+    #     'order': order,
+    #     'order_items': order_items,
+    #     'customer': order.customer,
+    #     'total_amount': order.overall_amount,
+    #     'payment_terms': '90 Days',  # You might want to store this in your model
+    #     'invoice_date': order.order_date,
+    #     'invoice_number': f"UFs {order_id}",
+    # }
     return render(request, 'payment.html')
 
 def customer_delivery_validation(request):
@@ -349,7 +365,7 @@ def admin_add_subscription(request):
                                                         })
 
 @role_required(["superadmin"])
-def super_admin_subscription(request):
+def superadmin_subscription(request):
     # Get filter parameters
     status_filter = request.GET.get('status', '')
     
@@ -369,7 +385,7 @@ def super_admin_subscription(request):
         'subscriptions': subscriptions,
     }
     
-    return render(request, 'super_admin_subscription.html', context)
+    return render(request, 'superadmin_subscription.html', context)
 
 @role_required(["superadmin"])
 def superadmin_subscription_review(request):
@@ -394,10 +410,10 @@ def superadmin_subscription_review(request):
         except Subscription.DoesNotExist:
             messages.error(request, "Subscription request not found.")
         
-        return redirect('superadmin_subscription_review')
+        return redirect('superadmin_subscription')
     
     # If not POST, redirect to the list view
-    return redirect('superadmin_subscription_review')
+    return redirect('superadmin_subscription')
 
 
 #------------------------------------------------------upgrade customer to admin--------------------------------------------------

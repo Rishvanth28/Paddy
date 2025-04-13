@@ -75,8 +75,6 @@ class CustomerTable(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} (Customer)"
-
-
 class Orders(models.Model):
     order_id = models.BigAutoField(primary_key=True)
     customer = models.ForeignKey(CustomerTable, on_delete=models.CASCADE)
@@ -98,6 +96,24 @@ class Orders(models.Model):
     def __str__(self):
         return f"Order {self.order_id} - Customer: {self.customer.first_name} {self.customer.last_name}"
 
+class OrderItems(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items')
+    product_name = models.CharField(max_length=255)  # Store at time of order
+    weight_per_unit = models.CharField(max_length=50)  # E.g., "24 KG"
+    batch_number = models.CharField(max_length=100)
+    expiry_date = models.DateField()
+    quantity = models.IntegerField()
+    price_per_unit = models.FloatField()
+    total_amount = models.FloatField()
+    
+    def save(self, *args, **kwargs):
+        # Auto-calculate total if not provided
+        if not self.total_amount:
+            self.total_amount = self.quantity * self.price_per_unit
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return f"{self.product_name} - {self.quantity} units for Order {self.order.order_id}"
 class Payments(models.Model):
     payment_id = models.BigAutoField(primary_key=True)
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)

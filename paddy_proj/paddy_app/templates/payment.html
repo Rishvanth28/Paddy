@@ -1,1 +1,84 @@
-payment stuff here
+{% extends 'customer_base.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/invoice.css' %}">
+{% block content %}
+<div class="invoice-container">
+    <div class="invoice-header">
+        <div class="invoice-left">
+            <p>Invoice No. {{ invoice_number }}</p>
+            <p>Ref. No.</p>
+        </div>
+        <div class="invoice-center">
+            <h2>{{ business_year }}</h2>
+            <h1>Fertilizer Sales</h1>
+            <p>Party: {{ customer.first_name }} {{ customer.last_name }}</p>
+            <p>{{ customer.address }}, {{ customer.city }}-{{ customer.pincode }}</p>
+        </div>
+        <div class="invoice-right">
+            <p>Dated: {{ invoice_date|date:"d-M-Y" }}</p>
+        </div>
+    </div>
+
+    <div class="payment-terms">
+        <p>Payment Terms: {{ payment_terms }}</p>
+    </div>
+
+    <div class="invoice-items">
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Description of Goods</th>
+                    <th>Quantity</th>
+                    <th>Rate</th>
+                    <th>per</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td>
+                        {{ item.product_name }} {{ item.weight_per_unit }}
+                        <br>
+                        <em>Batch: {{ item.batch_number }}</em>
+                        <br>
+                        <em>Expiry: {{ item.expiry_date|date:"d-M-Y" }}</em>
+                    </td>
+                    <td>{{ item.quantity }} Nos</td>
+                    <td>{{ item.price_per_unit }}</td>
+                    <td>Nos</td>
+                    <td>{{ item.total_amount }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">Total</td>
+                    <td>{{ total_amount }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="invoice-footer">
+        <div class="amount-in-words">
+            <p>Amount Chargeable (in words)</p>
+            <p>{{ amount_in_words }} INR Only</p>
+        </div>
+        
+        <div class="signatures">
+            <div class="customer-signature">
+                <p>Customer's Seal and Signature</p>
+            </div>
+            <div class="authorized-signature">
+                <p>for {{ business_name }}</p>
+                <p>Authorised Signatory</p>
+            </div>
+        </div>
+        
+        <div class="invoice-note">
+            <p>This is a Computer Generated Invoice</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

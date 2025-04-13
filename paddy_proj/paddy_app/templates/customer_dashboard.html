@@ -1,15 +1,6 @@
-customer_dashboard
-<a href="{% url 'customer_orders' %}">Customer Orders</a>
-<a href="{% url 'upgrade_to_admin' %}">
-    <button style="
-        background-color: #007BFF;
-        color: white;
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-    ">
-        Upgrade to Admin
-    </button>
-</a>
+{% extends "customer_base.html" %}
+
+{% block content %}
+<!-- Dashboard content goes here -->
+ customer_dashboard
+{% endblock %}
