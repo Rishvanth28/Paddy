@@ -12,6 +12,7 @@ import json
 from django.shortcuts import render, get_object_or_404, redirect
 
 
+
 def login_view(request):
     # Redirect already logged-in users based on their role
     if request.session.get("user_id") and request.session.get("role"):
@@ -398,6 +399,9 @@ def superadmin_subscription_review(request):
     # If not POST, redirect to the list view
     return redirect('superadmin_subscription_review')
 
+
+#------------------------------------------------------upgrade customer to admin--------------------------------------------------
+
 @role_required(["customer"])
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')
@@ -422,6 +426,35 @@ def upgrade_to_admin(request):
         return redirect('customer_dashboard')
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
+
+
+#------------------------------------------------------upgrade admin to customer--------------------------------------------------
+@role_required(["admin"])
+def upgrade_to_customer(request):
+    admin_id = request.session.get('user_id')
+    admin = AdminTable.objects.get(admin_id=admin_id)
+
+    if request.method == 'POST':
+        # Fix: Pass admin_id to avoid null value error
+        CustomerTable.objects.create(
+            admin_id=admin.admin_id,  # pass the admin ID explicitly
+            first_name=admin.first_name,
+            last_name=admin.last_name,
+            phone_number=admin.phone_number,
+            email=admin.email,
+            password=admin.password  # already hashed
+        )
+        messages.success(request, "You have been upgraded to customer!")
+        return redirect('upgrade_success')
+
+    return render(request, 'upgrade_to_customer.html', {'admin': admin})
+
+
+def upgrade_success(request):
+    return render(request, 'upgrade_success.html')
+
+
+
 
 @role_required(["customer"])
 def customer_dashboard(request):

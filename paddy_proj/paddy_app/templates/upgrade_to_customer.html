@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upgrade to Customer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f0f0f0;
+        }
+        .box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .info {
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+        .btn-upgrade {
+            background-color: #2196F3;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+        }
+        .btn-upgrade:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Upgrade to Customer</h2>
+        
+        <div class="info"><strong>First Name:</strong> {{ admin.first_name }}</div>
+        <div class="info"><strong>Last Name:</strong> {{ admin.last_name }}</div>
+        <div class="info"><strong>Email:</strong> {{ admin.email }}</div>
+        <div class="info"><strong>Phone:</strong> {{ admin.phone_number }}</div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn-upgrade">Confirm Upgrade</button>
+        </form>
+    </div>
+</body>
+</html>
