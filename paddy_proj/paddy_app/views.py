@@ -8,7 +8,10 @@ from datetime import date
 from django.core.paginator import Paginator
 from django.utils import timezone
 from .decorators import role_required
-from .helpers import *
+from .helpers import *import json
+from django.shortcuts import render, get_object_or_404, redirect
+
+
 def login_view(request):
     # Redirect already logged-in users based on their role
     if request.session.get("user_id") and request.session.get("role"):
@@ -305,15 +308,15 @@ def payment(request):
     # If not, you'll need to create one to store multiple products per order
     order_items = OrderItems.objects.filter(order=order)
     
-    context = {
-        'order': order,
-        'order_items': order_items,
-        'customer': order.customer,
-        'total_amount': order.overall_amount,
-        'payment_terms': '90 Days',  # You might want to store this in your model
-        'invoice_date': order.order_date,
-        'invoice_number': f"UFs {order_id}",
-    }
+    # context = {
+    #     'order': order,
+    #     'order_items': order_items,
+    #     'customer': order.customer,
+    #     'total_amount': order.overall_amount,
+    #     'payment_terms': '90 Days',  # You might want to store this in your model
+    #     'invoice_date': order.order_date,
+    #     'invoice_number': f"UFs {order_id}",
+    # }
     return render(request, 'payment.html')
 
 def customer_delivery_validation(request):
@@ -444,6 +447,23 @@ def view_admins(request):
     admins = AdminTable.objects.exclude(admin_id=1000000)
     return render(request, 'view_admins.html', {'admins': admins})
 
+@role_required(["superadmin"])
+def delete_admin(request, admin_id):
+    if request.method == "POST":
+        admin = get_object_or_404(AdminTable, admin_id=admin_id)
+
+        # Prevent deletion of primary superadmin
+        if admin.admin_id == 1000000:
+            messages.error(request, "Superadmin cannot be deleted.")
+            return redirect("view_admins")
+
+        admin.delete()
+        messages.success(request, f"Admin {admin.first_name} {admin.last_name} deleted successfully.")
+        return redirect("view_admins")
+    else:
+        messages.error(request, "Invalid request method.")
+        return redirect("view_admins")
+
 @role_required(["superadmin", "admin"])
 def view_customers_under_admin(request, admin_id):
     try:
@@ -458,6 +478,16 @@ def view_customers_under_admin(request, admin_id):
         'customers': customers
     })
 
+@role_required(["superadmin", "admin"])
+def delete_customer(request, customer_id):
+    if request.method == "POST":
+        try:
+            customer = CustomerTable.objects.get(customer_id=customer_id)
+            customer.delete()
+            messages.success(request, "Customer deleted successfully.")
+        except CustomerTable.DoesNotExist:
+            messages.error(request, "Customer not found.")
+    return redirect(request.META.get("HTTP_REFERER", "view_admins"))
     
 def logout_view(request):
     request.session.flush()  # Clears session data
@@ -475,7 +505,7 @@ def customers_under_admin(request):
     # Fetch customers for the current admin
     customers = CustomerTable.objects.filter(admin_id=admin_id)
 
-    return render(request, "customer_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
+    return render(request, "customers_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
 
 def admin_login_submit(request):
     if request.method == 'POST':
@@ -491,3 +521,5 @@ def admin_login_submit(request):
             pass
     return render(request, 'login.html', {'error': 'Invalid credentials'})
 
+def demo(request):
+    return render(request, 'demo.html')

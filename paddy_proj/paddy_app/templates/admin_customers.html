@@ -10,27 +10,34 @@
             <table style="width: 100%; border-collapse: collapse; background: white;">
                 <thead style="background: #f8f9fa;">
                     <tr>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Customer ID</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Name</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Email</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Phone</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">Company</th>
-                        <th style="padding: 12px; text-align: left; font-weight: 600; color: #1a1a1a; border-bottom: 1px solid #e0e0e0;">GST</th>
+                        <th style="padding: 12px;">Customer ID</th>
+                        <th style="padding: 12px;">Name</th>
+                        <th style="padding: 12px;">Email</th>
+                        <th style="padding: 12px;">Phone</th>
+                        <th style="padding: 12px;">Company</th>
+                        <th style="padding: 12px;">GST</th>
+                        <th style="padding: 12px;">Action</th>  <!-- New column -->
                     </tr>
                 </thead>
                 <tbody>
                     {% for customer in customers %}
-                    <tr style="border-bottom: 1px solid #e0e0e0; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
-                        <td style="padding: 12px; color: #333;">{{ customer.customer_id }}</td>
-                        <td style="padding: 12px; color: #333;">{{ customer.first_name }} {{ customer.last_name }}</td>
-                        <td style="padding: 12px; color: #333;">{{ customer.email }}</td>
-                        <td style="padding: 12px; color: #333;">{{ customer.phone_number }}</td>
-                        <td style="padding: 12px; color: #333;">{{ customer.company_name }}</td>
-                        <td style="padding: 12px; color: #333;">{{ customer.GST }}</td>
+                    <tr style="border-bottom: 1px solid #e0e0e0;" onmouseover="this.style.backgroundColor='#f8f9fa'" onmouseout="this.style.backgroundColor='white'">
+                        <td style="padding: 12px;">{{ customer.customer_id }}</td>
+                        <td style="padding: 12px;">{{ customer.first_name }} {{ customer.last_name }}</td>
+                        <td style="padding: 12px;">{{ customer.email }}</td>
+                        <td style="padding: 12px;">{{ customer.phone_number }}</td>
+                        <td style="padding: 12px;">{{ customer.company_name }}</td>
+                        <td style="padding: 12px;">{{ customer.GST }}</td>
+                        <td style="padding: 12px;">
+                            <form method="post" action="{% url 'delete_customer' customer.customer_id %}" onsubmit="return confirm('Are you sure you want to delete this customer?');">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 14px;">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" style="padding: 16px; text-align: center; color: #666;">No customers found for this admin.</td>
+                        <td colspan="7" style="padding: 16px; text-align: center; color: #666;">No customers found for this admin.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -38,9 +45,8 @@
         </div>
 
         <div style="margin-top: 24px;">
-            <a href="{% url 'view_admins' %}" style="display: inline-flex; align-items: center; color: #1a1a1a; text-decoration: none; font-weight: 500;">
-                <span style="display: inline-block; margin-right: 4px;">←</span>
-                Back to Admin List
+            <a href="{% url 'view_admins' %}" style="color: #1a1a1a; text-decoration: none; font-weight: 500;">
+                ← Back to Admin List
             </a>
         </div>
     </div>

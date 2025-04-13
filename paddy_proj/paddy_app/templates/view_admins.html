@@ -8,7 +8,6 @@
     <!-- Add Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom black secondary color */
         .bg-secondary {
             background-color: #000000;
         }
@@ -32,6 +31,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider border-b border-gray-200">Name</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider border-b border-gray-200">Email</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider border-b border-gray-200">Phone</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider border-b border-gray-200">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -45,10 +45,16 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ admin.email }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ admin.phone_number }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                            <form method="POST" action="{% url 'delete_admin' admin.admin_id %}" onsubmit="return confirm('Are you sure you want to delete this admin?');">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No admins found.</td>
+                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">No admins found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
