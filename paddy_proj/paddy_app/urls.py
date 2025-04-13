@@ -26,7 +26,7 @@ urlpatterns = [
     path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'), 
     path('view-admins/', view_admins, name='view_admins'),
     path("view-customers/<int:admin_id>/", view_customers_under_admin, name="admin_customers"),
-    path('superadmin/subscription-review/', super_admin_subscription, name='super_admin_subscription'),
+    path('superadmin/subscription-review/', superadmin_subscription, name='superadmin_subscription'),
     path('superadmin/review-subscription/', superadmin_subscription_review, name='superadmin_subscription_review'),
 
     ]
