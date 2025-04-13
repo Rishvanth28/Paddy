@@ -9,6 +9,9 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from .decorators import role_required
 import json
+from django.shortcuts import render, get_object_or_404, redirect
+
+
 def login_view(request):
     # Redirect already logged-in users based on their role
     if request.session.get("user_id") and request.session.get("role"):
@@ -429,6 +432,23 @@ def view_admins(request):
     admins = AdminTable.objects.exclude(admin_id=1000000)
     return render(request, 'view_admins.html', {'admins': admins})
 
+@role_required(["superadmin"])
+def delete_admin(request, admin_id):
+    if request.method == "POST":
+        admin = get_object_or_404(AdminTable, admin_id=admin_id)
+
+        # Prevent deletion of primary superadmin
+        if admin.admin_id == 1000000:
+            messages.error(request, "Superadmin cannot be deleted.")
+            return redirect("view_admins")
+
+        admin.delete()
+        messages.success(request, f"Admin {admin.first_name} {admin.last_name} deleted successfully.")
+        return redirect("view_admins")
+    else:
+        messages.error(request, "Invalid request method.")
+        return redirect("view_admins")
+
 @role_required(["superadmin", "admin"])
 def view_customers_under_admin(request, admin_id):
     try:
@@ -442,6 +462,7 @@ def view_customers_under_admin(request, admin_id):
         'admin': admin,
         'customers': customers
     })
+
 
     
 def logout_view(request):
