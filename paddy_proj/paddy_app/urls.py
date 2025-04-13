@@ -33,6 +33,7 @@ urlpatterns = [
     path("delete-customer/<str:customer_id>/", delete_customer, name="delete_customer"),
 
 
+
     ]
 
 
