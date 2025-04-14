@@ -2,6 +2,8 @@ import re
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
+from django.utils.timezone import now
+from datetime import timedelta
 
 def validate_gst(value):
     """ Validate GST format (15-character alphanumeric) """
@@ -128,13 +130,13 @@ class Payments(models.Model):
 
 class Subscription(models.Model):
     sid = models.BigAutoField(primary_key=True)
-    customer_id = models.ForeignKey(CustomerTable,null=True, on_delete=models.CASCADE)
-    admin_id = models.ForeignKey(AdminTable,null=True, on_delete=models.CASCADE)
-    subscription_status = models.IntegerField(default=0)  # 0: Pending, 1: Approved, 2: Rejected
+    customer_id = models.ForeignKey('CustomerTable', null=True, blank=True, on_delete=models.CASCADE)
+    admin_id = models.ForeignKey('AdminTable', null=True, blank=True, on_delete=models.CASCADE)
+    subscription_type = models.CharField(max_length=255)  # 'admin', 'customer', etc.
+    subscription_status = models.IntegerField(default=0)  # 0: Pending, 1: Active
     payment_amount = models.BigIntegerField(default=0)
-    subscription_type = models.CharField(max_length=255)
-    date_approved = models.DateField(null=True, blank=True)
-    additional_users = models.IntegerField(null=True, blank=True)
+    start_date = models.DateField(default=now)
+    end_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"Subscription {self.sid} - {self.subscription_type}"

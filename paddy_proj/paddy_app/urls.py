@@ -33,10 +33,8 @@ urlpatterns = [
     path("delete-admin/<int:admin_id>/", delete_admin, name="delete_admin"),
     path("delete-customer/<str:customer_id>/", delete_customer, name="delete_customer"),
     path('upgrade-success/',upgrade_success, name='upgrade_success'),
-
-
-
-
+    path("admin-subscription/", admin_subscription_payment, name="admin_subscription_payment"),
+    path("payment-success/", payment_success, name="payment_success"),
     ]
 
 
