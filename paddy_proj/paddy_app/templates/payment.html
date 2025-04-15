@@ -1,6 +1,5 @@
 {% extends 'customer_base.html' %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/invoice.css' %}">
 {% block content %}
 <div class="invoice-container">
     <div class="invoice-header">
@@ -38,7 +37,7 @@
                 {% for item in order_items %}
                 <tr>
                     <td>
-                        {{ item.product_name }} {{ item.weight_per_unit }}
+                        {{ item.product_name }}
                         <br>
                         <em>Batch: {{ item.batch_number }}</em>
                         <br>

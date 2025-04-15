@@ -477,6 +477,7 @@
                     <div class="col-md-6">
                         <h6>Order Details</h6>
                         <table class="table table-sm">
+                            ${order.product_category_id === 3 ? '': `
                             <tr>
                                 <td>Quantity:</td>
                                 <td>${order.quantity}</td>
@@ -485,6 +486,7 @@
                                 <td>Price Per Unit:</td>
                                 <td>₹${order.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                             </tr>
+                            `}
                             <tr>
                                 <td>Category:</td>
                                 <td>${order.product_category_id === 1 ? 'Rice' : order.product_category_id === 2 ? 'Paddy' : 'Pesticide'}</td>

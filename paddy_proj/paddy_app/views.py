@@ -303,22 +303,27 @@ def customer_orders(request):
     return render(request, 'customer_order.html')
 @role_required(["customer"])
 def payment(request):
-    order = Orders.objects.get(pk=request.get.order_id)
+    id = request.POST.get('order_id')
+    order = Orders.objects.get(pk=id)
     
     # Assuming you have a related model for order items/products
     # If not, you'll need to create one to store multiple products per order
-    order_items = OrderItems.objects.filter(order=order)
-    
-    # context = {
-    #     'order': order,
-    #     'order_items': order_items,
-    #     'customer': order.customer,
-    #     'total_amount': order.overall_amount,
-    #     'payment_terms': '90 Days',  # You might want to store this in your model
-    #     'invoice_date': order.order_date,
-    #     'invoice_number': f"UFs {order_id}",
-    # }
-    return render(request, 'payment.html')
+    if order.product_category_id == 2:
+        order_items = OrderItems.objects.filter(order=order)
+    else:
+        order_items = [{'quantity':order.quantity,'price_per_unit':order.price_per_unit,
+                        'total_amount':order.overall_amount,'product_name':'Paddy' if order.product_category_id == 2 else 'Rice'}]
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'customer': order.customer,
+        'total_amount': order.overall_amount,
+        'payment_terms': '90 Days',  # You might want to store this in your model
+        'invoice_date': order.order_date,
+        'invoice_number': f"UFs {order.order_id}",
+        'amount_in_words': number_to_words_indian(order.overall_amount)
+    }
+    return render(request, 'payment.html',context)
 
 def customer_delivery_validation(request):
     if request.method == 'POST':

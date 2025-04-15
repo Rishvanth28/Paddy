@@ -7,10 +7,7 @@ def number_to_words_indian(num):
             'Seventeen', 'Eighteen', 'Nineteen']
     
     tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
-    
-    # For Indian numbering system
-    denominations = ['', 'Thousand', 'Lakh', 'Crore']
-    
+
     # Handle zero separately
     if num == 0:
         return "Zero"

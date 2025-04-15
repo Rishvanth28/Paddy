@@ -99,7 +99,6 @@ class Orders(models.Model):
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items')
     product_name = models.CharField(max_length=255)  # Store at time of order
-    weight_per_unit = models.CharField(max_length=50)  # E.g., "24 KG"
     batch_number = models.CharField(max_length=100)
     expiry_date = models.DateField()
     quantity = models.IntegerField()
