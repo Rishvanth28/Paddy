@@ -11,10 +11,20 @@ from .decorators import role_required
 from .helpers import *
 import json
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.timezone import now
+import razorpay
+from django.conf import settings
+from datetime import timedelta
+from django.views.decorators.csrf import csrf_exempt
+
+
+RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
+RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"
+
+client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
 
 
 def login_view(request):
-    # Redirect already logged-in users based on their role
     if request.session.get("user_id") and request.session.get("role"):
         role = request.session["role"]
         if role == "superadmin":
@@ -25,71 +35,56 @@ def login_view(request):
             return redirect("customer_dashboard")
 
     if request.method == "POST":
-        phone_number = request.POST.get("username")  # Phone number as username
+        phone_number = request.POST.get("username")
         password = request.POST.get("password")
-        role = request.POST.get("role")  # Role from dropdown
+        role = request.POST.get("role")
 
         if not phone_number or not password or not role:
             messages.error(request, "All fields are required.")
             return redirect("login")
 
-        # Super Admin Login
         if role == "superadmin":
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
-
                 if user.admin_id > 1000000:
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
-
                 if check_password(password, user.password):
                     request.session["user_id"] = user.admin_id
                     request.session["role"] = "superadmin"
-                    messages.success(request, "Login successful!")
                     return redirect("superadmin_dashboard")
-                else:
-                    messages.error(request, "Invalid password.")
             except AdminTable.DoesNotExist:
                 messages.error(request, "Super Admin not found.")
 
-        # Admin Login
         elif role == "admin":
             try:
                 user = AdminTable.objects.get(phone_number=phone_number)
-
                 if user.admin_id == 1000000:
                     messages.error(request, "Unauthorized access.")
                     return redirect("login")
-
                 if check_password(password, user.password):
                     request.session["user_id"] = user.admin_id
                     request.session["role"] = "admin"
-                    messages.success(request, "Login successful!")
-                    return redirect("admin_dashboard")
-                else:
-                    messages.error(request, "Invalid password.")
+                    sub = Subscription.objects.filter(admin_id=user, subscription_type="admin").order_by("-end_date").first()
+                    if sub and sub.end_date and sub.end_date >= now().date():
+                        return redirect("admin_dashboard")
+                    else:
+                        return redirect("admin_subscription_payment")
             except AdminTable.DoesNotExist:
                 messages.error(request, "Admin not found.")
 
-        # Customer Login
         elif role == "customer":
             try:
                 user = CustomerTable.objects.get(phone_number=phone_number)
                 if check_password(password, user.password):
                     request.session["user_id"] = user.customer_id
                     request.session["role"] = "customer"
-                    messages.success(request, "Login successful!")
                     return redirect("customer_dashboard")
-                else:
-                    messages.error(request, "Invalid password.")
             except CustomerTable.DoesNotExist:
                 messages.error(request, "Customer not found.")
-
         else:
             messages.error(request, "Invalid role selected.")
-
     return render(request, "login.html")
-
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
@@ -419,6 +414,7 @@ def superadmin_subscription_review(request):
     # If not POST, redirect to the list view
     return redirect('superadmin_subscription')
 
+
 @role_required(["customer"])
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')
@@ -443,6 +439,35 @@ def upgrade_to_admin(request):
         return redirect('customer_dashboard')
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
+
+
+#------------------------------------------------------upgrade admin to customer--------------------------------------------------
+@role_required(["admin"])
+def upgrade_to_customer(request):
+    admin_id = request.session.get('user_id')
+    admin = AdminTable.objects.get(admin_id=admin_id)
+
+    if request.method == 'POST':
+        # Fix: Pass admin_id to avoid null value error
+        CustomerTable.objects.create(
+            admin_id=admin.admin_id,  # pass the admin ID explicitly
+            first_name=admin.first_name,
+            last_name=admin.last_name,
+            phone_number=admin.phone_number,
+            email=admin.email,
+            password=admin.password  # already hashed
+        )
+        messages.success(request, "You have been upgraded to customer!")
+        return redirect('upgrade_success')
+
+    return render(request, 'upgrade_to_customer.html', {'admin': admin})
+
+
+def upgrade_success(request):
+    return render(request, 'upgrade_success.html')
+
+
+
 
 @role_required(["customer"])
 def customer_dashboard(request):
@@ -529,3 +554,66 @@ def admin_login_submit(request):
 
 def demo(request):
     return render(request, 'demo.html')
+
+def admin_subscription_payment(request):
+    if request.method == "POST":
+        plan = request.POST.get("plan")
+        admin_id = request.session.get("user_id")
+
+        if not admin_id:
+            messages.error(request, "Session expired. Please log in again.")
+            return redirect("login")
+
+        amount = 100 if plan == "1month" else 180
+        duration = 30 if plan == "1month" else 60
+
+        order_data = {
+            "amount": amount * 100,  # In paise
+            "currency": "INR",
+            "payment_capture": "1"
+        }
+        razorpay_order = client.order.create(data=order_data)
+
+        # Save data in session
+        request.session["subscription_amount"] = amount
+        request.session["subscription_days"] = duration
+        request.session["razorpay_order_id"] = razorpay_order["id"]
+
+        return render(request, "admin_subscription_payment.html", {
+            "order_id": razorpay_order["id"],
+            "amount": amount * 100,
+            "key_id": RAZORPAY_KEY_ID
+        })
+
+    return render(request, "admin_select_subscription_plan.html")
+
+
+@csrf_exempt
+def payment_success(request):
+    if request.method == "POST":
+        try:
+            import json
+            data = json.loads(request.body)
+
+            admin_id = request.session.get("user_id")
+            amount = request.session.get("subscription_amount")
+            days = request.session.get("subscription_days")
+
+            if not all([admin_id, amount, days]):
+                return JsonResponse({"success": False, "message": "Session data missing."})
+
+            Subscription.objects.create(
+                admin_id_id=admin_id,
+                subscription_type="admin",
+                payment_amount=amount,
+                start_date=now().date(),
+                end_date=now().date() + timedelta(days=int(days)),
+                subscription_status=1
+            )
+
+            return JsonResponse({"success": True})
+        except Exception as e:
+            print("Error during payment success:", e)
+            return JsonResponse({"success": False, "message": "Error processing subscription"})
+
+    return JsonResponse({"success": False, "message": "Invalid request"})
