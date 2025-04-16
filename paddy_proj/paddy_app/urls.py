@@ -35,6 +35,9 @@ urlpatterns = [
     path('upgrade-success/',upgrade_success, name='upgrade_success'),
     path("admin-subscription/", admin_subscription_payment, name="admin_subscription_payment"),
     path("payment-success/", payment_success, name="payment_success"),
+    path("customer-subscription/", customer_subscription_payment, name="customer_subscription_payment"),
+    path("customer-payment-success/", customer_payment_success, name="customer_payment_success"),
+
     ]
 
 

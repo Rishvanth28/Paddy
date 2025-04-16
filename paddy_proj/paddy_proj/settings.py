@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+'paddy_app.middleware.SubscriptionMiddleware',]
 
 ROOT_URLCONF = 'paddy_proj.urls'
 

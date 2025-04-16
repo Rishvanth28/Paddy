@@ -12,7 +12,7 @@ from .helpers import *
 import json
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
-#import razorpay
+import razorpay
 from django.conf import settings
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
@@ -21,8 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
 RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"
 
-#client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
-
+client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
 
 def login_view(request):
     if request.session.get("user_id") and request.session.get("role"):
@@ -79,12 +78,34 @@ def login_view(request):
                 if check_password(password, user.password):
                     request.session["user_id"] = user.customer_id
                     request.session["role"] = "customer"
-                    return redirect("customer_dashboard")
+
+                    # Subscription check
+                    sub = Subscription.objects.filter(customer_id=user, subscription_type="customer").order_by("-end_date").first()
+                    
+                    if sub:
+                        if sub.end_date and sub.end_date >= now().date():
+                            return redirect("customer_dashboard")
+                        else:
+                            return redirect("customer_subscription_payment")
+                    else:
+                        # Free trial logic
+                        Subscription.objects.create(
+                            customer_id=user,
+                            subscription_type="customer",
+                            subscription_status=1,
+                            payment_amount=0,
+                            start_date=now().date(),
+                            end_date=now().date() + timedelta(days=30)
+                        )
+                        return redirect("customer_dashboard")
             except CustomerTable.DoesNotExist:
                 messages.error(request, "Customer not found.")
+
         else:
             messages.error(request, "Invalid role selected.")
+
     return render(request, "login.html")
+
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
@@ -171,7 +192,6 @@ def create_customer(request):
             messages.error(request, "Admin not found. Please log in again.")
             return redirect("login")
 
-        # Check if customer limit is reached
         current_customer_count = CustomerTable.objects.filter(admin=admin).count()
         if current_customer_count >= admin.user_count:
             messages.error(request, "Customer limit reached for your account!")
@@ -190,7 +210,7 @@ def create_customer(request):
             return redirect("onboard" if is_superadmin else "customer_onboard")
 
         try:
-            CustomerTable.objects.create(
+            customer = CustomerTable.objects.create(
                 first_name=first_name,
                 last_name=last_name,
                 phone_number=phone_number,
@@ -202,6 +222,16 @@ def create_customer(request):
                 admin=admin,
             )
 
+            # ✅ Create default 1-month free subscription for customer
+            Subscription.objects.create(
+                customer_id=customer,
+                subscription_type="customer",
+                subscription_status=1,
+                payment_amount=0,
+                start_date=now().date(),
+                end_date=now().date() + timedelta(days=30)
+            )
+
             messages.success(request, "Customer created successfully!")
             return redirect("onboard" if is_superadmin else "customer_onboard")
 
@@ -209,6 +239,7 @@ def create_customer(request):
             messages.error(request, "Failed to create customer. Please try again.")
 
     return render(request, "onboard.html" if is_superadmin else "customer_onboard.html")
+
 
 @role_required(["superadmin", "admin"])
 def place_order(request):
@@ -296,6 +327,7 @@ def customer_orders(request):
     
     # For regular page load, just render the template (JS will fetch data)
     return render(request, 'customer_order.html')
+
 @role_required(["customer"])
 def payment(request):
     id = request.POST.get('order_id')
@@ -416,7 +448,6 @@ def superadmin_subscription_review(request):
     # If not POST, redirect to the list view
     return redirect('superadmin_subscription')
 
-
 @role_required(["customer"])
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')
@@ -442,8 +473,6 @@ def upgrade_to_admin(request):
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
-
-#------------------------------------------------------upgrade admin to customer--------------------------------------------------
 @role_required(["admin"])
 def upgrade_to_customer(request):
     admin_id = request.session.get('user_id')
@@ -464,12 +493,8 @@ def upgrade_to_customer(request):
 
     return render(request, 'upgrade_to_customer.html', {'admin': admin})
 
-
 def upgrade_success(request):
     return render(request, 'upgrade_success.html')
-
-
-
 
 @role_required(["customer"])
 def customer_dashboard(request):
@@ -566,7 +591,7 @@ def admin_subscription_payment(request):
             messages.error(request, "Session expired. Please log in again.")
             return redirect("login")
 
-        amount = 100 if plan == "1month" else 180
+        amount = 200 if plan == "1month" else 350
         duration = 30 if plan == "1month" else 60
 
         order_data = {
@@ -574,12 +599,16 @@ def admin_subscription_payment(request):
             "currency": "INR",
             "payment_capture": "1"
         }
+
         razorpay_order = client.order.create(data=order_data)
 
-        # Save data in session
+        # Save session details
         request.session["subscription_amount"] = amount
         request.session["subscription_days"] = duration
         request.session["razorpay_order_id"] = razorpay_order["id"]
+        request.session["subscription_type"] = "admin"
+        request.session["subscription_for"] = "admin"
+        request.session["admin_id"] = admin_id
 
         return render(request, "admin_subscription_payment.html", {
             "order_id": razorpay_order["id"],
@@ -589,18 +618,130 @@ def admin_subscription_payment(request):
 
     return render(request, "admin_select_subscription_plan.html")
 
+def customer_subscription_payment(request):
+    if request.method == "POST":
+        plan = request.POST.get("plan")
+        customer_id = request.session.get("user_id")
+
+        if not customer_id:
+            messages.error(request, "Session expired. Please log in again.")
+            return redirect("login")
+
+        amount = 100 if plan == "1month" else 180
+        duration = 30 if plan == "1month" else 60
+
+        order_data = {
+            "amount": amount * 100,  # In paise
+            "currency": "INR",
+            "payment_capture": "1"
+        }
+
+        razorpay_order = client.order.create(data=order_data)
+
+        # Save session details
+        request.session["subscription_amount"] = amount
+        request.session["subscription_days"] = duration
+        request.session["razorpay_order_id"] = razorpay_order["id"]
+        request.session["subscription_type"] = "customer"
+        request.session["subscription_for"] = "customer"
+        request.session["admin_id"] = customer_id
+
+        return render(request, "customer_subscription_payment.html", {
+            "order_id": razorpay_order["id"],
+            "amount": amount * 100,
+            "key_id": RAZORPAY_KEY_ID
+        })
+
+    return render(request, "customer_select_subscription_plan.html")
+
+
+@csrf_exempt
+def customer_payment_success(request):
+    if request.method == "POST":
+        try:
+            import json
+            import traceback
+
+            data = json.loads(request.body)
+            print("💡 Incoming Razorpay Data:", data)
+
+            customer_id = request.session.get("user_id")
+            amount = request.session.get("subscription_amount")
+            days = request.session.get("subscription_days")
+
+            print("💡 Session Values - customer_id:", customer_id, "amount:", amount, "days:", days)
+
+            # Validate session values
+            if not all([customer_id, amount, days]):
+                print("⚠️ Missing session data.")
+                return JsonResponse({"success": False, "message": "Session data missing or expired. Please log in again."})
+
+            # Try to find existing subscription
+            existing_subscription = Subscription.objects.filter(
+                customer_id=customer_id,
+                subscription_type="customer"
+            ).order_by("-end_date").first()
+
+            if existing_subscription:
+                # Extend existing subscription
+                existing_subscription.start_date = now().date()
+                existing_subscription.end_date = (existing_subscription.end_date or now().date()) + timedelta(days=int(days))
+                existing_subscription.payment_amount += int(amount)
+                existing_subscription.subscription_status = 1
+                existing_subscription.save()
+
+                print("✅ Existing subscription updated.")
+                return JsonResponse({"success": True, "message": "Subscription extended successfully."})
+
+            # Create new subscription
+            Subscription.objects.create(
+                customer_id_id=customer_id,
+                subscription_type="customer",
+                payment_amount=int(amount),
+                start_date=now().date(),
+                end_date=now().date() + timedelta(days=int(days)),
+                subscription_status=1
+            )
+
+            print("✅ New subscription created.")
+            return JsonResponse({"success": True, "message": "Subscription created successfully."})
+
+        except Exception as e:
+            print("🔴 Error during payment success:")
+            traceback.print_exc()
+            return JsonResponse({"success": False, "message": f"Error: {str(e)}"})
+
+    return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
+
 
 @csrf_exempt
 def payment_success(request):
     if request.method == "POST":
         try:
+            # Parse the incoming JSON data
+            import json
+            data = json.loads(request.body)
+
             admin_id = request.session.get("user_id")
             amount = request.session.get("subscription_amount")
             days = request.session.get("subscription_days")
 
+            # Ensure that necessary session data is present
             if not all([admin_id, amount, days]):
-                return JsonResponse({"success": False, "message": "Session data missing."})
+                return JsonResponse({"success": False, "message": "Session data missing or expired. Please log in again."})
 
+            # Check if the admin already has a subscription and update the subscription if it exists
+            existing_subscription = Subscription.objects.filter(admin_id=admin_id, subscription_type="admin").order_by("-end_date").first()
+
+            if existing_subscription:
+                # Extend the existing subscription by the specified number of days
+                existing_subscription.start_date = now().date()
+                existing_subscription.end_date = existing_subscription.end_date + timedelta(days=int(days))
+                existing_subscription.payment_amount += amount  # Add the new payment amount to the existing one
+                existing_subscription.save()
+                return JsonResponse({"success": True, "message": "Subscription extended successfully."})
+
+            # If no existing subscription, create a new one
             Subscription.objects.create(
                 admin_id_id=admin_id,
                 subscription_type="admin",
@@ -610,9 +751,11 @@ def payment_success(request):
                 subscription_status=1
             )
 
-            return JsonResponse({"success": True})
+            return JsonResponse({"success": True, "message": "Subscription created successfully."})
+
         except Exception as e:
             print("Error during payment success:", e)
-            return JsonResponse({"success": False, "message": "Error processing subscription"})
+            return JsonResponse({"success": False, "message": "Error processing subscription. Please try again."})
 
-    return JsonResponse({"success": False, "message": "Invalid request"})
+    # Handle invalid request type
+    return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})

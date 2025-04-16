@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complete Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body class="bg-white">
+<div class="container mt-5">
+    <div class="text-center">
+        <h2 class="mb-4">Complete Your Subscription Payment</h2>
+        <button id="rzp-button" class="btn btn-success px-5 py-2">Pay Now</button>
+    </div>
+</div>
+
+<script>
+    const options = {
+        "key": "{{ key_id }}",
+        "amount": "{{ amount }}",
+        "currency": "INR",
+        "name": "Paddy Management System",
+        "description": "Customer Subscription",
+        "order_id": "{{ order_id }}",
+        "handler": function (response) {
+            fetch("{% url 'customer_payment_success' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "{% url 'customer_dashboard' %}";
+                } else {
+                    alert("Payment failed. Please try again.");
+                }
+            });
+        },
+        "theme": {
+            "color": "#000000"
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = function(e) {
+        rzp.open();
+        e.preventDefault();
+    };
+</script>
+</body>
+</html>

@@ -1,1 +1,32 @@
 {% extends 'superadmin_base.html' %}
+{% load static %}
+{% block content %}
+{% if messages %}
+    <div id="message-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(() => {
+            const messageContainer = document.getElementById('message-container');
+            if (messageContainer) {
+                messageContainer.style.display = 'none';
+            }
+        }, 3000);
+    </script>
+{% endif %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'css/superadmin_dashboard.css' %}">
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="navbar-title">Dashboard</div>
+    </div>
+</body>
+{% endblock %}
