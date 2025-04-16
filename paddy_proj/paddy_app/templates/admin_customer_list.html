@@ -8,216 +8,7 @@
     <title>Customers Under You</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <style>
-        body {
-            background: linear-gradient(to right, #0f0f0f, #1f1f1f);
-            font-family: 'Inter', sans-serif;
-            color: #f1f1f1;
-
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1600px;
-            margin-left: 1.8vw;
-            margin-right: 1vw;
-        }
-
-        .header-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .search-wrapper {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            margin-left: -13vw;
-            position: relative;
-            z-index: 1;
-        }
-
-        .search-wrapper input[type="search"] {
-            background-color: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 0.7rem 1rem 0.7rem 2.5rem;
-            font-size: 1rem;
-            border-radius: 50px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .search-wrapper input[type="search"]::placeholder {
-            color: #777;
-            font-style: italic;
-        }
-
-        .search-wrapper input[type="search"]:focus {
-            outline: none;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-        }
-
-        .card {
-            border: none;
-            border-radius: 1.5rem;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 2rem;
-            border-bottom: none;
-            background: linear-gradient(to right, #2c2c2c, #3f3f3f);
-            color: white;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 1px;
-            color: #000000;
-            position: relative;
-            text-transform: uppercase;
-            padding-bottom: 0.6rem;
-            text-align: left;
-            /* <-- Ensure left alignment */
-        }
-
-
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            /* initial width */
-            height: 4px;
-            background-color: #000000;
-            border-radius: 2px;
-            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-            /* added transition for both properties */
-        }
-
-        .page-title:hover::after {
-            width: 110%;
-            /* makes the underline grow */
-            transform: translateX(-50%);
-            /* keep it centered */
-        }
-
-
-        .table-responsive {
-            overflow-x: auto;
-            scrollbar-width: thin;
-        }
-
-        .table {
-            margin: 0;
-        }
-
-        .table th {
-            background-color: #111827;
-            color: #ffffff;
-            font-weight: 600;
-            text-align: center;
-            vertical-align: middle;
-            border: none;
-            text-transform: uppercase;
-            padding: 20px;
-        }
-
-        .table td {
-            vertical-align: middle;
-            text-align: center;
-            font-size: 0.95rem;
-            background-color: #ffffff;
-            color: #000000;
-            padding: 20px;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: #2c2c2c;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        .no-customers {
-            padding: 3rem;
-            text-align: center;
-            color: #a0aec0;
-        }
-
-        .no-customers svg {
-            color: #4b5563;
-            margin-bottom: 1rem;
-        }
-
-        .table-responsive::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb {
-            background: #6b7280;
-            border-radius: 10px;
-        }
-
-        .table-responsive::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        @media (max-width: 768px) {
-            .search-container {
-                width: 100%;
-                margin-top: 1rem;
-                text-align: center;
-            }
-
-            .page-title {
-                font-size: 1.5rem;
-                text-align: center;
-                width: 100%;
-            }
-
-            .d-flex.flex-wrap.mb-4 {
-                flex-direction: column;
-                gap: 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .customer-heading {
-                font-size: 1.5rem;
-                text-align: center;
-            }
-        }
-
-
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 1.5rem;
-            }
-
-            .card-header {
-                padding: 1.5rem;
-            }
-
-            .search-container {
-                position: static;
-                margin-bottom: 1rem;
-                text-align: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}">
 </head>
 
 <body>
@@ -268,9 +59,14 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    <!-- This div is hidden by default -->
+                    <div class="no-results-found d-none text-center py-4 fs-5 text-muted">
+                        <i class="fas fa-user-slash fa-2x mb-3 text-secondary"></i>
+                        <p>No customers match your search.</p>
+                    </div>
                 </div>
                 {% else %}
-                <div class="no-customers" style="display: none;">
+                <div class="no-customers">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
                         class="bi bi-people mb-3" viewBox="0 0 16 16">
                         <path
@@ -284,35 +80,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const searchInput = document.querySelector('input[name="q"]');
-            const rows = document.querySelectorAll("tbody tr");
-            const noCustomersDiv = document.querySelector(".no-customers");
-
-            searchInput.addEventListener("input", function () {
-                const query = this.value.toLowerCase().trim();
-                let anyVisible = false;
-
-                rows.forEach(row => {
-                    const cells = row.querySelectorAll("td");
-                    const customerID = cells[0].textContent.toLowerCase();
-                    const fullName = cells[1].textContent.toLowerCase();
-                    const company = cells[4].textContent.toLowerCase();
-
-                    const matches = customerID.includes(query) || fullName.includes(query) || company.includes(query);
-
-                    row.style.display = matches ? "" : "none";
-                    if (matches) anyVisible = true;
-                });
-
-                if (noCustomersDiv) {
-                    noCustomersDiv.style.display = anyVisible ? "none" : "block";
-                }
-            });
-        });
-    </script>
-
-
+    <script src="{% static 'js/admin_customer_list.js' %}" defer></script>
 </body>
 {% endblock %}
