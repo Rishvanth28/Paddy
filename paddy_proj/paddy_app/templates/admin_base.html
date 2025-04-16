@@ -27,33 +27,19 @@
     <!-- Sidebar -->
     <div class="middle-content">
       <ul class="menu">
-        <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon"> 
-          <a href="{% url 'admin_dashboard' %}" style="text-decoration: none; color: inherit;">Dashboard</a></li>
+        <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon">
+          <a href="{% url 'admin_dashboard' %}" style="text-decoration: none; color: inherit;">Dashboard</a>
+        </li>
 
         <!-- Onboarding -->
-        <li >
+        <li>
           <img class="icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding Icon">
           <a href="{% url 'customer_onboard' %}" style="text-decoration: none; color: inherit;">Customer Onboarding</a>
         </li>
 
         <!-- Subscribers -->
         <!-- Subscribers Toggle -->
-        <li class="submenu-toggle">
-          <div style="display: flex; align-items: center; gap: 8px; margin-left: -17px;">
-            <span class="chevron rotate">
-              <svg width="12" height="12" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                <path
-                  d="M96 96c-8.188 0-16.38 3.125-22.62 9.375c-12.5 12.5-12.5 32.75 0 45.25L178.8 256l-105.4 105.4c-12.5 12.5-12.5 32.75 0 45.25S109.5 419.1 122 406.6l128-128c12.5-12.5 12.5-32.75 0-45.25l-128-128C112.4 99.13 104.2 96 96 96z" />
-              </svg>
-            </span>
-            <img class="icon" src="{% static 'media/IconSet (1).png' %}" alt="Subscribers Icon"> Subscribers
-          </div>
-        </li>
 
-        <!-- Submenu visible by default -->
-        <ul style="margin-left: 20px;" class="submenu">
-          <li>Status</li>
-        </ul>
 
         <li>
           <a href="{% url 'admin_customer_list' %}" class="menu-link" style="text-decoration: none;color: inherit;">
@@ -61,20 +47,21 @@
             Customers
           </a>
         </li>
-        <li><img class="icon" src="{% static 'media/Group 2.png' %}" alt="Admins Icon"> Admins</li>
-        <li >
+
+        <li>
           <img class="icon" src="{% static 'media/Vector.png' %}" alt="Place Order Icon">
           <a href="{% url 'admin_place_order' %}" style="text-decoration: none; color: inherit;">Place Order</a>
         </li>
-        <li >
+        <li>
           <img class="icon" src="{% static 'media/Vector.png' %}" alt="Place Order Icon">
           <a href="{% url 'upgrade_admin' %}" style="text-decoration: none; color: inherit;">upgrade_to_admin</a>
         </li>
-        <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon"> 
-          <a href="{% url 'admin_add_subscription' %}" style="text-decoration: none; color: inherit;">Subscription</a></li>
+        <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon">
+          <a href="{% url 'admin_add_subscription' %}" style="text-decoration: none; color: inherit;">Subscription</a>
+        </li>
       </ul>
     </div>
-   
+
     <!-- Footer -->
     <div class="footer-text">
       Logo Here
@@ -122,7 +109,7 @@
       });
     });
   </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

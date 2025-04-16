@@ -86,7 +86,7 @@ body {
 .menu li:hover {
   background-color: rgba(7, 6, 6, 0.1);
   border-radius: 8px;
-  margin-right: 10px;
+  
   transform: translateX(-8px);
   /* Expand slightly to the left */
   transition: all 0.3s ease;
@@ -99,7 +99,7 @@ body {
 .menu li.active {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  margin-right: 10px;
+  
   transform: translateX(-8px);
   /* Expand slightly to the left */
   transition: all 0.3s ease;
@@ -162,7 +162,18 @@ body {
   width: 16px;
   height: 16px;
 }
-
+.logout-button{
+  display: block;
+  margin: 10px auto 0;
+  padding: 12px 30px;
+  font-size: 16px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 .logout-button:hover {
   background-color: #ff0000 !important;
   color: white;
