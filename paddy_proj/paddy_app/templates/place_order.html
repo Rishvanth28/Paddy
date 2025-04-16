@@ -151,72 +151,69 @@
 
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="product_name">Product Name*</label>
-                        <input type="text" name="product_name[]" class="product-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="batch_number">Batch*</label>
-                        <input type="text" name="batch_number[]" class="batch-number" required>
-                    </div>
-                </div>
+                <div class="items-section">
+                    <h3>Order Items</h3>
+                    <table id="items-table" class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Batch</th>
+                                <th>Expiry Date</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Per</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="items-container">
+                            <tr class="item-row">
+                                <td>
+                                    <input type="text" name="product_name[]" class="product-name" required>
+                                </td>
+                                <td>
+                                    <input type="text" name="batch_number[]" class="batch-number" required>
+                                </td>
+                                <td>
+                                    <input type="date" name="expiry_date[]" class="expiry-date" required>
+                                </td>
+                                <td>
+                                    <input type="number" name="quantity[]" class="quantity" step="0.01" required onchange="calculateRowTotal(this)">
+                                </td>
+                                <td>
+                                    <input type="number" name="price_per_unit[]" class="price" step="0.01" required onchange="calculateRowTotal(this)">
+                                </td>
+                                <td>
+                                    <select name="unit[]" class="unit">
+                                        <option value="Nos">Nos</option>
+                                        <option value="Kg">Kg</option>
+                                        <option value="Ltr">Ltr</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" name="total_amount[]" class="row-total" step="0.01" readonly>
+                                </td>
+                                <td>
+                                    <button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" style="text-align: right;"><strong>Total:</strong></td>
+                                <td>
+                                    <input type="number" id="grand-total" name="grand_total" step="0.01" readonly>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="expiry_date">Expiry Date*</label>
-                        <input type="date" name="expiry_date[]" class="expiry-date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="quantity">Quantity*</label>
-                        <input type="number" name="quantity[]" class="quantity" step="0.01" required onchange="calculateRowTotal(this)">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="price_per_unit">Rate*</label>
-                        <input type="number" name="price_per_unit[]" class="price" step="0.01" required onchange="calculateRowTotal(this)">
-                    </div>
-                    <div class="form-group">
-                        <label for="unit">Per*</label>
-                        <select name="unit[]" class="unit">
-                            <option value="Nos">Nos</option>
-                            <option value="Kg">Kg</option>
-                            <option value="Ltr">Ltr</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="total_amount">Amount</label>
-                        <input type="number" name="total_amount[]" class="row-total" step="0.01" readonly>
-                    </div>
-                    <div class="form-group" style="align-self: end;">
-                        <button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
+                    <div style="margin-top: 1rem;">
                         <button type="button" id="add-item-btn" onclick="addNewRow()">+ Add Item</button>
                     </div>
                 </div>
                 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="grand-total">Total:</label>
-                        <input type="number" id="grand-total" name="grand_total" step="0.01" readonly>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="delivery_date">Order Date</label>
-                        <input type="date" name="delivery_date" required>
-                    </div>
-                </div>
                 
 
                 <div class="form-actions">
@@ -331,6 +328,58 @@
         setupCustomerListeners("customer-select-paddy", "customer-last-name-paddy");
         setupCustomerListeners("customer-select-pesticide", "customer-last-name-pesticide");
     </script>
-
+    <script>
+        function addNewRow() {
+            const tableBody = document.getElementById("items-container");
+            const newRow = document.createElement("tr");
+            newRow.classList.add("item-row");
+        
+            newRow.innerHTML = `
+                <td><input type="text" name="product_name[]" class="product-name" required></td>
+                <td><input type="text" name="batch_number[]" class="batch-number" required></td>
+                <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
+                <td><input type="number" name="quantity[]" class="quantity" step="0.01" required onchange="calculateRowTotal(this)"></td>
+                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" required onchange="calculateRowTotal(this)"></td>
+                <td>
+                    <select name="unit[]" class="unit">
+                        <option value="Nos">Nos</option>
+                        <option value="Kg">Kg</option>
+                        <option value="Ltr">Ltr</option>
+                    </select>
+                </td>
+                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
+                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
+            `;
+        
+            tableBody.appendChild(newRow);
+        }
+        
+        function removeRow(button) {
+            const row = button.closest("tr");
+            if (row) {
+                row.remove();
+                updateGrandTotal();
+            }
+        }
+        
+        function calculateRowTotal(input) {
+            const row = input.closest("tr");
+            const quantity = parseFloat(row.querySelector(".quantity")?.value || 0);
+            const price = parseFloat(row.querySelector(".price")?.value || 0);
+            const total = (quantity * price).toFixed(2);
+        
+            row.querySelector(".row-total").value = total;
+            updateGrandTotal();
+        }
+        
+        function updateGrandTotal() {
+            let grandTotal = 0;
+            document.querySelectorAll(".row-total").forEach(input => {
+                grandTotal += parseFloat(input.value) || 0;
+            });
+            document.getElementById("grand-total").value = grandTotal.toFixed(2);
+        }
+    </script>
+        
 </body>
 {% endblock %}
