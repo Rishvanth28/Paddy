@@ -450,19 +450,31 @@ def upgrade_to_customer(request):
     admin = AdminTable.objects.get(admin_id=admin_id)
 
     if request.method == 'POST':
-        # Fix: Pass admin_id to avoid null value error
-        CustomerTable.objects.create(
-            admin_id=admin.admin_id,  # pass the admin ID explicitly
+        company_name = request.POST.get('company_name')
+        gst = request.POST.get('GST')
+        address = request.POST.get('address')
+
+        if CustomerTable.objects.filter(email=admin.email).exists():
+            messages.info(request, "You are already a customer.")
+            return redirect('admin_dashboard')
+
+        new_customer = CustomerTable(
             first_name=admin.first_name,
             last_name=admin.last_name,
             phone_number=admin.phone_number,
             email=admin.email,
-            password=admin.password  # already hashed
+            password=admin.password,  # already hashed
+            admin=admin,
+            company_name=company_name,
+            GST=gst,
+            address=address,
         )
+        new_customer.save()
         messages.success(request, "You have been upgraded to customer!")
-        return redirect('upgrade_success')
+        return redirect('admin_dashboard')
 
     return render(request, 'upgrade_to_customer.html', {'admin': admin})
+
 
 
 def upgrade_success(request):

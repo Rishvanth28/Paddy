@@ -21,9 +21,16 @@
             text-align: center;
             color: #333;
         }
-        .info {
+        .info, .form-field {
             margin: 15px 0;
             font-size: 1.1em;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
         .btn-upgrade {
             background-color: #2196F3;
@@ -43,7 +50,7 @@
 <body>
     <div class="box">
         <h2>Upgrade to Customer</h2>
-        
+
         <div class="info"><strong>First Name:</strong> {{ admin.first_name }}</div>
         <div class="info"><strong>Last Name:</strong> {{ admin.last_name }}</div>
         <div class="info"><strong>Email:</strong> {{ admin.email }}</div>
@@ -51,6 +58,18 @@
 
         <form method="POST">
             {% csrf_token %}
+            <div class="form-field">
+                <label>Company Name:</label>
+                <input type="text" name="company_name" required>
+            </div>
+            <div class="form-field">
+                <label>GST Number:</label>
+                <input type="text" name="GST">
+            </div>
+            <div class="form-field">
+                <label>Address:</label>
+                <textarea name="address" rows="3"></textarea>
+            </div>
             <button type="submit" class="btn-upgrade">Confirm Upgrade</button>
         </form>
     </div>
