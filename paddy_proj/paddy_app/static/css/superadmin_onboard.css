@@ -86,10 +86,10 @@ body {
 /* Style each form card */
 .form-card {
     width: 100%;
-    max-width: 600px;
+    max-width: 2500px;
     background: #ffffff;
     padding: 40px 30px;
-    border-radius: 16px;
+    /* border-radius: 16px; */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
     background-color: #fff;
