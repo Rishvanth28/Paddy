@@ -184,6 +184,7 @@ body {
 .main-content {
   flex: 1;
   overflow-y: auto;
+  background: white;
 }
 
 /* Hamburger menu button */

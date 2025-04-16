@@ -86,10 +86,10 @@ body {
 /* Style each form card */
 .form-card {
     width: 100%;
-    max-width: 600px;
+    max-width: 2500px;
     background: #ffffff;
     padding: 40px 30px;
-    border-radius: 16px;
+    /* border-radius: 16px; */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
     background-color: #fff;
@@ -291,22 +291,23 @@ body {
 
 /* Style tab buttons */
 .tab-button {
-    padding: 10px 22px;
+    padding: 10px 20px;
     font-size: 15px;
-    border: none;
     border-radius: 30px;
-    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    background-color: white;
     color: #333;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s;
 }
+
 
 .tab-button:hover {
     background-color: #cfcfcf;
 }
 
 .tab-button.active {
-    background-color: #000000;
+    background-color: #000;
     color: white;
 }
 
@@ -384,4 +385,24 @@ button[type="submit"]:hover {
         width: 100%;
         max-width: 300px;
     }
+
+    .navbar{
+        justify-content: center !important;
+    }
+}
+
+.navbar {
+    background-color: #fff;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content:right;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.navbar-title {
+    font-size: 24px;
+    font-weight: lighter;
+    color: #1a202c;
 }

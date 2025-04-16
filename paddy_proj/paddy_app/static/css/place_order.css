@@ -57,7 +57,7 @@ body {
 /* Style each form card */
 .form-card {
     width: 100%;
-    max-width: 600px;
+    max-width: 2500px;
     background: #ffffff;
     padding: 40px 30px;
     border-radius: 16px;
@@ -266,14 +266,14 @@ body {
 
 /* Style tab buttons */
 .tab-button {
-    padding: 10px 22px;
+    padding: 10px 20px;
     font-size: 15px;
-    border: none;
     border-radius: 30px;
-    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    background-color: white;
     color: #333;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 .tab-button:hover {
@@ -371,7 +371,7 @@ input[readonly] {
     color: #555;
   }
   
-  .navbar {
+.navbar {
     background-color: #fff;
     padding: 1rem 2rem;
     border-bottom: 1px solid #e2e8f0;
@@ -392,19 +392,6 @@ input[readonly] {
     gap: 10px;
     margin: 20px 0;
     justify-content: center;
-}
-
-.tab-button.active {
-    background-color: #000;
-    color: white;
-}
-
-.tab-button {
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    background-color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
 }
 
 .form-container {
