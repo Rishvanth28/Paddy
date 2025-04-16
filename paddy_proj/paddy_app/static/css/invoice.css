@@ -78,3 +78,7 @@ td em {
     font-size: 12px;
     color: #666;
 }
+.invoice-right{
+    text-align: right;
+    flex-grow: 1;
+}   

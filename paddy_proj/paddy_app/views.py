@@ -12,7 +12,7 @@ from .helpers import *
 import json
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
-import razorpay
+#import razorpay
 from django.conf import settings
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
@@ -21,7 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
 RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"
 
-client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
+#client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
 
 
 def login_view(request):
@@ -300,7 +300,6 @@ def customer_orders(request):
 def payment(request):
     id = request.POST.get('order_id')
     order = Orders.objects.get(pk=id)
-    
     # Assuming you have a related model for order items/products
     # If not, you'll need to create one to store multiple products per order
     if order.product_category_id == 2:
@@ -310,13 +309,16 @@ def payment(request):
                         'total_amount':order.overall_amount,'product_name':'Paddy' if order.product_category_id == 2 else 'Rice'}]
     context = {
         'order': order,
+        'order_name': order_items[0]['product_name'] if order_items else 'N/A',
         'order_items': order_items,
         'customer': order.customer,
         'total_amount': order.overall_amount,
-        'payment_terms': '90 Days',  # You might want to store this in your model
+        'payment_terms': order.payment_deadline,
         'invoice_date': order.order_date,
+        'total_items': sum(item['quantity'] for item in order_items),
         'invoice_number': f"UFs {order.order_id}",
-        'amount_in_words': number_to_words_indian(order.overall_amount)
+        'amount_in_words': number_to_words_indian(order.overall_amount),
+        'business_year': "urakadai "+str(order.order_date.year),
     }
     return render(request, 'payment.html',context)
 
@@ -592,9 +594,6 @@ def admin_subscription_payment(request):
 def payment_success(request):
     if request.method == "POST":
         try:
-            import json
-            data = json.loads(request.body)
-
             admin_id = request.session.get("user_id")
             amount = request.session.get("subscription_amount")
             days = request.session.get("subscription_days")

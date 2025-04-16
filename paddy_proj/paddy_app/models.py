@@ -94,7 +94,7 @@ class Orders(models.Model):
     delivery_status = models.IntegerField()
     driver_ph_no = models.BigIntegerField()
     order_date = models.DateField()
-
+    payment_deadline = models.IntegerField(default=90)  # in days
     def __str__(self):
         return f"Order {self.order_id} - Customer: {self.customer.first_name} {self.customer.last_name}"
 

@@ -151,17 +151,65 @@
 
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required>
-                    </div>
+                <div class="items-section">
+                    <h3>Order Items</h3>
+                    <table id="items-table" class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Batch</th>
+                                <th>Expiry Date</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Per</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="items-container">
+                            <tr class="item-row">
+                                <td>
+                                    <input type="text" name="product_name[]" class="product-name" required>
+                                </td>
+                                <td>
+                                    <input type="text" name="batch_number[]" class="batch-number" required>
+                                </td>
+                                <td>
+                                    <input type="date" name="expiry_date[]" class="expiry-date" required>
+                                </td>
+                                <td>
+                                    <input type="number" name="quantity[]" class="quantity" step="0.01" required onchange="calculateRowTotal(this)">
+                                </td>
+                                <td>
+                                    <input type="number" name="price_per_unit[]" class="price" step="0.01" required onchange="calculateRowTotal(this)">
+                                </td>
+                                <td>
+                                    <select name="unit[]" class="unit">
+                                        <option value="Nos">Nos</option>
+                                        <option value="Kg">Kg</option>
+                                        <option value="Ltr">Ltr</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" name="total_amount[]" class="row-total" step="0.01" readonly>
+                                </td>
+                                <td>
+                                    <button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" class="text-right"><strong>Total:</strong></td>
+                                <td>
+                                    <input type="number" id="grand-total" name="grand_total" step="0.01" readonly>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <button type="button" id="add-item-btn" onclick="addNewRow()">+ Add Item</button>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
