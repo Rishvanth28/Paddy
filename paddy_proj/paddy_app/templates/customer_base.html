@@ -13,6 +13,7 @@
 </head>
 
 <body style="display: flex; height: 100vh; overflow: hidden;">
+ 
 
   <!-- Hamburger Button -->
   <button class="hamburger" onclick="toggleSidebar()">☰</button>
@@ -38,6 +39,17 @@
         </li>
         <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon"> 
           <a href="{% url 'upgrade_to_admin' %}" style="text-decoration: none; color: inherit;">Upgrade to admin</a></li>
+          <li>
+            <a href="{% url 'swap_role' %}" class="btn btn-outline-secondary">
+              {% if request.session.role == "admin" %}
+                  Switch to Customer
+              {% elif request.session.role == "customer" %}
+                  Switch to Admin
+              {% endif %}
+          </a>
+          
+
+          </li>
       </ul>
     </div>
    
