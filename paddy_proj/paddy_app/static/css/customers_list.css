@@ -244,3 +244,19 @@ body {
         text-align: center;
     }
 }
+
+.navbar {
+    background-color: #fff;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content:right;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.navbar-title {
+    font-size: 24px;
+    font-weight: lighter;
+    color: #1a202c;
+}
