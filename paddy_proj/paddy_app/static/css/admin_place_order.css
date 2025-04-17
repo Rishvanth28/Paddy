@@ -291,14 +291,13 @@ body {
     justify-content: flex-start;
     gap: 10px;
     margin: 40px 0 30px 40px;
-
 }
 
 /* Style tab buttons */
 .tab-button {
     padding: 10px 20px;
     font-size: 15px;
-    border-radius: 30px;
+    border-radius: 8px;
     border: 1px solid #ccc;
     background-color: white;
     color: #333;
