@@ -35,29 +35,27 @@
 <div class="form-container">
     <!-- Create Admin Form -->
     <div id="admin-form" class="form-card">
-        <form method="POST" action="{% url 'create_admin' %}" novalidate>
+        <form method="POST" action="{% url 'create_admin' %}">
             {% csrf_token %}
             <div class="form-row">
                 <div class="form-group" style="margin-top: 10px;">
                     <label>First Name</label>
-                    <input type="text" name="first_name" placeholder="Enter your first name" required>
+                    <input type="text" name="first_name" placeholder="Enter your first name" required pattern="[A-Za-z]+" minlength="2">
                 </div>
                 <div class="form-group" style="margin-top: 10px;">
                     <label>Last Name</label>
-                    <input type="text" name="last_name" placeholder="Enter your last name" required>
+                    <input type="text" name="last_name" placeholder="Enter your last name" required pattern="[A-Za-z]+" minlength="1">
                 </div>
             </div>
 
-
             <label>Phone Number</label>
-            <input type="tel" name="phone_number" placeholder="Enter your phone number" required>
+            <input type="tel" name="phone_number" placeholder="Enter your phone number" required pattern="[0-9]{10}" maxlength="10">
 
             <label>Email</label>
             <input type="email" name="email" placeholder="Enter your email" required>
 
             <label>Password</label>
-            <input type="text" name="password" placeholder="Enter a password" required>
-
+            <input type="password" name="password" placeholder="Enter a password" required minlength="6">
 
             <input type="hidden" name="role" value="0">
 
@@ -66,42 +64,40 @@
     </div>
 
     <!-- Create Customer Form -->
-
     <div id="customer-form" class="form-card" style="display: none;">
-        <form method="POST" action="{% url 'create_customer' %}" novalidate>
+        <form method="POST" action="{% url 'create_customer' %}">
             {% csrf_token %}
             <div class="form-row">
                 <div class="form-group" style="margin-top: 10px;">
                     <label>First Name</label>
-                    <input type="text" name="first_name" placeholder="Enter your first name" required>
+                    <input type="text" name="first_name" placeholder="Enter your first name" required pattern="[A-Za-z]+" minlength="2">
                 </div>
                 <div class="form-group" style="margin-top: 10px;">
                     <label>Last Name</label>
-                    <input type="text" name="last_name" placeholder="Enter your last name" required>
+                    <input type="text" name="last_name" placeholder="Enter your last name" required pattern="[A-Za-z]+" minlength="1">
                 </div>
             </div>
-
+    
             <label>Phone Number</label>
-            <input type="tel" name="phone_number" placeholder="Enter your phone number" required>
-
+            <input type="tel" name="phone_number" placeholder="Enter your phone number" required pattern="[0-9]{10}" maxlength="10">
+    
             <label>Email</label>
             <input type="email" name="email" placeholder="Enter your email" required>
-
+    
             <label>Password</label>
-            <input type="text" name="password" placeholder="Enter a password" required>
-
+            <input type="password" name="password" placeholder="Enter a password" required minlength="6">
+    
             <label>Company Name</label>
-            <input type="text" name="company_name" placeholder="Enter your company name" required>
-
+            <input type="text" name="company_name" placeholder="Enter your company name" required minlength="2">
+    
             <label>Address</label>
-            <textarea name="address" placeholder="Enter your address" rows="3" required></textarea>
-
-
+            <textarea name="address" placeholder="Enter your address" rows="3" required minlength="5"></textarea>
+    
             <label>GST (Optional)</label>
-            <input type="text" name="gst" placeholder="Enter your GST number (optional)">
-
+            <input type="text" name="gst" placeholder="Enter your GST number (optional)" pattern="[0-9A-Z]{15}">
+    
             <input type="hidden" name="role" value="1">
-
+    
             <button type="submit">Create Customer</button>
         </form>
     </div>
