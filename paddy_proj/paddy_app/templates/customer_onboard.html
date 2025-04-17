@@ -3,7 +3,7 @@
 {% block content %}
 
 <head>
-    <link rel="stylesheet" href="{% static 'css/superadmin_onboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/customer_onboard.css' %}">
 </head>
 
 {% if messages %}
@@ -23,14 +23,14 @@
 {% endif %}
 
 <!-- Page Header -->
-<div class="page-title">
-    <h1>Customer Onboarding</h1>
+
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <h1 class="page-title mb-0 me-3">Customer Onboarding</h1>
 </div>
 
 <!-- Create Customer Form -->
 <div class="form-container">
     <div class="form-card">
-        <h2>Create Customer</h2>
         <form method="POST" action="{% url 'customer_onboard' %}" novalidate>
             {% csrf_token %}
             <div class="form-row">
