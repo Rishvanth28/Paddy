@@ -1,14 +1,19 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Upgrade to Customer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 30px;
             background-color: #f0f0f0;
         }
+
         .box {
             background: #fff;
             padding: 25px;
@@ -17,14 +22,58 @@
             margin: auto;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
-        h2 {
-            text-align: center;
-            color: #333;
+
+        .header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-left: 3rem;
+            margin-top: 3rem;
         }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+            color: #000000;
+            position: relative;
+            text-transform: uppercase;
+            padding-bottom: 0.6rem;
+            text-align: left;
+            /* <-- Ensure left alignment */
+        }
+
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            /* initial width */
+            height: 4px;
+            background-color: #000000;
+            border-radius: 2px;
+            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+            /* added transition for both properties */
+        }
+
+        .page-title:hover::after {
+            width: 110%;
+            /* makes the underline grow */
+            transform: translateX(-50%);
+            /* keep it centered */
+        }
+
         .info {
             margin: 15px 0;
             font-size: 1.1em;
         }
+
         .btn-upgrade {
             background-color: #2196F3;
             color: white;
@@ -35,15 +84,20 @@
             font-size: 1em;
             width: 100%;
         }
+
         .btn-upgrade:hover {
             background-color: #1976D2;
         }
     </style>
 </head>
+
 <body>
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+        <h1 class="page-title mb-0 me-3">Upgrade to Customer</h1>
+    </div>
     <div class="box">
-        <h2>Upgrade to Customer</h2>
-        
+
+
         <div class="info"><strong>First Name:</strong> {{ admin.first_name }}</div>
         <div class="info"><strong>Last Name:</strong> {{ admin.last_name }}</div>
         <div class="info"><strong>Email:</strong> {{ admin.email }}</div>
@@ -55,4 +109,7 @@
         </form>
     </div>
 </body>
+
 </html>
+
+{% endblock %}

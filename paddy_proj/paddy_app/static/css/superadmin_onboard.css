@@ -323,7 +323,7 @@ body {
 .tab-button {
     padding: 10px 20px;
     font-size: 15px;
-    border-radius: 30px;
+    border-radius: 8px;
     border: 1px solid #ccc;
     background-color: white;
     color: #333;
@@ -350,7 +350,7 @@ button[type="submit"] {
     background-color: #000;
     color: #fff;
     border: none;
-    border-radius: 30px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
