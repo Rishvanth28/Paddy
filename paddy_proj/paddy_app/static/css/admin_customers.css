@@ -2,7 +2,7 @@ body {
     background: linear-gradient(to right, #0f0f0f, #1f1f1f);
     font-family: 'Inter', sans-serif;
     color: #f1f1f1;
-    overflow: hidden;
+
 }
 
 .container {
@@ -15,15 +15,19 @@ body {
 .header-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    justify-content: space-between; /* pushes title left, search right */
     gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
 }
+
 
 .search-wrapper {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+    margin-left: -13vw;
+    margin-right: 11.5vw;
     position: relative;
     z-index: 1;
     flex-wrap: wrap;
