@@ -22,11 +22,9 @@
 </script>
 {% endif %}
 
-    <!-- NAVBAR -->
-    <div class="navbar">
-        <div class="navbar-title">Onboarding</div>
-    </div>
-
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <h1 class="page-title mb-0 me-3">Onboarding</h1>
+</div>
 <!-- Tab Buttons -->
 <div class="tab-header">
     <button class="tab-button active" onclick="showForm('admin')">Create Admin</button>
@@ -37,8 +35,6 @@
 <div class="form-container">
     <!-- Create Admin Form -->
     <div id="admin-form" class="form-card">
-        <h2 class="form-title" style="margin-bottom: 0px;"><span>Create Admin</span></h2>
-        <hr>
         <form method="POST" action="{% url 'create_admin' %}" novalidate>
             {% csrf_token %}
             <div class="form-row">
@@ -72,8 +68,6 @@
     <!-- Create Customer Form -->
 
     <div id="customer-form" class="form-card" style="display: none;">
-        <h2 class="form-title" style="margin-bottom: 0px;"><span>Create Customer</span></h2>
-        <hr>
         <form method="POST" action="{% url 'create_customer' %}" novalidate>
             {% csrf_token %}
             <div class="form-row">
