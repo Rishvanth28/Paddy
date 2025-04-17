@@ -24,22 +24,51 @@ body {
     padding: 2rem;
 }
 
-/* Page Header */
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 3rem;
+    margin-top: 3rem;
+}
+
 .page-title {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 30px;
-    animation: fadeIn 1s ease;
-}
-
-.page-title h1 {
-    font-size: 32px;
-    font-weight: 500;
-    color: #111;
-    text-transform: capitalize;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
     letter-spacing: 1px;
+    color: #000000;
+    position: relative;
+    text-transform: uppercase;
+    padding-bottom: 0.6rem;
+    text-align: left;
+    /* <-- Ensure left alignment */
 }
 
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    /* initial width */
+    height: 4px;
+    background-color: #000000;
+    border-radius: 2px;
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    /* added transition for both properties */
+}
+
+.page-title:hover::after {
+    width: 110%;
+    /* makes the underline grow */
+    transform: translateX(-50%);
+    /* keep it centered */
+}
 
 
 /* Container to center the form and limit height */
@@ -71,7 +100,7 @@ body {
     transform: translateY(-2px);
 }
 
-.form-card h3{
+.form-card h3 {
     font-weight: lighter;
 }
 
@@ -109,7 +138,7 @@ body {
     font-weight: 500;
     margin-bottom: 25px;
     text-align: left;
-    
+
 }
 
 /* Form inputs */
@@ -119,7 +148,8 @@ body {
     font-weight: 500;
 }
 
-.form-card form input, .form-card form select {
+.form-card form input,
+.form-card form select {
     width: 100%;
     padding: 15px 10px;
     font-size: 14px;
@@ -227,21 +257,21 @@ body {
 .alert-error {
     background-color: #fdecea;
     color: #d32f2f;
-   
+
 }
 
 /* Warning */
 .alert-warning {
     background-color: #fff3cd;
     color: #856404;
-    
+
 }
 
 /* Info */
 .alert-info {
     background-color: #e7f3fe;
     color: #31708f;
-    
+
 }
 
 
@@ -360,7 +390,7 @@ button[type="submit"]:hover {
         max-width: 300px;
     }
 
-    .navbar{
+    .navbar {
         justify-content: center !important;
     }
 }
@@ -369,15 +399,15 @@ input[readonly] {
     background-color: #f9f9f9;
     border: 1px solid #ccc;
     color: #555;
-  }
-  
+}
+
 .navbar {
     background-color: #fff;
     padding: 1rem 2rem;
     border-bottom: 1px solid #e2e8f0;
     display: flex;
     align-items: center;
-    justify-content:right;
+    justify-content: right;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
