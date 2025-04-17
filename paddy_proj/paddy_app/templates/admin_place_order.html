@@ -2,31 +2,30 @@
 {% load static %}
 {% block content %}
 {% if messages %}
-    <div id="message-container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
+<div id="message-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
     </div>
-    <script>
-        setTimeout(() => {
-            const messageContainer = document.getElementById('message-container');
-            if (messageContainer) {
-                messageContainer.style.display = 'none';
-            }
-        }, 3000);
-    </script>
+    {% endfor %}
+</div>
+<script>
+    setTimeout(() => {
+        const messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+            messageContainer.style.display = 'none';
+        }
+    }, 3000);
+</script>
 {% endif %}
 
 <head>
-    <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_place_order.css' %}">
 </head>
 
 <body>
-    <!-- NAVBAR -->
-    <div class="navbar">
-        <div class="navbar-title">Place New Order</div>
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+        <h1 class="page-title mb-0 me-3">Customer Onboarding</h1>
     </div>
 
     <!-- Tab Buttons -->
@@ -51,9 +50,7 @@
                         <select name="customer" id="customer-select-rice" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option 
-                                value="{{ customer.customer_id }}" 
-                                data-last-name="{{ customer.last_name }}">
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">
                                 {{ customer.first_name }} {{ customer.last_name }}
                             </option>
                             {% endfor %}
@@ -120,9 +117,7 @@
                         <select name="customer" id="customer-select-paddy" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option 
-                                value="{{ customer.customer_id }}" 
-                                data-last-name="{{ customer.last_name }}">
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">
                                 {{ customer.first_name }} {{ customer.last_name }}
                             </option>
                             {% endfor %}
@@ -189,9 +184,7 @@
                         <select name="customer" id="customer-select-pesticide" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option 
-                                value="{{ customer.customer_id }}" 
-                                data-last-name="{{ customer.last_name }}">
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">
                                 {{ customer.first_name }} {{ customer.last_name }}
                             </option>
                             {% endfor %}
