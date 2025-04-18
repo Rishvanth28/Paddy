@@ -43,7 +43,7 @@
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="1">
-
+            
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-rice">First Name</label>
@@ -56,51 +56,52 @@
                             {% endfor %}
                         </select>
                     </div>
-
+            
                     <div class="form-group">
                         <label for="customer-last-name-rice">Last Name</label>
                         <input type="text" id="customer-last-name-rice" readonly>
                     </div>
                 </div>
-
+            
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required>
+                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
-                        <label>Vehicle Number*</label>
-                        <input type="text" name="lorry_number" required>
+                        <label for="lorry_number">Vehicle Number*</label>
+                        <input type="text" name="lorry_number" id="lorry_number" placeholder="TNXX AB XXXX" required pattern="[A-Z]{2}[0-9]{2}\s?[A-Z]{1,2}\s?[0-9]{4}">
                     </div>
                 </div>
-
+            
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="text" name="driver_ph_no" id="driver_ph_no" placeholder="+91 9876543210" required>
-
+                <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="+91 9876543210" required pattern="[0-9]{10}">
+            
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required>
+                        <input type="number" name="quantity" id="quantity" placeholder="Enter quantity" required min="1" step="any">
                     </div>
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required>
+                        <input type="number" name="price_per_unit" id="price_per_unit" placeholder="Enter price" required min="0.01" step="any">
                     </div>
                 </div>
-
+            
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
-                        <input type="date" name="delivery_date" required>
+                        <input type="date" name="delivery_date" id="delivery_date" required>
                     </div>
                 </div>
-
+            
                 <div class="form-actions">
                     <button type="submit">Place Rice Order</button>
                 </div>
             </form>
+            
         </div>
 
         <!-- PADDY FORM -->
@@ -110,7 +111,7 @@
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="2">
-
+            
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-paddy">First Name</label>
@@ -123,51 +124,52 @@
                             {% endfor %}
                         </select>
                     </div>
-
+            
                     <div class="form-group">
                         <label for="customer-last-name-paddy">Last Name</label>
                         <input type="text" id="customer-last-name-paddy" readonly>
                     </div>
                 </div>
-
+            
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required>
+                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
-                        <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" required>
+                        <label for="vehicle_number">Vehicle Number*</label>
+                        <input type="text" name="vehicle_number" id="vehicle_number" placeholder="TNXX AB XXXX" required pattern="[A-Z]{2}[0-9]{2}\s?[A-Z]{1,2}\s?[0-9]{4}">
                     </div>
                 </div>
-
+            
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="text" name="driver_ph_no" placeholder="+91 9876543210" required>
-
+                <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}">
+            
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required>
+                        <input type="number" name="quantity" id="quantity" placeholder="Enter quantity" required min="1" step="any">
                     </div>
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required>
+                        <input type="number" name="price_per_unit" id="price_per_unit" placeholder="Enter price" required min="0.01" step="any">
                     </div>
                 </div>
-
+            
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
-                        <input type="date" name="delivery_date" required>
+                        <input type="date" name="delivery_date" id="delivery_date" required>
                     </div>
                 </div>
-
+            
                 <div class="form-actions">
                     <button type="submit">Place Paddy Order</button>
                 </div>
             </form>
+            
         </div>
 
         <!-- PESTICIDE FORM -->
@@ -177,7 +179,7 @@
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="3">
-
+            
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-pesticide">First Name</label>
@@ -190,51 +192,52 @@
                             {% endfor %}
                         </select>
                     </div>
-
+            
                     <div class="form-group">
                         <label for="customer-last-name-pesticide">Last Name</label>
                         <input type="text" id="customer-last-name-pesticide" readonly>
                     </div>
                 </div>
-
+            
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required>
+                        <input type="text" name="driver_name" id="driver_name_pesticide" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
-                        <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" required>
+                        <label for="vehicle_number_pesticide">Vehicle Number*</label>
+                        <input type="text" name="vehicle_number" id="vehicle_number_pesticide" placeholder="TNXX AB XXXX" required pattern="[A-Z]{2}[0-9]{2}\s?[A-Z]{1,2}\s?[0-9]{4}">
                     </div>
                 </div>
-
-                <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="text" name="driver_ph_no" placeholder="+91 9876543210" required>
-
+            
+                <label for="driver_ph_no_pesticide">Driver Phone No*</label>
+                <input type="tel" name="driver_ph_no" id="driver_ph_no_pesticide" placeholder="9876543210" required pattern="[0-9]{10}">
+            
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required>
+                        <label for="quantity_pesticide">Quantity</label>
+                        <input type="number" name="quantity" id="quantity_pesticide" placeholder="Enter quantity" required min="1" step="any">
                     </div>
                     <div class="form-group">
-                        <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required>
+                        <label for="price_per_unit_pesticide">Price per Unit</label>
+                        <input type="number" name="price_per_unit" id="price_per_unit_pesticide" placeholder="Enter price" required min="0.01" step="any">
                     </div>
                 </div>
-
+            
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="delivery_date">Order Date</label>
-                        <input type="date" name="delivery_date" required>
+                        <label for="delivery_date_pesticide">Order Date</label>
+                        <input type="date" name="delivery_date" id="delivery_date_pesticide" required>
                     </div>
                 </div>
-
+            
                 <div class="form-actions">
                     <button type="submit">Place Pesticide Order</button>
                 </div>
             </form>
+            
         </div>
     </div>
 
