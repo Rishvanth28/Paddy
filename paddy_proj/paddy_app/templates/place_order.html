@@ -24,9 +24,9 @@
 </head>
 
 <body>
-    <!-- NAVBAR -->
-    <div class="navbar">
-        <div class="navbar-title">Place New Order</div>
+    
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+        <h1 class="page-title mb-0 me-3">Place New Order</h1>
     </div>
 
     <!-- Tab Buttons -->
@@ -44,7 +44,7 @@
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="1">
-
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-rice">First Name</label>
@@ -59,47 +59,48 @@
                             {% endfor %}
                         </select>
                     </div>
-
+        
                     <div class="form-group">
                         <label for="customer-last-name-rice">Last Name</label>
                         <input type="text" id="customer-last-name-rice" readonly>
                     </div>
                 </div>
-
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required>
+                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="lorry_number" required>
+                        <input type="text" name="lorry_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
-
+        
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="text" name="driver_ph_no" id="driver_ph_no" placeholder="+91 9876543210" required>
-
+                <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
+        
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required>
+                        <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">
                     </div>
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required>
+                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01">
                     </div>
                 </div>
-
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
                         <input type="date" name="delivery_date" required>
                     </div>
                 </div>
-
+        
                 <div class="form-actions">
                     <button type="submit">Place Rice Order</button>
                 </div>
@@ -113,7 +114,7 @@
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="2">
-
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-paddy">First Name</label>
@@ -128,27 +129,27 @@
                             {% endfor %}
                         </select>
                     </div>
-
+        
                     <div class="form-group">
                         <label for="customer-last-name-paddy">Last Name</label>
                         <input type="text" id="customer-last-name-paddy" readonly>
                     </div>
                 </div>
-
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required>
+                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" required>
+                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
-
+        
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="text" name="driver_ph_no" placeholder="+91 9876543210" required>
-
+                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
+        
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="items-section">
@@ -178,13 +179,13 @@
                                     <input type="date" name="expiry_date[]" class="expiry-date" required>
                                 </td>
                                 <td>
-                                    <input type="number" name="quantity[]" class="quantity" step="0.01" required onchange="calculateRowTotal(this)">
+                                    <input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required>
                                 </td>
                                 <td>
-                                    <input type="number" name="price_per_unit[]" class="price" step="0.01" required onchange="calculateRowTotal(this)">
+                                    <input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required>
                                 </td>
                                 <td>
-                                    <select name="unit[]" class="unit">
+                                    <select name="unit[]" class="unit" required>
                                         <option value="Nos">Nos</option>
                                         <option value="Kg">Kg</option>
                                         <option value="Ltr">Ltr</option>
@@ -200,7 +201,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="6" class="text-right"><strong>Total:</strong></td>
+                                <td colspan="6" style="text-align: right;"><strong>Total:</strong></td>
                                 <td>
                                     <input type="number" id="grand-total" name="grand_total" step="0.01" readonly>
                                 </td>
@@ -208,21 +209,18 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <button type="button" id="add-item-btn" onclick="addNewRow()">+ Add Item</button>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="delivery_date">Order Date</label>
-                        <input type="date" name="delivery_date" required>
+                
+                    <div style="margin-top: 1rem;">
+                        <button type="button" id="add-item-btn" onclick="addNewRow()">+ Add Item</button>
                     </div>
                 </div>
-
+        
                 <div class="form-actions">
                     <button type="submit">Place Paddy Order</button>
                 </div>
             </form>
         </div>
-
+        
         <!-- PESTICIDE FORM -->
         <div style="display: none;" id="pesticide-form" class="form-card">
             <h3>Customer Details <span title="Fill customer information">ⓘ</span></h3>
@@ -230,7 +228,7 @@
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="3">
-
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-pesticide">First Name</label>
@@ -245,47 +243,47 @@
                             {% endfor %}
                         </select>
                     </div>
-
+        
                     <div class="form-group">
                         <label for="customer-last-name-pesticide">Last Name</label>
                         <input type="text" id="customer-last-name-pesticide" readonly>
                     </div>
                 </div>
-
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required>
+                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" required>
+                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
-
+        
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="text" name="driver_ph_no" placeholder="+91 9876543210" required>
-
+                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
+        
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required>
+                        <input type="number" name="quantity" placeholder="Enter quantity" required step="0.01" min="0.01">
                     </div>
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required>
+                        <input type="number" name="price_per_unit" placeholder="Enter price" required step="0.01" min="0">
                     </div>
                 </div>
-
+        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
                         <input type="date" name="delivery_date" required>
                     </div>
                 </div>
-
+        
                 <div class="form-actions">
                     <button type="submit">Place Pesticide Order</button>
                 </div>
@@ -329,6 +327,58 @@
         setupCustomerListeners("customer-select-paddy", "customer-last-name-paddy");
         setupCustomerListeners("customer-select-pesticide", "customer-last-name-pesticide");
     </script>
-
+    <script>
+        function addNewRow() {
+            const tableBody = document.getElementById("items-container");
+            const newRow = document.createElement("tr");
+            newRow.classList.add("item-row");
+        
+            newRow.innerHTML = `
+                <td><input type="text" name="product_name[]" class="product-name" required></td>
+                <td><input type="text" name="batch_number[]" class="batch-number" required></td>
+                <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
+                <td><input type="number" name="quantity[]" class="quantity" step="0.01" required onchange="calculateRowTotal(this)"></td>
+                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" required onchange="calculateRowTotal(this)"></td>
+                <td>
+                    <select name="unit[]" class="unit">
+                        <option value="Nos">Nos</option>
+                        <option value="Kg">Kg</option>
+                        <option value="Ltr">Ltr</option>
+                    </select>
+                </td>
+                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
+                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
+            `;
+        
+            tableBody.appendChild(newRow);
+        }
+        
+        function removeRow(button) {
+            const row = button.closest("tr");
+            if (row) {
+                row.remove();
+                updateGrandTotal();
+            }
+        }
+        
+        function calculateRowTotal(input) {
+            const row = input.closest("tr");
+            const quantity = parseFloat(row.querySelector(".quantity")?.value || 0);
+            const price = parseFloat(row.querySelector(".price")?.value || 0);
+            const total = (quantity * price).toFixed(2);
+        
+            row.querySelector(".row-total").value = total;
+            updateGrandTotal();
+        }
+        
+        function updateGrandTotal() {
+            let grandTotal = 0;
+            document.querySelectorAll(".row-total").forEach(input => {
+                grandTotal += parseFloat(input.value) || 0;
+            });
+            document.getElementById("grand-total").value = grandTotal.toFixed(2);
+        }
+    </script>
+        
 </body>
 {% endblock %}

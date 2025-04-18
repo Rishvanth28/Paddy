@@ -775,3 +775,47 @@ def payment_success(request):
 
     # Handle invalid request type
     return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
+
+
+def swap_role(request):
+    current_role = request.session.get("role")
+    user_id = request.session.get("user_id")
+
+    if current_role == "admin":
+        try:
+            admin = AdminTable.objects.get(admin_id=user_id)
+            customer = CustomerTable.objects.get(phone_number=admin.phone_number)
+
+            # Logout admin
+            request.session.flush()
+
+            # Login as customer
+            request.session["user_id"] = customer.customer_id
+            request.session["role"] = "customer"
+            messages.success(request, "Switched to Customer account.")
+            return redirect("customer_dashboard")
+
+        except CustomerTable.DoesNotExist:
+            messages.warning(request, "You don’t have a Customer account linked. Please subscribe or contact support.")
+            return redirect("admin_dashboard")
+
+    elif current_role == "customer":
+        try:
+            customer = CustomerTable.objects.get(customer_id=user_id)
+            admin = AdminTable.objects.get(phone_number=customer.phone_number)
+
+            # Logout customer
+            request.session.flush()
+
+            # Login as admin
+            request.session["user_id"] = admin.admin_id
+            request.session["role"] = "admin"
+            messages.success(request, "Switched to Admin account.")
+            return redirect("admin_dashboard")
+
+        except AdminTable.DoesNotExist:
+            messages.warning(request, "You don’t have an Admin account linked. Please subscribe or contact support.")
+            return redirect("customer_dashboard")
+
+    messages.error(request, "Invalid session. Please log in again.")
+    return redirect("login")

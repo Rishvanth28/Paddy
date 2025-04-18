@@ -1,96 +1,85 @@
 {% extends 'admin_base.html' %}
 {% load static %}
 {% block content %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customers Under You</title>
-    <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
-        }
-        .card-header {
-            background-color: #fff;
-            border-bottom: 2px solid #212529;
-            padding: 1.5rem;
-        }
-        .table-responsive {
-            overflow-x: auto;
-        }
-        .table {
-            margin-bottom: 0;
-        }
-        .table th {
-            background-color: #212529;
-            color: #fff;
-            font-weight: 500;
-            border: none;
-        }
-        .no-customers {
-            padding: 3rem;
-            text-align: center;
-            color: #6c757d;
-        }
-        .page-title {
-            font-weight: 600;
-            color: #212529;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}">
 </head>
+
 <body>
-    <div class="container py-5">
-        <div class="card">
-            <div class="card-header">
-                <h1 class="page-title mb-0">Customer List</h1>
+
+    <div class="container py-5 position-relative" style="max-width: 1200px;">
+        <!-- Header Row with Title and Search -->
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-5">
+            <h1 class="page-title mb-0 me-3">Customer List</h1>
+
+            <div class="search-wrapper flex-grow-1 d-flex mt-2 mt-md-0">
+                <form class="w-100 position-relative" style="max-width: 500px;" role="search" method="GET" action="">
+                    <i class="fas fa-search position-absolute"
+                        style="top: 50%; left: 16px; transform: translateY(-50%); color: #888;"></i>
+                    <input type="search" name="q" class="form-control ps-5" placeholder="Search customers..."
+                        aria-label="Search">
+                </form>
             </div>
+
+        </div>
+
+
+        <div class="card">
+            <!-- Card Body -->
             <div class="card-body p-0">
                 {% if customers %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Customer ID</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Company</th>
-                                    <th>GST</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for customer in customers %}
-                                <tr>
-                                    <td>{{ customer.customer_id }}</td>
-                                    <td>{{ customer.first_name }} {{ customer.last_name }}</td>
-                                    <td>{{ customer.email }}</td>
-                                    <td>{{ customer.phone_number }}</td>
-                                    <td>{{ customer.company_name }}</td>
-                                    <td>{{ customer.GST }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Company</th>
+                                <th>GST</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in customers %}
+                            <tr>
+                                <td>{{ customer.customer_id|lower }}</td>
+                                <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                                <td>{{ customer.email }}</td>
+                                <td>{{ customer.phone_number }}</td>
+                                <td>{{ customer.company_name|lower }}</td>
+                                <td>{{ customer.GST }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <!-- This div is hidden by default -->
+                    <div class="no-results-found d-none text-center py-4 fs-5 text-muted">
+                        <i class="fas fa-user-slash fa-2x mb-3 text-secondary"></i>
+                        <p>No customers match your search.</p>
                     </div>
+                </div>
                 {% else %}
-                    <div class="no-customers">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-people mb-3" viewBox="0 0 16 16">
-                            <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/>
-                        </svg>
-                        <p class="fs-5 mb-0">No customers found for this admin.</p>
-                    </div>
+                <div class="no-customers">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
+                        class="bi bi-people mb-3" viewBox="0 0 16 16">
+                        <path
+                            d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
+                    </svg>
+                    <p class="fs-5 mb-0">No customers found for this admin.</p>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/admin_customer_list.js' %}" defer></script>
 </body>
 {% endblock %}

@@ -3,7 +3,7 @@
 {% block content %}
 
 <head>
-    <link rel="stylesheet" href="{% static 'css/superadmin_onboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/customer_onboard.css' %}">
 </head>
 
 {% if messages %}
@@ -23,47 +23,66 @@
 {% endif %}
 
 <!-- Page Header -->
-<div class="page-title">
-    <h1>Customer Onboarding</h1>
+
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <h1 class="page-title mb-0 me-3">Customer Onboarding</h1>
 </div>
 
 <!-- Create Customer Form -->
 <div class="form-container">
     <div class="form-card">
-        <h2>Create Customer</h2>
         <form method="POST" action="{% url 'customer_onboard' %}" novalidate>
             {% csrf_token %}
+            
             <div class="form-row">
                 <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" name="first_name" placeholder="Enter your first name" required>
+                    <input type="text" name="first_name" placeholder="Enter your first name" required pattern="[A-Za-z\s]+" minlength="2">
                 </div>
                 <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" name="last_name" placeholder="Enter your last name" required>
+                    <input type="text" name="last_name" placeholder="Enter your last name" required pattern="[A-Za-z\s]+" minlength="1">
                 </div>
             </div>
-
-            <label>Phone Number</label>
-            <input type="tel" name="phone_number" placeholder="Enter your phone number" required>
-
-            <label>Email</label>
-            <input type="email" name="email" placeholder="Enter your email" required>
-
-            <label>Password</label>
-            <input type="text" name="password" placeholder="Enter a password" required>
-
-            <label>Company Name</label>
-            <input type="text" name="company_name" placeholder="Enter your company name" required>
-
-            <label>Address</label>
-            <textarea name="address" placeholder="Enter your address" rows="3" required></textarea>
-
-            <label>GST (Optional)</label>
-            <input type="text" name="gst" placeholder="Enter your GST number (optional)">
-
+        
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone_number" placeholder="Enter your phone number" required pattern="[0-9]{10}" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+        
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" name="password" placeholder="Enter a password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="company_name" placeholder="Enter your company name" required>
+                </div>
+            </div>
+        
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>Address</label>
+                    <textarea name="address" placeholder="Enter your address" rows="3" required minlength="5"></textarea>
+                </div>
+            </div>
+        
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>GST (Optional)</label>
+                    <input type="text" name="gst" placeholder="Enter your GST number (optional)" pattern="^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$">
+                </div>
+            </div>
+        
             <button type="submit">Create Customer</button>
-        </form>
+        </form> 
     </div>
 </div>
 
