@@ -140,3 +140,4 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"Subscription {self.sid} - {self.subscription_type}"
+    

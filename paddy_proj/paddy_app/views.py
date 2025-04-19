@@ -520,17 +520,22 @@ def superadmin_subscription_review(request):
     # If not POST, redirect to the list view
     return redirect('superadmin_subscription')
 
+
 @role_required(["customer"])
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')
-
     customer = CustomerTable.objects.get(customer_id=customer_id)
 
     if request.method == 'POST':
+        # check if already in AdminTable
         if AdminTable.objects.filter(email=customer.email).exists():
-            messages.info(request, "You are already an admin.")
+            messages.info(request, "You are already an admin!")
             return redirect('customer_dashboard')
-
+        
+        # check if admin is already customer also
+        if CustomerTable.objects.filter(email=customer.email).exists():
+            messages.warning(request, "You are already registered as customer!")
+        
         new_admin = AdminTable(
             first_name=customer.first_name,
             last_name=customer.last_name,
@@ -540,10 +545,12 @@ def upgrade_to_admin(request):
             user_count=0,
         )
         new_admin.save()
-        messages.success(request, "You have been upgraded to admin!")
+        messages.success(request, "You have been upgraded to admin successfully!")
         return redirect('customer_dashboard')
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
+
+
 
 @role_required(["admin"])
 def upgrade_to_customer(request):
@@ -555,9 +562,14 @@ def upgrade_to_customer(request):
         gst = request.POST.get('GST')
         address = request.POST.get('address')
 
+        # check if already in CustomerTable
         if CustomerTable.objects.filter(email=admin.email).exists():
-            messages.info(request, "You are already a customer.")
+            messages.info(request, "You are already a customer!")
             return redirect('admin_dashboard')
+
+        # check if customer is already admin also
+        if AdminTable.objects.filter(email=admin.email).exists():
+            messages.warning(request, "You are already registered as admin!")
 
         new_customer = CustomerTable(
             first_name=admin.first_name,
@@ -565,13 +577,13 @@ def upgrade_to_customer(request):
             phone_number=admin.phone_number,
             email=admin.email,
             password=admin.password,  # already hashed
-            admin=admin,
+            admin=admin,  # setting admin foreign key if needed
             company_name=company_name,
             GST=gst,
             address=address,
         )
         new_customer.save()
-        messages.success(request, "You have been upgraded to customer!")
+        messages.success(request, "You have been upgraded to customer successfully!")
         return redirect('admin_dashboard')
 
     return render(request, 'upgrade_to_customer.html', {'admin': admin})
@@ -886,3 +898,10 @@ def swap_role(request):
 
     messages.error(request, "Invalid session. Please log in again.")
     return redirect("login")
+
+
+
+def view_admin_subscribers(request):
+    admin_subscriptions = Subscription.objects.filter(subscription_type="admin").select_related('admin_id').order_by('-start_date')
+    return render(request, "admin_subscribers.html", {"subscriptions": admin_subscriptions})
+
