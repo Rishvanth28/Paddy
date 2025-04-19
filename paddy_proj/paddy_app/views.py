@@ -576,11 +576,6 @@ def upgrade_to_customer(request):
 
     return render(request, 'upgrade_to_customer.html', {'admin': admin})
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 2f544a9fd5d70464a62c95165e85d04c8809b2f2
 def upgrade_success(request):
     return render(request, 'upgrade_success.html')
 
