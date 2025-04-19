@@ -39,6 +39,7 @@ urlpatterns = [
     path("customer-payment-success/", customer_payment_success, name="customer_payment_success"),
     path("swap-role/", swap_role, name="swap_role"),
      path('admin-subscribers/', view_admin_subscribers, name='admin_subscribers'),
+    path('customer-subscribers/', view_customer_subscribers, name='customer_subscribers'),
 
 
 

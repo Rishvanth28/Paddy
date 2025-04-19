@@ -905,3 +905,6 @@ def view_admin_subscribers(request):
     admin_subscriptions = Subscription.objects.filter(subscription_type="admin").select_related('admin_id').order_by('-start_date')
     return render(request, "admin_subscribers.html", {"subscriptions": admin_subscriptions})
 
+def view_customer_subscribers(request):
+    customer_subscriptions = Subscription.objects.filter(subscription_type="customer").select_related('customer_id').order_by('-start_date')
+    return render(request, "customer_subscribers.html", {"subscriptions": customer_subscriptions})
