@@ -23,6 +23,7 @@ body {
     position: relative;
     z-index: 1;
     flex-wrap: wrap;
+    margin-right: -3.3vw;
 }
 
 .search-wrapper input[type="search"] {
@@ -55,6 +56,8 @@ body {
     background: rgba(255, 255, 255, 0.05);
     box-shadow: 0 0.4vh 2vh rgba(39, 39, 39, 0.3);
     overflow: hidden;
+    margin-right: -3.5vw;
+    margin-left: -3vw;
 }
 
 .card-header {
@@ -65,7 +68,7 @@ body {
 }
 
 .page-title {
-    font-size: 2vw;
+    font-size: 2rem;
     font-weight: 700;
     margin: 0;
     letter-spacing: 0.05vw;

@@ -82,7 +82,7 @@ class Orders(models.Model):
     customer = models.ForeignKey(CustomerTable, on_delete=models.CASCADE)
     admin = models.ForeignKey(AdminTable, on_delete=models.CASCADE)
     payment_status = models.IntegerField()
-    overall_amount = models.BigIntegerField()
+    overall_amount = models.BigIntegerField(default=0)
     paid_amount = models.BigIntegerField(null=True, blank=True)
     product_category_id = models.IntegerField()
     quantity = models.IntegerField()
@@ -106,7 +106,8 @@ class OrderItems(models.Model):
     quantity = models.IntegerField()
     price_per_unit = models.FloatField()
     total_amount = models.FloatField()
-    
+    unit = models.CharField(max_length=50,default="Nos")  # e.g., "kg", "liters", etc.
+   
     def save(self, *args, **kwargs):
         # Auto-calculate total if not provided
         if not self.total_amount:

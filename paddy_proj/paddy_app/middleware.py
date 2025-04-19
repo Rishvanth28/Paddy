@@ -14,7 +14,8 @@ class SubscriptionMiddleware(MiddlewareMixin):
         exempt_paths = [
             "/login/", "/logout/",
             "/admin-subscription/", "/payment-success/",
-            "/customer-subscription/", "/customer-payment-success/"
+            "/customer-subscription/", "/customer-payment-success/",
+            "/admin"
         ]
 
         if path in exempt_paths or path.startswith("/static/"):

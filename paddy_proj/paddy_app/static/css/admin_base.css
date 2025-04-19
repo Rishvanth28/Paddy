@@ -1,327 +1,324 @@
 body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-  
-  .containerr {
-    width: 13vw;
-    height: 100vh;
-    background-color: #ffffff;
-    color: black;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    font-family: Arial, sans-serif;
-    font-size: 1rem;
-    padding: 20px 0;
-  
-    /* Shadow on the right side */
-    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.15);
-    z-index: 1;
-    /* Make sure it appears above other elements */
-    position: relative;
-  }
-  
-  
-  .top-section {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    gap: 10px;
-  }
-  
-  .top-section img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-left: 25px;
-  }
-  
-  .top-section span {
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    font-size: 16px;
-    color: black;
-    text-transform: uppercase;
-    text-shadow: 1px 1px 2px rgba(63, 61, 61, 0.3);
-    /* subtle soft shadow */
-  
-  }
-  
-  .middle-content {
-    width: 100%;
-    margin-top: -15vh;
-    padding-left: 20px;
-    box-sizing: border-box;
-  }
-  
-  .menu {
-    list-style: none;
-    padding: 0;
-    margin-top: 60px;
-    width: 100%;
-  }
-  
-  .menu li a.menu-link {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-  }
-  
-  .menu li {
-    display: flex;
-    align-items: center;
-    padding: 8px 18px;
-    /* smaller height */
-    gap: 10px;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    text-transform: capitalize;
-    cursor: pointer;
-    border-radius: 8px;
-    /* more rounded corners */
-    margin-bottom: 10px;
-    list-style: none;
-    cursor: pointer;
-  }
-  
-  .menu li:hover {
-    background-color: rgba(7, 6, 6, 0.1);
-    border-radius: 8px;
-  
-    transform: translateX(-8px);
-    /* Expand slightly to the left */
-    transition: all 0.3s ease;
-    border-left: 3px solid black;
-    /* Vertical line on the left */
-    padding-left: 15px;
-    /* Optional, adjust for spacing after line */
-  }
-  
-  .menu li.active {
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-  
-    transform: translateX(-8px);
-    /* Expand slightly to the left */
-    transition: all 0.3s ease;
-    border-left: 3px solid black;
-    /* Vertical line on the left */
-    padding-left: 15px;
-    /* Optional, adjust for spacing after line */
-  }
-  
-  
-  .icon {
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
-  }
-  
-  .submenu {
-    list-style: none;
-    margin-top: 5px;
-    padding-left: 25px;
-    padding-right: 10px;
-    display: block;
-    /* Make it visible by default */
-  }
-  
-  
-  .submenu li {
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 15px;
-    border-radius: 6px;
-  }
-  
-  .submenu li:hover {
-    background-color: black;
-    border-radius: 6px;
-    color: white;
-    padding-left: 10px;
-  }
-  
-  .footer-text {
-    font-size: 16px;
-    color: black;
-    margin-bottom: 50px;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-    text-transform: uppercase;
-    font-weight: 400;
-  }
-  
-  .chevron {
-    font-size: 16px;
-    transition: transform 0.3s ease;
-    margin-right: -5px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-  }
-  
-  .logout-button {
-    display: block;
-    margin: 10px auto 0;
-    padding: 12px 30px;
-    font-size: 16px;
-    background-color: #000;
-    color: #fff;
-    border: none;
-    border-radius: 8px!important;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .logout-button:hover {
-    background-color: #ff0000 !important;
-    color: white;
-    border: none;
-  
-  
-    cursor: pointer;
-    font-size: 16px;
-    text-align: center;
-    margin-top: auto;
-  }
-  
-  
-  .submenu-toggle {
-    justify-content: space-between;
-  }
-  
-  /* Main layout */
-  .main-content {
-    flex: 1;
-    overflow-y: auto;
-    background: white;
-  }
-  
-  /* Hamburger menu button */
-  .hamburger {
-    display: none;
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: none;
-    border: none;
-    font-size: 28px;
-    z-index: 1000;
-    cursor: pointer;
-  }
-  
-  
-  /* Responsive styles */
-  @media (max-width: 768px) {
-    .containerr {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 70vw;
-      height: 100vh;
-      background-color: #fff;
-      transform: translateX(-100%);
-      z-index: 999;
-    }
-  
-    .containerr.open {
-      transform: translateX(0);
-    }
-  
-    .hamburger {
-      display: block;
-    }
-  
-    .main-content {
-      padding-left: 20px;
-    }
-  
-    .top-section {
-      margin-top: 30px;
-      margin-bottom: 40px;
-    }
-  }
-  
-  /* Scrollbar for WebKit (Chrome, Safari, Edge) */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    /* light gray track */
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background-color: #000000;
-    /* black thumb */
-    border-radius: 10px;
-    border: 2px solid #f1f1f1;
-    /* optional: border around thumb */
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #333333;
-    /* dark gray on hover */
-  }
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 
-  /* Scrollbar for WebKit (Chrome, Safari, Edge) */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    /* light gray track */
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background-color: #000000;
-    /* black thumb */
-    border-radius: 10px;
-    border: 2px solid #f1f1f1;
-    /* optional: border around thumb */
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #060606;
-    /* dark gray on hover */
-  }
-
-/* From Uiverse.io by cbolson */ 
-.switch {
-  --_switch-bg-clr: #80ecec;
-  --_switch-padding: 4px; /* padding around button*/
-  --_slider-bg-clr: rgba(0, 0, 0, 0.946); /* slider color unchecked */
-  --_slider-bg-clr-on: rgb(8, 7, 7); /* slider color checked */
-  --_slider-txt-clr: #ffffff;
-  --_label-padding: 1rem 2rem; /* padding around the labels -  this gives the switch it's global width and height */
-  --_switch-easing: cubic-bezier(
-    0.47, 
-    1.64,
-    0.41,
-    0.8
-  ); /* easing on toggle switch */
-  color: white;
-  width: fit-content;
+.containerr {
+  width: 13vw;
+  height: 100vh;
+  background-color: #ffffff;
+  color: black;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  padding: 20px 0;
+
+  /* Shadow on the right side */
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  /* Make sure it appears above other elements */
   position: relative;
-  border-radius: 9999px;
+}
+
+
+.top-section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  gap: 10px;
+}
+
+.top-section img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: 25px;
+}
+
+.top-section span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: black;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px rgba(63, 61, 61, 0.3);
+  /* subtle soft shadow */
+
+}
+
+.middle-content {
+  width: 100%;
+  margin-top: -15vh;
+  padding-left: 20px;
+  box-sizing: border-box;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin-top: 60px;
+  width: 100%;
+}
+
+.menu li a.menu-link {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  padding: 8px 18px;
+  /* smaller height */
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  text-transform: capitalize;
   cursor: pointer;
+  border-radius: 8px;
+  /* more rounded corners */
+  margin-bottom: 10px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.menu li:hover {
+  background-color: rgba(7, 6, 6, 0.1);
+  border-radius: 8px;
+
+  transform: translateX(-8px);
+  /* Expand slightly to the left */
+  transition: all 0.3s ease;
+  border-left: 3px solid black;
+  /* Vertical line on the left */
+  padding-left: 15px;
+  /* Optional, adjust for spacing after line */
+}
+
+.menu li.active {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+
+  transform: translateX(-8px);
+  /* Expand slightly to the left */
+  transition: all 0.3s ease;
+  border-left: 3px solid black;
+  /* Vertical line on the left */
+  padding-left: 15px;
+  /* Optional, adjust for spacing after line */
+}
+
+
+.icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.submenu {
+  list-style: none;
+  margin-top: 5px;
+  padding-left: 25px;
+  padding-right: 10px;
+  display: block;
+  /* Make it visible by default */
+}
+
+
+.submenu li {
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+}
+
+.submenu li:hover {
+  background-color: black;
+  border-radius: 6px;
+  color: white;
+  padding-left: 10px;
+}
+
+.footer-text {
+  font-size: 16px;
+  color: black;
+  margin-bottom: 50px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.chevron {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+  margin-right: -5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.logout-button {
+  display: block;
+  margin: 10px auto 0;
+  padding: 12px 30px;
+  font-size: 16px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px !important;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #ff0000 !important;
+  color: white;
+  border: none;
+
+
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  margin-top: auto;
+}
+
+
+.submenu-toggle {
+  justify-content: space-between;
+}
+
+/* Main layout */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  background: white;
+}
+
+/* Hamburger menu button */
+.hamburger {
+  display: none;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .containerr {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 70vw;
+    height: 100vh;
+    background-color: #fff;
+    transform: translateX(-100%);
+    z-index: 999;
+  }
+
+  .containerr.open {
+    transform: translateX(0);
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .main-content {
+    padding-left: 20px;
+  }
+
+  .top-section {
+    margin-top: 30px;
+    margin-bottom: 40px;
+  }
+}
+
+/* Scrollbar for WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* light gray track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  /* black thumb */
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+  /* optional: border around thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #333333;
+  /* dark gray on hover */
+}
+
+/* Scrollbar for WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* light gray track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  /* black thumb */
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+  /* optional: border around thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #060606;
+  /* dark gray on hover */
+}
+
+.switch {
+  --_switch-bg-clr: #fff;
+  --_switch-padding: 4px;
+  --_slider-bg-clr: #000;
+  /* slider color when OFF */
+  --_slider-bg-clr-on: #000;
+  /* slider color when ON */
+  --_label-padding: 0.6rem 1.4rem;
+  --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
+
+  width: fit-content;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-radius: 9999px;
   position: relative;
   isolation: isolate;
+  font-weight: 600;
+  font-size: 0.9rem;
+  overflow: hidden;
+  background-color: var(--_switch-bg-clr);
+  border: 2px solid #000;
+  cursor: pointer;
 }
 
 .switch input[type="checkbox"] {
@@ -335,68 +332,71 @@ body {
   white-space: nowrap;
   border-width: 0;
 }
-.switch > span {
+
+.switch>span {
   display: grid;
   place-content: center;
-  transition: opacity 300ms ease-in-out 150ms;
   padding: var(--_label-padding);
+  transition: color 0.3s ease, opacity 0.3s ease;
+  z-index: 1;
+  color: #000;
 }
-.switch::before,
-.switch::after {
+
+/* Slider */
+.switch::before {
   content: "";
   position: absolute;
-  border-radius: inherit;
-  transition: inset 150ms ease-in-out;
-}
-/* switch slider */
-.switch::before {
   background-color: var(--_slider-bg-clr);
-  inset: var(--_switch-padding) 50% var(--_switch-padding)
-    var(--_switch-padding);
+  inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+  border-radius: inherit;
   transition:
     inset 500ms var(--_switch-easing),
     background-color 500ms ease-in-out;
-  z-index: -1;
-  box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.3),
-    0 1px rgba(255, 255, 255, 0.3);
+  z-index: 0;
 }
-/* switch bg color */
+
+/* Background */
 .switch::after {
+  content: "";
+  position: absolute;
   background-color: var(--_switch-bg-clr);
   inset: 0;
-  z-index: -2;
+  z-index: -1;
 }
-/* switch hover & focus */
-.switch:focus-within::after {
-  inset: -0.25rem;
-}
-.switch:has(input:checked):hover > span:first-of-type,
-.switch:has(input:not(:checked)):hover > span:last-of-type {
-  opacity: 1;
-  transition-delay: 0ms;
-  transition-duration: 100ms;
-}
-/* switch hover */
-.switch:has(input:checked):hover::before {
-  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding)
-    45%;
-}
-.switch:has(input:not(:checked)):hover::before {
-  inset: var(--_switch-padding) 45% var(--_switch-padding)
-    var(--_switch-padding);
-}
-/* checked - move slider to right */
+
+/* Checked - move slider */
 .switch:has(input:checked)::before {
+  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
   background-color: var(--_slider-bg-clr-on);
-  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding)
-    50%;
 }
-/* checked - set opacity */
-.switch > span:last-of-type,
-.switch > input:checked + span:first-of-type {
-  opacity: 0.75;
+
+/* Active label styles */
+.switch>input:checked+span:first-of-type {
+  color: #000;
+  opacity: 0.6;
 }
-.switch > input:checked ~ span:last-of-type {
+
+.switch>input:checked~span:last-of-type {
+  color: #fff;
   opacity: 1;
+}
+
+.switch>input:not(:checked)+span:first-of-type {
+  color: #fff;
+  opacity: 1;
+}
+
+.switch>input:not(:checked)~span:last-of-type {
+  color: #000;
+  opacity: 0.6;
+}
+
+/* Focus ring */
+.switch:focus-within {
+  outline: 2px solid #333;
+  outline-offset: 4px;
+}
+
+.switch:focus-within::after {
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
 }

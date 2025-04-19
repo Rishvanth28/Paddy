@@ -253,44 +253,114 @@ def place_order(request):
     customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
 
     if request.method == "POST":
-        customer_id = request.POST.get("customer")
-        product_category_id = request.POST.get("product_category_id")
-        quantity = request.POST.get("quantity")
-        price_per_unit = request.POST.get("price_per_unit")
-        lorry_number = request.POST.get("lorry_number")
-        driver_name = request.POST.get("driver_name")
-        driver_ph_no = request.POST.get("driver_ph_no")
-        delivery_date = request.POST.get("delivery_date")
+        if str(request.POST.get("product_category_id")) != "3":
+            customer_id = request.POST.get("customer")
+            product_category_id = request.POST.get("product_category_id")
+            quantity = request.POST.get("quantity")
+            price_per_unit = request.POST.get("price_per_unit")
+            lorry_number = request.POST.get("vehicle_number")
+            driver_name = request.POST.get("driver_name")
+            driver_ph_no = request.POST.get("driver_ph_no")
+            delivery_date = request.POST.get("delivery_date")
 
-        try:
-            customer = CustomerTable.objects.get(customer_id=customer_id)
-            gst = customer.GST
+            try:
+                customer = CustomerTable.objects.get(customer_id=customer_id)
+                gst = customer.GST
 
-            quantity = float(quantity) if quantity else 0
-            price_per_unit = float(price_per_unit) if price_per_unit else 0
-            overall_amount = quantity * price_per_unit
+                quantity = float(quantity) if quantity else 0
+                price_per_unit = float(price_per_unit) if price_per_unit else 0
+                overall_amount = quantity * price_per_unit
 
-            Orders.objects.create(
-                customer=customer,
-                admin=AdminTable.objects.get(admin_id=admin_id),
-                payment_status=0,
-                delivery_status=0,
-                product_category_id=product_category_id,
-                quantity=quantity,
-                price_per_unit=price_per_unit,
-                overall_amount=overall_amount,
-                GST=gst,
-                lorry_number=lorry_number,
-                driver_name=driver_name,
-                delivery_date=delivery_date,
-                driver_ph_no=driver_ph_no,
-                order_date=date.today()
-            )
+                Orders.objects.create(
+                    customer=customer,
+                    admin=AdminTable.objects.get(admin_id=admin_id),
+                    payment_status=0,
+                    delivery_status=0,
+                    product_category_id=product_category_id,
+                    quantity=quantity,
+                    price_per_unit=price_per_unit,
+                    overall_amount=overall_amount,
+                    GST=gst,
+                    lorry_number=lorry_number,
+                    driver_name=driver_name,
+                    delivery_date=delivery_date,
+                    driver_ph_no=driver_ph_no,
+                    order_date=date.today()
+                )
 
-            return redirect("place_order" if is_superadmin else "admin_place_order")
+                return redirect("place_order" if is_superadmin else "admin_place_order")
 
-        except Exception as e:
-            print("Error placing order:", e)
+            except Exception as e:
+                print("Error placing order:", e)
+        else:
+            try:
+                # Extract order-level data
+                customer_id = request.POST.get('customer')
+                # payment_terms = request.POST.get('payment_terms')
+                lorry_number = request.POST.get("vehicle_number")
+                driver_name = request.POST.get("driver_name")
+                driver_ph_no = request.POST.get("driver_ph_no")
+                delivery_date = request.POST.get("delivery_date")   
+                product_category_id = request.POST.get("product_category_id")
+                
+                customer = CustomerTable.objects.get(customer_id=customer_id)
+                gst = customer.GST
+                # Create order
+                order = Orders.objects.create(
+                        customer=customer,
+                        admin = AdminTable.objects.get(admin_id=admin_id),
+                        #payment_terms=payment_terms,
+                        payment_status=0,
+                        quantity = 0,
+                        product_category_id=product_category_id,
+                        GST=gst,
+                        lorry_number=lorry_number,
+                        driver_name=driver_name,
+                        delivery_date=delivery_date,
+                        delivery_status=0,
+                        driver_ph_no=driver_ph_no,
+                        order_date=date.today()
+                    )
+                
+                # Process each order item
+                product_names = request.POST.getlist('product_name[]')
+                batch_numbers = request.POST.getlist('batch_number[]')
+                expiry_dates = request.POST.getlist('expiry_date[]')
+                quantities = request.POST.getlist('quantity[]')
+                prices = request.POST.getlist('price_per_unit[]')
+                units = request.POST.getlist('unit[]')
+                totals = request.POST.getlist('total_amount[]')
+                
+                # Create order items
+                order_items = []
+                for i in range(len(product_names)):
+                    # Skip empty rows
+                    if not product_names[i].strip():
+                        continue
+                        
+                    item = OrderItems(
+                        order=order,
+                        product_name=product_names[i],
+                        batch_number=batch_numbers[i],
+                        expiry_date=expiry_dates[i],
+                        quantity=int(float(quantities[i])),
+                        price_per_unit=float(prices[i]),
+                        total_amount=float(totals[i]),
+                        unit=units[i]
+                    )
+                    order_items.append(item)
+                order.overall_amount = sum(float(totals[i]) for i in range(len(totals)) if totals[i].strip())
+                order.save()
+                # Bulk create items
+                OrderItems.objects.bulk_create(order_items)
+                
+                messages.success(request, 'Order saved successfully!')
+                return redirect('place_order' if is_superadmin else 'admin_place_order')
+
+            
+            except Exception as e:
+                messages.error(request, f'Error saving order: {str(e)}')
+                return redirect('place_order' if is_superadmin else 'admin_place_order')
 
     return render(request, "place_order.html" if is_superadmin else "admin_place_order.html", {"customers": customers})
 
@@ -334,14 +404,16 @@ def payment(request):
     order = Orders.objects.get(pk=id)
     # Assuming you have a related model for order items/products
     # If not, you'll need to create one to store multiple products per order
-    if order.product_category_id == 2:
+    if order.product_category_id == 3:
         order_items = OrderItems.objects.filter(order=order)
+        order_items = [{'quantity':item.quantity,'price_per_unit':item.price_per_unit,
+                        'total_amount':item.total_amount,'product_name':item.product_name} for item in order_items]
     else:
         order_items = [{'quantity':order.quantity,'price_per_unit':order.price_per_unit,
                         'total_amount':order.overall_amount,'product_name':'Paddy' if order.product_category_id == 2 else 'Rice'}]
     context = {
         'order': order,
-        'order_name': order_items[0]['product_name'] if order_items else 'N/A',
+        'order_name': 'Paddy' if order.product_category_id == 2 else 'Rice' if order.product_category_id == 1 else 'Fertilizer',
         'order_items': order_items,
         'customer': order.customer,
         'total_amount': order.overall_amount,
