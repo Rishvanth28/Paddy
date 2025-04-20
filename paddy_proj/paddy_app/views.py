@@ -547,40 +547,56 @@ def upgrade_to_admin(request):
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
+
 @role_required(["admin"])
 def upgrade_to_customer(request):
     admin_id = request.session.get('user_id')
-    admin = AdminTable.objects.get(admin_id=admin_id)
+    try:
+        admin = AdminTable.objects.get(admin_id=admin_id)
+    except AdminTable.DoesNotExist:
+        messages.error(request, "Admin not found!")
+        return redirect('admin_dashboard')  # or some error page
 
+    # Check if the user is already a customer
+    if CustomerTable.objects.filter(email=admin.email).exists():
+        messages.info(request, "You are already a customer!")
+        return redirect('admin_dashboard')  # Replace 'admin_dashboard' with appropriate page
+
+    # Handle the POST request for upgrading
     if request.method == 'POST':
         company_name = request.POST.get('company_name')
         gst = request.POST.get('GST')
         address = request.POST.get('address')
 
-        # check if already in CustomerTable
+        # Check if customer details are filled out properly
+        if not company_name or not gst or not address:
+            messages.error(request, "Please fill in all fields to upgrade.")
+            return redirect('upgrade_to_customer')  # Redirect back to the form with error
+
+        # Check if already a customer
         if CustomerTable.objects.filter(email=admin.email).exists():
-            messages.info(request, "You are already a customer!")
-            return redirect('admin_dashboard')
+            messages.info(request, "You are already registered as a customer.")
+            return redirect('admin_dashboard')  # Redirect to dashboard if already customer
 
-        # check if customer is already admin also
-        if AdminTable.objects.filter(email=admin.email).exists():
-            messages.warning(request, "You are already registered as admin!")
-
+        # Proceed with upgrading the admin to a customer
         new_customer = CustomerTable(
             first_name=admin.first_name,
             last_name=admin.last_name,
             phone_number=admin.phone_number,
             email=admin.email,
-            password=admin.password,  # already hashed
-            admin=admin,  # setting admin foreign key if needed
+            password=admin.password,  # Assuming the password is already hashed
+            admin=admin,  # Setting admin foreign key if needed
             company_name=company_name,
             GST=gst,
             address=address,
         )
         new_customer.save()
-        messages.success(request, "You have been upgraded to customer successfully!")
-        return redirect('admin_dashboard')
 
+        # Inform the user and redirect to success page
+        messages.success(request, "You have been successfully upgraded to a customer!")
+        return redirect('upgrade_success')  # Redirect to a success page
+
+    # Render the upgrade page if method is GET
     return render(request, 'upgrade_to_customer.html', {'admin': admin})
 
 def upgrade_success(request):
