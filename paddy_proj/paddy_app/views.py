@@ -520,22 +520,18 @@ def superadmin_subscription_review(request):
     # If not POST, redirect to the list view
     return redirect('superadmin_subscription')
 
-
 @role_required(["customer"])
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')
     customer = CustomerTable.objects.get(customer_id=customer_id)
 
+    # Check if already admin
+    if AdminTable.objects.filter(email=customer.email).exists():
+        messages.info(request, "You are already an admin! Access denied.")
+        return render(request, 'upgrade_to_admin.html', {'customer': customer})
+
     if request.method == 'POST':
-        # check if already in AdminTable
-        if AdminTable.objects.filter(email=customer.email).exists():
-            messages.info(request, "You are already an admin!")
-            return redirect('customer_dashboard')
-        
-        # check if admin is already customer also
-        if CustomerTable.objects.filter(email=customer.email).exists():
-            messages.warning(request, "You are already registered as customer!")
-        
+        # Create new admin
         new_admin = AdminTable(
             first_name=customer.first_name,
             last_name=customer.last_name,
@@ -545,12 +541,11 @@ def upgrade_to_admin(request):
             user_count=0,
         )
         new_admin.save()
+
         messages.success(request, "You have been upgraded to admin successfully!")
-        return redirect('customer_dashboard')
+        return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
-
-
 
 @role_required(["admin"])
 def upgrade_to_customer(request):
