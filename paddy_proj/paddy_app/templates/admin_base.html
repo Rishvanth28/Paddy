@@ -57,7 +57,7 @@
         <li>
           {% if request.user.role != 'customer' %}
             <img class="icon" src="{% static 'media/Vector.png' %}" alt="Become Customer Icon">
-            <a href="{% url 'upgrade_admin' %}" style="text-decoration: none; color: inherit;">Become Customer</a>
+            <a href="{% url 'upgrade_to_admin' %}" style="text-decoration: none; color: inherit;">Become Customer</a>
           {% endif %}
         </li>
         <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon">

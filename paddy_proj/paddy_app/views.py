@@ -106,7 +106,6 @@ def login_view(request):
 
     return render(request, "login.html")
 
-
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
     return render(request, "superadmin_dashboard.html")
@@ -547,56 +546,36 @@ def upgrade_to_admin(request):
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
-
 @role_required(["admin"])
 def upgrade_to_customer(request):
     admin_id = request.session.get('user_id')
-    try:
-        admin = AdminTable.objects.get(admin_id=admin_id)
-    except AdminTable.DoesNotExist:
-        messages.error(request, "Admin not found!")
-        return redirect('admin_dashboard')  # or some error page
+    admin = AdminTable.objects.get(admin_id=admin_id)
 
-    # Check if the user is already a customer
-    if CustomerTable.objects.filter(email=admin.email).exists():
-        messages.info(request, "You are already a customer!")
-        return redirect('admin_dashboard')  # Replace 'admin_dashboard' with appropriate page
-
-    # Handle the POST request for upgrading
     if request.method == 'POST':
+        if CustomerTable.objects.filter(email=admin.email).exists():
+            messages.info(request, "You are already a customer.")
+            return redirect('admin_dashboard')
+
         company_name = request.POST.get('company_name')
         gst = request.POST.get('GST')
         address = request.POST.get('address')
 
-        # Check if customer details are filled out properly
-        if not company_name or not gst or not address:
-            messages.error(request, "Please fill in all fields to upgrade.")
-            return redirect('upgrade_to_customer')  # Redirect back to the form with error
-
-        # Check if already a customer
-        if CustomerTable.objects.filter(email=admin.email).exists():
-            messages.info(request, "You are already registered as a customer.")
-            return redirect('admin_dashboard')  # Redirect to dashboard if already customer
-
-        # Proceed with upgrading the admin to a customer
         new_customer = CustomerTable(
+            admin_id=admin.admin_id,  # Linking the admin ID
             first_name=admin.first_name,
             last_name=admin.last_name,
             phone_number=admin.phone_number,
             email=admin.email,
-            password=admin.password,  # Assuming the password is already hashed
-            admin=admin,  # Setting admin foreign key if needed
+            password=admin.password,  # already hashed
             company_name=company_name,
             GST=gst,
             address=address,
         )
         new_customer.save()
 
-        # Inform the user and redirect to success page
-        messages.success(request, "You have been successfully upgraded to a customer!")
-        return redirect('upgrade_success')  # Redirect to a success page
+        messages.success(request, "You have been upgraded to customer!")
+        return redirect('upgrade_success')
 
-    # Render the upgrade page if method is GET
     return render(request, 'upgrade_to_customer.html', {'admin': admin})
 
 def upgrade_success(request):
@@ -760,7 +739,6 @@ def customer_subscription_payment(request):
 
     return render(request, "customer_select_subscription_plan.html")
 
-
 @csrf_exempt
 def customer_payment_success(request):
     if request.method == "POST":
@@ -819,7 +797,6 @@ def customer_payment_success(request):
 
     return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
 
-
 @csrf_exempt
 def payment_success(request):
     if request.method == "POST":
@@ -866,7 +843,6 @@ def payment_success(request):
     # Handle invalid request type
     return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
 
-
 def swap_role(request):
     current_role = request.session.get("role")
     user_id = request.session.get("user_id")
@@ -909,8 +885,6 @@ def swap_role(request):
 
     messages.error(request, "Invalid session. Please log in again.")
     return redirect("login")
-
-
 
 def view_admin_subscribers(request):
     admin_subscriptions = Subscription.objects.filter(subscription_type="admin").select_related('admin_id').order_by('-start_date')
