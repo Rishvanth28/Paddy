@@ -19,16 +19,15 @@ urlpatterns = [
     path("admin-place-order/", place_order, name="admin_place_order"),
     path("admin-add-subscription/", admin_add_subscription, name="admin_add_subscription"),
     path("upgrade-plan/", upgrade_plan, name="upgrade_plan"),
-    path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'),
+    path('customer/upgrade/', upgrade_to_customer, name='upgrade_to_admin'),
     path('customer/dashboard/',customer_dashboard, name='customer_dashboard'), 
     path('customer-list/',customers_under_admin, name='customer_list'),
     path('admin_customer-list/',customers_under_admin, name='admin_customer_list'),
-    path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'), 
     path('view-admins/', view_admins, name='view_admins'),
     path("view-customers/<int:admin_id>/", view_customers_under_admin, name="admin_customers"),
     path('superadmin/subscription-review/', superadmin_subscription, name='superadmin_subscription'),
     path('superadmin/review-subscription/', superadmin_subscription_review, name='superadmin_subscription_review'),
-    path('upgrade-admin/',upgrade_to_customer, name='upgrade_admin'),
+    path('upgrade-admin/',upgrade_to_customer, name='upgrade_to_customer'),
     path('demo/', demo, name='demo'),
     path("delete-admin/<int:admin_id>/", delete_admin, name="delete_admin"),
     path("delete-customer/<str:customer_id>/", delete_customer, name="delete_customer"),
@@ -38,8 +37,10 @@ urlpatterns = [
     path("customer-subscription/", customer_subscription_payment, name="customer_subscription_payment"),
     path("customer-payment-success/", customer_payment_success, name="customer_payment_success"),
     path("swap-role/", swap_role, name="swap_role"),
-
-
+    path('admin-subscribers/', view_admin_subscribers, name='admin_subscribers'),
+    path('customer-subscribers/', view_customer_subscribers, name='customer_subscribers'),
+    path('create_partial_payment_order/', create_partial_payment_order, name='create_partial_payment_order'),
+    path('verify_partial_payment/', verify_partial_payment, name='verify_partial_payment'),
     ]
 
 

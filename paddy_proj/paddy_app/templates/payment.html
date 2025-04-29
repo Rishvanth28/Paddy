@@ -34,7 +34,7 @@
         }
         
         /* Hide navigation, headers, footers, print button */
-        header, footer, nav, .no-print, .print-button {
+        header, footer, nav, .no-print, .print-button, .payment-section {
             display: none !important;
         }
         
@@ -158,6 +158,86 @@
     .customer-address {
         line-height: 1.5;
     }
+    
+    /* Payment section styles */
+    .payment-section {
+        margin-top: 30px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    
+    .payment-details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+    
+    .payment-info {
+        flex: 2;
+    }
+    
+    .payment-summary {
+        flex: 1;
+        text-align: right;
+    }
+    
+    .payment-form {
+        margin-top: 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .pay-button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    
+    .pay-button:hover {
+        background-color: #45a049;
+    }
+    
+    .payment-status {
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 4px;
+    }
+    
+    .status-paid {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .status-partial {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-pending {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
 </style>
 
 <div class="invoice-container">
@@ -249,7 +329,56 @@
         </div>
     </div>
 </div>
+
+<!-- Payment Section -->
+<div class="payment-section">
+    <h2>Payment Details</h2>
+    
+    <div class="payment-details">
+        <div class="payment-info">
+            <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+            <p><strong>Payment Deadline:</strong> {{ payment_deadline|date:"d-M-Y" }}</p>
+        </div>
+        <div class="payment-summary">
+            <p><strong>Total Amount:</strong> ₹{{ total_amount }}</p>
+            <p><strong>Paid Amount:</strong> ₹{{ order.paid_amount|default:"0" }}</p>
+            <p><strong>Balance Due:</strong> ₹{{ balance_due }}</p>
+        </div>
+    </div>
+    
+    {% if payment_status == 0 %}
+    <div class="payment-status status-pending">
+        <p><strong>Payment Status:</strong> Pending</p>
+    </div>
+    {% elif payment_status == 1 %}
+    <div class="payment-status status-partial">
+        <p><strong>Payment Status:</strong> Partially Paid</p>
+    </div>
+    {% elif payment_status == 2 %}
+    <div class="payment-status status-paid">
+        <p><strong>Payment Status:</strong> Fully Paid</p>
+    </div>
+    {% endif %}
+    
+    {% if payment_status != 2 %}
+    <div class="payment-form">
+        <form id="payment-form">
+            <div class="form-group">
+                <label for="payment-amount">Payment Amount (₹):</label>
+                <input type="number" id="payment-amount" name="payment_amount" min="1" max="{{ balance_due }}" value="{{ balance_due }}" required>
+                <input type="hidden" id="order-id" name="order_id" value="{{ order.order_id }}">
+                <input type="hidden" id="customer-id" name="customer_id" value="{{ customer.id }}">
+            </div>
+            <button type="button" id="make-payment" class="pay-button">Make Payment</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
 <button class="print-button" onclick="printInvoice()">Print Invoice</button>
+
+<!-- Include Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
     function printInvoice() {
@@ -263,5 +392,116 @@
             printInvoice();
         }
     });
+    
+    // Razorpay integration
+    document.getElementById('make-payment').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const paymentAmount = document.getElementById('payment-amount').value;
+        const orderId = document.getElementById('order-id').value;
+        const customerId = document.getElementById('customer-id').value;
+        
+        if (!paymentAmount || paymentAmount <= 0) {
+            alert('Please enter a valid payment amount');
+            return;
+        }
+        
+        // Send AJAX request to create Razorpay order
+        fetch('/create_partial_payment_order/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                order_id: orderId,
+                amount: paymentAmount,
+                customer_id: customerId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Initialize Razorpay
+                const options = {
+                    key: data.key_id,
+                    amount: data.amount,
+                    currency: "INR",
+                    name: "{{ business_year }}",
+                    description: "Invoice Payment",
+                    order_id: data.razorpay_order_id,
+                    handler: function (response) {
+                        // Handle successful payment
+                        verifyPayment(response, data.razorpay_order_id, paymentAmount, orderId);
+                    },
+                    prefill: {
+                        name: "{{ customer.first_name }} {{ customer.last_name }}",
+                        email: "{{ customer.email }}",
+                        contact: "{{ customer.phone_number }}"
+                    },
+                    theme: {
+                        color: "#4CAF50"
+                    }
+                };
+                
+                const rzp = new Razorpay(options);
+                rzp.open();
+            } else {
+                alert('Failed to create payment order. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong. Please try again.');
+        });
+    });
+    
+    function verifyPayment(payment, razorpay_order_id, amount, order_id) {
+        // Verify payment with server
+        fetch('/verify_partial_payment/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                razorpay_payment_id: payment.razorpay_payment_id,
+                razorpay_order_id: payment.razorpay_order_id,
+                razorpay_signature: payment.razorpay_signature,
+                order_id: order_id,
+                amount: amount
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Payment successful!');
+                // Reload page to show updated payment status
+                window.location.reload();
+            } else {
+                alert('Payment verification failed. Please contact support.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong during verification. Please contact support.');
+        });
+    }
+    
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 </script>
 {% endblock %}

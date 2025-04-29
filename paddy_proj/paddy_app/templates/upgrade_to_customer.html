@@ -1,13 +1,59 @@
 {% extends 'admin_base.html' %}
 {% load static %}
 
-{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Upgrade to Customer</title>
+    {% load static %}
+    
+    {% block content %}
+    <div class="container" style="padding: 30px 15px;">
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-4">
+            <h1 class="page-title mb-0 me-3" style="font-weight: 600; color: #333;">Upgrade to Customer</h1>
+        </div>
+    
+        <div class="card shadow-sm" style="max-width: 600px; margin: auto; border-radius: 12px; overflow: hidden;">
+            <div class="card-header" style="background-color: #2196F3; padding: 20px;">
+                <h2 style="margin: 0; font-size: 24px; color: white; text-align: center;">Customer Details</h2>
+            </div>
+            
+            <div class="card-body" style="background-color: #fff; padding: 30px;">
+                <div class="info mb-3"><strong>First Name:</strong> {{ admin.first_name }}</div>
+                <div class="info mb-3"><strong>Last Name:</strong> {{ admin.last_name }}</div>
+                <div class="info mb-3"><strong>Email:</strong> {{ admin.email }}</div>
+                <div class="info mb-4"><strong>Phone:</strong> {{ admin.phone_number }}</div>
+    
+                <form method="POST" style="margin-top: 20px;">
+                    {% csrf_token %}
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label" style="font-weight: 600;">Company Name <span style="color: red;">*</span></label>
+                        <input type="text" name="company_name" class="form-control" required style="border-radius: 6px; padding: 10px;">
+                    </div>
+    
+                    <div class="form-group mb-3">
+                        <label class="form-label" style="font-weight: 600;">GST Number</label>
+                        <input type="text" name="GST" class="form-control" style="border-radius: 6px; padding: 10px;">
+                    </div>
+    
+                    <div class="form-group mb-4">
+                        <label class="form-label" style="font-weight: 600;">Address</label>
+                        <textarea name="address" rows="3" class="form-control" style="border-radius: 6px; padding: 10px;"></textarea>
+                    </div>
+    
+                    <button type="submit" class="btn btn-primary w-100" style="padding: 12px; font-size: 16px; border-radius: 8px;">
+                        Confirm Upgrade
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,58 +68,14 @@
             margin: auto;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
-
-        .header-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-left: 3rem;
-            margin-top: 3rem;
+        h2 {
+            text-align: center;
+            color: #333;
         }
-
-        .page-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 1px;
-            color: #000000;
-            position: relative;
-            text-transform: uppercase;
-            padding-bottom: 0.6rem;
-            text-align: left;
-            /* <-- Ensure left alignment */
-        }
-
-
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            /* initial width */
-            height: 4px;
-            background-color: #000000;
-            border-radius: 2px;
-            transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-            /* added transition for both properties */
-        }
-
-        .page-title:hover::after {
-            width: 110%;
-            /* makes the underline grow */
-            transform: translateX(-50%);
-            /* keep it centered */
-        }
-
         .info {
             margin: 15px 0;
             font-size: 1.1em;
         }
-
         .btn-upgrade {
             background-color: #2196F3;
             color: white;
@@ -96,8 +98,8 @@
         <h1 class="page-title mb-0 me-3">Upgrade to Customer</h1>
     </div>
     <div class="box">
-
-
+        <h2>Upgrade to Customer</h2>
+        
         <div class="info"><strong>First Name:</strong> {{ admin.first_name }}</div>
         <div class="info"><strong>Last Name:</strong> {{ admin.last_name }}</div>
         <div class="info"><strong>Email:</strong> {{ admin.email }}</div>
@@ -105,6 +107,18 @@
 
         <form method="POST">
             {% csrf_token %}
+            <div class="form-field">
+                <label>Company Name:</label>
+                <input type="text" name="company_name" required>
+            </div>
+            <div class="form-field">
+                <label>GST Number:</label>
+                <input type="text" name="GST">
+            </div>
+            <div class="form-field">
+                <label>Address:</label>
+                <textarea name="address" rows="3"></textarea>
+            </div>
             <button type="submit" class="btn-upgrade">Confirm Upgrade</button>
         </form>
     </div>

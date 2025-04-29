@@ -1,59 +1,33 @@
-<!-- templates/upgrade_to_admin.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Upgrade to Admin</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 30px;
-            background-color: #f0f0f0;
-        }
-        .box {
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            max-width: 500px;
-            margin: auto;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        .info {
-            margin: 15px 0;
-            font-size: 1.1em;
-        }
-        .btn-upgrade {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-            width: 100%;
-        }
-        .btn-upgrade:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <h2>Upgrade to Admin</h2>
-        
-        <div class="info"><strong>First Name:</strong> {{ customer.first_name }}</div>
-        <div class="info"><strong>Last Name:</strong> {{ customer.last_name }}</div>
-        <div class="info"><strong>Email:</strong> {{ customer.email }}</div>
-        <div class="info"><strong>Phone:</strong> {{ customer.phone_number }}</div>
+{% extends "customer_base.html" %}
 
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn-upgrade">Confirm Upgrade</button>
-        </form>
+{% block content %}
+
+<div class="container mt-4">
+  {% if messages %}
+    <div class="col-md-12">
+      {% for message in messages %}
+        <div class="alert 
+            {% if message.tags == 'success' %}alert-success
+            {% elif message.tags == 'info' %}alert-info
+            {% elif message.tags == 'warning' %}alert-warning
+            {% elif message.tags == 'error' %}alert-danger
+            {% endif %}
+            alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
     </div>
-</body>
-</html>
+  {% endif %}
+
+  <h2>Upgrade to Admin</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to upgrade your account to Admin?</p>
+    <button type="submit" class="btn btn-primary">Upgrade Now</button>
+  </form>
+
+</div>
+
+{% endblock %}

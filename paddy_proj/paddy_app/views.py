@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from .models import *
 from django.db import IntegrityError
@@ -105,7 +107,6 @@ def login_view(request):
             messages.error(request, "Invalid role selected.")
 
     return render(request, "login.html")
-
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
@@ -411,6 +412,23 @@ def payment(request):
     else:
         order_items = [{'quantity':order.quantity,'price_per_unit':order.price_per_unit,
                         'total_amount':order.overall_amount,'product_name':'Paddy' if order.product_category_id == 2 else 'Rice'}]
+    total_amount = order.overall_amount
+    
+    # Calculate balance due
+    paid_amount = order.paid_amount or 0
+    balance_due = total_amount - paid_amount
+    
+    # Determine payment status
+    if paid_amount == 0:
+        payment_status = 0  # Pending
+    elif paid_amount < total_amount:
+        payment_status = 1  # Partially Paid
+    else:
+        payment_status = 2  # Fully Paid
+    
+    # Calculate payment deadline date
+    payment_deadline = order.order_date + timezone.timedelta(days=order.payment_deadline)
+    
     context = {
         'order': order,
         'order_name': 'Paddy' if order.product_category_id == 2 else 'Rice' if order.product_category_id == 1 else 'Fertilizer',
@@ -418,14 +436,134 @@ def payment(request):
         'customer': order.customer,
         'total_amount': order.overall_amount,
         'payment_terms': order.payment_deadline,
+        'balance_due': balance_due,
+        'payment_status': payment_status,
         'invoice_date': order.order_date,
         'total_items': sum(item['quantity'] for item in order_items),
         'invoice_number': f"UFs {order.order_id}",
+        'payment_terms': order.payment_deadline,
+        'payment_deadline': payment_deadline,
         'amount_in_words': number_to_words_indian(order.overall_amount),
         'business_year': "urakadai "+str(order.order_date.year),
     }
     return render(request, 'payment.html',context)
 
+@require_POST
+@csrf_exempt
+def create_partial_payment_order(request):
+    """API endpoint to create a Razorpay order for partial payment"""
+
+    
+    try:
+
+        data = json.loads(request.body)
+        order_id = data.get('order_id')
+        amount = float(data.get('amount'))
+        
+        # Get the order
+        order = get_object_or_404(Orders, order_id=order_id)
+
+        
+        # Validate amount
+        paid_amount = order.paid_amount or 0
+        balance_due = order.overall_amount - paid_amount
+        
+        if amount <= 0 or amount > balance_due:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Invalid payment amount'
+            })
+        # Create Razorpay order (amount in paise)
+        razorpay_amount = int(amount * 100)
+        order_data = {
+            'amount': razorpay_amount,
+            'currency': 'INR',
+            'receipt': f'receipt_{order_id}_{timezone.now().timestamp()}',
+            'payment_capture': "1",  
+            'notes': {
+                'order_id': order_id
+            }
+        }
+
+        
+        razorpay_order = client.order.create(data=order_data)
+        
+        # Store order details in session
+        request.session['partial_payment_order_id'] = razorpay_order['id']
+        request.session['partial_payment_amount'] = amount
+        request.session['partial_payment_for_order'] = order_id
+        
+        return JsonResponse({
+            'success': True,
+            'key_id': RAZORPAY_KEY_ID,
+            'amount': razorpay_amount,
+            'razorpay_order_id': razorpay_order['id']
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        })
+
+@require_POST
+@csrf_exempt
+def verify_partial_payment(request):
+    """API endpoint to verify and process partial payment"""
+    
+    try:
+        # Parse request data
+        data = json.loads(request.body)
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        razorpay_order_id = data.get('razorpay_order_id')
+        razorpay_signature = data.get('razorpay_signature')
+        order_id = data.get('order_id')
+        amount = float(data.get('amount'))
+        
+        # Verify signature
+        params_dict = {
+            'razorpay_payment_id': razorpay_payment_id,
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_signature': razorpay_signature
+        }
+        
+        # Verify the payment signature
+        client.utility.verify_payment_signature(params_dict)
+        
+        # Get the order
+        order = get_object_or_404(Orders, order_id=order_id)
+        
+        # Update paid amount
+        current_paid = order.paid_amount or 0
+        order.paid_amount = current_paid + amount
+        
+        # Update payment status
+        if order.paid_amount >= order.overall_amount:
+            order.payment_status = 2  # Fully paid
+        else:
+            order.payment_status = 1  # Partially paid
+        
+        # Save the order changes
+        order.save()
+        
+        # Clear session data
+        if 'partial_payment_order_id' in request.session:
+            del request.session['partial_payment_order_id']
+        if 'partial_payment_amount' in request.session:
+            del request.session['partial_payment_amount']
+        if 'partial_payment_for_order' in request.session:
+            del request.session['partial_payment_for_order']
+        
+        return JsonResponse({
+            'success': True
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        })
+    
 def customer_delivery_validation(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
@@ -525,14 +663,15 @@ def superadmin_subscription_review(request):
 @role_required(["customer"])
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')
-
     customer = CustomerTable.objects.get(customer_id=customer_id)
 
-    if request.method == 'POST':
-        if AdminTable.objects.filter(email=customer.email).exists():
-            messages.info(request, "You are already an admin.")
-            return redirect('customer_dashboard')
+    # Check if already admin
+    if AdminTable.objects.filter(email=customer.email).exists():
+        messages.info(request, "You are already an admin! Access denied.")
+        return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
+    if request.method == 'POST':
+        # Create new admin
         new_admin = AdminTable(
             first_name=customer.first_name,
             last_name=customer.last_name,
@@ -542,8 +681,9 @@ def upgrade_to_admin(request):
             user_count=0,
         )
         new_admin.save()
-        messages.success(request, "You have been upgraded to admin!")
-        return redirect('customer_dashboard')
+
+        messages.success(request, "You have been upgraded to admin successfully!")
+        return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
     return render(request, 'upgrade_to_admin.html', {'customer': customer})
 
@@ -553,15 +693,27 @@ def upgrade_to_customer(request):
     admin = AdminTable.objects.get(admin_id=admin_id)
 
     if request.method == 'POST':
-        # Fix: Pass admin_id to avoid null value error
-        CustomerTable.objects.create(
-            admin_id=admin.admin_id,  # pass the admin ID explicitly
+        if CustomerTable.objects.filter(email=admin.email).exists():
+            messages.info(request, "You are already a customer.")
+            return redirect('admin_dashboard')
+
+        company_name = request.POST.get('company_name')
+        gst = request.POST.get('GST')
+        address = request.POST.get('address')
+
+        new_customer = CustomerTable(
+            admin_id=admin.admin_id,  # Linking the admin ID
             first_name=admin.first_name,
             last_name=admin.last_name,
             phone_number=admin.phone_number,
             email=admin.email,
-            password=admin.password  # already hashed
+            password=admin.password,  # already hashed
+            company_name=company_name,
+            GST=gst,
+            address=address,
         )
+        new_customer.save()
+
         messages.success(request, "You have been upgraded to customer!")
         return redirect('upgrade_success')
 
@@ -728,7 +880,6 @@ def customer_subscription_payment(request):
 
     return render(request, "customer_select_subscription_plan.html")
 
-
 @csrf_exempt
 def customer_payment_success(request):
     if request.method == "POST":
@@ -787,7 +938,6 @@ def customer_payment_success(request):
 
     return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
 
-
 @csrf_exempt
 def payment_success(request):
     if request.method == "POST":
@@ -834,7 +984,6 @@ def payment_success(request):
     # Handle invalid request type
     return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
 
-
 def swap_role(request):
     current_role = request.session.get("role")
     user_id = request.session.get("user_id")
@@ -877,3 +1026,11 @@ def swap_role(request):
 
     messages.error(request, "Invalid session. Please log in again.")
     return redirect("login")
+
+def view_admin_subscribers(request):
+    admin_subscriptions = Subscription.objects.filter(subscription_type="admin").select_related('admin_id').order_by('-start_date')
+    return render(request, "admin_subscribers.html", {"subscriptions": admin_subscriptions})
+
+def view_customer_subscribers(request):
+    customer_subscriptions = Subscription.objects.filter(subscription_type="customer").select_related('customer_id').order_by('-start_date')
+    return render(request, "customer_subscribers.html", {"subscriptions": customer_subscriptions})

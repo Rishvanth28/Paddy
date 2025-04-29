@@ -139,6 +139,8 @@ class Subscription(models.Model):
     end_date = models.DateField(null=True, blank=True)
     def __str__(self):
         return f"Subscription {self.sid} - {self.subscription_type}"
+    
+
 
 class UserIncreaseSubscription(models.Model):
     sid = models.BigAutoField(primary_key=True)
