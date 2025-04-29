@@ -11,9 +11,8 @@ class CustomerTableAdmin(admin.ModelAdmin):
     readonly_fields = ("customer_id",)  # Make primary key read-only in form
     ordering = ("customer_id",)
 
-admin.site.register(AdminTable, AdminTableAdmin)
-admin.site.register(CustomerTable, CustomerTableAdmin)
-admin.site.register(Orders)
-admin.site.register(Payments)
-admin.site.register(Subscription)
+
+for model in [AdminTable, CustomerTable, Orders, Payments, Subscription,UserIncreaseSubscription,OrderItems]:
+    if model not in admin.site._registry:
+        admin.site.register(model)
 

@@ -137,6 +137,16 @@ class Subscription(models.Model):
     payment_amount = models.BigIntegerField(default=0)
     start_date = models.DateField(default=now)
     end_date = models.DateField(null=True, blank=True)
-
     def __str__(self):
         return f"Subscription {self.sid} - {self.subscription_type}"
+
+class UserIncreaseSubscription(models.Model):
+    sid = models.BigAutoField(primary_key=True)
+    admin_id = models.ForeignKey('AdminTable', null=True, blank=True, on_delete=models.CASCADE)
+    subscription_status = models.IntegerField(default=0)  # 0: Pending, 1: Active
+    payment_amount = models.BigIntegerField(default=0)
+    start_date = models.DateField(default=now)
+    end_date = models.DateField(null=True, blank=True)
+    additional_users = models.IntegerField(default=50)  # Number of additional users added
+    def __str__(self):
+        return f"Subscription {self.sid}"    

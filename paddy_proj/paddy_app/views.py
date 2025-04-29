@@ -449,19 +449,21 @@ def admin_add_subscription(request):
     user_id = request.session.get("user_id")
     admin = AdminTable.objects.get(admin_id=user_id)
     user_count = admin.user_count
-    existing_subscription = Subscription.objects.filter(admin_id=user_id, subscription_type=1).first()
+    existing_subscription = UserIncreaseSubscription.objects.filter(admin_id=user_id).first()
     print(existing_subscription)
     if request.method == "POST":
         if request.POST.get("submission_type") == '0': 
             try:
-                Subscription.objects.create(
-                    admin_id=admin,
-                    subscription_type=1, # 1 is for admin user addition
-                    additional_users=50, # 50 is the default value for admin user addition
+                print("def here??")
+
+                UserIncreaseSubscription.objects.create(
+                    admin_id=admin, 
                 )
+                print("here??")
                 messages.success(request, "Subscription Request added successfully!")
             except Exception:
-                messages.error(request, "Failed to add subscription. Please try again.")
+                print("here")
+                messages.error(request, "Failed to add subscription. Please try again."+str(Exception))
     return render(request, "admin_add_subscription.html", {"user_count": user_count,
                                                         "added_count":user_count+50,
                                                         "existing_subscription": 1 if existing_subscription else 0,
@@ -475,7 +477,7 @@ def superadmin_subscription(request):
     status_filter = request.GET.get('status', '')
     
     # Base queryset
-    subscriptions_queryset = Subscription.objects.filter(subscription_type='1').order_by('-sid')
+    subscriptions_queryset = UserIncreaseSubscription.objects.filter().order_by('-sid')
     
     # Apply status filter if provided
     if status_filter != '':
@@ -499,7 +501,7 @@ def superadmin_subscription_review(request):
         subscription_status = request.POST.get('subscription_status')
         payment_amount = request.POST.get('payment_amount')
         try:
-            subscription = Subscription.objects.get(sid=subscription_id)
+            subscription = UserIncreaseSubscription.objects.get(sid=subscription_id)
             
             # Update subscription
             subscription.subscription_status = subscription_status
@@ -512,7 +514,7 @@ def superadmin_subscription_review(request):
             
             subscription.save()
             
-        except Subscription.DoesNotExist:
+        except Exception:
             messages.error(request, "Subscription request not found.")
         
         return redirect('superadmin_subscription')
