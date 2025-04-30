@@ -18,6 +18,7 @@ import razorpay
 from django.conf import settings
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 
 RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
@@ -728,7 +729,17 @@ def customer_dashboard(request):
 
 @role_required(["superadmin"])
 def view_admins(request):
+    query = request.GET.get('q')
     admins = AdminTable.objects.exclude(admin_id=1000000)
+
+    if query:
+        admins = admins.filter(
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(phone_number__icontains=query)
+        )
+
     return render(request, 'view_admins.html', {'admins': admins})
 
 @role_required(["superadmin"])
