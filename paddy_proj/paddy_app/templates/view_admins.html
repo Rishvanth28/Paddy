@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin List</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> -->
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- Custom CSS -->
@@ -46,7 +46,7 @@
                             <tr>
                                 <td>{{ admin.admin_id }}</td>
                                 <td>
-                                    <a href="{% url 'admin_customers' admin.admin_id %}" class="text-decoration-none text-primary">
+                                    <a style="text-decoration:none;" href="{% url 'admin_customers' admin.admin_id %}" class="text-decoration-none text-primary">
                                         {{ admin.first_name }} {{ admin.last_name }}
                                     </a>
                                 </td>
