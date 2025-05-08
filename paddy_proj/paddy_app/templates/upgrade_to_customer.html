@@ -1,129 +1,75 @@
 {% extends 'admin_base.html' %}
 {% load static %}
 
+{% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% if messages %}
+<div id="message-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+<script>
+    setTimeout(() => {
+        const messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+            messageContainer.style.display = 'none';
+        }
+    }, 3000);
+</script>
+{% endif %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Upgrade to Customer</title>
-    {% load static %}
-    
-    {% block content %}
-    <div class="container" style="padding: 30px 15px;">
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-4">
-            <h1 class="page-title mb-0 me-3" style="font-weight: 600; color: #333;">Upgrade to Customer</h1>
+<link rel="stylesheet" href="{% static 'css/admin_place_order.css' %}">
+
+<div class="main-content">
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-4">
+        <h1 class="page-title mb-0 me-3">Upgrade to Customer</h1>
+    </div>
+
+    <div class="card shadow-sm" style="max-width: 900px; margin: auto; border-radius: 12px; overflow: hidden;">
+        <div class="card-header" style="background-color: #333; padding: 20px;">
+            <h2 style="margin: 0; font-size: 24px; color: white; text-align: center;">Customer Details</h2>
         </div>
-    
-        <div class="card shadow-sm" style="max-width: 600px; margin: auto; border-radius: 12px; overflow: hidden;">
-            <div class="card-header" style="background-color: #2196F3; padding: 20px;">
-                <h2 style="margin: 0; font-size: 24px; color: white; text-align: center;">Customer Details</h2>
+
+        <div class="card-body" style="background-color: #fff; padding: 30px;">
+            <div class="row mb-3">
+                <div class="col-md-6"><strong>First Name:</strong> {{ admin.first_name }}</div>
+                <div class="col-md-6"><strong>Last Name:</strong> {{ admin.last_name }}</div>
             </div>
-            
-            <div class="card-body" style="background-color: #fff; padding: 30px;">
-                <div class="info mb-3"><strong>First Name:</strong> {{ admin.first_name }}</div>
-                <div class="info mb-3"><strong>Last Name:</strong> {{ admin.last_name }}</div>
-                <div class="info mb-3"><strong>Email:</strong> {{ admin.email }}</div>
-                <div class="info mb-4"><strong>Phone:</strong> {{ admin.phone_number }}</div>
-    
-                <form method="POST" style="margin-top: 20px;">
-                    {% csrf_token %}
-                    
-                    <div class="form-group mb-3">
+            <div class="row mb-3">
+                <div class="col-md-6"><strong>Email:</strong> {{ admin.email }}</div>
+                <div class="col-md-6"><strong>Phone:</strong> {{ admin.phone_number }}</div>
+            </div>
+
+            <form method="POST" style="margin-top: 20px;">
+                {% csrf_token %}
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
                         <label class="form-label" style="font-weight: 600;">Company Name <span style="color: red;">*</span></label>
                         <input type="text" name="company_name" class="form-control" required style="border-radius: 6px; padding: 10px;">
                     </div>
-    
-                    <div class="form-group mb-3">
+                    <div class="col-md-6">
                         <label class="form-label" style="font-weight: 600;">GST Number</label>
                         <input type="text" name="GST" class="form-control" style="border-radius: 6px; padding: 10px;">
                     </div>
-    
-                    <div class="form-group mb-4">
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
                         <label class="form-label" style="font-weight: 600;">Address</label>
                         <textarea name="address" rows="3" class="form-control" style="border-radius: 6px; padding: 10px;"></textarea>
                     </div>
-    
-                    <button type="submit" class="btn btn-primary w-100" style="padding: 12px; font-size: 16px; border-radius: 8px;">
-                        Confirm Upgrade
-                    </button>
-                </form>
-            </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" style="padding: 12px; font-size: 16px; border-radius: 8px;">
+                    Confirm Upgrade
+                </button>
+            </form>
         </div>
     </div>
-
-    
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-        }
-
-        .box {
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            max-width: 500px;
-            margin: auto;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        .info {
-            margin: 15px 0;
-            font-size: 1.1em;
-        }
-        .btn-upgrade {
-            background-color: #2196F3;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-            width: 100%;
-        }
-
-        .btn-upgrade:hover {
-            background-color: #1976D2;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-        <h1 class="page-title mb-0 me-3">Upgrade to Customer</h1>
-    </div>
-    <div class="box">
-        <h2>Upgrade to Customer</h2>
-        
-        <div class="info"><strong>First Name:</strong> {{ admin.first_name }}</div>
-        <div class="info"><strong>Last Name:</strong> {{ admin.last_name }}</div>
-        <div class="info"><strong>Email:</strong> {{ admin.email }}</div>
-        <div class="info"><strong>Phone:</strong> {{ admin.phone_number }}</div>
-
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-field">
-                <label>Company Name:</label>
-                <input type="text" name="company_name" required>
-            </div>
-            <div class="form-field">
-                <label>GST Number:</label>
-                <input type="text" name="GST">
-            </div>
-            <div class="form-field">
-                <label>Address:</label>
-                <textarea name="address" rows="3"></textarea>
-            </div>
-            <button type="submit" class="btn-upgrade">Confirm Upgrade</button>
-        </form>
-    </div>
-</body>
-
-</html>
+</div>
 
 {% endblock %}
