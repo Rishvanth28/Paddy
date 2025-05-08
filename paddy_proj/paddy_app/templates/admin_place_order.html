@@ -280,145 +280,142 @@
                     </div>
                 </div>
             
-                <div class="form-footer">
-                    <div class="form-actions">
-                        <button type="submit" class="submit-btn">Save Order</button>
-                        <button type="button" class="cancel-btn">Cancel</button>
-                    </div>
+                <div class="form-actions">
+                    <button type="submit">Place Pesticide Order</button>
                 </div>
             </form>
         </div>
         
-            <!-- Tab Switch Script -->
-            <script>
-                function showForm(formType) {
-                    const forms = {
-                        'Rice': 'rice-form',
-                        'Paddy': 'paddy-form',
-                        'Pesticide': 'pesticide-form'
-                    };
-        
-                    for (let type in forms) {
-                        document.getElementById(forms[type]).style.display = (type === formType) ? 'block' : 'none';
-                    }
-        
-                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                    document.querySelector(`.tab-button[onclick="showForm('${formType}')"]`).classList.add('active');
-                }
-            </script>
-        
-            <!-- Customer last name script for all forms -->
-            <script>
-                function setupCustomerListeners(selectId, inputId) {
-                    const select = document.getElementById(selectId);
-                    const input = document.getElementById(inputId);
-                    if (select && input) {
-                        select.addEventListener("change", function () {
-                            const selectedOption = this.options[this.selectedIndex];
-                            const lastName = selectedOption.getAttribute("data-last-name");
-                            input.value = lastName || "";
-                        });
-                    }
-                }
-        
-                setupCustomerListeners("customer-select-rice", "customer-last-name-rice");
-                setupCustomerListeners("customer-select-paddy", "customer-last-name-paddy");
-                setupCustomerListeners("customer-select-pesticide", "customer-last-name-pesticide");
-            </script>
-            <script>
-                // Replace the existing addNewRow, removeRow, calculateRowTotal, and updateGrandTotal functions with these:
-        
-                function addPesticideRow() {
-            const tableBody = document.getElementById("pesticide-items-container");
-            const newRow = document.createElement("tr");
-            newRow.classList.add("item-row");
-        
-            newRow.innerHTML = `
-                <td><input type="text" name="product_name[]" class="product-name" required></td>
-                <td><input type="text" name="batch_number[]" class="batch-number" required></td>
-                <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
-                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
-                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
-                <td>
-                    <select name="unit[]" class="unit" required>
-                        <option value="Nos">Nos</option>
-                        <option value="Kg">Kg</option>
-                        <option value="Ltr">Ltr</option>
-                    </select>
-                </td>
-                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
-                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
-            `;
-        
-            tableBody.appendChild(newRow);
-            
-            // Initialize the row total
-            const quantityInput = newRow.querySelector(".quantity");
-            if (quantityInput) {
-                calculateRowTotal(quantityInput);
+    <!-- Tab Switch Script -->
+    <script>
+        function showForm(formType) {
+            const forms = {
+                'Rice': 'rice-form',
+                'Paddy': 'paddy-form',
+                'Pesticide': 'pesticide-form'
+            };
+
+            for (let type in forms) {
+                document.getElementById(forms[type]).style.display = (type === formType) ? 'block' : 'none';
             }
+
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab-button[onclick="showForm('${formType}')"]`).classList.add('active');
         }
-        
-        function removeRow(button) {
-            const row = button.closest("tr");
-            if (row) {
-                row.remove();
-                updateGrandTotal();
-            }
-        }
-        
-        function calculateRowTotal(input) {
-            const row = input.closest("tr");
-            const quantity = parseFloat(row.querySelector(".quantity")?.value || 0);
-            const price = parseFloat(row.querySelector(".price")?.value || 0);
-            const total = (quantity * price).toFixed(2);
-        
-            row.querySelector(".row-total").value = total;
-            updateGrandTotal();
-        }
-        
-        function updateGrandTotal() {
-            // Find which form is currently visible
-            let formId = "";
-            if (document.getElementById("paddy-form").style.display === "block") {
-                formId = "paddy";
-            } else if (document.getElementById("pesticide-form").style.display === "block") {
-                formId = "pesticide";
-            } else {
-                return; // Not on a form with items
-            }
-        
-            // Calculate grand total for the visible form
-            let grandTotal = 0;
-            const itemsContainer = document.getElementById(`${formId}-items-container`);
-            if (itemsContainer) {
-                itemsContainer.querySelectorAll(".row-total").forEach(input => {
-                    grandTotal += parseFloat(input.value) || 0;
+    </script>
+
+    <!-- Customer last name script for all forms -->
+    <script>
+        function setupCustomerListeners(selectId, inputId) {
+            const select = document.getElementById(selectId);
+            const input = document.getElementById(inputId);
+            if (select && input) {
+                select.addEventListener("change", function () {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const lastName = selectedOption.getAttribute("data-last-name");
+                    input.value = lastName || "";
                 });
-                
-                const grandTotalInput = document.getElementById(`${formId}-grand-total`);
-                if (grandTotalInput) {
-                    grandTotalInput.value = grandTotal.toFixed(2);
-                }
-                
             }
         }
-        // Initialize all rows when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add event listeners to tab buttons to ensure calculations are updated when switching tabs
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Give the DOM time to update before recalculating
-                    setTimeout(updateGrandTotal, 100);
-                });
-            });
-            
-            // Initialize any existing rows
-            document.querySelectorAll('.quantity').forEach(input => {
-                calculateRowTotal(input);
-            });
+
+        setupCustomerListeners("customer-select-rice", "customer-last-name-rice");
+        setupCustomerListeners("customer-select-paddy", "customer-last-name-paddy");
+        setupCustomerListeners("customer-select-pesticide", "customer-last-name-pesticide");
+    </script>
+    <script>
+        // Replace the existing addNewRow, removeRow, calculateRowTotal, and updateGrandTotal functions with these:
+
+        function addPesticideRow() {
+    const tableBody = document.getElementById("pesticide-items-container");
+    const newRow = document.createElement("tr");
+    newRow.classList.add("item-row");
+
+    newRow.innerHTML = `
+        <td><input type="text" name="product_name[]" class="product-name" required></td>
+        <td><input type="text" name="batch_number[]" class="batch-number" required></td>
+        <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
+        <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
+        <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
+        <td>
+            <select name="unit[]" class="unit" required>
+                <option value="Nos">Nos</option>
+                <option value="Kg">Kg</option>
+                <option value="Ltr">Ltr</option>
+            </select>
+        </td>
+        <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
+        <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
+    `;
+
+    tableBody.appendChild(newRow);
+    
+    // Initialize the row total
+    const quantityInput = newRow.querySelector(".quantity");
+    if (quantityInput) {
+        calculateRowTotal(quantityInput);
+    }
+}
+
+function removeRow(button) {
+    const row = button.closest("tr");
+    if (row) {
+        row.remove();
+        updateGrandTotal();
+    }
+}
+
+function calculateRowTotal(input) {
+    const row = input.closest("tr");
+    const quantity = parseFloat(row.querySelector(".quantity")?.value || 0);
+    const price = parseFloat(row.querySelector(".price")?.value || 0);
+    const total = (quantity * price).toFixed(2);
+
+    row.querySelector(".row-total").value = total;
+    updateGrandTotal();
+}
+
+function updateGrandTotal() {
+    // Find which form is currently visible
+    let formId = "";
+    if (document.getElementById("paddy-form").style.display === "block") {
+        formId = "paddy";
+    } else if (document.getElementById("pesticide-form").style.display === "block") {
+        formId = "pesticide";
+    } else {
+        return; // Not on a form with items
+    }
+
+    // Calculate grand total for the visible form
+    let grandTotal = 0;
+    const itemsContainer = document.getElementById(`${formId}-items-container`);
+    if (itemsContainer) {
+        itemsContainer.querySelectorAll(".row-total").forEach(input => {
+            grandTotal += parseFloat(input.value) || 0;
         });
-            </script>
+        
+        const grandTotalInput = document.getElementById(`${formId}-grand-total`);
+        if (grandTotalInput) {
+            grandTotalInput.value = grandTotal.toFixed(2);
+        }
+        
+    }
+}
+// Initialize all rows when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to tab buttons to ensure calculations are updated when switching tabs
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Give the DOM time to update before recalculating
+            setTimeout(updateGrandTotal, 100);
+        });
+    });
+    
+    // Initialize any existing rows
+    document.querySelectorAll('.quantity').forEach(input => {
+        calculateRowTotal(input);
+    });
+});
+    </script>
                 
 </body>
-{% endblock %}
+{% endblock %}   
