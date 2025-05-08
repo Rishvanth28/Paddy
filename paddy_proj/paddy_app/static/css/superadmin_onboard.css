@@ -34,19 +34,19 @@ body {
     margin-top: 3rem;
 }
 
+/* ========== Page Title ========== */
 .page-title {
     font-size: 2rem;
     font-weight: 700;
     margin: 0;
     letter-spacing: 1px;
-    color: #000000;
-    position: relative;
     text-transform: uppercase;
-    padding-bottom: 0.6rem;
+    color: #000;
     text-align: left;
-    /* <-- Ensure left alignment */
+    position: relative;
+    padding-bottom: 0.6rem;
+    left: -1rem;
 }
-
 
 .page-title::after {
     content: '';
@@ -55,21 +55,15 @@ body {
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
-    /* initial width */
     height: 4px;
-    background-color: #000000;
+    background-color: #000;
     border-radius: 2px;
-    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-    /* added transition for both properties */
+    transition: width 0.3s ease-in-out;
 }
 
 .page-title:hover::after {
     width: 110%;
-    /* makes the underline grow */
-    transform: translateX(-50%);
-    /* keep it centered */
 }
-
 
 .form-title span {
     position: relative;
