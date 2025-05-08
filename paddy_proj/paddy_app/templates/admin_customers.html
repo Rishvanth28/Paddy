@@ -1,7 +1,25 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
-
+{% if messages %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<ul class="messages">
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let messages = document.querySelectorAll('.messages');
+            messages.forEach((message) => {
+                message.style.opacity = '0';
+                setTimeout(() => message.remove(), 100); 
+            });
+        }, 5000);
+    });
+</script>
+{% endif %}
 <head>
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">

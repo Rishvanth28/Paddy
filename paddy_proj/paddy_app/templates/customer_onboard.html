@@ -7,21 +7,24 @@
 </head>
 
 {% if messages %}
-<div id="message-container">
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<ul class="messages">
     {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        <li class="{{ message.tags }}">{{ message }}</li>
     {% endfor %}
-</div>
+</ul>
 <script>
-    setTimeout(() => {
-        const messageContainer = document.getElementById('message-container');
-        if (messageContainer) {
-            messageContainer.style.display = 'none';
-        }
-    }, 3000);
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let messages = document.querySelectorAll('.messages');
+            messages.forEach((message) => {
+                message.style.opacity = '0';
+                setTimeout(() => message.remove(), 100); 
+            });
+        }, 5000);
+    });
 </script>
 {% endif %}
-
 <!-- Page Header -->
 
 <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">

@@ -2,23 +2,24 @@
 {% load static %}
 {% block content %}
 {% if messages %}
-    <div id="message-container">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-    <script>
-        setTimeout(() => {
-            const messageContainer = document.getElementById('message-container');
-            if (messageContainer) {
-                messageContainer.style.display = 'none';
-            }
-        }, 3000);
-    </script>
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<ul class="messages">
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let messages = document.querySelectorAll('.messages');
+            messages.forEach((message) => {
+                message.style.opacity = '0';
+                setTimeout(() => message.remove(), 100); 
+            });
+        }, 5000);
+    });
+</script>
 {% endif %}
-
 <head>
     <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
 </head>
