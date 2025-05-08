@@ -1,102 +1,89 @@
 {% extends 'superadmin_base.html' %}
-
+{% load static %}
 {% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user_type|capfirst }} Subscribers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/view_admins.css' %}">
+</head>
+
+<body>
+    <div class="py-5" style="padding: 40px 30px;">
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-5">
+            <h1 class="page-title mb-0 me-3">{{ user_type|capfirst }} Subscribers</h1>
+            <div class="search-wrapper flex-grow-1 d-flex mt-2 mt-md-0">
+                <form class="w-100 position-relative" style="max-width: 500px;" method="GET" action="">
+                    <i class="fas fa-search position-absolute"
+                       style="top: 50%; left: 16px; transform: translateY(-50%); color: #888;"></i>
+                    <input type="search" name="q" class="form-control ps-5" placeholder="Search subscribers..." aria-label="Search">
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-0">
+                {% if subscriptions %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>{{ user_type|capfirst }} Name</th>
+                                <th>Payment Amount (₹)</th>
+                                <th>Status</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subscription in subscriptions %}
+                            <tr>
+                                <td>{{ subscription.sid }}</td>
+                                <td>
+                                    {% if user_type == "admin" %}
+                                        {{ subscription.admin_id.first_name }} {{ subscription.admin_id.last_name }}
+                                    {% elif user_type == "customer" %}
+                                        {{ subscription.customer_id.name }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ subscription.payment_amount }}</td>
+                                <td>
+                                    {% if subscription.subscription_status == 1 %}
+                                        <span class="active">Active</span>
+                                    {% else %}
+                                        <span class="inactive">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ subscription.start_date }}</td>
+                                <td>{{ subscription.end_date|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="no-customers text-center py-5">
+                    <i class="fa-solid fa-circle-exclamation fa-2xl mb-3" style="color: #aaa;"></i>
+                    <p class="fs-5 mb-0">No subscribers found.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
     <style>
-  body {
-    background-color: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
-}
+        .active {
+            color: #0aef9f;
+            font-weight: bold;
+        }
 
-table {
-    width: 90%;
-    margin: 30px auto;
-    border-collapse: collapse;
-    background-color: #222;
-    border: 1px solid #444;
-}
-
-th, td {
-    padding: 12px;
-    text-align: center;
-    border: 1px solid #444;
-}
-
-th {
-    background-color: #333;
-}
-
-tr:nth-child(even) {
-    background-color: #444;
-}
-
-/* Specific class targeting for table rows only */
-table .active {
-    color: #0aef9f;
-    font-weight: bold;
-}
-
-table .inactive {
-    color: #FF0000;
-    font-weight: bold;
-}
-
-.button-container {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.btn {
-    display: inline-block;
-    background-color: #444;
-    color: #fff;
-    padding: 10px 20px;
-    text-decoration: none;
-    margin: 5px;
-    border-radius: 5px;
-}
+        .inactive {
+            color: #ff4c4c;
+            font-weight: bold;
+        }
     </style>
+</body>
 
-    <h2 style="text-align: center;">{{ user_type|capfirst }} Subscribers List</h2>
-
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>{{ user_type|capfirst }} Name</th>
-                <th>Payment Amount (₹)</th>
-                <th>Status</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for subscription in subscriptions %}
-                <tr>
-                    <td>{{ subscription.sid }}</td>
-                    <td>
-                        {% if user_type == "admin" %}
-                            {{ subscription.admin_id.first_name }} {{ subscription.admin_id.last_name }}
-                        {% elif user_type == "customer" %}
-                            {{ subscription.customer_id.name }}
-                        {% endif %}
-                    </td>
-                    <td>{{ subscription.payment_amount }}</td>
-                    <td>
-                        {% if subscription.subscription_status == 1 %}
-                            <span class="active">Active</span>
-                        {% else %}
-                            <span class="inactive">Inactive</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ subscription.start_date }}</td>
-                    <td>{{ subscription.end_date|default:"-" }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="6">No subscribers found.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 {% endblock %}

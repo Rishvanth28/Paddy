@@ -183,8 +183,7 @@ body {
     color: #1f2937;
     /* Dark slate */
     text-decoration: none;
-    background: rgba(133, 132, 131, 0.1);
-    /* subtle gold tint */
+    /* background: rgba(133, 132, 131, 0.1); */
     padding: 6px 10px;
     border-radius: 8px;
     transition: all 0.3s ease-in-out;
@@ -198,14 +197,34 @@ body {
     border: 1px solid rgba(134, 134, 133, 0.4);
 }
 
-/* Crown Icon */
 .admin-icon {
-    color: #747371;
-    /* golden-yellow */
-    font-size: 1rem;
-    position: relative;
-    top: -1px;
+    background-color: #f3f4f6;
+    /* soft light-gray */
+    color: #374151;
+    /* dark gray */
+    font-size: 1.05rem;
+    padding: 6px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
+
+.admin-icon:hover {
+    background-color: #e5e7eb;
+    color: #111827;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.admin-icon:active {
+    transform: scale(0.98);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) inset;
+}
+
 
 /* ========== Button Styles ========== */
 .btn {
