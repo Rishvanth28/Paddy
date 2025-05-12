@@ -118,7 +118,7 @@ class OrderItems(models.Model):
         return f"{self.product_name} - {self.quantity} units for Order {self.order.order_id}"
 class Payments(models.Model):
     payment_id = models.BigAutoField(primary_key=True)
-    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE,null=True, blank=True)
     amount = models.BigIntegerField()
     date = models.DateField()
     reference = models.CharField(max_length=255)

@@ -11,10 +11,71 @@
   <title>Admin</title>
   <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
   <link rel="stylesheet" href="{% static 'css/customer_base.css' %}" />
+  
+  <style>
+    /* Google translate element styling */
+    #google_translate_element {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+    }
+    
+    /* Style Google's dropdown */
+    .goog-te-combo {
+      background-color: #f8f9fa;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 5px;
+      font-size: 0.85rem;
+    }
+    
+    /* Minimize but don't hide Google branding */
+    .goog-te-gadget {
+      font-size: 10px !important;
+    }
+    .goog-te-gadget .goog-te-combo {
+      color: #212529;
+      margin: 0 !important;
+    }
+    
+    /* Make banner less intrusive but don't hide it */
+    .goog-te-banner-frame {
+      height: 40px !important;
+    }
+
+    /* Language selector styling */
+    .language-selector {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+    }
+    
+    .language-selector select {
+      background-color: #f8f9fa;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 5px;
+      font-size: 0.85rem;
+    }
+    
+    /* Remove Google translate styles if they exist */
+    #google_translate_element {
+      display: none;
+    }
+  </style>
 </head>
 
 <body style="display: flex; height: 100vh; overflow: hidden;">
  
+  <!-- Replace Google Translate with Language Selector -->
+  <div class="language-selector">
+    <select id="language-select" onchange="changeLanguage(this.value)">
+      <option value="en">English</option>
+      <option value="ta">தமிழ் (Tamil)</option>
+    </select>
+  </div>
 
   <!-- Hamburger Button -->
   <button class="hamburger" onclick="toggleSidebar()">☰</button>
@@ -34,20 +95,20 @@
         <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon"> 
           <a href="{% url 'customer_dashboard' %}" style="text-decoration: none; color: inherit;">Dashboard</a>
         </li>
-        <li >
+        <li>
           <img class="icon" src="{% static 'media/Vector.png' %}" alt="Place Order Icon">
           <a href="{% url 'customer_orders' %}" style="text-decoration: none; color: inherit;">View Orders</a>
         </li>
         <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon"> 
           <a href="{% url 'upgrade_to_admin' %}" style="text-decoration: none; color: inherit;">Upgrade to admin</a></li>
-          <li>
-            <!-- From Uiverse.io by cbolson --> 
-            <label for="filter" class="switch" aria-label="Toggle Role">
-              <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'" {% if request.session.role == 'customer' %}checked{% endif %} />
-              <span class="switch-text-left" style="color: black;">Admin</span>
-              <span class="switch-text-right">Customer</span>
-            </label>
-          </li>
+        <li>
+          <!-- From Uiverse.io by cbolson --> 
+          <label for="filter" class="switch" aria-label="Toggle Role">
+            <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'" {% if request.session.role == 'customer' %}checked{% endif %} />
+            <span class="switch-text-left" style="color: black;">Admin</span>
+            <span class="switch-text-right">Customer</span>
+          </label>
+        </li>
       </ul>
     </div>
    
@@ -67,7 +128,60 @@
     {% endblock %}
   </div>
 
-  <!-- Toggle functionality -->
+  <!-- Replace Google Translate script with custom i18n implementation -->
+  <script>
+    // Global variable to store translations
+    let translations = {};
+    let currentLanguage = 'en';
+    
+    // Load translations on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Try to get saved language preference
+      const savedLanguage = localStorage.getItem('preferred_language') || 'en';
+      
+      // Load initial translations
+      await loadTranslations(savedLanguage);
+      
+      // Update language selector
+      document.getElementById('language-select').value = savedLanguage;
+    });
+    
+    // Function to change language
+    async function changeLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('preferred_language', lang);
+      await loadTranslations(lang);
+    }
+    
+    // Load translations from JSON file
+    async function loadTranslations(lang) {
+      try {
+        const response = await fetch(`{% static 'js/i18n/' %}${lang}.json`);
+        if (!response.ok) {
+          console.error(`Failed to load language file: ${lang}.json`);
+          return;
+        }
+        
+        translations = await response.json();
+        updatePageText();
+      } catch (error) {
+        console.error('Error loading translations:', error);
+      }
+    }
+    
+    // Update all elements with translation keys
+    function updatePageText() {
+      const elements = document.querySelectorAll('.i18n');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[key]) {
+          element.textContent = translations[key];
+        }
+      });
+    }
+  </script>
+
+  <!-- Original sidebar JS -->
   <script>
     const toggleItems = document.querySelectorAll('.submenu-toggle');
 
@@ -86,6 +200,7 @@
       const sidebar = document.getElementById('sidebar');
       sidebar.classList.toggle('open');
     }
+    
     window.addEventListener('DOMContentLoaded', () => {
       const currentPath = window.location.pathname;
       const menuItems = document.querySelectorAll('.menu li');
@@ -98,8 +213,8 @@
       });
     });
   </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% block extra_js %}{% endblock %}
 </body>
 
 </html>

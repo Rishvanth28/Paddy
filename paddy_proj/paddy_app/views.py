@@ -244,7 +244,7 @@ def create_customer(request):
 
 @role_required(["superadmin", "admin"])
 def place_order(request):
-    role = request.session.get("role")  # adjust based on how role is stored in session
+    role = request.session.get("role")
     is_superadmin = role == "superadmin"
 
     admin_id = request.session.get("user_id")
@@ -252,85 +252,104 @@ def place_order(request):
         return redirect("login")
 
     customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
-
-    if request.method == "POST":
-        if str(request.POST.get("product_category_id")) != "3":
-            customer_id = request.POST.get("customer")
-            product_category_id = request.POST.get("product_category_id")
-            quantity = request.POST.get("quantity")
-            price_per_unit = request.POST.get("price_per_unit")
-            lorry_number = request.POST.get("vehicle_number")
-            driver_name = request.POST.get("driver_name")
-            driver_ph_no = request.POST.get("driver_ph_no")
-            delivery_date = request.POST.get("delivery_date")
-
-            try:
-                customer = CustomerTable.objects.get(customer_id=customer_id)
+    
+    # Handle Razorpay payment verification callback
+    if request.method == "POST" and request.POST.get("razorpay_payment_id"):
+        payment_id = request.POST.get("razorpay_payment_id")
+        order_id = request.POST.get("razorpay_order_id")
+        signature = request.POST.get("razorpay_signature")
+        temp_data_json = request.session.get("temp_order_data")
+        
+        if not temp_data_json:
+            messages.error(request, "Order data not found. Please try again.")
+            return redirect("place_order" if is_superadmin else "admin_place_order")
+        
+        temp_data = json.loads(temp_data_json)
+        
+        # Verify payment
+        try:
+            client.utility.verify_payment_signature({
+                'razorpay_order_id': order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            })
+            
+            # Create payment record for booking fee
+            payment = Payments.objects.create(
+                order=None,  # Will be updated after order creation
+                amount=10,
+                date=timezone.now().date(),
+                reference=f"Booking fee - {payment_id}",
+                proof_link=payment_id,  # Razorpay payment ID as proof
+                payment_method="Razorpay"
+            )
+            
+            # Now proceed with order creation
+            if temp_data["product_category_id"] != "3":
+                # Regular order flow
+                customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
                 gst = customer.GST
 
-                quantity = float(quantity) if quantity else 0
-                price_per_unit = float(price_per_unit) if price_per_unit else 0
+                quantity = float(temp_data["quantity"]) if temp_data["quantity"] else 0
+                price_per_unit = float(temp_data["price_per_unit"]) if temp_data["price_per_unit"] else 0
                 overall_amount = quantity * price_per_unit
 
-                Orders.objects.create(
+                order = Orders.objects.create(
                     customer=customer,
                     admin=AdminTable.objects.get(admin_id=admin_id),
                     payment_status=0,
                     delivery_status=0,
-                    product_category_id=product_category_id,
+                    product_category_id=temp_data["product_category_id"],
                     quantity=quantity,
                     price_per_unit=price_per_unit,
                     overall_amount=overall_amount,
                     GST=gst,
-                    lorry_number=lorry_number,
-                    driver_name=driver_name,
-                    delivery_date=delivery_date,
-                    driver_ph_no=driver_ph_no,
+                    lorry_number=temp_data["lorry_number"],
+                    driver_name=temp_data["driver_name"],
+                    delivery_date=temp_data["delivery_date"],
+                    driver_ph_no=temp_data["driver_ph_no"],
                     order_date=date.today()
                 )
-
-                return redirect("place_order" if is_superadmin else "admin_place_order")
-
-            except Exception as e:
-                print("Error placing order:", e)
-        else:
-            try:
-                # Extract order-level data
-                customer_id = request.POST.get('customer')
-                # payment_terms = request.POST.get('payment_terms')
-                lorry_number = request.POST.get("vehicle_number")
-                driver_name = request.POST.get("driver_name")
-                driver_ph_no = request.POST.get("driver_ph_no")
-                delivery_date = request.POST.get("delivery_date")   
-                product_category_id = request.POST.get("product_category_id")
                 
-                customer = CustomerTable.objects.get(customer_id=customer_id)
+                # Update payment with order ID
+                payment.order = order
+                payment.save()
+                
+                messages.success(request, "Order placed successfully after booking fee payment!")
+                
+            else:
+                # Multiple products order flow
+                customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
                 gst = customer.GST
+                
                 # Create order
                 order = Orders.objects.create(
-                        customer=customer,
-                        admin = AdminTable.objects.get(admin_id=admin_id),
-                        #payment_terms=payment_terms,
-                        payment_status=0,
-                        quantity = 0,
-                        product_category_id=product_category_id,
-                        GST=gst,
-                        lorry_number=lorry_number,
-                        driver_name=driver_name,
-                        delivery_date=delivery_date,
-                        delivery_status=0,
-                        driver_ph_no=driver_ph_no,
-                        order_date=date.today()
-                    )
+                    customer=customer,
+                    admin=AdminTable.objects.get(admin_id=admin_id),
+                    payment_status=0,
+                    quantity=0,
+                    product_category_id=temp_data["product_category_id"],
+                    GST=gst,
+                    lorry_number=temp_data["lorry_number"],
+                    driver_name=temp_data["driver_name"],
+                    delivery_date=temp_data["delivery_date"],
+                    delivery_status=0,
+                    driver_ph_no=temp_data["driver_ph_no"],
+                    order_date=date.today()
+                )
+                
+                # Update payment with order ID
+                payment.order = order
+                payment.save()
                 
                 # Process each order item
-                product_names = request.POST.getlist('product_name[]')
-                batch_numbers = request.POST.getlist('batch_number[]')
-                expiry_dates = request.POST.getlist('expiry_date[]')
-                quantities = request.POST.getlist('quantity[]')
-                prices = request.POST.getlist('price_per_unit[]')
-                units = request.POST.getlist('unit[]')
-                totals = request.POST.getlist('total_amount[]')
+                product_names = temp_data["product_names"]
+                batch_numbers = temp_data["batch_numbers"]
+                expiry_dates = temp_data["expiry_dates"]
+                quantities = temp_data["quantities"]
+                prices = temp_data["prices"]
+                units = temp_data["units"]
+                totals = temp_data["totals"]
                 
                 # Create order items
                 order_items = []
@@ -350,19 +369,91 @@ def place_order(request):
                         unit=units[i]
                     )
                     order_items.append(item)
+                
                 order.overall_amount = sum(float(totals[i]) for i in range(len(totals)) if totals[i].strip())
                 order.save()
+                
                 # Bulk create items
                 OrderItems.objects.bulk_create(order_items)
                 
-                messages.success(request, 'Order saved successfully!')
-                return redirect('place_order' if is_superadmin else 'admin_place_order')
-
+                messages.success(request, "Order with multiple items placed successfully after booking fee payment!")
             
-            except Exception as e:
-                messages.error(request, f'Error saving order: {str(e)}')
-                return redirect('place_order' if is_superadmin else 'admin_place_order')
+            # Clear temporary data
+            if "temp_order_data" in request.session:
+                del request.session["temp_order_data"]
+                
+            return redirect("place_order" if is_superadmin else "admin_place_order")
+            
+        except Exception as e:
+            messages.error(request, f"Payment verification failed: {str(e)}")
+            return redirect("place_order" if is_superadmin else "admin_place_order")
 
+    # Handle AJAX request for creating Razorpay order
+    elif request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Store order data temporarily
+        temp_data = {}
+        
+        if str(request.POST.get("product_category_id")) != "3":
+            # Regular order
+            temp_data = {
+                "customer_id": request.POST.get("customer"),
+                "product_category_id": request.POST.get("product_category_id"),
+                "quantity": request.POST.get("quantity"),
+                "price_per_unit": request.POST.get("price_per_unit"),
+                "lorry_number": request.POST.get("vehicle_number"),
+                "driver_name": request.POST.get("driver_name"),
+                "driver_ph_no": request.POST.get("driver_ph_no"),
+                "delivery_date": request.POST.get("delivery_date")
+            }
+            
+        else:
+            # Multiple products order
+            temp_data = {
+                "customer_id": request.POST.get("customer"),
+                "product_category_id": request.POST.get("product_category_id"),
+                "lorry_number": request.POST.get("vehicle_number"),
+                "driver_name": request.POST.get("driver_name"),
+                "driver_ph_no": request.POST.get("driver_ph_no"),
+                "delivery_date": request.POST.get("delivery_date"),
+                "product_names": request.POST.getlist("product_name[]"),
+                "batch_numbers": request.POST.getlist("batch_number[]"),
+                "expiry_dates": request.POST.getlist("expiry_date[]"),
+                "quantities": request.POST.getlist("quantity[]"),
+                "prices": request.POST.getlist("price_per_unit[]"),
+                "units": request.POST.getlist("unit[]"),
+                "totals": request.POST.getlist("total_amount[]")
+            }
+        
+        # Store data in session
+        request.session["temp_order_data"] = json.dumps(temp_data)
+        
+        # Create Razorpay order for booking fee
+        try:
+            razorpay_order = client.order.create({
+                "amount": 1000,  # 10 Rs in paise
+                "currency": "INR",
+                "payment_capture": 1,  # Auto-capture
+                "notes": {
+                    "purpose": "Order booking fee",
+                    "admin_id": str(admin_id)
+                }
+            })
+            
+            # Return JSON response for AJAX
+            return JsonResponse({
+                "status": "success",
+                "razorpay_key": RAZORPAY_KEY_ID,
+                "order_id": razorpay_order["id"],
+                "amount": 10  # In Rs
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                "status": "error",
+                "message": f"Error creating payment: {str(e)}"
+            })
+    
+    # Render the initial form
     return render(request, "place_order.html" if is_superadmin else "admin_place_order.html", {"customers": customers})
 
 @role_required(["customer"])
@@ -592,15 +683,13 @@ def admin_add_subscription(request):
     if request.method == "POST":
         if request.POST.get("submission_type") == '0': 
             try:
-                print("def here??")
-
                 UserIncreaseSubscription.objects.create(
                     admin_id=admin, 
                 )
-                print("here??")
+           
                 messages.success(request, "Subscription Request added successfully!")
             except Exception:
-                print("here")
+                
                 messages.error(request, "Failed to add subscription. Please try again."+str(Exception))
     return render(request, "admin_add_subscription.html", {"user_count": user_count,
                                                         "added_count":user_count+50,
