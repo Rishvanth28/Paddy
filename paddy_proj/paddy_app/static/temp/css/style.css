@@ -70,13 +70,13 @@ h5 {
   margin-bottom: 0;
 }
 
-a {
+/* a {
   font-size: 1.8rem;
   font-weight: 700;
   color: #232532;
   text-decoration: none;
   font-family: "Inter", sans-serif;
-}
+} */
 a .list-text {
   color: #FFFFFF;
   font-size: 1.6rem;

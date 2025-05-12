@@ -1,16 +1,34 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
-
+{% if messages %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<ul class="messages">
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let messages = document.querySelectorAll('.messages');
+            messages.forEach((message) => {
+                message.style.opacity = '0';
+                setTimeout(() => message.remove(), 100); 
+            });
+        }, 5000);
+    });
+</script>
+{% endif %}
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/admin_customers.css' %}">
 </head>
 
 <body>
-    <div class="container py-5 position-relative">
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-5">
+    <div class="container py-5 position-relative" style="padding:20px 30px">
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap">
             <h1 class="page-title mb-0 me-3">{{ admin.first_name }} {{ admin.last_name }}</h1>
 
             <div class="search-wrapper flex-grow-1 d-flex mt-2 mt-md-0">
@@ -67,13 +85,12 @@
             </div>
 
         </div>
-        <div class="mt-4">
-            <div class="btn-back-wrapper">
-                <a href="/admin" class="btn-back">
-                    <i class="fas fa-arrow-left me-2"></i> Back to Admin List
-                </a>
-            </div>
+        <div class="btn-back-wrapper">
+            <a href="/view-admins" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i> Back to Admin List
+            </a>
         </div>
+
     </div>
 
     <!-- Script -->

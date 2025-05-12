@@ -1,6 +1,31 @@
 {% extends "customer_base.html" %}
+{% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let messages = document.querySelectorAll('.messages');
+            messages.forEach((message) => {
+                message.style.opacity = '0';
+                setTimeout(() => message.remove(), 100); 
+            });
+        }, 5000);
+    });
+</script>
+{% endif %}
+
 <!-- Dashboard content goes here -->
- customer_dashboard
+<div class="dashboard-container">
+    <h1>Customer Dashboard</h1>
+</div>
+
 {% endblock %}

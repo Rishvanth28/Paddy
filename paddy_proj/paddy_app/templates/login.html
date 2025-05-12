@@ -42,6 +42,17 @@
                             <li class="{{ message.tags }}">{{ message }}</li>
                         {% endfor %}
                     </ul>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            setTimeout(function () {
+                                let messages = document.querySelectorAll('.messages');
+                                messages.forEach((message) => {
+                                    message.style.opacity = '0';
+                                    setTimeout(() => message.remove(), 100); 
+                                });
+                            }, 5000);
+                        });
+                    </script>
                 {% endif %}
             </div>
         </div>

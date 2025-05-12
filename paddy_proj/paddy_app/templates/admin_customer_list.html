@@ -1,7 +1,25 @@
 {% extends 'admin_base.html' %}
 {% load static %}
 {% block content %}
-
+{% if messages %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<ul class="messages">
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let messages = document.querySelectorAll('.messages');
+            messages.forEach((message) => {
+                message.style.opacity = '0';
+                setTimeout(() => message.remove(), 100); 
+            });
+        }, 5000);
+    });
+</script>
+{% endif %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +31,7 @@
 
 <body>
 
-    <div class="container py-5 position-relative" style="max-width: 1200px;">
+    <div class="container py-5 position-relative" style="max-width: 93%;">
         <!-- Header Row with Title and Search -->
         <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-5">
             <h1 class="page-title mb-0 me-3">Customer List</h1>
