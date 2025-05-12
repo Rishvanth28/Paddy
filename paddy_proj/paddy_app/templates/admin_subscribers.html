@@ -1,6 +1,7 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
+
 {% if messages %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 <ul class="messages">
@@ -14,7 +15,7 @@
             let messages = document.querySelectorAll('.messages');
             messages.forEach((message) => {
                 message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
+                setTimeout(() => message.remove(), 100);
             });
         }, 5000);
     });
@@ -62,9 +63,17 @@
                                 <td>{{ subscription.sid }}</td>
                                 <td>
                                     {% if user_type == "admin" %}
-                                        {{ subscription.admin_id.first_name }} {{ subscription.admin_id.last_name }}
+                                        {% if subscription.admin_id %}
+                                            {{ subscription.admin_id.first_name }} {{ subscription.admin_id.last_name }}
+                                        {% else %}
+                                            <em>No Admin Assigned</em>
+                                        {% endif %}
                                     {% elif user_type == "customer" %}
-                                        {{ subscription.customer_id.name }}
+                                        {% if subscription.customer_id %}
+                                            {{ subscription.customer_id.name }}
+                                        {% else %}
+                                            <em>No Customer Assigned</em>
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                                 <td>{{ subscription.payment_amount }}</td>

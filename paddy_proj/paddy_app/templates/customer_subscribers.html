@@ -1,6 +1,7 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
+
 {% if messages %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 <ul class="messages">
@@ -14,7 +15,7 @@
             let messages = document.querySelectorAll('.messages');
             messages.forEach((message) => {
                 message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
+                setTimeout(() => message.remove(), 100);
             });
         }, 5000);
     });
@@ -23,7 +24,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Customer Subscribers</title>
+    <title>{{ user_type|capfirst }} Subscribers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/view_admins.css' %}">
 </head>
@@ -31,12 +32,12 @@
 <body>
     <div class="py-5" style="padding: 40px 30px;">
         <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-5">
-            <h1 class="page-title mb-0 me-3">Customer Subscribers</h1>
+            <h1 class="page-title mb-0 me-3">{{ user_type|capfirst }} Subscribers</h1>
             <div class="search-wrapper flex-grow-1 d-flex mt-2 mt-md-0">
                 <form class="w-100 position-relative" style="max-width: 500px;" method="GET" action="">
                     <i class="fas fa-search position-absolute"
                        style="top: 50%; left: 16px; transform: translateY(-50%); color: #888;"></i>
-                    <input type="search" name="q" class="form-control ps-5" placeholder="Search customers..." aria-label="Search">
+                    <input type="search" name="q" class="form-control ps-5" placeholder="Search subscribers..." aria-label="Search">
                 </form>
             </div>
         </div>
@@ -49,7 +50,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Customer Name</th>
+                                <th>{{ user_type|capfirst }} Name</th>
                                 <th>Payment Amount (₹)</th>
                                 <th>Status</th>
                                 <th>Start Date</th>
@@ -60,7 +61,13 @@
                             {% for subscription in subscriptions %}
                             <tr>
                                 <td>{{ subscription.sid }}</td>
-                                <td>{{ subscription.customer_id.name }}</td>
+                                <td>
+                                    {% if user_type == "admin" %}
+                                        {{ subscription.admin_id.first_name }} {{ subscription.admin_id.last_name }}
+                                    {% elif user_type == "customer" %}
+                                        {{ subscription.customer_id.first_name }} {{ subscription.customer_id.last_name }}
+                                    {% endif %}
+                                </td>
                                 <td>{{ subscription.payment_amount }}</td>
                                 <td>
                                     {% if subscription.subscription_status == 1 %}
@@ -79,7 +86,7 @@
                 {% else %}
                 <div class="no-customers text-center py-5">
                     <i class="fa-solid fa-circle-exclamation fa-2xl mb-3" style="color: #aaa;"></i>
-                    <p class="fs-5 mb-0">No customer subscribers found.</p>
+                    <p class="fs-5 mb-0">No {{ user_type }} subscribers found.</p>
                 </div>
                 {% endif %}
             </div>

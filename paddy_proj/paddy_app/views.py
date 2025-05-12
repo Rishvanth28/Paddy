@@ -25,7 +25,6 @@ RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
 RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"
 
 client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
-
 def login_view(request):
     if request.session.get("user_id") and request.session.get("role"):
         role = request.session["role"]
@@ -107,7 +106,7 @@ def login_view(request):
         else:
             messages.error(request, "Invalid role selected.")
 
-    return render(request, "login.html")
+    return render(request, "login.html")   
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
@@ -1039,9 +1038,21 @@ def swap_role(request):
     return redirect("login")
 
 def view_admin_subscribers(request):
-    admin_subscriptions = Subscription.objects.filter(subscription_type="admin").select_related('admin_id').order_by('-start_date')
-    return render(request, "admin_subscribers.html", {"subscriptions": admin_subscriptions})
+    admin_subscriptions = Subscription.objects.filter(subscription_type="admin") \
+                                              .select_related('admin_id') \
+                                              .order_by('-start_date')
+    return render(request, "admin_subscribers.html", {
+        "subscriptions": admin_subscriptions,
+        "user_type": "admin",  # Make sure to pass this context
+    })
+
 
 def view_customer_subscribers(request):
-    customer_subscriptions = Subscription.objects.filter(subscription_type="customer").select_related('customer_id').order_by('-start_date')
-    return render(request, "customer_subscribers.html", {"subscriptions": customer_subscriptions})
+    customer_subscriptions = Subscription.objects.filter(subscription_type="customer") \
+                                                 .select_related('customer_id') \
+                                                 .order_by('-start_date')
+    
+    return render(request, "customer_subscribers.html", {
+        "subscriptions": customer_subscriptions,
+        "user_type": "customer",  # Added for dynamic display in HTML
+    })
