@@ -6,6 +6,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!searchInput) return;
 
+    // Prevent Enter key from submitting the form
+    searchInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault(); // Stops page reload or form submission
+        }
+    });
+
     searchInput.addEventListener("input", function () {
         const query = this.value.toLowerCase().trim();
         let anyVisible = false;
@@ -23,12 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 email.includes(query) ||
                 phone.includes(query);
 
-            if (matches) {
-                row.style.display = "";
-                anyVisible = true;
-            } else {
-                row.style.display = "none";
-            }
+            row.style.display = matches ? "" : "none";
+            if (matches) anyVisible = true;
         });
 
         // Hide default message during search
@@ -36,11 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Show/hide no-results-found
         if (noAdminsDiv) {
-            if (query && !anyVisible) {
-                noAdminsDiv.classList.remove("d-none");
-            } else {
-                noAdminsDiv.classList.add("d-none");
-            }
+            noAdminsDiv.classList.toggle("d-none", anyVisible || !query);
         }
     });
 });
