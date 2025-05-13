@@ -1,24 +1,39 @@
 const toggleItems = document.querySelectorAll('.submenu-toggle');
 
-// Function to update chevron based on submenu visibility
+// Function to update chevron direction
 function updateChevron(chevron, isVisible) {
-    chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(270deg)';
+    chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(-90deg)';
 }
 
-// Toggle submenu visibility
-toggleItems.forEach((item) => {
+// Function to set visibility
+function setSubmenuVisibility(item, submenu, chevron, isVisible) {
+    submenu.style.display = isVisible ? 'block' : 'none';
+    updateChevron(chevron, isVisible);
+
+    // Save the state to localStorage
+    const key = item.dataset.id;
+    if (key) {
+        localStorage.setItem(`submenu_open_${key}`, isVisible);
+    }
+}
+
+// Toggle submenu visibility on click
+toggleItems.forEach((item, index) => {
+    // Assign a unique data-id if not present
+    if (!item.dataset.id) {
+        item.dataset.id = `submenu-${index}`;
+    }
+
     item.addEventListener('click', () => {
         const submenu = item.nextElementSibling;
         const chevron = item.querySelector('.chevron');
+        const isVisible = submenu.style.display === 'block';
 
-        const isVisible = window.getComputedStyle(submenu).display === 'block';
-
-        submenu.style.display = isVisible ? 'none' : 'block';
-        updateChevron(chevron, !isVisible);
+        setSubmenuVisibility(item, submenu, chevron, !isVisible);
     });
 });
 
-// On page load, set chevron direction based on visibility
+// On page load
 window.addEventListener('DOMContentLoaded', () => {
     const currentPath = window.location.pathname;
     const menuItems = document.querySelectorAll('.menu li');
@@ -31,12 +46,18 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Hide submenus by default and reset chevron
-    toggleItems.forEach((item) => {
+    // Set chevron and submenu based on saved visibility
+    toggleItems.forEach((item, index) => {
+        if (!item.dataset.id) {
+            item.dataset.id = `submenu-${index}`;
+        }
+
+        const key = item.dataset.id;
+        const savedState = localStorage.getItem(`submenu_open_${key}`) === 'true';
         const submenu = item.nextElementSibling;
         const chevron = item.querySelector('.chevron');
-        submenu.style.display = 'none'; // hide submenu
-        updateChevron(chevron, false);  // chevron down
+
+        setSubmenuVisibility(item, submenu, chevron, savedState);
     });
 
     // Load preferred language
@@ -44,6 +65,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('language-select').value = savedLanguage;
     loadTranslations(savedLanguage);
 });
+
 
 // Hamburger toggle
 function toggleSidebar() {

@@ -138,6 +138,16 @@ html {
   padding-left: 10px;
 }
 
+.submenu li.active {
+  color: black;
+  /* Keep text color same as menu */
+  font-weight: 500;
+  /* Optional: to highlight the active state */
+  background-color: rgba(0, 0, 0, 0.1);
+  /* Optional: visual indication */
+}
+
+
 /* Footer */
 .footer-text {
   font-size: clamp(14px, 1.5vw, 16px);
