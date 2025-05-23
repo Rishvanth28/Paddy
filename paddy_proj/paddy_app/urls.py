@@ -41,7 +41,10 @@ urlpatterns = [
     path('customer-subscribers/', view_customer_subscribers, name='customer_subscribers'),
     path('create_partial_payment_order/', create_partial_payment_order, name='create_partial_payment_order'),
     path('verify_partial_payment/', verify_partial_payment, name='verify_partial_payment'),
-    ]
+    path('ajax/create_admin_user_increase_order/', create_admin_user_increase_order, name='create_admin_user_increase_order'),
+    path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),
+]
+    
 
 
 

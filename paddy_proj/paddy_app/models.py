@@ -126,7 +126,7 @@ class Payments(models.Model):
     payment_method = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"Payment {self.payment_id} - Order {self.order.order_id} - Amount: {self.amount}"
+        return f"Payment {self.payment_id} - Amount: {self.amount}"
 
 class Subscription(models.Model):
     sid = models.BigAutoField(primary_key=True)

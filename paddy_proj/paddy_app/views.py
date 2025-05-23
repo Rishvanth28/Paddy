@@ -19,10 +19,14 @@ from django.conf import settings
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from dotenv import load_dotenv
+import os
 
-
-RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
-RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"
+load_dotenv()
+# RAZORPAY_KEY_ID=rzp_test_zOexMQY9CNEGzd
+# RAZORPAY_SECRET=Gmtv3UfGPIavIeneKQjkZTcu
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
+RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
 
 client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
 def login_view(request):
@@ -279,7 +283,7 @@ def place_order(request):
                 order=None,  # Will be updated after order creation
                 amount=10,
                 date=timezone.now().date(),
-                reference=f"Booking fee - {payment_id}",
+                reference=payment_id,
                 proof_link=payment_id,  # Razorpay payment ID as proof
                 payment_method="Razorpay"
             )
@@ -600,61 +604,75 @@ def create_partial_payment_order(request):
 @require_POST
 @csrf_exempt
 def verify_partial_payment(request):
-    """API endpoint to verify and process partial payment"""
-    
+    """API endpoint to verify and process partial payment for customer orders"""
     try:
-        # Parse request data
         data = json.loads(request.body)
         razorpay_payment_id = data.get('razorpay_payment_id')
-        razorpay_order_id = data.get('razorpay_order_id')
+        razorpay_order_id = data.get('razorpay_order_id') # This is Razorpay's order_id
         razorpay_signature = data.get('razorpay_signature')
-        order_id = data.get('order_id')
-        amount = float(data.get('amount'))
         
-        # Verify signature
+        # Retrieve original order_id and amount from session or request as per your flow
+        # Assuming 'order_id' in data refers to your application's Order.order_id
+        # And 'amount' is the amount paid in this transaction.
+        application_order_id = data.get('order_id') 
+        amount_paid_this_transaction = float(data.get('amount'))
+
+        if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature, application_order_id, amount_paid_this_transaction]):
+            return JsonResponse({'success': False, 'message': 'Missing payment verification data.'}, status=400)
+
         params_dict = {
             'razorpay_payment_id': razorpay_payment_id,
-            'razorpay_order_id': razorpay_order_id,
+            'razorpay_order_id': razorpay_order_id, # Use Razorpay's order_id for verification
             'razorpay_signature': razorpay_signature
         }
         
-        # Verify the payment signature
         client.utility.verify_payment_signature(params_dict)
         
-        # Get the order
-        order = get_object_or_404(Orders, order_id=order_id)
+        order = get_object_or_404(Orders, order_id=application_order_id)
         
-        # Update paid amount
+        # --- Create Payment Record ---
+        try:
+            Payments.objects.create(
+                order=order,
+                amount=amount_paid_this_transaction,
+                date=timezone.now().date(),
+                reference=f"order_{application_order_id}_partial_{razorpay_payment_id}",
+                proof_link=razorpay_payment_id,
+                payment_method="Razorpay"
+            )
+        except Exception as e:
+            print(f"Error creating payment record for order {application_order_id}: {e}")
+            # Decide if this error should halt the process or just be logged
+            # For now, we'll let the main process continue but log it.
+            messages.warning(request, "Payment successful, but an error occurred while logging payment details.")
+
         current_paid = order.paid_amount or 0
-        order.paid_amount = current_paid + amount
+        order.paid_amount = current_paid + amount_paid_this_transaction
         
-        # Update payment status
         if order.paid_amount >= order.overall_amount:
             order.payment_status = 2  # Fully paid
         else:
             order.payment_status = 1  # Partially paid
         
-        # Save the order changes
         order.save()
         
-        # Clear session data
-        if 'partial_payment_order_id' in request.session:
-            del request.session['partial_payment_order_id']
-        if 'partial_payment_amount' in request.session:
-            del request.session['partial_payment_amount']
-        if 'partial_payment_for_order' in request.session:
-            del request.session['partial_payment_for_order']
+        # Clear relevant session data if you stored any for this transaction
+        # Example:
+        # if 'partial_payment_razorpay_order_id' in request.session:
+        #     del request.session['partial_payment_razorpay_order_id']
         
-        return JsonResponse({
-            'success': True
-        })
+        messages.success(request, "Payment successful and order updated.") # For display on next page load
+        return JsonResponse({'success': True, 'message': 'Payment verified and order updated.'})
         
+    except razorpay.errors.SignatureVerificationError as e:
+        print(f"Signature Verification Error for order payment: {e}")
+        return JsonResponse({'success': False, 'message': 'Payment verification failed: Invalid signature.'}, status=400)
+    except Orders.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Order not found.'}, status=404)
     except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'message': str(e)
-        })
-    
+        print(f"Error in verify_partial_payment: {e}")
+        return JsonResponse({'success': False, 'message': f'An error occurred: {str(e)}'}, status=500)
+        
 def customer_delivery_validation(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
@@ -676,27 +694,211 @@ def customer_onboard_view(request):
 @role_required(["admin"])
 def admin_add_subscription(request):
     user_id = request.session.get("user_id")
-    admin = AdminTable.objects.get(admin_id=user_id)
+    admin = get_object_or_404(AdminTable, admin_id=user_id)
     user_count = admin.user_count
-    existing_subscription = UserIncreaseSubscription.objects.filter(admin_id=user_id).first()
-    print(existing_subscription)
+    
+    # Fetch the latest subscription request for this admin
+    existing_subscription = UserIncreaseSubscription.objects.filter(admin_id=admin).order_by('-sid').first()
+
     if request.method == "POST":
-        if request.POST.get("submission_type") == '0': 
-            try:
-                UserIncreaseSubscription.objects.create(
-                    admin_id=admin, 
-                )
-           
-                messages.success(request, "Subscription Request added successfully!")
-            except Exception:
-                
-                messages.error(request, "Failed to add subscription. Please try again."+str(Exception))
-    return render(request, "admin_add_subscription.html", {"user_count": user_count,
-                                                        "added_count":user_count+50,
-                                                        "existing_subscription": 1 if existing_subscription else 0,
-                                                        "payment_amount": existing_subscription.payment_amount if existing_subscription else 0,
-                                                        "subscription_status": existing_subscription.subscription_status if existing_subscription else 0,
-                                                        })
+        # This part is for submitting a new upgrade request
+        if request.POST.get("submission_type") == '0':
+            # Prevent new request if one is already active (pending approval or pending payment)
+            if existing_subscription and existing_subscription.subscription_status in [0, 1]: # 0: Pending Approval, 1: Approved, Pending Payment
+                messages.warning(request, "You already have an active subscription upgrade request.")
+            else:
+                try:
+                    UserIncreaseSubscription.objects.create(
+                        admin_id=admin,
+                        subscription_status=0 # Status 0: Pending Superadmin Approval
+                    )
+                    messages.success(request, "Subscription upgrade request submitted successfully! It will be reviewed by the superadmin.")
+                except Exception as e:
+                    messages.error(request, f"Failed to submit subscription request. Error: {str(e)}")
+            return redirect('admin_add_subscription') # Redirect to show messages and prevent re-submission
+
+    context = {
+        "user_count": user_count,
+        "added_count": user_count + 50, # Potential count after upgrade
+        "existing_subscription_obj": existing_subscription, # Pass the whole object
+        # The following are for compatibility with the original template structure, but using existing_subscription_obj is cleaner
+        "existing_subscription": 1 if existing_subscription else 0, 
+        "payment_amount": existing_subscription.payment_amount if existing_subscription and existing_subscription.payment_amount else 0,
+        "subscription_status": existing_subscription.subscription_status if existing_subscription else -1, # -1 for no subscription history
+        "RAZORPAY_KEY_ID": RAZORPAY_KEY_ID, # Pass Razorpay Key for JS in template
+    }
+    return render(request, "admin_add_subscription.html", context)
+
+@require_POST # Ensures this view only accepts POST requests
+@role_required(["admin"]) # Protect the endpoint
+# @csrf_exempt # Not needed if CSRF token is handled correctly with AJAX from same domain
+def create_admin_user_increase_order(request):
+    """
+    Creates a Razorpay order for an admin's user count increase subscription.
+    This is called via AJAX when the admin clicks the "Pay Now" button.
+    """
+    try:
+        user_id = request.session.get("user_id")
+        if not user_id:
+            return JsonResponse({'success': False, 'message': 'User not authenticated.'}, status=401)
+
+        admin = get_object_or_404(AdminTable, admin_id=user_id)
+        # Find an approved subscription (status 1) for this admin that needs payment
+        subscription = UserIncreaseSubscription.objects.filter(admin_id=admin, subscription_status=1).order_by('-sid').first()
+
+        if not subscription:
+            return JsonResponse({'success': False, 'message': 'No approved subscription upgrade found pending payment.'}, status=404)
+
+        if not subscription.payment_amount or subscription.payment_amount <= 0:
+            return JsonResponse({'success': False, 'message': 'Payment amount has not been set for this subscription by the superadmin.'}, status=400)
+
+        amount_in_paise = int(subscription.payment_amount * 100)
+
+        razorpay_order_data = {
+            'amount': amount_in_paise,
+            'currency': 'INR',
+            'receipt': f'admin_increase_sub_{subscription.sid}_{timezone.now().timestamp()}',
+            'payment_capture': '1', # Auto capture payment
+            'notes': {
+                'subscription_id': subscription.sid,
+                'admin_id': user_id,
+                'purpose': 'Admin User Count Increase Subscription'
+            }
+        }
+        razorpay_order = client.order.create(data=razorpay_order_data)
+
+        # Store necessary details in session for the verification step
+        request.session['user_increase_sub_id'] = subscription.sid
+        request.session['user_increase_payment_amount'] = float(subscription.payment_amount)
+        request.session['user_increase_razorpay_order_id'] = razorpay_order['id']
+
+        return JsonResponse({
+            'success': True,
+            'key_id': RAZORPAY_KEY_ID,
+            'amount': amount_in_paise, # This is what Razorpay checkout will use
+            'razorpay_order_id': razorpay_order['id'],
+            # Prefill data for Razorpay form
+            'admin_name': f"{admin.first_name} {admin.last_name}",
+            'admin_email': admin.email,
+            'admin_phone': admin.phone_number
+        })
+
+    except AdminTable.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Admin user not found.'}, status=404)
+    except UserIncreaseSubscription.DoesNotExist: # Should not happen if logic is correct, but good to have
+        return JsonResponse({'success': False, 'message': 'Subscription record not found.'}, status=404)
+    except Exception as e:
+        print(f"Error in create_admin_user_increase_order: {e}") # Log the error for debugging
+        return JsonResponse({'success': False, 'message': f'An error occurred while creating payment order: {str(e)}'}, status=500)
+
+@require_POST # Ensures this view only accepts POST requests
+@csrf_exempt # Razorpay sends POST here without CSRF token from client-side handler
+@role_required(["admin"]) # Protect the endpoint
+def verify_admin_user_increase_payment(request):
+    """
+    Verifies the Razorpay payment signature and updates the subscription
+    and admin's user count upon successful payment.
+    Also creates a record in the Payments model.
+    """
+    try:
+        data = json.loads(request.body)
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        client_razorpay_order_id = data.get('razorpay_order_id') # Order ID from Razorpay's response
+        razorpay_signature = data.get('razorpay_signature')
+
+        # Retrieve details stored in session during order creation
+        subscription_sid = request.session.get('user_increase_sub_id')
+        expected_amount = request.session.get('user_increase_payment_amount')
+        session_razorpay_order_id = request.session.get('user_increase_razorpay_order_id')
+
+        if not all([subscription_sid, expected_amount, session_razorpay_order_id, razorpay_payment_id, client_razorpay_order_id, razorpay_signature]):
+            return JsonResponse({'success': False, 'message': 'Payment verification failed: Essential data missing from session or request.'}, status=400)
+
+        if client_razorpay_order_id != session_razorpay_order_id:
+            return JsonResponse({'success': False, 'message': 'Payment verification failed: Order ID mismatch.'}, status=400)
+
+        params_dict = {
+            'razorpay_order_id': session_razorpay_order_id,
+            'razorpay_payment_id': razorpay_payment_id,
+            'razorpay_signature': razorpay_signature
+        }
+
+        # Verify the payment signature
+        client.utility.verify_payment_signature(params_dict)
+
+        # Optional: Fetch payment details from Razorpay for an additional check on amount and status
+        # This adds an extra layer of security and confirms payment details with Razorpay directly.
+        payment_details_from_razorpay = client.payment.fetch(razorpay_payment_id)
+        if payment_details_from_razorpay['amount'] / 100 != expected_amount:
+             return JsonResponse({'success': False, 'message': f'Payment verification failed: Amount mismatch. Expected {expected_amount}, paid {payment_details_from_razorpay["amount"] / 100}'}, status=400)
+        if payment_details_from_razorpay['status'] != 'captured':
+            # This case should ideally be handled by Razorpay's webhook if payment capture is delayed.
+            # For immediate capture ('payment_capture': '1'), this check is a good safeguard.
+            return JsonResponse({'success': False, 'message': 'Payment not successfully captured by Razorpay according to their API.'}, status=400)
+
+
+        # If signature is verified and payment is captured, proceed to update your database
+        subscription = get_object_or_404(UserIncreaseSubscription, sid=subscription_sid)
+        
+        if subscription.subscription_status != 1: # Ensure it was 'approved, pending payment' (status 1)
+            # This prevents reprocessing or processing a non-payable subscription
+            return JsonResponse({'success': False, 'message': 'Subscription is not in a payable state or has already been processed.'}, status=400)
+
+        admin_user = get_object_or_404(AdminTable, admin_id=subscription.admin_id_id)
+
+        # --- Create Payment Record ---
+        try:
+            Payments.objects.create(
+                # 'order' field will be None as this is not tied to a product order
+                # If your Payments model requires 'order', you might need to adjust the model
+                # or create a different logging mechanism for subscription payments.
+                order=None, 
+                amount=expected_amount, # The actual amount paid for the subscription
+                date=timezone.now().date(),
+                reference=f"user_increase_sub_{subscription_sid}", # Custom reference
+                proof_link=razorpay_payment_id, # Store Razorpay Payment ID as proof
+                payment_method="Razorpay",
+                # You might want to add a field to Payments model to link to AdminTable or CustomerTable directly
+                # e.g., paid_by_admin=admin_user
+            )
+        except Exception as e:
+            # Log this error, but don't necessarily fail the whole transaction if payment was successful
+            # This depends on how critical the Payments record is for your immediate flow.
+            print(f"Error creating payment record for admin subscription {subscription_sid}: {e}")
+            messages.warning(request, "Payment was successful, but there was an issue recording the payment details. Please contact support.")
+
+
+        # Update subscription status to 'Paid and Processed' (e.g., status 3)
+        subscription.subscription_status = 3 # Assuming 3 means 'Paid and Processed'
+        # You might want to add a field to UserIncreaseSubscription to store razorpay_payment_id
+        # subscription.razorpay_payment_id = razorpay_payment_id 
+        subscription.save()
+
+        # Increase admin's user count
+        admin_user.user_count += 50 # Or whatever the agreed increase is
+        admin_user.save()
+
+        # Clear the session variables used for this payment to prevent reuse
+        if 'user_increase_sub_id' in request.session: del request.session['user_increase_sub_id']
+        if 'user_increase_payment_amount' in request.session: del request.session['user_increase_payment_amount']
+        if 'user_increase_razorpay_order_id' in request.session: del request.session['user_increase_razorpay_order_id']
+        
+        messages.success(request, "Payment successful! Your user limit has been increased by 50.")
+        return JsonResponse({'success': True, 'message': 'Payment successful and subscription updated.'})
+
+    except razorpay.errors.SignatureVerificationError:
+        # Log this error
+        print(f"Razorpay Signature Verification Error for order {session_razorpay_order_id if 'session_razorpay_order_id' in locals() else 'UNKNOWN'}")
+        return JsonResponse({'success': False, 'message': 'Payment verification failed: Invalid signature.'}, status=400)
+    except UserIncreaseSubscription.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Subscription record not found during verification.'}, status=404)
+    except AdminTable.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Admin record not found during verification.'}, status=404)
+    except Exception as e:
+        print(f"Error in verify_admin_user_increase_payment: {e}") # Log the error for debugging
+        # Include more context in error logging if possible, like session_razorpay_order_id
+        return JsonResponse({'success': False, 'message': f'An error occurred during payment verification: {str(e)}'}, status=500)
+
 
 @role_required(["superadmin"])
 def superadmin_subscription(request):
@@ -981,106 +1183,159 @@ def customer_subscription_payment(request):
 
 @csrf_exempt
 def customer_payment_success(request):
+    """
+    Handles successful customer subscription payments.
+    Assumes client-side has confirmed Razorpay success and sends details.
+    """
     if request.method == "POST":
         try:
-            import json
-            import traceback
-
             data = json.loads(request.body)
-            print("💡 Incoming Razorpay Data:", data)
+            # IMPORTANT: Expecting razorpay_payment_id from the client's AJAX call
+            razorpay_payment_id = data.get('razorpay_payment_id', 'N/A') 
 
-            customer_id = request.session.get("user_id")
+            customer_id = request.session.get("user_id") # Assuming user_id is customer_id for this session
             amount = request.session.get("subscription_amount")
             days = request.session.get("subscription_days")
+            # session_razorpay_order_id = request.session.get("razorpay_order_id") # Razorpay's order ID from session
 
-            print("💡 Session Values - customer_id:", customer_id, "amount:", amount, "days:", days)
-
-            # Validate session values
             if not all([customer_id, amount, days]):
-                print("⚠️ Missing session data.")
                 return JsonResponse({"success": False, "message": "Session data missing or expired. Please log in again."})
 
-            # Try to find existing subscription
+            customer_instance = get_object_or_404(CustomerTable, customer_id=customer_id)
+            
+            # --- Create Payment Record ---
+            try:
+                Payments.objects.create(
+                    order=None, # No direct order for subscriptions
+                    amount=float(amount),
+                    date=timezone.now().date(),
+                    reference=f"cust_sub_{customer_id}_{razorpay_payment_id}",
+                    proof_link=razorpay_payment_id,
+                    payment_method="Razorpay"
+                )
+            except Exception as e:
+                print(f"Error creating payment record for customer subscription {customer_id}: {e}")
+                # Log and continue, or handle as critical error
+
             existing_subscription = Subscription.objects.filter(
-                customer_id=customer_id,
+                customer_id=customer_instance, # Use instance here
                 subscription_type="customer"
             ).order_by("-end_date").first()
 
             if existing_subscription:
-                # Extend existing subscription
-                existing_subscription.start_date = now().date()
-                existing_subscription.end_date = (existing_subscription.end_date or now().date()) + timedelta(days=int(days))
-                existing_subscription.payment_amount += int(amount)
-                existing_subscription.subscription_status = 1
+                start_date = existing_subscription.end_date + timedelta(days=1) if existing_subscription.end_date and existing_subscription.end_date >= now().date() else now().date()
+                existing_subscription.start_date = start_date
+                existing_subscription.end_date = start_date + timedelta(days=int(days)) - timedelta(days=1) # Inclusive end date
+                existing_subscription.payment_amount += float(amount) # Ensure float for amount
+                existing_subscription.subscription_status = 1 # Active
                 existing_subscription.save()
+                message_text = "Subscription extended successfully."
+            else:
+                Subscription.objects.create(
+                    customer_id=customer_instance, # Use instance here
+                    subscription_type="customer",
+                    payment_amount=float(amount),
+                    start_date=now().date(),
+                    end_date=now().date() + timedelta(days=int(days)) - timedelta(days=1), # Inclusive end date
+                    subscription_status=1 # Active
+                )
+                message_text = "Subscription created successfully."
+            
+            # Clear session variables for this subscription payment
+            if "subscription_amount" in request.session: del request.session["subscription_amount"]
+            if "subscription_days" in request.session: del request.session["subscription_days"]
+            if "razorpay_order_id" in request.session: del request.session["razorpay_order_id"]
+            # any other relevant session keys
 
-                print("✅ Existing subscription updated.")
-                return JsonResponse({"success": True, "message": "Subscription extended successfully."})
+            messages.success(request, message_text) # For next page load
+            return JsonResponse({"success": True, "message": message_text})
 
-            # Create new subscription
-            Subscription.objects.create(
-                customer_id_id=customer_id,
-                subscription_type="customer",
-                payment_amount=int(amount),
-                start_date=now().date(),
-                end_date=now().date() + timedelta(days=int(days)),
-                subscription_status=1
-            )
-
-            print("✅ New subscription created.")
-            return JsonResponse({"success": True, "message": "Subscription created successfully."})
-
+        except CustomerTable.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Customer not found."})
         except Exception as e:
-            print("🔴 Error during payment success:")
+            import traceback
             traceback.print_exc()
-            return JsonResponse({"success": False, "message": f"Error: {str(e)}"})
+            return JsonResponse({"success": False, "message": f"Error processing customer subscription: {str(e)}"})
 
     return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
 
 @csrf_exempt
 def payment_success(request):
+    """
+    Handles successful admin subscription payments.
+    Assumes client-side has confirmed Razorpay success and sends details.
+    """
     if request.method == "POST":
         try:
-            # Parse the incoming JSON data
-            import json
             data = json.loads(request.body)
+            # IMPORTANT: Expecting razorpay_payment_id from the client's AJAX call
+            razorpay_payment_id = data.get('razorpay_payment_id', 'N/A')
 
-            admin_id = request.session.get("user_id")
+            admin_user_id = request.session.get("user_id") # Assuming user_id is admin_id for this session
             amount = request.session.get("subscription_amount")
             days = request.session.get("subscription_days")
+            # session_razorpay_order_id = request.session.get("razorpay_order_id") # Razorpay's order ID from session
 
-            # Ensure that necessary session data is present
-            if not all([admin_id, amount, days]):
+
+            if not all([admin_user_id, amount, days]):
                 return JsonResponse({"success": False, "message": "Session data missing or expired. Please log in again."})
 
-            # Check if the admin already has a subscription and update the subscription if it exists
-            existing_subscription = Subscription.objects.filter(admin_id=admin_id, subscription_type="admin").order_by("-end_date").first()
+            admin_instance = get_object_or_404(AdminTable, admin_id=admin_user_id)
+
+            # --- Create Payment Record ---
+            try:
+                Payments.objects.create(
+                    order=None, # No direct order for subscriptions
+                    amount=float(amount),
+                    date=timezone.now().date(),
+                    reference=f"admin_sub_{admin_user_id}_{razorpay_payment_id}",
+                    proof_link=razorpay_payment_id,
+                    payment_method="Razorpay", 
+                )
+            except Exception as e:
+                print(f"Error creating payment record for admin subscription {admin_user_id}: {e}")
+                # Log and continue, or handle as critical error
+
+            existing_subscription = Subscription.objects.filter(
+                admin_id=admin_instance, # Use instance here
+                subscription_type="admin"
+            ).order_by("-end_date").first()
 
             if existing_subscription:
-                # Extend the existing subscription by the specified number of days
-                existing_subscription.start_date = now().date()
-                existing_subscription.end_date = existing_subscription.end_date + timedelta(days=int(days))
-                existing_subscription.payment_amount += amount  # Add the new payment amount to the existing one
+                start_date = existing_subscription.end_date + timedelta(days=1) if existing_subscription.end_date and existing_subscription.end_date >= now().date() else now().date()
+                existing_subscription.start_date = start_date
+                existing_subscription.end_date = start_date + timedelta(days=int(days)) - timedelta(days=1) # Inclusive end date
+                existing_subscription.payment_amount += float(amount)
+                existing_subscription.subscription_status = 1 # Active
                 existing_subscription.save()
-                return JsonResponse({"success": True, "message": "Subscription extended successfully."})
+                message_text = "Subscription extended successfully."
+            else:
+                Subscription.objects.create(
+                    admin_id=admin_instance, # Use instance here
+                    subscription_type="admin",
+                    payment_amount=float(amount),
+                    start_date=now().date(),
+                    end_date=now().date() + timedelta(days=int(days)) - timedelta(days=1), # Inclusive end date
+                    subscription_status=1 # Active
+                )
+                message_text = "Subscription created successfully."
 
-            # If no existing subscription, create a new one
-            Subscription.objects.create(
-                admin_id_id=admin_id,
-                subscription_type="admin",
-                payment_amount=amount,
-                start_date=now().date(),
-                end_date=now().date() + timedelta(days=int(days)),
-                subscription_status=1
-            )
+            # Clear session variables for this subscription payment
+            if "subscription_amount" in request.session: del request.session["subscription_amount"]
+            if "subscription_days" in request.session: del request.session["subscription_days"]
+            if "razorpay_order_id" in request.session: del request.session["razorpay_order_id"]
+            # any other relevant session keys
 
-            return JsonResponse({"success": True, "message": "Subscription created successfully."})
+            messages.success(request, message_text) # For next page load
+            return JsonResponse({"success": True, "message": message_text})
 
+        except AdminTable.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Admin user not found."})
         except Exception as e:
-            print("Error during payment success:", e)
-            return JsonResponse({"success": False, "message": "Error processing subscription. Please try again."})
+            import traceback
+            traceback.print_exc()
+            return JsonResponse({"success": False, "message": f"Error processing admin subscription: {str(e)}"})
 
-    # Handle invalid request type
     return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
 
 def swap_role(request):
