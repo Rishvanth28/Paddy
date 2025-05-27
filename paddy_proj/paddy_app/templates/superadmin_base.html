@@ -1,52 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
-{% if messages %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-<ul class="messages">
-  {% for message in messages %}
-  <li class="{{ message.tags }}">{{ message }}</li>
-  {% endfor %}
-</ul>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    setTimeout(function () {
-      let messages = document.querySelectorAll('.messages');
-      messages.forEach((message) => {
-        message.style.opacity = '0';
-        setTimeout(() => message.remove(), 100);
-      });
-    }, 5000);
-  });
-</script>
-{% endif %}
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Superadmin</title>
   <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
-
-  <style>
-    /* Language selector styling */
-    .language-selector {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      z-index: 1000;
-    }
-
-    .language-selector select {
-      background-color: #f8f9fa;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      padding: 5px;
-      font-size: 0.85rem;
-    }
-  </style>
 </head>
 
-<body style="display: flex; height: 100vh; overflow: hidden;">
+<body>
+  {% if messages %}
+  <div class="messages-container">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <ul class="messages">
+      {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
 
   <!-- Language Selector -->
   <div class="language-selector">
@@ -57,114 +29,100 @@
   </div>
 
   <!-- Hamburger Button -->
-  <button class="hamburger" onclick="toggleSidebar()">☰</button>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
 
   <!-- Sidebar -->
-  <div class="containerr" id="sidebar">
-
+  <aside class="sidebar" id="sidebar">
     <!-- Top section -->
-    <div class="top-section">
-      <a href="{% url 'demo' %}"><img src="{% static 'media/IconSet.png' %}" alt="Profile Icon"></a>
-      <span>Super Admin</span>
+    <div class="sidebar-header">
+      <a href="{% url 'demo' %}" class="logo-link">
+        <img src="{% static 'media/IconSet.png' %}" alt="Logo" class="sidebar-logo">
+      </a>
+      <h1 class="sidebar-title">Super Admin</h1>
     </div>
 
-    <!-- Sidebar -->
-    <div class="middle-content">
-      <ul class="menu">
-
-        <!-- Dashboard -->
-        <li>
-          <a href="{% url 'superadmin_dashboard' %}" class="menu-link" style="text-decoration: none;color: inherit;">
-            <img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon">
-            Dashboard
-          </a>
-        </li>
-
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
         <!-- Onboarding -->
-        <li>
-          <a href="{% url 'onboard' %}" class="menu-link" style="text-decoration: none;color: inherit;">
-            <img class="icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding Icon">
-            Onboarding
+        <li class="nav-item">
+          <a href="{% url 'onboard' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding">
+            <span class="nav-text">Onboarding</span>
           </a>
         </li>
 
-        <!-- Subscribers (Toggle, not a link) -->
-        <li class="submenu-toggle">
-          <div class="menu-link" style="display: flex; align-items: center; gap: 8px;margin-left: -20px;">
-            <span class="chevron down" style="margin-left: 3px;">
-              <svg width="12" height="12" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                <path
-                  d="M96 192c-8.188 0-16.38 3.125-22.62 9.375c-12.5 12.5-12.5 32.75 0 45.25l128 128c12.5 12.5 32.75 12.5 45.25 0l128-128c12.5-12.5 12.5-32.75 0-45.25S362.5 179.5 350 192L224 318.1L118.6 192C112.4 185.9 104.2 192 96 192z" />
-              </svg>
-            </span>
-            <img class="icon" src="{% static 'media/IconSet (1).png' %}" alt="Subscribers Icon">
-            <span>Subscribers</span>
+        <!-- Subscribers -->
+        <li class="nav-item has-submenu">
+          <div class="submenu-toggle">
+            <span class="chevron"></span>
+            <img class="nav-icon" src="{% static 'media/IconSet (1).png' %}" alt="Subscribers">
+            <span class="nav-text">Subscribers</span>
           </div>
+          <ul class="submenu">
+            <li class="submenu-item">
+              <a href="{% url 'admin_subscribers' %}" class="submenu-link">Admin Subscribers</a>
+            </li>
+            <li class="submenu-item">
+              <a href="{% url 'customer_subscribers' %}" class="submenu-link">Customer Subscribers</a>
+            </li>
+          </ul>
         </li>
-
-
-        <!-- Submenu -->
-        <ul style="margin-left: 20px;" class="submenu">
-          <li>
-            <a href="{% url 'admin_subscribers' %}" class="menu-link"
-              style="text-decoration: none;color: inherit;">Admin Subscribers</a>
-          </li>
-          <li>
-            <a href="{% url 'customer_subscribers' %}" class="menu-link"
-              style="text-decoration: none;color: inherit;">Customer Subscribers</a>
-          </li>
-        </ul>
 
         <!-- Customers -->
-        <li>
-          <a href="{% url 'customer_list' %}" class="menu-link" style="text-decoration: none;color: inherit;">
-            <img class="icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers Icon">
-            Customers
+        <li class="nav-item">
+          <a href="{% url 'customer_list' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
+            <span class="nav-text">Customers</span>
           </a>
         </li>
 
         <!-- Admins -->
-        <li>
-          <a href="{% url 'view_admins' %}" class="menu-link" style="text-decoration: none;color: inherit;">
-            <img class="icon" src="{% static 'media/Group 2.png' %}" alt="Admins Icon">
-            Admins
+        <li class="nav-item">
+          <a href="{% url 'view_admins' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/Group 2.png' %}" alt="Admins">
+            <span class="nav-text">Admins</span>
           </a>
         </li>
 
         <!-- Place Order -->
-        <li>
-          <a href="{% url 'place_order' %}" class="menu-link" style="text-decoration: none;color: inherit;">
-            <img class="icon" src="{% static 'media/Vector.png' %}" alt="Place Order Icon">
-            Place Order
+        <li class="nav-item">
+          <a href="{% url 'place_order' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
+            <span class="nav-text">Place Order</span>
           </a>
         </li>
 
         <!-- Subscription -->
-        <li><img class="icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon">
-          <a href="{% url 'superadmin_subscription' %}" style="text-decoration: none; color: inherit;">Subscription</a>
+        <li class="nav-item">
+          <a href="{% url 'superadmin_subscription' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Subscription">
+            <span class="nav-text">Subscription</span>
+          </a>
         </li>
       </ul>
-    </div>
+    </nav>
 
     <!-- Footer -->
-    <div class="footer-text">
-      Logo Here
-      <form action="{% url 'logout' %}" method="post" style="margin-top: 10px;">
+    <footer class="sidebar-footer">
+      <div class="footer-logo">Logo Here</div>
+      <form action="{% url 'logout' %}" method="post" class="logout-form">
         {% csrf_token %}
         <button type="submit" class="logout-button">Logout</button>
       </form>
-    </div>
-
-  </div>
+    </footer>
+  </aside>
 
   <!-- Main content -->
-  <div class="main-content">
+  <main class="main-content" id="main-content">
     {% block content %}
     {% endblock %}
-  </div>
+  </main>
 
-  <script src="{% static 'js/superadmin_base.js' %}" defer></script>
-
+  <script src="{% static 'js/superadmin_base.js' %}"></script>
 </body>
-
 </html>

@@ -1,109 +1,121 @@
-const toggleItems = document.querySelectorAll('.submenu-toggle');
-
-// Function to update chevron direction
-function updateChevron(chevron, isVisible) {
-    chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(-90deg)';
-}
-
-// Function to set visibility
-function setSubmenuVisibility(item, submenu, chevron, isVisible) {
-    submenu.style.display = isVisible ? 'block' : 'none';
-    updateChevron(chevron, isVisible);
-
-    // Save the state to localStorage
-    const key = item.dataset.id;
-    if (key) {
-        localStorage.setItem(`submenu_open_${key}`, isVisible);
-    }
-}
-
-// Toggle submenu visibility on click
-toggleItems.forEach((item, index) => {
-    // Assign a unique data-id if not present
-    if (!item.dataset.id) {
-        item.dataset.id = `submenu-${index}`;
-    }
-
-    item.addEventListener('click', () => {
-        const submenu = item.nextElementSibling;
-        const chevron = item.querySelector('.chevron');
-        const isVisible = submenu.style.display === 'block';
-
-        setSubmenuVisibility(item, submenu, chevron, !isVisible);
-    });
-});
-
-// On page load
-window.addEventListener('DOMContentLoaded', () => {
-    const currentPath = window.location.pathname;
-    const menuItems = document.querySelectorAll('.menu li');
-
-    // Highlight active menu item
-    menuItems.forEach(item => {
-        const link = item.querySelector('a');
-        if (link && link.getAttribute('href') === currentPath) {
-            item.classList.add('active');
-        }
-    });
-
-    // Set chevron and submenu based on saved visibility
-    toggleItems.forEach((item, index) => {
-        if (!item.dataset.id) {
-            item.dataset.id = `submenu-${index}`;
-        }
-
-        const key = item.dataset.id;
-        const savedState = localStorage.getItem(`submenu_open_${key}`) === 'true';
-        const submenu = item.nextElementSibling;
-        const chevron = item.querySelector('.chevron');
-
-        setSubmenuVisibility(item, submenu, chevron, savedState);
-    });
-
-    // Load preferred language
-    const savedLanguage = localStorage.getItem('preferred_language') || 'en';
-    document.getElementById('language-select').value = savedLanguage;
-    loadTranslations(savedLanguage);
-});
-
-
-// Hamburger toggle
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
+document.addEventListener('DOMContentLoaded', function() {
+  // DOM Elements
+  const sidebar = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburger');
+  const mainContent = document.getElementById('main-content');
+  
+  // Toggle sidebar function
+  function toggleSidebar() {
     sidebar.classList.toggle('open');
-}
-
-// Internationalization logic
-let translations = {};
-let currentLanguage = 'en';
-
-async function changeLanguage(lang) {
-    currentLanguage = lang;
-    localStorage.setItem('preferred_language', lang);
-    await loadTranslations(lang);
-}
-
-async function loadTranslations(lang) {
-    try {
-        const response = await fetch(`{% static 'js/i18n/' %}${lang}.json`);
-        if (!response.ok) {
-            console.error(`Failed to load language file: ${lang}.json`);
-            return;
-        }
-
-        translations = await response.json();
-        updatePageText();
-    } catch (error) {
-        console.error('Error loading translations:', error);
+    hamburger.classList.toggle('active');
+    localStorage.setItem('sidebarOpen', sidebar.classList.contains('open'));
+  }
+  
+  // Initialize sidebar state
+  function initSidebar() {
+    const isOpen = localStorage.getItem('sidebarOpen') === 'true';
+    if (isOpen) {
+      sidebar.classList.add('open');
+      hamburger.classList.add('active');
     }
-}
-
-function updatePageText() {
-    const elements = document.querySelectorAll('.i18n');
-    elements.forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (translations[key]) {
-            element.textContent = translations[key];
-        }
+    
+    hamburger.addEventListener('click', toggleSidebar);
+    
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(e) {
+      if (window.innerWidth <= 992 && 
+          sidebar.classList.contains('open') &&
+          !sidebar.contains(e.target) && 
+          e.target !== hamburger) {
+        toggleSidebar();
+      }
     });
-}
+  }
+  
+  // Submenu functionality
+  function initSubmenus() {
+    const submenuToggles = document.querySelectorAll('.submenu-toggle');
+    
+    submenuToggles.forEach(toggle => {
+      const parentItem = toggle.closest('.has-submenu');
+      const menuKey = parentItem.querySelector('.nav-text').textContent.trim();
+      
+      // Check saved state
+      const savedState = localStorage.getItem(`submenu_${menuKey}`) === 'open';
+      if (savedState) parentItem.classList.add('open');
+      
+      // Add click handler
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        parentItem.classList.toggle('open');
+        localStorage.setItem(
+          `submenu_${menuKey}`, 
+          parentItem.classList.contains('open') ? 'open' : 'closed'
+        );
+      });
+    });
+  }
+  
+  // Active menu item highlighting
+  function setActiveMenu() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link, .submenu-link');
+    
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      
+      // Compare paths
+      const linkPath = new URL(link.href).pathname.replace(/\/$/, '');
+      const currentPathClean = currentPath.replace(/\/$/, '');
+      
+      if (linkPath === currentPathClean) {
+        link.classList.add('active');
+        
+        // Open parent submenu if this is a submenu item
+        const submenuItem = link.closest('.submenu-item');
+        if (submenuItem) {
+          const parentMenu = submenuItem.closest('.has-submenu');
+          if (parentMenu) {
+            parentMenu.classList.add('open');
+            const menuKey = parentMenu.querySelector('.nav-text').textContent.trim();
+            localStorage.setItem(`submenu_${menuKey}`, 'open');
+          }
+        }
+      }
+    });
+  }
+  
+  // Language selector functionality
+  function initLanguageSelector() {
+    const languageSelect = document.getElementById('language-select');
+    const savedLanguage = localStorage.getItem('preferred_language') || 'en';
+    languageSelect.value = savedLanguage;
+    
+    languageSelect.addEventListener('change', function() {
+      localStorage.setItem('preferred_language', this.value);
+      // Add your language change logic here
+      console.log('Language changed to:', this.value);
+    });
+  }
+  
+  // Auto-hide messages
+  function initMessages() {
+    const messages = document.querySelectorAll('.messages li');
+    if (messages.length > 0) {
+      setTimeout(() => {
+        messages.forEach(msg => {
+          msg.style.opacity = '0';
+          setTimeout(() => msg.remove(), 300);
+        });
+      }, 5000);
+    }
+  }
+  
+  // Initialize all functionality
+  initSidebar();
+  initSubmenus();
+  setActiveMenu();
+  initLanguageSelector();
+  initMessages();
+});
