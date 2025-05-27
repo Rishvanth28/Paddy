@@ -385,3 +385,14 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+.nav-link:hover, .submenu-toggle:hover {
+  background-color: var(--sidebar-hover);
+  box-shadow: inset 4px 0 0 var(--primary-color);
+}
+
+.submenu-link:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--primary-color);
+  box-shadow: inset 4px 0 0 var(--primary-color);
+}
