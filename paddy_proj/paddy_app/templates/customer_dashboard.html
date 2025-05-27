@@ -1,10 +1,9 @@
-{% extends "customer_base.html" %}
+{% extends 'superadmin_base.html' %}
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-
 {% if messages %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
 <ul class="messages">
     {% for message in messages %}
         <li class="{{ message.tags }}">{{ message }}</li>
@@ -22,10 +21,7 @@
     });
 </script>
 {% endif %}
-
-<!-- Dashboard content goes here -->
-<div class="dashboard-container">
-    <h1>Customer Dashboard</h1>
+<div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+    <img src="https://static.vecteezy.com/system/resources/thumbnails/007/229/427/small/welcome-calligraphic-inscription-with-smooth-lines-vector.jpg" alt="Welcome Image">
 </div>
-
 {% endblock %}
