@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: postgres-server-paddy
+    container_name: postgres-server
     image: postgres
     environment:
       POSTGRES_DB: paddy
@@ -17,7 +17,7 @@ services:
     
   pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin-paddy
+    container_name: pgadmin
     restart: always
     ports:
       - "8888:80"
