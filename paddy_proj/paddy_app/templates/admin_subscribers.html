@@ -79,9 +79,9 @@
                                 <td>{{ subscription.payment_amount }}</td>
                                 <td>
                                     {% if subscription.subscription_status == 1 %}
-                                        <span class="active">Active</span>
+                                        <span class="active-status">Active</span>
                                     {% else %}
-                                        <span class="inactive">Inactive</span>
+                                        <span class="inactive-status">Inactive</span>
                                     {% endif %}
                                 </td>
                                 <td>{{ subscription.start_date }}</td>
@@ -102,12 +102,12 @@
     </div>
 
     <style>
-        .active {
+        .active-status {
             color: #0aef9f;
             font-weight: bold;
         }
 
-        .inactive {
+        .inactive-status {
             color: #ff4c4c;
             font-weight: bold;
         }
