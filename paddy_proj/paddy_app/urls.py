@@ -19,7 +19,7 @@ urlpatterns = [
     path("admin-place-order/", place_order, name="admin_place_order"),
     path("admin-add-subscription/", admin_add_subscription, name="admin_add_subscription"),
     path("upgrade-plan/", upgrade_plan, name="upgrade_plan"),
-    path('customer/upgrade/', upgrade_to_admin, name='upgrade_to_admin'),
+
     path('customer/dashboard/',customer_dashboard, name='customer_dashboard'), 
     path('customer-list/',customers_under_admin, name='customer_list'),
     path('admin_customer-list/',customers_under_admin, name='admin_customer_list'),
@@ -27,7 +27,7 @@ urlpatterns = [
     path("view-customers/<int:admin_id>/", view_customers_under_admin, name="admin_customers"),
     path('superadmin/subscription-review/', superadmin_subscription, name='superadmin_subscription'),
     path('superadmin/review-subscription/', superadmin_subscription_review, name='superadmin_subscription_review'),
-    path('upgrade-admin/',upgrade_to_customer, name='upgrade_to_customer'),
+
     path('demo/', demo, name='demo'),
     path("delete-admin/<int:admin_id>/", delete_admin, name="delete_admin"),
     path("delete-customer/<str:customer_id>/", delete_customer, name="delete_customer"),
@@ -43,6 +43,12 @@ urlpatterns = [
     path('verify_partial_payment/', verify_partial_payment, name='verify_partial_payment'),
     path('ajax/create_admin_user_increase_order/', create_admin_user_increase_order, name='create_admin_user_increase_order'),
     path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),
+    path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
+    path('upgrade-to-customer/',upgrade_to_customer, name='upgrade_to_customer'),
+
+
+
+
 ]
     
 
