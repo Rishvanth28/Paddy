@@ -12,7 +12,7 @@
 <body>
   {% if messages %}
   <div class="messages-container">
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/login.css' %}"> -->
     <ul class="messages">
       {% for message in messages %}
       <li class="{{ message.tags }}">{{ message }}</li>
@@ -93,13 +93,15 @@
             <span class="nav-text">Subscription</span>
           </a>
         </li>
-
         <li class="nav-item">
-          <label class="submenu-toggle">
-            <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'"
-              {% if request.session.role == 'customer' %}checked{% endif %}>
-            <span class="nav-text">Swap to Customer</span>
-          </label>
+          <div class="switch-container">
+            <label class="switch">
+              <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'"
+                {% if request.session.role == 'customer' %}checked{% endif %}>
+              <span class="i18n" data-i18n="admin">Admin</span>
+              <span class="i18n" data-i18n="customer">Customer</span>
+            </label>
+          </div>
         </li>
       </ul>
     </nav>
