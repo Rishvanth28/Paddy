@@ -2,26 +2,125 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{% if messages %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-<ul class="messages">
-    {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-</ul>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
-            let messages = document.querySelectorAll('.messages');
-            messages.forEach((message) => {
-                message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
-            });
-        }, 5000);
-    });
-</script>
-{% endif %}
-<div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
-    <img src="https://static.vecteezy.com/system/resources/thumbnails/007/229/427/small/welcome-calligraphic-inscription-with-smooth-lines-vector.jpg" alt="Welcome Image">
-</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin</title>
+  <link rel="stylesheet" href="{% static 'css/admin_base.css' %}" />
+</head>
+
+<body>
+  {% if messages %}
+  <div class="messages-container">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <ul class="messages">
+      {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Language Selector -->
+  <div class="language-selector">
+    <select id="language-select" onchange="changeLanguage(this.value)">
+      <option value="en">English</option>
+      <option value="ta">தமிழ் (Tamil)</option>
+    </select>
+  </div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Top section -->
+    <div class="sidebar-header">
+      <a href="{% url 'admin_dashboard' %}" class="logo-link">
+        <img src="{% static 'media/IconSet.png' %}" alt="Logo" class="sidebar-logo">
+      </a>
+      <h1 class="sidebar-title">Admin</h1>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+         <!-- Dashboard 
+        <li class="nav-item">
+          <a href="{% url 'admin_dashboard' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard">
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </li>-->
+
+        <li class="nav-item">
+          <a href="{% url 'customer_onboard' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding">
+            <span class="nav-text">Customer Onboarding</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'admin_customer_list' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
+            <span class="nav-text">Customers</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'admin_place_order' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
+            <span class="nav-text">Place Order</span>
+          </a>
+        </li>
+
+        {% if request.user.role != 'customer' %}
+        <li class="nav-item">
+          <a href="{% url 'upgrade_to_customer' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Become Customer">
+            <span class="nav-text">Become Customer</span>
+          </a>
+        </li>
+        {% endif %}
+
+        <li class="nav-item">
+          <a href="{% url 'admin_add_subscription' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Subscription">
+            <span class="nav-text">Subscription</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <label class="submenu-toggle">
+            <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'"
+              {% if request.session.role == 'customer' %}checked{% endif %}>
+            <span class="nav-text">Swap to Customer</span>
+          </label>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="sidebar-footer">
+      <div class="footer-logo">Logo Here</div>
+      <form action="{% url 'logout' %}" method="post" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+      </form>
+    </footer>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content" id="main-content">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <script src="{% static 'js/superadmin_base.js' %}"></script>
+</body>
+
 </html>
