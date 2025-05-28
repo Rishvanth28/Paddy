@@ -1,4 +1,21 @@
 /* Admin Upgrade to Customer Page Styles */
+
+/* Apply Inter or fallback to all base and interactive elements */
+html, body,
+input, textarea, select, button,
+h1, h2, h3, h4, h5, h6, p, span, div, label {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+}
+
+/* Universal Box Model Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Layout Container */
 .upgrade-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -31,7 +48,6 @@
     text-transform: uppercase;
     padding-bottom: 0.6rem;
     text-align: left;
-    /* <-- Ensure left alignment */
 }
 
 .page-title::after {
@@ -41,21 +57,16 @@
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
-    /* initial width */
     height: 4px;
     background-color: #000000;
     border-radius: 2px;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-    /* added transition for both properties */
 }
 
 .page-title:hover::after {
     width: 110%;
-    /* makes the underline grow */
     transform: translateX(-50%);
-    /* keep it centered */
 }
-
 
 .upgrade-subtitle {
     color: #7f8c8d;
@@ -80,6 +91,7 @@
 .card-header h2 {
     margin: 0;
     font-weight: 600;
+    font-size: 1.5rem;
 }
 
 .card-body {
@@ -188,9 +200,7 @@ textarea.form-control {
     border-radius: 8px;
     cursor: pointer;
     overflow: hidden;
-    /* Important to contain the ::before effect */
     position: relative;
-    /* Required for ::before positioning */
     z-index: 1;
     transition: background-color 0.3s ease;
 }
