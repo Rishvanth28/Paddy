@@ -2,26 +2,35 @@
 {% load static %}
 {% block content %}
 
-{# Improved Message Display Area #}
+{# Modern Message Display Area #}
 {% if messages %}
-<div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050; width: auto; min-width: 300px; max-width: 80%;">
+<div class="custom-message-container">
     {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="margin-bottom: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="custom-alert custom-alert-{{ message.tags }}">
+            <span class="custom-alert-icon">
+                {% if message.tags == 'success' %}
+                <i class="bi bi-check-circle-fill"></i>
+                {% elif message.tags == 'warning' %}
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                {% elif message.tags == 'error' %}
+                <i class="bi bi-x-circle-fill"></i>
+                {% else %}
+                <i class="bi bi-info-circle-fill"></i>
+                {% endif %}
+            </span>
+            <span class="custom-alert-message">{{ message }}</span>
+            <button type="button" class="custom-alert-close" aria-label="Close" onclick="this.parentElement.style.display='none';">&times;</button>
         </div>
     {% endfor %}
 </div>
 <script>
-    // Auto-dismiss alerts after a delay
     document.addEventListener("DOMContentLoaded", function () {
         setTimeout(function () {
-            let alerts = document.querySelectorAll('.alert-dismissible.fade.show');
-            alerts.forEach(function (alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
+            document.querySelectorAll('.custom-alert').forEach(function(alert) {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
             });
-        }, 7000); // Messages will disappear after 7 seconds
+        }, 7000);
     });
 </script>
 {% endif %}
@@ -33,141 +42,418 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upgrade Subscription</title>
     <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        .dashboard-card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        
         .form-container {
-            max-width: 800px; /* Or your preferred max-width */
-            margin: 40px auto; /* Add some top margin */
-            padding: 30px;
-            background-color: #fff; /* Add a background if needed */
-            border-radius: 8px; /* Optional: rounded corners */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Optional: subtle shadow */
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0;
         }
+        
         .upgrade-header {
-            margin-bottom: 30px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-            text-align: center; /* Center header text */
+            margin-bottom: 0;
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
         }
+        
+        .upgrade-header h2 {
+            color: #212529;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.75rem;
+        }
+        
+        .upgrade-header p {
+            color: #6c757d;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        
+        .content-section {
+            padding: 2rem;
+        }
+        
         .pricing-info {
             background-color: #f8f9fa;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #0d6efd;
         }
+        
         .user-count {
-            font-size: 1.1rem; /* Slightly larger */
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #212529;
+        }
+        
+        .price-calculation {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .form-check {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .form-check-label {
+            color: #495057;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            border-radius: 6px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
+        }
+        
+        .btn-success {
+            background-color: #198754;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            border-radius: 6px;
+        }
+        
+        .btn-success:hover {
+            background-color: #157347;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(25, 135, 84, 0.25);
+        }
+        
+        .alert {
+            border-left-width: 4px;
+            border-left-style: solid;
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            background-color: white;
+            border-top: 1px solid #e9ecef;
+            border-right: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .alert-warning {
+            border-left-color: #ffc107;
+            color: #664d03;
+            background-color: #fff3cd;
+        }
+        
+        .alert-info {
+            border-left-color: #0dcaf0;
+            color: #055160;
+            background-color: #cff4fc;
+        }
+        
+        .alert-danger {
+            border-left-color: #dc3545;
+            color: #842029;
+            background-color: #f8d7da;
+        }
+        
+        .alert-success {
+            border-left-color: #198754;
+            color: #0f5132;
+            background-color: #d1e7dd;
+        }
+        
+        .text-muted {
+            color: #6c757d !important;
+        }
+        
+        .text-success {
+            color: #198754 !important;
+        }
+        
+        .text-primary {
+            color: #0d6efd !important;
+        }
+        
+        .h4 {
+            color: #212529;
             font-weight: 600;
         }
-        .price-calculation {
-            margin-top: 15px;
-            border-top: 1px dashed #ddd;
-            padding-top: 15px;
+        
+        /* Modern input styling */
+        .form-control, .form-select {
+            background-color: white;
+            border: 1px solid #ced4da;
+            color: #212529;
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
         }
-        .form-check {
-            margin-top: 20px;
+        
+        .form-control:focus, .form-select:focus {
+            background-color: white;
+            border-color: #86b7fe;
+            color: #212529;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
-        .alert-info, .alert-warning, .alert-danger, .alert-success { /* Ensure these alerts stand out */
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 5px;
+        
+        /* Price highlight */
+        .price-highlight {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0d6efd;
+            margin: 0.5rem 0;
         }
-        /* Style for disabled button */
-        .btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.65;
+        
+        /* Status indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-icon {
+            font-size: 1.5rem;
+        }
+        
+        .status-content h5 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #212529;
+        }
+        
+        .status-content p {
+            margin-bottom: 0;
+            color: #495057;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .upgrade-header {
+                padding: 1.5rem;
+            }
+            .content-section {
+                padding: 1.5rem;
+            }
+        }
+
+        .custom-message-container {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            min-width: 320px;
+            max-width: 90vw;
+            width: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+        .custom-alert {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-left: 5px solid #0d6efd;
+            padding: 1rem 1.5rem 1rem 1rem;
+            font-size: 1rem;
+            color: #212529;
+            min-width: 320px;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 1;
+            transition: opacity 0.3s;
+            pointer-events: auto;
+            position: relative;
+        }
+        .custom-alert-success { border-left-color: #198754; }
+        .custom-alert-warning { border-left-color: #ffc107; }
+        .custom-alert-error { border-left-color: #dc3545; }
+        .custom-alert-info { border-left-color: #0dcaf0; }
+        .custom-alert .custom-alert-icon {
+            font-size: 1.4rem;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        .custom-alert .custom-alert-message {
+            flex: 1;
+        }
+        .custom-alert .custom-alert-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.3rem;
+            margin-left: 1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            pointer-events: auto;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+        }
+        .custom-alert .custom-alert-close:hover {
+            color: #212529;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container form-container">
+    <div class="container form-container dashboard-card">
         <div class="upgrade-header">
-            <h2>Upgrade Your User Limit</h2>
-            <p class="text-muted">Increase your allowed user count by 50.</p>
+            <h2><i class="bi bi-arrow-up-circle me-2"></i>User Limit Upgrade</h2>
+            <p class="text-muted">Increase your account capacity by 50 users</p>
         </div>
 
-        {# Display current subscription status and relevant actions #}
-        {% if existing_subscription_obj %}
-            {% if existing_subscription_obj.subscription_status == 0 %}
-                <div class="alert alert-warning">
-                    <i class="bi bi-hourglass-split"></i> 
-                    Your request to upgrade is <strong>pending superadmin approval</strong>. You will be notified once it's reviewed and the payment amount is confirmed.
-                </div>
-            {% elif existing_subscription_obj.subscription_status == 1 %}
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> 
-                    Your upgrade request has been <strong>approved!</strong> Please complete the payment to activate the new user limit.
-                </div>
-            {% elif existing_subscription_obj.subscription_status == 2 %}
-                <div class="alert alert-danger">
-                    <i class="bi bi-x-circle"></i> 
-                    Your previous upgrade request was <strong>rejected</strong> by the superadmin. You may submit a new request if needed.
-                </div>
-            {% elif existing_subscription_obj.subscription_status == 3 %}
-                <div class="alert alert-success">
-                    <i class="bi bi-check-circle-fill"></i> 
-                    Your user limit was successfully <strong>upgraded!</strong>
+        <div class="content-section">
+            {# Display current subscription status #}
+            {% if existing_subscription_obj %}
+                {% if existing_subscription_obj.subscription_status == 0 %}
+                    <div class="alert alert-warning">
+                        <div class="status-indicator">
+                            <i class="bi bi-hourglass-split status-icon"></i>
+                            <div class="status-content">
+                                <h5>Request Pending Approval</h5>
+                                <p>Your upgrade request is under review. We'll notify you once processed.</p>
+                            </div>
+                        </div>
+                    </div>
+                {% elif existing_subscription_obj.subscription_status == 1 %}
+                    <div class="alert alert-info">
+                        <div class="status-indicator">
+                            <i class="bi bi-check-circle status-icon"></i>
+                            <div class="status-content">
+                                <h5>Request Approved</h5>
+                                <p>Your upgrade has been approved. Complete payment to activate.</p>
+                            </div>
+                        </div>
+                    </div>
+                {% elif existing_subscription_obj.subscription_status == 2 %}
+                    <div class="alert alert-danger">
+                        <div class="status-indicator">
+                            <i class="bi bi-x-circle status-icon"></i>
+                            <div class="status-content">
+                                <h5>Request Declined</h5>
+                                <p>Your previous request wasn't approved. You may submit a new request.</p>
+                            </div>
+                        </div>
+                    </div>
+                {% elif existing_subscription_obj.subscription_status == 3 %}
+                    <div class="alert alert-success">
+                        <div class="status-indicator">
+                            <i class="bi bi-check-circle-fill status-icon"></i>
+                            <div class="status-content">
+                                <h5>Upgrade Complete</h5>
+                                <p>Your user limit has been successfully increased.</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-secondary">
+                    <div class="status-indicator">
+                        <i class="bi bi-info-circle status-icon"></i>
+                        <div class="status-content">
+                            <h5>Ready to Expand?</h5>
+                            <p>Request an increase to accommodate more users in your account.</p>
+                        </div>
+                    </div>
                 </div>
             {% endif %}
-        {% else %}
-             <div class="alert alert-light">
-                <i class="bi bi-arrow-up-circle"></i> 
-                You can request an increase in your user limit here.
-            </div>
-        {% endif %}
 
-
-        <div class="pricing-info">
-            <div class="row">
-                <div class="col-md-6">
-                    <p>Current User Count: <span class="user-count">{{ user_count }}</span></p>
+            <div class="pricing-info">
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <p class="mb-1 text-muted">Current User Limit</p>
+                        <p class="user-count">{{ user_count }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1 text-muted">New Limit After Upgrade</p>
+                        <p class="user-count text-success">{{ added_count }}</p>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <p>Potential New Count: <span class="user-count text-success">{{ added_count }}</span> (after upgrade)</p>
+                
+                {% if existing_subscription_obj and existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}    
+                <div class="price-calculation">
+                    <p class="mb-1 text-muted">One-Time Upgrade Fee</p>
+                    <p class="price-highlight">₹{{ payment_amount }}</p>
+                    <p class="text-muted small">Includes all applicable taxes</p>
                 </div>
+                {% elif existing_subscription_obj and existing_subscription_obj.subscription_status == 0 %}
+                <div class="price-calculation">
+                    <p class="mb-1 text-muted">Upgrade Fee</p>
+                    <p class="text-muted">Pending approval confirmation</p>
+                </div>
+                {% endif %}
             </div>
-            
-            {% if existing_subscription_obj and existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}    
-            <div class="price-calculation">
-                <p><strong>Price for +50 Users:</strong></p>
-                <p><span class="text-primary h4">₹{{ payment_amount }}</span> (one-time fee)</p>
-            </div>
-            {% elif existing_subscription_obj and existing_subscription_obj.subscription_status == 0 %}
-             <div class="price-calculation">
-                <p><strong>Price for +50 Users:</strong></p>
-                <p><span class="text-muted">To be confirmed upon approval by superadmin.</span></p>
-            </div>
-            {% endif %}
-        </div>
 
-        {# Show request form if no active request OR previous was rejected/completed #}
-        {% if not existing_subscription_obj or existing_subscription_obj.subscription_status == 2 or existing_subscription_obj.subscription_status == 3 %}
-        <form id="subscriptionUpgradeRequestForm" method="post" action="{% url 'admin_add_subscription' %}">
-            {% csrf_token %}
-            <input type="hidden" name="submission_type" value="0"> {# Signifies new request submission #}
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="confirmUpgradeRequest" name="confirm_upgrade_request" required>
-                <label class="form-check-label" for="confirmUpgradeRequest">
-                    I confirm I want to request an upgrade by 50 users. I understand charges will apply upon approval.
-                </label>
-            </div>
-            <div class="text-center"> {# Center the button #}
-                <button type="submit" class="btn btn-primary btn-lg" id="submitUpgradeRequestBtn">
-                    <i class="bi bi-send"></i> Submit Upgrade Request
+            {# Show appropriate action based on status #}
+            {% if not existing_subscription_obj or existing_subscription_obj.subscription_status == 2 or existing_subscription_obj.subscription_status == 3 %}
+            <form id="subscriptionUpgradeRequestForm" method="post" action="{% url 'admin_add_subscription' %}">
+                {% csrf_token %}
+                <input type="hidden" name="submission_type" value="0">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="confirmUpgradeRequest" name="confirm_upgrade_request" required>
+                    <label class="form-check-label" for="confirmUpgradeRequest">
+                        I understand this will request a permanent increase of 50 users to my account limit, with applicable charges.
+                    </label>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary" id="submitUpgradeRequestBtn">
+                        <i class="bi bi-send-fill me-2"></i>Request Upgrade
+                    </button>
+                </div>
+            </form>
+            {% elif existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}
+            <div class="text-center mt-4">
+                <button class="btn btn-success btn-lg" type="button" id="makeUserIncreasePaymentBtn">
+                    <i class="bi bi-credit-card-fill me-2"></i>Pay ₹{{ payment_amount }} Now
                 </button>
+                <p class="text-muted small mt-3">Secure payment processed via Razorpay</p>
             </div>
-        </form>
-        {% elif existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}
-        {# Show Make Payment button if request is approved and amount is set #}
-        <div class="text-center mt-4">
-            <button class="btn btn-success btn-lg" type="button" id="makeUserIncreasePaymentBtn">
-                <i class="bi bi-credit-card-fill"></i> Pay ₹{{ payment_amount }} Now to Upgrade
-            </button>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-        // Function to get CSRF token from cookies (Django's default way)
+        // Function to get CSRF token from cookies
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -188,112 +474,105 @@
         if (makePaymentButton) {
             makePaymentButton.addEventListener('click', function(e) {
                 e.preventDefault();
+                const originalText = makePaymentButton.innerHTML;
                 makePaymentButton.disabled = true;
-                makePaymentButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing Payment...';
+                makePaymentButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
 
                 fetch("{% url 'create_admin_user_increase_order' %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken // Send CSRF token with AJAX POST
+                        'X-CSRFToken': csrfToken
                     },
-                    // No body needed if admin_id is derived from session in the backend
                     body: JSON.stringify({}) 
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         const options = {
-                            key: data.key_id, // Your Razorpay Key ID
-                            amount: data.amount, // Amount in paise
+                            key: data.key_id,
+                            amount: data.amount,
                             currency: "INR",
-                            name: "User Limit Upgrade", // Name of your business
-                            description: "Payment for increasing admin user limit by 50",
-                            order_id: data.razorpay_order_id, // Unique order_id from backend
+                            name: "User Limit Upgrade",
+                            description: "Increase user capacity by 50",
+                            order_id: data.razorpay_order_id,
                             handler: function (response) {
-                                // This function is called after successful payment
                                 verifyUserIncreasePayment(response, data.razorpay_order_id);
                             },
-                            prefill: { // Optional: Prefill customer's contact information
+                            prefill: {
                                 name: data.admin_name || "",
                                 email: data.admin_email || "",
                                 contact: data.admin_phone || ""
                             },
-                            notes: {
-                                "purpose": "Admin User Increase Subscription"
-                            },
                             theme: {
-                                color: "#007bff" // A primary color for the checkout popup
+                                color: "#0d6efd"
                             }
                         };
                         const rzp = new Razorpay(options);
                         rzp.on('payment.failed', function (response){
-                            // Handle payment failure
-                            alert("Payment Failed: " + response.error.description + ". Reason: " + response.error.reason + ". Please try again or contact support.");
-                            makePaymentButton.disabled = false; // Re-enable button
-                            makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill"></i> Pay ₹{{ payment_amount }} Now to Upgrade';
+                            alert("Payment failed. Please try again or contact support.");
+                            makePaymentButton.disabled = false;
+                            makePaymentButton.innerHTML = originalText;
                         });
-                        rzp.open(); // Opens the Razorpay checkout popup
+                        rzp.open();
                     } else {
                         alert('Error: ' + data.message);
-                        makePaymentButton.disabled = false; // Re-enable button
-                        makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill"></i> Pay ₹{{ payment_amount }} Now to Upgrade';
+                        makePaymentButton.disabled = false;
+                        makePaymentButton.innerHTML = originalText;
                     }
                 })
                 .catch(error => {
-                    console.error('Error during payment initiation:', error);
-                    alert('Could not initiate payment. Please check your connection or try again later.');
-                    makePaymentButton.disabled = false; // Re-enable button
-                    makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill"></i> Pay ₹{{ payment_amount }} Now to Upgrade';
+                    console.error('Payment initiation error:', error);
+                    alert('Payment processing error. Please try again.');
+                    makePaymentButton.disabled = false;
+                    makePaymentButton.innerHTML = originalText;
                 });
             });
         }
 
         function verifyUserIncreasePayment(paymentResponse, serverRazorpayOrderId) {
-            // Send payment details to your server for verification
             fetch("{% url 'verify_admin_user_increase_payment' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken // Send CSRF token
+                    'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify({
                     razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                    razorpay_order_id: serverRazorpayOrderId, // Use the order ID that your server created
+                    razorpay_order_id: serverRazorpayOrderId,
                     razorpay_signature: paymentResponse.razorpay_signature
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // alert(data.message); // Or a more sophisticated notification
-                    window.location.reload(); // Reload the page to reflect updated status and show success message
+                    window.location.reload();
                 } else {
-                    alert('Payment Verification Failed: ' + data.message + '. Please contact support if payment was deducted.');
-                    if(makePaymentButton){ // Re-enable button if verification fails
+                    alert('Payment verification failed. Please contact support if amount was deducted.');
+                    if(makePaymentButton){
                         makePaymentButton.disabled = false;
-                        makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill"></i> Pay ₹{{ payment_amount }} Now to Upgrade';
+                        makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill me-2"></i>Pay ₹{{ payment_amount }} Now';
                     }
                 }
             })
             .catch(error => {
-                console.error('Error during payment verification:', error);
-                alert('An error occurred while verifying your payment. Please contact support.');
-                 if(makePaymentButton){
+                console.error('Verification error:', error);
+                alert('Verification error. Please contact support.');
+                if(makePaymentButton){
                     makePaymentButton.disabled = false;
-                    makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill"></i> Pay ₹{{ payment_amount }} Now to Upgrade';
-                 }
+                    makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill me-2"></i>Pay ₹{{ payment_amount }} Now';
+                }
             });
         }
 
-        // Optional: Disable submit button on form submission to prevent multiple requests
+        // Form submission handling
         const requestForm = document.getElementById("subscriptionUpgradeRequestForm");
         if (requestForm) {
             requestForm.addEventListener("submit", function () {
                 const submitBtn = document.getElementById("submitUpgradeRequestBtn");
                 if (submitBtn) {
                     submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Submitting...';
                 }
             });
         }

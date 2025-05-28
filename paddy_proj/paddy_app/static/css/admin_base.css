@@ -334,9 +334,14 @@ body {
 }
 
 .footer-logo {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 16px;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  margin-bottom: 16px !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  width: 100%;
+  text-align: center;
+  position: static;
+  line-height: 1.2;
 }
 
 .logout-form {
@@ -344,6 +349,8 @@ body {
 }
 
 .logout-button {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 16px !important;
   width: 100%;
   padding: 12px;
   background-color: var(--primary-color);
