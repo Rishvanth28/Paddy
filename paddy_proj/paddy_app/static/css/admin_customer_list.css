@@ -2,7 +2,7 @@
 .customer-list-container {
     padding: 2.5rem;
     min-height: 100vh;
-    background-color: #f0f2f5;
+    /* background-color: #f0f2f5; */
     transition: all var(--transition-speed) ease;
     animation: fadeIn 0.5s ease-out;
 }
