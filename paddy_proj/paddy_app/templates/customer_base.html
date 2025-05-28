@@ -2,27 +2,153 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{% if messages %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-<ul class="messages">
-    {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-</ul>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
-            let messages = document.querySelectorAll('.messages');
-            messages.forEach((message) => {
-                message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
-            });
-        }, 5000);
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer</title>
+  <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/customer_base.css' %}" />
+</head>
+
+<body>
+  <!-- Language Selector -->
+  <div class="language-selector">
+    <select id="language-select" onchange="changeLanguage(this.value)">
+      <option value="en">English</option>
+      <option value="ta">தமிழ் (Tamil)</option>
+    </select>
+  </div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Top Section -->
+    <div class="sidebar-header">
+      <img src="{% static 'media/IconSet.png' %}" alt="Profile Icon" class="sidebar-logo">
+      <h1 class="sidebar-title i18n" data-i18n="customer">Customer</h1>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+
+        <li class="nav-item">
+          <a href="{% url 'customer_dashboard' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon">
+            <span class="nav-text i18n" data-i18n="dashboard">Dashboard</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'customer_orders' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Orders Icon">
+            <span class="nav-text i18n" data-i18n="viewOrders">View Orders</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'upgrade_to_admin' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Upgrade Icon">
+            <span class="nav-text i18n" data-i18n="upgradeAdmin">Upgrade to Admin</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <div class="switch-container">
+            <label class="switch">
+              <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'"
+                {% if request.session.role == 'customer' %}checked{% endif %}>
+              <span class="i18n" data-i18n="admin">Admin</span>
+              <span class="i18n" data-i18n="customer">Customer</span>
+            </label>
+          </div>
+        </li>
+
+      </ul>
+    </nav>
+
+    <!-- Footer -->
+    <div class="logout-section">
+      <div class="footer-logo i18n" data-i18n="logoHere">Logo Here</div>
+      <form action="{% url 'logout' %}" method="post" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="logout-button i18n" data-i18n="logout">Logout</button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content" id="main-content">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Translation Script -->
+  <script>
+    let translations = {};
+    let currentLanguage = 'en';
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      const savedLanguage = localStorage.getItem('preferred_language') || 'en';
+      await loadTranslations(savedLanguage);
+      document.getElementById('language-select').value = savedLanguage;
     });
-</script>
-{% endif %}
-<div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
-    <img src="https://static.vecteezy.com/system/resources/thumbnails/007/229/427/small/welcome-calligraphic-inscription-with-smooth-lines-vector.jpg" alt="Welcome Image">
-</div>
+
+    async function changeLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('preferred_language', lang);
+      await loadTranslations(lang);
+    }
+
+    async function loadTranslations(lang) {
+      try {
+        const response = await fetch(`{% static 'js/i18n/' %}${lang}.json`);
+        if (!response.ok) return;
+        translations = await response.json();
+        updatePageText();
+      } catch (error) {
+        console.error('Translation error:', error);
+      }
+    }
+
+    function updatePageText() {
+      const elements = document.querySelectorAll('.i18n');
+      elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[key]) {
+          el.textContent = translations[key];
+        }
+      });
+    }
+  </script>
+
+  <!-- Sidebar & Active Item Highlight -->
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('open');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const currentPath = window.location.pathname;
+      const menuItems = document.querySelectorAll('.nav-menu .nav-item');
+
+      menuItems.forEach(item => {
+        const link = item.querySelector('a');
+        if (link && link.getAttribute('href') === currentPath) {
+          item.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
 
 </html>
