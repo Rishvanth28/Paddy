@@ -337,7 +337,7 @@ body {
   font-size: 16px !important;
   font-weight: 600 !important;
   margin-bottom: 16px !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: 'Inter', Arial, sans-serif !important;
   width: 100%;
   text-align: center;
   position: static;
@@ -359,7 +359,9 @@ body {
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color var(--transition-speed) ease;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 0 auto;
 }
 
 .logout-button:hover {
