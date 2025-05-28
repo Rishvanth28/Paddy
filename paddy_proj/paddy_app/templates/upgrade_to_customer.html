@@ -3,75 +3,127 @@
 
 {% block content %}
 
-{% if messages %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-<ul class="messages">
-    {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-</ul>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
-            let messages = document.querySelectorAll('.messages');
-            messages.forEach((message) => {
-                message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
-            });
-        }, 5000);
-    });
-</script>
-{% endif %}
+<link rel="stylesheet" href="{% static 'css/admin_upgrade.css' %}">
 
-<link rel="stylesheet" href="{% static 'css/admin_place_order.css' %}">
-
-<div class="main-content">
-    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-4">
-        <h1 class="page-title mb-0 me-3">Upgrade to Customer</h1>
+<div class="upgrade-container">
+    <!-- Page Header -->
+    <div class="upgrade-header">
+        <div>
+            <h1 class="upgrade-title">Upgrade to Customer</h1>
+            <p class="upgrade-subtitle">Convert this admin account to a customer profile</p>
+        </div>
     </div>
 
-    <div class="card shadow-sm" style="max-width: 900px; margin: auto; border-radius: 12px; overflow: hidden;">
-        <div class="card-header" style="background-color: #333; padding: 20px;">
-            <h2 style="margin: 0; font-size: 24px; color: white; text-align: center;">Customer Details</h2>
+    <!-- Main Card -->
+    <div class="upgrade-card">
+        <!-- Card Header -->
+        <div class="card-header">
+            <h2>Customer Profile Setup</h2>
         </div>
 
-        <div class="card-body" style="background-color: #fff; padding: 30px;">
-            <div class="row mb-3">
-                <div class="col-md-6"><strong>First Name:</strong> {{ admin.first_name }}</div>
-                <div class="col-md-6"><strong>Last Name:</strong> {{ admin.last_name }}</div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-6"><strong>Email:</strong> {{ admin.email }}</div>
-                <div class="col-md-6"><strong>Phone:</strong> {{ admin.phone_number }}</div>
+        <!-- Card Body -->
+        <div class="card-body">
+            <!-- Current Admin Information Section -->
+            <div class="current-info-section">
+                <h3 class="section-title">Current Admin Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">First Name</div>
+                        <div class="info-value">{{ admin.first_name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Name</div>
+                        <div class="info-value">{{ admin.last_name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ admin.email }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value">{{ admin.phone_number }}</div>
+                    </div>
+                </div>
             </div>
 
-            <form method="POST" style="margin-top: 20px;">
+            <!-- Upgrade Form Section -->
+            <form method="POST" class="upgrade-form">
                 {% csrf_token %}
+                <h3 class="section-title">Business Information</h3>
                 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label" style="font-weight: 600;">Company Name <span style="color: red;">*</span></label>
-                        <input type="text" name="company_name" class="form-control" required style="border-radius: 6px; padding: 10px;">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="company_name" class="form-label required">Company Name</label>
+                        <input type="text" id="company_name" name="company_name" class="form-control" required>
+                        <small class="text-muted">This will be displayed on invoices and orders</small>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label" style="font-weight: 600;">GST Number</label>
-                        <input type="text" name="GST" class="form-control" style="border-radius: 6px; padding: 10px;">
-                    </div>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-12">
-                        <label class="form-label" style="font-weight: 600;">Address</label>
-                        <textarea name="address" rows="3" class="form-control" style="border-radius: 6px; padding: 10px;"></textarea>
+                    
+                    <div class="form-group">
+                        <label for="GST" class="form-label">GST Number</label>
+                        <input type="text" id="GST" name="GST" class="form-control" placeholder="22AAAAA0000A1Z5">
+                        <small class="text-muted">Format: 22AAAAA0000A1Z5</small>
                     </div>
                 </div>
-
-                <button type="submit" class="btn btn-primary w-100" style="padding: 12px; font-size: 16px; border-radius: 8px;">
-                    Confirm Upgrade
+                
+                <div class="form-group">
+                    <label for="address" class="form-label">Business Address</label>
+                    <textarea id="address" name="address" class="form-control" rows="4" placeholder="Full business address including city and postal code"></textarea>
+                    <small class="text-muted">This will be used for shipping and billing</small>
+                </div>
+                
+                <!-- Important Note -->
+                <div class="alert-note">
+                    <div class="alert-title">Important Notice</div>
+                    <p>This action cannot be undone. After upgrading to a customer, admin privileges will be also ubgraded Please verify all information before proceeding.</p>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">
+                    Confirm Upgrade to Customer
                 </button>
             </form>
         </div>
     </div>
 </div>
 
+<!-- Form Validation Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.upgrade-form');
+    
+    form.addEventListener('submit', function(event) {
+        let isValid = true;
+        
+        // Validate required fields
+        const requiredFields = form.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.style.borderColor = '#e74c3c';
+                isValid = false;
+            } else {
+                field.style.borderColor = '#ddd';
+            }
+        });
+        
+        if (!isValid) {
+            event.preventDefault();
+            alert('Please fill in all required fields');
+        }
+    });
+    
+    // Real-time validation for required fields
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        field.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.style.borderColor = '#ddd';
+            }
+        });
+    });
+});
+</script>
+
 {% endblock %}
+</script>
+
+
