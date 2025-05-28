@@ -52,7 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-'paddy_app.middleware.SubscriptionMiddleware',]
+    'paddy_app.middleware.SubscriptionMiddleware',
+]
 
 ROOT_URLCONF = 'paddy_proj.urls'
 
@@ -142,5 +143,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
     'http://127.0.0.1',
     'http://localhost'
-
 ]
+
+# Razorpay Settings
+RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
+RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"

@@ -1,20 +1,28 @@
-from django.shortcuts import render, redirect
+"""
+Views module for Paddy application.
+
+This module contains all the view functions that handle HTTP requests
+and return appropriate responses. It includes functionality for user authentication,
+dashboard views, customer and admin management, order processing, and payment handling.
+"""
+
+import json
+import re
+import logging
+from functools import wraps
+from datetime import date, timedelta
+
+# Django imports
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.http import JsonResponse
-from .models import *
-from django.db import IntegrityError
-from datetime import date
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.db import IntegrityError, transaction
 from django.core.paginator import Paginator
 from django.utils import timezone
-from .decorators import role_required
-from .helpers import *
-import json
-from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
-import razorpay
 from django.conf import settings
 from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
@@ -30,119 +38,225 @@ RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
 
 client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
 def login_view(request):
+    """
+    Handle user login for superadmin, admin, and customer roles.
+    
+    Validates credentials and redirects to appropriate dashboard based on role.
+    Also handles subscription status checks for admin and customer accounts.
+    """
+    # Check if user is already logged in
     if request.session.get("user_id") and request.session.get("role"):
+        # Direct redirect to appropriate dashboard based on role
+        role_dashboard_map = {
+            "superadmin": "superadmin_dashboard",
+            "admin": "admin_dashboard",
+            "customer": "customer_dashboard"
+        }
         role = request.session["role"]
-        if role == "superadmin":
-            return redirect("superadmin_dashboard")
-        elif role == "admin":
-            return redirect("admin_dashboard")
-        elif role == "customer":
-            return redirect("customer_dashboard")
-
+        if role in role_dashboard_map:
+            return redirect(role_dashboard_map[role])
+    
     if request.method == "POST":
+        # Get form data
         phone_number = request.POST.get("username")
         password = request.POST.get("password")
         role = request.POST.get("role")
-
-        if not phone_number or not password or not role:
+        
+        # Validate required fields
+        if not all([phone_number, password, role]):
             messages.error(request, "All fields are required.")
             return redirect("login")
-
-        if role == "superadmin":
-            try:
-                user = AdminTable.objects.get(phone_number=phone_number)
-                if user.admin_id > 1000000:
-                    messages.error(request, "Unauthorized access.")
-                    return redirect("login")
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.admin_id
-                    request.session["role"] = "superadmin"
-                    return redirect("superadmin_dashboard")
-            except AdminTable.DoesNotExist:
-                messages.error(request, "Super Admin not found.")
-
-        elif role == "admin":
-            try:
-                user = AdminTable.objects.get(phone_number=phone_number)
-                if user.admin_id == 1000000:
-                    messages.error(request, "Unauthorized access.")
-                    return redirect("login")
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.admin_id
-                    request.session["role"] = "admin"
-                    sub = Subscription.objects.filter(admin_id=user, subscription_type="admin").order_by("-end_date").first()
-                    if sub and sub.end_date and sub.end_date >= now().date():
-                        return redirect("admin_dashboard")
-                    else:
-                        return redirect("admin_subscription_payment")
-            except AdminTable.DoesNotExist:
-                messages.error(request, "Admin not found.")
-
-        elif role == "customer":
-            try:
-                user = CustomerTable.objects.get(phone_number=phone_number)
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.customer_id
-                    request.session["role"] = "customer"
-
-                    # Subscription check
-                    sub = Subscription.objects.filter(customer_id=user, subscription_type="customer").order_by("-end_date").first()
-                    
-                    if sub:
-                        if sub.end_date and sub.end_date >= now().date():
-                            return redirect("customer_dashboard")
-                        else:
-                            return redirect("customer_subscription_payment")
-                    else:
-                        # Free trial logic
-                        Subscription.objects.create(
-                            customer_id=user,
-                            subscription_type="customer",
-                            subscription_status=1,
-                            payment_amount=0,
-                            start_date=now().date(),
-                            end_date=now().date() + timedelta(days=30)
-                        )
-                        return redirect("customer_dashboard")
-            except CustomerTable.DoesNotExist:
-                messages.error(request, "Customer not found.")
-
-        else:
+        
+        # Define valid roles
+        valid_roles = ["superadmin", "admin", "customer"]
+        if role not in valid_roles:
             messages.error(request, "Invalid role selected.")
+            return redirect("login")
+            
+        try:
+            # Handle login based on role
+            if role == "superadmin":
+                return handle_superadmin_login(request, phone_number, password)
+            elif role == "admin":
+                return handle_admin_login(request, phone_number, password)
+            elif role == "customer":
+                return handle_customer_login(request, phone_number, password)
+        except Exception as e:
+            # Log unexpected errors
+            logger.error(f"Login error: {str(e)}")
+            messages.error(request, "An error occurred during login. Please try again.")
+    
+    # Render the login form for GET requests or failed logins
+    return render(request, "login.html")
 
-    return render(request, "login.html")   
+def handle_superadmin_login(request, phone_number, password):
+    """Handle superadmin authentication and session creation."""
+    try:
+        user = AdminTable.objects.get(phone_number=phone_number)
+        
+        # Check if this admin has superadmin privileges (admin_id == 1000000)
+        if user.admin_id > 1000000:
+            messages.error(request, "Unauthorized access.")
+            return redirect("login")
+            
+        # Verify password
+        if check_password(password, user.password):
+            # Set session data
+            request.session["user_id"] = user.admin_id
+            request.session["role"] = "superadmin"
+            return redirect("superadmin_dashboard")
+        else:
+            messages.error(request, "Invalid credentials.")
+    except AdminTable.DoesNotExist:
+        messages.error(request, "Super Admin not found.")
+    
+    return redirect("login")
+
+def handle_admin_login(request, phone_number, password):
+    """Handle admin authentication, subscription check, and session creation."""
+    try:
+        user = AdminTable.objects.get(phone_number=phone_number)
+        
+        # Prevent superadmin from logging in as admin
+        if user.admin_id == 1000000:
+            messages.error(request, "Unauthorized access.")
+            return redirect("login")
+            
+        # Verify password
+        if check_password(password, user.password):
+            # Set session data
+            request.session["user_id"] = user.admin_id
+            request.session["role"] = "admin"
+              # Check subscription status
+            current_date = now().date()
+            sub = Subscription.objects.filter(
+                admin_id=user, 
+                subscription_type="admin",
+                end_date__gte=current_date,
+                payment_amount__gt=0  # Only paid subscriptions are valid for admins
+            ).order_by("-end_date").first()
+            
+            # Redirect based on subscription status
+            if sub:
+                return redirect("admin_dashboard")
+            else:
+                messages.info(request, "Please purchase a subscription to continue.")
+                return redirect("admin_subscription_payment")
+        else:
+            messages.error(request, "Invalid credentials.")
+    except AdminTable.DoesNotExist:
+        messages.error(request, "Admin not found.")
+    
+    return redirect("login")
+
+def handle_customer_login(request, phone_number, password):
+    """Handle customer authentication, subscription check, and session creation."""
+    try:
+        user = CustomerTable.objects.get(phone_number=phone_number)
+        
+        # Verify password
+        if check_password(password, user.password):
+            # Set session data
+            request.session["user_id"] = user.customer_id
+            request.session["role"] = "customer"
+            
+            # Get current date for subscription checks
+            current_date = now().date()
+            
+            # Check if user has an active subscription
+            sub = Subscription.objects.filter(
+                customer_id=user, 
+                subscription_type="customer"
+            ).order_by("-end_date").first()
+            
+            if sub:
+                # Check if subscription is active
+                if sub.end_date and sub.end_date >= current_date:
+                    return redirect("customer_dashboard")
+                else:
+                    # Subscription expired
+                    return redirect("customer_subscription_payment")
+            else:
+                # No subscription found, create free trial
+                with transaction.atomic():
+                    Subscription.objects.create(
+                        customer_id=user,
+                        subscription_type="customer",
+                        subscription_status=1,  # Active status
+                        payment_amount=0,       # Free trial
+                        start_date=current_date,
+                        end_date=current_date + timedelta(days=30)  # 30-day trial
+                    )
+                return redirect("customer_dashboard")
+        else:
+            messages.error(request, "Invalid credentials.")
+    except CustomerTable.DoesNotExist:
+        messages.error(request, "Customer not found.")
+    
+    return redirect("login")
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
+    """Render the superadmin dashboard."""
     return render(request, "superadmin_dashboard.html")
 
 @role_required(["admin"])
 def admin_dashboard(request):
+    """Render the admin dashboard."""
     return render(request, "admin_dashboard.html")
 
 def upgrade_plan(request):
+    """Render the upgrade plan page."""
     return render(request, "upgrade_plan.html")
 
 @role_required(["customer"])
 def customer_dashboard(request):
+    """Render the customer dashboard."""
     return render(request, "customer_dashboard.html")
 
 def validate_gst(gst):
+    """
+    Validate GST number format using regex pattern.
+    
+    Args:
+        gst (str): GST number to validate
+        
+    Returns:
+        bool: True if valid, False otherwise
+    """
+    if not gst:
+        return False
+    
+    # Standard GST format: 2 digits, 5 chars, 4 digits, 1 char, 1 char, Z, 1 char
     gst_pattern = r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
     return bool(re.match(gst_pattern, gst))
 
 @role_required(["superadmin"])
 def onboard(request):
+    """Render the onboarding page for superadmin."""
     return render(request, "onboard.html")
 
 @role_required(["superadmin"])
 def create_admin(request):
+    """
+    Create a new admin account with basic validation.
+    
+    This view handles the creation of new admin accounts by superadmins.
+    It validates inputs, checks for duplicate email/phone, and creates
+    the admin with default user_count = 50.
+    """
     if request.method == "POST":
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        phone_number = request.POST.get("phone_number")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+        # Extract form data
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+        phone_number = request.POST.get("phone_number", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "")
+
+        # Validate required fields
+        if not all([first_name, last_name, phone_number, email, password]):
+            messages.error(request, "All fields are required.")
+            return redirect("onboard")
 
         # Check for existing email or phone number
         if AdminTable.objects.filter(email=email).exists():
@@ -154,38 +268,50 @@ def create_admin(request):
             return redirect("onboard")
 
         try:
+            # Create the admin with hashed password
             AdminTable.objects.create(
                 first_name=first_name,
                 last_name=last_name,
                 phone_number=phone_number,
                 email=email,
-                password=password,
-                user_count=50
+                password=make_password(password),  # Hash the password
+                user_count=50  # Default user count
             )
             messages.success(request, "Admin created successfully!")
             return redirect("onboard")
-        except IntegrityError:
+        except IntegrityError as e:
+            logger.error(f"Error creating admin: {str(e)}")
             messages.error(request, "Failed to create admin. Please try again.")
-            messages.warning(request, "This email is already registered.")
-            messages.info(request, "Please fill all required fields.")
+        except Exception as e:
+            logger.error(f"Unexpected error creating admin: {str(e)}")
+            messages.error(request, "An unexpected error occurred. Please try again.")
             
     return render(request, "onboard.html")
 
 @role_required(["superadmin", "admin"])
 def create_customer(request):
+    """
+    Create a new customer account with validation.
+    
+    This view handles the creation of new customer accounts by both superadmins
+    and regular admins. It validates inputs, checks for duplicate email/phone,
+    verifies GST format, and creates the customer with a default subscription.
+    """
     role = request.session.get("role")
     is_superadmin = role == "superadmin"
 
     if request.method == "POST":
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        phone_number = request.POST.get("phone_number")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        company_name = request.POST.get("company_name")
-        gst = request.POST.get("gst")
-        address = request.POST.get("address")
+        # Extract form data
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+        phone_number = request.POST.get("phone_number", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "")
+        company_name = request.POST.get("company_name", "").strip()
+        gst = request.POST.get("gst", "").strip()
+        address = request.POST.get("address", "").strip()
 
+        # Get admin from session
         admin_id = request.session.get("user_id")
         if not admin_id:
             messages.error(request, "Session expired. Please log in again.")
@@ -197,11 +323,18 @@ def create_customer(request):
             messages.error(request, "Admin not found. Please log in again.")
             return redirect("login")
 
+        # Validate required fields
+        if not all([first_name, last_name, phone_number, email, password]):
+            messages.error(request, "All fields are required.")
+            return redirect("onboard" if is_superadmin else "customer_onboard")
+
+        # Check customer limit
         current_customer_count = CustomerTable.objects.filter(admin=admin).count()
         if current_customer_count >= admin.user_count:
             messages.error(request, "Customer limit reached for your account!")
             return redirect("onboard" if is_superadmin else "customer_onboard")
 
+        # Check for existing email or phone
         if CustomerTable.objects.filter(email=email).exists():
             messages.error(request, "Email already exists for a customer!")
             return redirect("onboard" if is_superadmin else "customer_onboard")
@@ -210,51 +343,76 @@ def create_customer(request):
             messages.error(request, "Phone number already registered for a customer!")
             return redirect("onboard" if is_superadmin else "customer_onboard")
 
+        # Validate GST if provided
         if gst and not validate_gst(gst):
             messages.error(request, "Invalid GST number format!")
             return redirect("onboard" if is_superadmin else "customer_onboard")
 
         try:
-            customer = CustomerTable.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                phone_number=phone_number,
-                email=email,
-                password=make_password(password),
-                company_name=company_name,
-                GST=gst if gst else None,
-                address=address,
-                admin=admin,
-            )
+            # Use transaction to ensure both customer and subscription are created or neither
+            with transaction.atomic():
+                # Create the customer
+                customer = CustomerTable.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    phone_number=phone_number,
+                    email=email,
+                    password=make_password(password),  # Hash the password
+                    company_name=company_name,
+                    GST=gst if gst else None,
+                    address=address,
+                    admin=admin,
+                )
 
-            # ✅ Create default 1-month free subscription for customer
-            Subscription.objects.create(
-                customer_id=customer,
-                subscription_type="customer",
-                subscription_status=1,
-                payment_amount=0,
-                start_date=now().date(),
-                end_date=now().date() + timedelta(days=30)
-            )
+                # Create default 1-month free subscription for customer
+                current_date = now().date()
+                Subscription.objects.create(
+                    customer_id=customer,
+                    subscription_type="customer",
+                    subscription_status=1,  # Active status
+                    payment_amount=0,       # Free trial
+                    start_date=current_date,
+                    end_date=current_date + timedelta(days=30)  # 30-day trial
+                )
 
             messages.success(request, "Customer created successfully!")
             return redirect("onboard" if is_superadmin else "customer_onboard")
 
-        except IntegrityError:
+        except IntegrityError as e:
+            logger.error(f"Error creating customer: {str(e)}")
             messages.error(request, "Failed to create customer. Please try again.")
+        except Exception as e:
+            logger.error(f"Unexpected error creating customer: {str(e)}")
+            messages.error(request, "An unexpected error occurred. Please try again.")
 
+    # Render the appropriate template for GET requests
     return render(request, "onboard.html" if is_superadmin else "customer_onboard.html")
 
 
 @role_required(["superadmin", "admin"])
 def place_order(request):
+    """
+    Handle order placement with payment processing via Razorpay.
+    
+    This function handles three scenarios:
+    1. Initial page load (GET request)
+    2. AJAX request to create a Razorpay order for booking fee
+    3. Payment verification callback after successful payment
+    
+    The order flow includes:
+    - Collecting order details (regular order or multiple products)
+    - Creating a Razorpay order for booking fee
+    - Verifying payment and creating the actual order in database
+    """
     role = request.session.get("role")
     is_superadmin = role == "superadmin"
-
     admin_id = request.session.get("user_id")
+    
     if not admin_id:
+        logger.warning("Unauthorized access attempt to place_order: no admin_id in session")
         return redirect("login")
 
+    # Get customers for the admin to populate dropdown
     customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
     
     # Handle Razorpay payment verification callback
@@ -294,223 +452,290 @@ def place_order(request):
                 customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
                 gst = customer.GST
 
-                quantity = float(temp_data["quantity"]) if temp_data["quantity"] else 0
-                price_per_unit = float(temp_data["price_per_unit"]) if temp_data["price_per_unit"] else 0
-                overall_amount = quantity * price_per_unit
+    # Calculate amount
+    quantity = float(temp_data["quantity"]) if temp_data["quantity"] else 0
+    price_per_unit = float(temp_data["price_per_unit"]) if temp_data["price_per_unit"] else 0
+    overall_amount = quantity * price_per_unit
 
-                order = Orders.objects.create(
-                    customer=customer,
-                    admin=AdminTable.objects.get(admin_id=admin_id),
-                    payment_status=0,
-                    delivery_status=0,
-                    product_category_id=temp_data["product_category_id"],
-                    quantity=quantity,
-                    price_per_unit=price_per_unit,
-                    overall_amount=overall_amount,
-                    GST=gst,
-                    lorry_number=temp_data["lorry_number"],
-                    driver_name=temp_data["driver_name"],
-                    delivery_date=temp_data["delivery_date"],
-                    driver_ph_no=temp_data["driver_ph_no"],
-                    order_date=date.today()
-                )
-                
-                # Update payment with order ID
-                payment.order = order
-                payment.save()
-                
-                messages.success(request, "Order placed successfully after booking fee payment!")
-                
-            else:
-                # Multiple products order flow
-                customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
-                gst = customer.GST
-                
-                # Create order
-                order = Orders.objects.create(
-                    customer=customer,
-                    admin=AdminTable.objects.get(admin_id=admin_id),
-                    payment_status=0,
-                    quantity=0,
-                    product_category_id=temp_data["product_category_id"],
-                    GST=gst,
-                    lorry_number=temp_data["lorry_number"],
-                    driver_name=temp_data["driver_name"],
-                    delivery_date=temp_data["delivery_date"],
-                    delivery_status=0,
-                    driver_ph_no=temp_data["driver_ph_no"],
-                    order_date=date.today()
-                )
-                
-                # Update payment with order ID
-                payment.order = order
-                payment.save()
-                
-                # Process each order item
-                product_names = temp_data["product_names"]
-                batch_numbers = temp_data["batch_numbers"]
-                expiry_dates = temp_data["expiry_dates"]
-                quantities = temp_data["quantities"]
-                prices = temp_data["prices"]
-                units = temp_data["units"]
-                totals = temp_data["totals"]
-                
-                # Create order items
-                order_items = []
-                for i in range(len(product_names)):
-                    # Skip empty rows
-                    if not product_names[i].strip():
-                        continue
-                        
-                    item = OrderItems(
-                        order=order,
-                        product_name=product_names[i],
-                        batch_number=batch_numbers[i],
-                        expiry_date=expiry_dates[i],
-                        quantity=int(float(quantities[i])),
-                        price_per_unit=float(prices[i]),
-                        total_amount=float(totals[i]),
-                        unit=units[i]
-                    )
-                    order_items.append(item)
-                
-                order.overall_amount = sum(float(totals[i]) for i in range(len(totals)) if totals[i].strip())
-                order.save()
-                
-                # Bulk create items
-                OrderItems.objects.bulk_create(order_items)
-                
-                messages.success(request, "Order with multiple items placed successfully after booking fee payment!")
-            
-            # Clear temporary data
-            if "temp_order_data" in request.session:
-                del request.session["temp_order_data"]
-                
-            return redirect("place_order" if is_superadmin else "admin_place_order")
-            
-        except Exception as e:
-            messages.error(request, f"Payment verification failed: {str(e)}")
-            return redirect("place_order" if is_superadmin else "admin_place_order")
+    # Create order record
+    with transaction.atomic():
+        order = Orders.objects.create(
+            customer=customer,
+            admin=AdminTable.objects.get(admin_id=admin_id),
+            payment_status=0,  # Unpaid
+            delivery_status=0,  # Not delivered
+            product_category_id=temp_data["product_category_id"],
+            quantity=quantity,
+            price_per_unit=price_per_unit,
+            overall_amount=overall_amount,
+            GST=gst,
+            lorry_number=temp_data["lorry_number"],
+            driver_name=temp_data["driver_name"],
+            delivery_date=temp_data["delivery_date"],
+            driver_ph_no=temp_data["driver_ph_no"],
+            order_date=date.today()
+        )
+        
+        # Update payment with order ID
+        payment.order = order
+        payment.save()
 
-    # Handle AJAX request for creating Razorpay order
-    elif request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Store order data temporarily
-        temp_data = {}
-        
-        if str(request.POST.get("product_category_id")) != "3":
-            # Regular order
-            temp_data = {
-                "customer_id": request.POST.get("customer"),
-                "product_category_id": request.POST.get("product_category_id"),
-                "quantity": request.POST.get("quantity"),
-                "price_per_unit": request.POST.get("price_per_unit"),
-                "lorry_number": request.POST.get("vehicle_number"),
-                "driver_name": request.POST.get("driver_name"),
-                "driver_ph_no": request.POST.get("driver_ph_no"),
-                "delivery_date": request.POST.get("delivery_date")
-            }
-            
-        else:
-            # Multiple products order
-            temp_data = {
-                "customer_id": request.POST.get("customer"),
-                "product_category_id": request.POST.get("product_category_id"),
-                "lorry_number": request.POST.get("vehicle_number"),
-                "driver_name": request.POST.get("driver_name"),
-                "driver_ph_no": request.POST.get("driver_ph_no"),
-                "delivery_date": request.POST.get("delivery_date"),
-                "product_names": request.POST.getlist("product_name[]"),
-                "batch_numbers": request.POST.getlist("batch_number[]"),
-                "expiry_dates": request.POST.getlist("expiry_date[]"),
-                "quantities": request.POST.getlist("quantity[]"),
-                "prices": request.POST.getlist("price_per_unit[]"),
-                "units": request.POST.getlist("unit[]"),
-                "totals": request.POST.getlist("total_amount[]")
-            }
-        
-        # Store data in session
-        request.session["temp_order_data"] = json.dumps(temp_data)
-        
-        # Create Razorpay order for booking fee
-        try:
-            razorpay_order = client.order.create({
-                "amount": 1000,  # 10 Rs in paise
-                "currency": "INR",
-                "payment_capture": 1,  # Auto-capture
-                "notes": {
-                    "purpose": "Order booking fee",
-                    "admin_id": str(admin_id)
-                }
-            })
-            
-            # Return JSON response for AJAX
-            return JsonResponse({
-                "status": "success",
-                "razorpay_key": RAZORPAY_KEY_ID,
-                "order_id": razorpay_order["id"],
-                "amount": 10  # In Rs
-            })
-            
-        except Exception as e:
-            return JsonResponse({
-                "status": "error",
-                "message": f"Error creating payment: {str(e)}"
-            })
+def process_multiple_products_order(temp_data, admin_id, payment):
+    """
+    Process an order with multiple products.
     
-    # Render the initial form
-    return render(request, "place_order.html" if is_superadmin else "admin_place_order.html", {"customers": customers})
+    Args:
+        temp_data: Dictionary containing order details
+        admin_id: The ID of the admin creating the order
+        payment: The payment object for booking fee
+    """
+    customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
+    gst = customer.GST
+    
+    # Create order first
+    with transaction.atomic():
+        order = Orders.objects.create(
+            customer=customer,
+            admin=AdminTable.objects.get(admin_id=admin_id),
+            payment_status=0,  # Unpaid
+            quantity=0,  # Total quantity will be calculated from items
+            product_category_id=temp_data["product_category_id"],
+            GST=gst,
+            lorry_number=temp_data["lorry_number"],
+            driver_name=temp_data["driver_name"],
+            delivery_date=temp_data["delivery_date"],
+            delivery_status=0,  # Not delivered
+            driver_ph_no=temp_data["driver_ph_no"],
+            order_date=date.today()
+        )
+        
+        # Update payment with order ID
+        payment.order = order
+        payment.save()
+        
+        # Process each order item
+        product_names = temp_data["product_names"]
+        batch_numbers = temp_data["batch_numbers"]
+        expiry_dates = temp_data["expiry_dates"]
+        quantities = temp_data["quantities"]
+        prices = temp_data["prices"]
+        units = temp_data["units"]
+        totals = temp_data["totals"]
+        
+        # Create order items efficiently using bulk create
+        order_items = []
+        for i in range(len(product_names)):
+            # Skip empty rows
+            if not product_names[i].strip():
+                continue
+                
+            item = OrderItems(
+                order=order,
+                product_name=product_names[i],
+                batch_number=batch_numbers[i],
+                expiry_date=expiry_dates[i],
+                quantity=int(float(quantities[i])) if quantities[i] else 0,
+                price_per_unit=float(prices[i]) if prices[i] else 0,
+                total_amount=float(totals[i]) if totals[i] else 0,
+                unit=units[i]
+            )
+            order_items.append(item)
+        
+        # Calculate total amount
+        order.overall_amount = sum(float(totals[i]) for i in range(len(totals)) 
+                                if totals[i].strip())
+        order.save()
+        
+        # Bulk create all items at once (more efficient than individual creates)
+        if order_items:
+            OrderItems.objects.bulk_create(order_items)
+
+def create_razorpay_order(request, admin_id):
+    """
+    Create a Razorpay order for booking fee payment.
+    
+    Args:
+        request: The HTTP request object
+        admin_id: The ID of the admin creating the order
+        
+    Returns:
+        JsonResponse: Order details for frontend processing
+    """
+    # Store order data temporarily
+    temp_data = {}
+    
+    # Process data based on product category
+    if str(request.POST.get("product_category_id")) != "3":
+        # Regular order
+        temp_data = {
+            "customer_id": request.POST.get("customer"),
+            "product_category_id": request.POST.get("product_category_id"),
+            "quantity": request.POST.get("quantity"),
+            "price_per_unit": request.POST.get("price_per_unit"),
+            "lorry_number": request.POST.get("vehicle_number"),
+            "driver_name": request.POST.get("driver_name"),
+            "driver_ph_no": request.POST.get("driver_ph_no"),
+            "delivery_date": request.POST.get("delivery_date")
+        }
+    else:
+        # Multiple products order
+        temp_data = {
+            "customer_id": request.POST.get("customer"),
+            "product_category_id": request.POST.get("product_category_id"),
+            "lorry_number": request.POST.get("vehicle_number"),
+            "driver_name": request.POST.get("driver_name"),
+            "driver_ph_no": request.POST.get("driver_ph_no"),
+            "delivery_date": request.POST.get("delivery_date"),
+            "product_names": request.POST.getlist("product_name[]"),
+            "batch_numbers": request.POST.getlist("batch_number[]"),
+            "expiry_dates": request.POST.getlist("expiry_date[]"),
+            "quantities": request.POST.getlist("quantity[]"),
+            "prices": request.POST.getlist("price_per_unit[]"),
+            "units": request.POST.getlist("unit[]"),
+            "totals": request.POST.getlist("total_amount[]")
+        }
+    
+    # Store data in session
+    request.session["temp_order_data"] = json.dumps(temp_data)
+    
+    # Create Razorpay order for booking fee
+    try:
+        razorpay_order = client.order.create({
+            "amount": 1000,  # 10 Rs in paise
+            "currency": "INR",
+            "payment_capture": 1,  # Auto-capture
+            "notes": {
+                "purpose": "Order booking fee",
+                "admin_id": str(admin_id)
+            }
+        })
+          # Return JSON response for AJAX
+        return JsonResponse({
+            "status": "success",
+            "razorpay_key": RAZORPAY_KEY_ID,
+            "order_id": razorpay_order["id"],
+            "amount": 10  # In Rs
+        })
+    except requests.exceptions.ConnectionError as e:
+        # Handle connection errors (internet connectivity issues)
+        logger.error(f"Connection error with Razorpay API: {str(e)}")
+        error_msg = "Unable to connect to payment gateway. Please check your internet connection or contact support."
+        return JsonResponse({
+            "status": "error",
+            "message": error_msg
+        })
+    except Exception as e:
+        logger.error(f"Failed to create Razorpay order: {str(e)}")
+        return JsonResponse({
+            "status": "error",
+            "message": f"Error creating payment: {str(e)}"
+        })
+
 
 @role_required(["customer"])
 def customer_orders(request):
+    """
+    Display orders for the logged-in customer.
+    
+    Handles both regular page load (HTML view) and AJAX requests (JSON data).
+    Uses lazy loading to avoid loading all order data at once.
+    """
     customer_id = request.session.get("user_id")
     if not customer_id:
+        messages.error(request, "Session expired. Please log in again.")
         return redirect('login')
     
     # Check if it's an AJAX request asking for JSON data
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Fetch all orders for this customer
-        orders = Orders.objects.filter(customer__customer_id=customer_id).order_by('-order_date')
+        # Fetch orders with pagination if needed
+        page = request.GET.get('page', 1)
+        limit = request.GET.get('limit', 10)
         
-        # Convert to JSON serializable format
+        try:
+            page = int(page)
+            limit = min(int(limit), 50)  # Cap limit to prevent excessive loads
+        except (ValueError, TypeError):
+            page = 1
+            limit = 10
+            
+        # Calculate offset for database query
+        offset = (page - 1) * limit
+        
+        # Fetch orders with limit and offset for efficient pagination
+        orders = Orders.objects.filter(
+            customer__customer_id=customer_id
+        ).order_by('-order_date')[offset:offset + limit]
+        
+        # Convert to JSON serializable format with only necessary fields
         orders_data = [{
             'order_id': order.order_id,
             'order_date': order.order_date.strftime('%Y-%m-%d'),
             'delivery_date': order.delivery_date.strftime('%Y-%m-%d') if order.delivery_date else None,
-            'overall_amount': order.overall_amount,
-            'paid_amount': order.paid_amount,
+            'overall_amount': float(order.overall_amount) if order.overall_amount else 0,
+            'paid_amount': float(order.paid_amount) if order.paid_amount else 0,
             'payment_status': order.payment_status,
             'delivery_status': order.delivery_status,
-            'quantity': order.quantity,
-            'price_per_unit': float(order.price_per_unit),
-            'GST': order.GST,
-            'lorry_number': order.lorry_number,
-            'driver_name': order.driver_name,
-            'driver_ph_no': order.driver_ph_no,
-            'product_category_id': order.product_category_id
+            'product_category_id': order.product_category_id,
+            'product_name': 'Multiple Products' if order.product_category_id == 3 else 
+                          'Paddy' if order.product_category_id == 2 else 'Rice'
         } for order in orders]
         
-        return JsonResponse({'orders': orders_data})
+        # Get total count for pagination
+        total_orders = Orders.objects.filter(customer__customer_id=customer_id).count()
+        
+        return JsonResponse({
+            'orders': orders_data,
+            'total': total_orders,
+            'pages': (total_orders + limit - 1) // limit  # Ceiling division
+        })
     
     # For regular page load, just render the template (JS will fetch data)
     return render(request, 'customer_order.html')
 
 @role_required(["customer"])
 def payment(request):
-    id = request.POST.get('order_id')
-    order = Orders.objects.get(pk=id)
-    # Assuming you have a related model for order items/products
-    # If not, you'll need to create one to store multiple products per order
-    if order.product_category_id == 3:
-        order_items = OrderItems.objects.filter(order=order)
-        order_items = [{'quantity':item.quantity,'price_per_unit':item.price_per_unit,
-                        'total_amount':item.total_amount,'product_name':item.product_name} for item in order_items]
-    else:
-        order_items = [{'quantity':order.quantity,'price_per_unit':order.price_per_unit,
-                        'total_amount':order.overall_amount,'product_name':'Paddy' if order.product_category_id == 2 else 'Rice'}]
-    total_amount = order.overall_amount
+    """
+    Display payment information for a specific order.
     
-    # Calculate balance due
-    paid_amount = order.paid_amount or 0
+    Gathers order details, calculates payment status, and prepares
+    the data for invoice rendering.
+    """
+    # Validate input
+    order_id = request.POST.get('order_id')
+    if not order_id:
+        messages.error(request, "Order ID is required.")
+        return redirect('customer_orders')
+    
+    try:
+        # Fetch order with related customer data in a single query
+        order = Orders.objects.select_related('customer').get(pk=order_id)
+    except Orders.DoesNotExist:
+        messages.error(request, "Order not found.")
+        return redirect('customer_orders')
+        
+    # Security check: ensure the order belongs to the logged-in customer
+    if order.customer.customer_id != request.session.get("user_id"):
+        logger.warning(f"Unauthorized access attempt to order {order_id}")
+        messages.error(request, "You don't have permission to access this order.")
+        return redirect('customer_orders')
+    
+    # Fetch order items based on product category
+    if order.product_category_id == 3:  # Multiple products
+        order_items = list(OrderItems.objects.filter(order=order).values(
+            'product_name', 'quantity', 'price_per_unit', 'total_amount'
+        ))
+    else:  # Single product (Rice or Paddy)
+        product_name = 'Paddy' if order.product_category_id == 2 else 'Rice'
+        order_items = [{
+            'product_name': product_name,
+            'quantity': order.quantity,
+            'price_per_unit': float(order.price_per_unit) if order.price_per_unit else 0,
+            'total_amount': float(order.overall_amount) if order.overall_amount else 0
+        }]
+    
+    # Calculate financial information
+    total_amount = float(order.overall_amount) if order.overall_amount else 0
+    paid_amount = float(order.paid_amount) if order.paid_amount else 0
     balance_due = total_amount - paid_amount
     
     # Determine payment status
@@ -522,83 +747,132 @@ def payment(request):
         payment_status = 2  # Fully Paid
     
     # Calculate payment deadline date
-    payment_deadline = order.order_date + timezone.timedelta(days=order.payment_deadline)
+    payment_deadline = order.order_date + timedelta(days=order.payment_deadline or 30)
     
+    # Map product category to readable name
+    product_category_names = {
+        1: 'Rice',
+        2: 'Paddy',
+        3: 'Fertilizer'
+    }
+    order_name = product_category_names.get(order.product_category_id, 'Product')
+    
+    # Prepare context for template
     context = {
         'order': order,
-        'order_name': 'Paddy' if order.product_category_id == 2 else 'Rice' if order.product_category_id == 1 else 'Fertilizer',
+        'order_name': order_name,
         'order_items': order_items,
         'customer': order.customer,
-        'total_amount': order.overall_amount,
+        'total_amount': total_amount,
         'payment_terms': order.payment_deadline,
         'balance_due': balance_due,
         'payment_status': payment_status,
         'invoice_date': order.order_date,
         'total_items': sum(item['quantity'] for item in order_items),
         'invoice_number': f"UFs {order.order_id}",
-        'payment_terms': order.payment_deadline,
         'payment_deadline': payment_deadline,
-        'amount_in_words': number_to_words_indian(order.overall_amount),
-        'business_year': "urakadai "+str(order.order_date.year),
+        'amount_in_words': number_to_words_indian(total_amount),
+        'business_year': f"urakadai {order.order_date.year}",
     }
-    return render(request, 'payment.html',context)
+    
+    return render(request, 'payment.html', context)
 
 @require_POST
 @csrf_exempt
 def create_partial_payment_order(request):
     """API endpoint to create a Razorpay order for partial payment"""
-
-    
     try:
-
+        # Parse request data
         data = json.loads(request.body)
         order_id = data.get('order_id')
-        amount = float(data.get('amount'))
+        amount = float(data.get('amount', 0))
+        
+        # Validate required fields
+        if not order_id:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Order ID is required'
+            })
+        
+        if amount <= 0:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Amount must be greater than zero'
+            })
         
         # Get the order
-        order = get_object_or_404(Orders, order_id=order_id)
-
+        try:
+            order = Orders.objects.get(order_id=order_id)
+        except Orders.DoesNotExist:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Order not found'
+            })
         
         # Validate amount
         paid_amount = order.paid_amount or 0
         balance_due = order.overall_amount - paid_amount
         
-        if amount <= 0 or amount > balance_due:
+        if amount > balance_due:
             return JsonResponse({
                 'success': False, 
-                'message': 'Invalid payment amount'
+                'message': f'Amount exceeds balance due (₹{balance_due})'
             })
+            
         # Create Razorpay order (amount in paise)
         razorpay_amount = int(amount * 100)
+        
+        # Add receipt and notes for better tracking
+        receipt = f'rcpt_{order_id}_{int(timezone.now().timestamp())}'
+        
         order_data = {
             'amount': razorpay_amount,
             'currency': 'INR',
-            'receipt': f'receipt_{order_id}_{timezone.now().timestamp()}',
-            'payment_capture': "1",  
+            'receipt': receipt,
+            'payment_capture': 1,  # Auto-capture
             'notes': {
-                'order_id': order_id
+                'order_id': order_id,
+                'customer_id': order.customer.customer_id,
+                'payment_type': 'partial_payment'
             }
         }
-
         
-        razorpay_order = client.order.create(data=order_data)
+        try:
+            # Create the order in Razorpay
+            razorpay_order = client.order.create(data=order_data)
+            
+            # Store order details in session for verification later
+            request.session['partial_payment_order_id'] = razorpay_order['id']
+            request.session['partial_payment_amount'] = amount
+            request.session['partial_payment_for_order'] = order_id
+            
+            return JsonResponse({
+                'success': True,
+                'key_id': RAZORPAY_KEY_ID,
+                'amount': razorpay_amount,
+                'razorpay_order_id': razorpay_order['id'],
+                'currency': 'INR',
+                'receipt': receipt
+            })
+        except requests.exceptions.ConnectionError as e:            # Handle connection errors (internet connectivity issues)
+            logger.error(f"Connection error with Razorpay API: {str(e)}")
+            error_msg = "Unable to connect to payment gateway. Please check your internet connection or contact support."
+            return JsonResponse({
+                'success': False,
+                'message': error_msg
+            })
         
-        # Store order details in session
-        request.session['partial_payment_order_id'] = razorpay_order['id']
-        request.session['partial_payment_amount'] = amount
-        request.session['partial_payment_for_order'] = order_id
-        
-        return JsonResponse({
-            'success': True,
-            'key_id': RAZORPAY_KEY_ID,
-            'amount': razorpay_amount,
-            'razorpay_order_id': razorpay_order['id']
-        })
-        
-    except Exception as e:
+    except ValueError as e:
+        logger.error(f"Invalid data format in create_partial_payment_order: {str(e)}")
         return JsonResponse({
             'success': False,
-            'message': str(e)
+            'message': 'Invalid data format'
+        })
+    except Exception as e:
+        logger.error(f"Error in create_partial_payment_order: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'message': 'An error occurred while processing your request'
         })
 
 @require_POST
@@ -674,25 +948,77 @@ def verify_partial_payment(request):
         return JsonResponse({'success': False, 'message': f'An error occurred: {str(e)}'}, status=500)
         
 def customer_delivery_validation(request):
+    """
+    Handle customer validation of order delivery status.
+    
+    This allows customers to confirm whether an order has been delivered correctly,
+    updating the delivery status accordingly.
+    """
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         delivery_status = request.POST.get('delivery_status')
-
+        customer_id = request.session.get('user_id')
+        
+        # Validate inputs
+        if not all([order_id, delivery_status, customer_id]):
+            messages.error(request, "Missing required information.")
+            return redirect('customer_orders')
+            
         try:
-            order = Orders.objects.get(order_id=order_id)
+            # Convert delivery status to integer and validate range (0-2)
+            delivery_status = int(delivery_status)
+            if delivery_status not in range(3):  # 0, 1, 2
+                messages.error(request, "Invalid delivery status.")
+                return redirect('customer_orders')
+                
+            # Fetch the order with customer check for security
+            order = Orders.objects.get(
+                order_id=order_id, 
+                customer__customer_id=customer_id
+            )
+            
+            # Update and save
             order.delivery_status = delivery_status
             order.save()
-            messages.success(request, "Delivery status updated successfully.")
+            
+            status_messages = {
+                0: "Order marked as not delivered.",
+                1: "Order marked as partially delivered.",
+                2: "Order marked as fully delivered."
+            }
+            
+            messages.success(request, status_messages.get(delivery_status, "Delivery status updated."))
             return redirect('customer_orders')
+            
         except Orders.DoesNotExist:
+            logger.warning(f"Customer {customer_id} attempted to update non-existent or unauthorized order {order_id}")
+            messages.error(request, "Order not found or you don't have permission to update it.")
             return redirect('customer_orders')
+        except ValueError:
+            messages.error(request, "Invalid delivery status value.")
+            return redirect('customer_orders')
+        except Exception as e:
+            logger.error(f"Error in customer_delivery_validation: {str(e)}")
+            messages.error(request, "An error occurred while updating delivery status.")
+            return redirect('customer_orders')
+    
+    # If not POST, redirect to orders page
+    return redirect('customer_orders')
 
 @role_required(["admin"])
 def customer_onboard_view(request):
+    """Render the customer onboarding page for admins."""
     return render(request, "customer_onboard.html")
 
 @role_required(["admin"])
 def admin_add_subscription(request):
+    """
+    Handle admin requests to increase their user count subscription.
+    
+    This function allows admins to request more user slots by creating a 
+    UserIncreaseSubscription record that will be reviewed by a superadmin.
+    """
+    # Get current admin info
     user_id = request.session.get("user_id")
     admin = get_object_or_404(AdminTable, admin_id=user_id)
     user_count = admin.user_count
@@ -902,76 +1228,176 @@ def verify_admin_user_increase_payment(request):
 
 @role_required(["superadmin"])
 def superadmin_subscription(request):
-    # Get filter parameters
-    status_filter = request.GET.get('status', '')
+    """
+    Display and filter admin subscription requests for superadmins.
     
-    # Base queryset
-    subscriptions_queryset = UserIncreaseSubscription.objects.filter().order_by('-sid')
+    This view allows superadmins to see all subscription increase requests
+    and filter them by status (pending, approved, rejected).
+    """
+    # Get filter parameters with validation
+    try:
+        status_filter = int(request.GET.get('status', '')) if request.GET.get('status', '') != '' else ''
+    except ValueError:
+        status_filter = ''
+      # Base queryset with prefetched admin data to reduce DB queries
+    subscriptions_queryset = UserIncreaseSubscription.objects.select_related('admin_id').order_by('-start_date')
     
-    # Apply status filter if provided
+    # Apply status filter if provided (0=pending, 1=approved, 2=rejected)
     if status_filter != '':
         subscriptions_queryset = subscriptions_queryset.filter(subscription_status=status_filter)
     
-    # Pagination
-    paginator = Paginator(subscriptions_queryset, 10)  # 10 items per page
-    page_number = request.GET.get('page', 1)
-    subscriptions = paginator.get_page(page_number)
+    # Pagination with error handling
+    try:
+        page_size = 10  # Items per page
+        paginator = Paginator(subscriptions_queryset, page_size)
+        page_number = max(1, int(request.GET.get('page', 1)))  # Ensure page is at least 1
+        page_number = min(page_number, paginator.num_pages)  # Ensure page doesn't exceed max
+        subscriptions = paginator.get_page(page_number)
+    except (ValueError, TypeError):
+        # Handle invalid page number
+        subscriptions = paginator.get_page(1)
+      # Count by status for summary stats
+    status_counts = {
+        'total': subscriptions_queryset.count(),
+        'pending': subscriptions_queryset.filter(subscription_status=0).count(),
+        'approved': subscriptions_queryset.filter(subscription_status=1).count(),
+        'rejected': subscriptions_queryset.filter(subscription_status=2).count(),
+    }
     
     context = {
         'subscriptions': subscriptions,
+        'status_filter': status_filter,
+        'status_counts': status_counts,
     }
     
-    return render(request, 'superadmin_subscription.html', context)
+    return render(request, "superadmin_subscription.html", context)
 
 @role_required(["superadmin"])
 def superadmin_subscription_review(request):
+    """
+    Handle the review and approval/rejection of admin subscription requests.
+    
+    This function processes form submissions to update subscription status
+    and increase admin user counts when approved.
+    """
     if request.method == 'POST':
         subscription_id = request.POST.get('subscription_id')
         subscription_status = request.POST.get('subscription_status')
-        payment_amount = request.POST.get('payment_amount')
-        try:
-            subscription = UserIncreaseSubscription.objects.get(sid=subscription_id)
-            
-            # Update subscription
-            subscription.subscription_status = subscription_status
-            
-            if subscription_status == '1':  # If approved
-                subscription.payment_amount = payment_amount
-                messages.success(request, f"Subscription request #{subscription_id} has been approved.")
-            elif subscription_status == '2':  # If rejected
-                messages.info(request, f"Subscription request #{subscription_id} has been rejected.")
-            
-            subscription.save()
-            
-        except Exception:
-            messages.error(request, "Subscription request not found.")
+        payment_amount = request.POST.get('payment_amount', '0')
         
-        return redirect('superadmin_subscription')
+        # Input validation
+        if not all([subscription_id, subscription_status]):
+            messages.error(request, "Missing required information.")
+            return redirect('superadmin_subscription')
+            
+        try:
+            # Validate numeric inputs
+            subscription_id = int(subscription_id)
+            subscription_status = int(subscription_status)
+            payment_amount = float(payment_amount)
+            
+            # Status should be either 1 (approved) or 2 (rejected)
+            if subscription_status not in [1, 2]:
+                messages.error(request, "Invalid subscription status.")
+                return redirect('superadmin_subscription')
+                
+            # Get the subscription record
+            with transaction.atomic():
+                subscription = UserIncreaseSubscription.objects.select_related('admin_id').get(sid=subscription_id)
+                
+                # Can only review pending subscriptions
+                if subscription.subscription_status != 0:
+                    messages.warning(request, "This subscription request has already been processed.")
+                    return redirect('superadmin_subscription')
+                  # Update subscription status
+                subscription.subscription_status = subscription_status
+                # We don't have a reviewed_at field, so we'll just update the end_date if it's not set
+                if not subscription.end_date:
+                    subscription.end_date = timezone.now().date() + timedelta(days=30)
+                
+                if subscription_status == 1:  # Approved
+                    # Update payment amount
+                    subscription.payment_amount = payment_amount
+                    
+                    # Increase user count for the admin
+                    admin = subscription.admin_id
+                    admin.user_count += subscription.requested_user_count
+                    admin.save()
+                    
+                    messages.success(
+                        request, 
+                        f"Subscription request #{subscription_id} approved. "
+                        f"Admin {admin.first_name} {admin.last_name} now has {admin.user_count} user slots."
+                    )
+                else:  # Rejected
+                    messages.info(request, f"Subscription request #{subscription_id} has been rejected.")
+                
+                subscription.save()
+                
+        except UserIncreaseSubscription.DoesNotExist:
+            messages.error(request, "Subscription request not found.")
+        except ValueError:
+            messages.error(request, "Invalid input values.")
+        except Exception as e:
+            logger.error(f"Error in superadmin_subscription_review: {str(e)}")
+            messages.error(request, "An error occurred while processing the subscription.")
     
-    # If not POST, redirect to the list view
+    # Always redirect to the subscription list
     return redirect('superadmin_subscription')
 
 @role_required(["customer"])
 def upgrade_to_admin(request):
+    """
+    Handle customer requests to upgrade to admin status.
+    
+    This function creates a new admin account for an existing customer
+    while maintaining their same login credentials.
+    """
     customer_id = request.session.get('user_id')
-    customer = CustomerTable.objects.get(customer_id=customer_id)
-
-    # Check if already admin
-    if AdminTable.objects.filter(email=customer.email).exists():
-        messages.info(request, "You are already an admin! Access denied.")
+    
+    try:
+        # Get customer data
+        customer = CustomerTable.objects.get(customer_id=customer_id)
+        
+        # Check if already an admin
+        if AdminTable.objects.filter(email=customer.email).exists():
+            messages.info(request, "You already have an admin account with this email.")
+            return render(request, 'upgrade_to_admin.html', {'customer': customer})
+            
+        if request.method == 'POST':
+            try:                # Use transaction to ensure consistency
+                with transaction.atomic():
+                    # Create new admin with same credentials
+                    new_admin = AdminTable(
+                        first_name=customer.first_name,
+                        last_name=customer.last_name,
+                        phone_number=customer.phone_number,
+                        email=customer.email,
+                        password=customer.password,  # Already hashed from customer account
+                        user_count=5  # Start with a small number of user slots
+                    )
+                    new_admin.save()
+                    
+                # Store admin ID in session for subscription payment
+                request.session["user_id"] = new_admin.admin_id
+                request.session["role"] = "admin"
+                
+                messages.success(request, "Successfully created admin account! Please purchase a subscription to continue.")
+                return redirect('admin_subscription_payment')
+                
+            except IntegrityError:
+                messages.error(request, "An error occurred during upgrade. This email or phone may already be registered as an admin.")
+            except Exception as e:
+                logger.error(f"Error in upgrade_to_admin: {str(e)}")
+                messages.error(request, "An unexpected error occurred. Please try again later.")
+        
+        # For GET requests or after handling POST
         return render(request, 'upgrade_to_admin.html', {'customer': customer})
-
-    if request.method == 'POST':
-        # Create new admin
-        new_admin = AdminTable(
-            first_name=customer.first_name,
-            last_name=customer.last_name,
-            phone_number=customer.phone_number,
-            email=customer.email,
-            password=customer.password,  # already hashed
-            user_count=0,
-        )
-        new_admin.save()
+        
+    except CustomerTable.DoesNotExist:
+        logger.error(f"Customer not found in upgrade_to_admin: {customer_id}")
+        messages.error(request, "Customer account not found. Please log in again.")
+        return redirect('login')
 
         messages.success(request, "You have been upgraded to admin successfully!")
         return render(request, 'upgrade_to_admin.html', {'customer': customer})
@@ -980,35 +1406,80 @@ def upgrade_to_admin(request):
 
 @role_required(["admin"])
 def upgrade_to_customer(request):
-    admin_id = request.session.get('user_id')
-    admin = AdminTable.objects.get(admin_id=admin_id)
-
-    if request.method == 'POST':
+    """
+    Allow an admin to create a linked customer account.
+    
+    This enables the admin to also have a customer role with its own
+    dashboard and permissions. The accounts are linked by phone number
+    and email for seamless role switching.
+    """
+    try:
+        # Get current admin info
+        admin_id = request.session.get('user_id')
+        if not admin_id:
+            messages.error(request, "Session expired. Please log in again.")
+            return redirect('login')
+            
+        admin = get_object_or_404(AdminTable, admin_id=admin_id)
+        
+        # Check if already a customer
         if CustomerTable.objects.filter(email=admin.email).exists():
-            messages.info(request, "You are already a customer.")
+            messages.info(request, "You already have a customer account. Use the role switcher to access it.")
             return redirect('admin_dashboard')
-
-        company_name = request.POST.get('company_name')
-        gst = request.POST.get('GST')
-        address = request.POST.get('address')
-
-        new_customer = CustomerTable(
-            admin_id=admin.admin_id,  # Linking the admin ID
-            first_name=admin.first_name,
-            last_name=admin.last_name,
-            phone_number=admin.phone_number,
-            email=admin.email,
-            password=admin.password,  # already hashed
-            company_name=company_name,
-            GST=gst,
-            address=address,
-        )
-        new_customer.save()
-
-        messages.success(request, "You have been upgraded to customer!")
-        return redirect('upgrade_success')
-
-    return render(request, 'upgrade_to_customer.html', {'admin': admin})
+            
+        if request.method == 'POST':
+            # Extract form data
+            company_name = request.POST.get('company_name', '').strip()
+            gst = request.POST.get('GST', '').strip()
+            address = request.POST.get('address', '').strip()
+            
+            # Validate required fields
+            if not all([company_name, address]):
+                messages.error(request, "Company name and address are required.")
+                return render(request, 'upgrade_to_customer.html', {'admin': admin})
+                
+            # Validate GST if provided
+            if gst and not validate_gst(gst):
+                messages.error(request, "Invalid GST format. Please provide a valid GST number.")
+                return render(request, 'upgrade_to_customer.html', {'admin': admin})
+                
+            # Use transaction to ensure data consistency
+            with transaction.atomic():
+                # Create new customer account
+                new_customer = CustomerTable(
+                    admin_id=admin.admin_id,  # Link to admin account
+                    first_name=admin.first_name,
+                    last_name=admin.last_name,
+                    phone_number=admin.phone_number,
+                    email=admin.email,
+                    password=admin.password,  # Already hashed from admin account
+                    company_name=company_name,
+                    GST=gst,
+                    address=address,
+                )
+                new_customer.save()
+                
+                # Create free trial subscription for the new customer
+                current_date = timezone.now().date()
+                Subscription.objects.create(
+                    customer_id=new_customer,
+                    subscription_type="customer",
+                    subscription_status=1,  # Active
+                    payment_amount=0,  # Free trial
+                    start_date=current_date,
+                    end_date=current_date + timedelta(days=30)  # 30-day trial
+                )
+            
+            messages.success(request, "You have been successfully upgraded to customer!")
+            return redirect('upgrade_success')
+        
+        # Render the upgrade form for GET requests
+        return render(request, 'upgrade_to_customer.html', {'admin': admin})
+        
+    except Exception as e:
+        logger.error(f"Error in upgrade_to_customer: {str(e)}")
+        messages.error(request, "An error occurred while processing your request.")
+        return redirect('admin_dashboard')
 
 def upgrade_success(request):
     return render(request, 'upgrade_success.html')
@@ -1019,18 +1490,66 @@ def customer_dashboard(request):
 
 @role_required(["superadmin"])
 def view_admins(request):
-    query = request.GET.get('q')
-    admins = AdminTable.objects.exclude(admin_id=1000000)
-
-    if query:
-        admins = admins.filter(
-            Q(first_name__icontains=query) |
-            Q(last_name__icontains=query) |
-            Q(email__icontains=query) |
-            Q(phone_number__icontains=query)
+    """
+    Display a list of admin accounts for the superadmin.
+    
+    Provides search functionality and pagination.
+    Excludes the main superadmin account (admin_id=1000000).
+    """
+    try:
+        # Get search query if any
+        query = request.GET.get('q', '')
+        
+        # Get page number for pagination
+        page = request.GET.get('page', 1)
+        try:
+            page = int(page)
+        except ValueError:
+            page = 1
+            
+        # Get admin list, excluding the superadmin
+        admins = AdminTable.objects.exclude(admin_id=1000000)
+        
+        # Apply search filter if a query was provided
+        if query:
+            admins = admins.filter(
+                Q(first_name__icontains=query) |
+                Q(last_name__icontains=query) |
+                Q(email__icontains=query) |
+                Q(phone_number__icontains=query)
+            )
+            
+        # Count active subscriptions for each admin
+        admins = admins.annotate(
+            active_subscriptions=Count(
+                'subscription',
+                filter=Q(
+                    subscription__subscription_type='admin',
+                    subscription__end_date__gte=timezone.now().date()
+                )
+            )
         )
-
-    return render(request, 'view_admins.html', {'admins': admins})
+            
+        # Paginate results
+        paginator = Paginator(admins, 10)  # 10 admins per page
+        try:
+            admins_page = paginator.page(page)
+        except Exception:
+            admins_page = paginator.page(1)
+            
+        # Prepare context for template
+        context = {
+            'admins': admins_page,
+            'query': query,
+            'total_count': paginator.count,
+        }
+        
+        return render(request, 'view_admins.html', context)
+        
+    except Exception as e:
+        logger.error(f"Error in view_admins: {str(e)}")
+        messages.error(request, "An error occurred while retrieving admin list.")
+        return redirect("superadmin_dashboard")
 
 @role_required(["superadmin"])
 def delete_admin(request, admin_id):
@@ -1123,26 +1642,40 @@ def admin_subscription_payment(request):
 
         order_data = {
             "amount": amount * 100,  # In paise
+            "receipt": str(int(timezone.now().timestamp())),
             "currency": "INR",
             "payment_capture": "1"
         }
 
-        razorpay_order = client.order.create(data=order_data)
-
-        # Save session details
-        request.session["subscription_amount"] = amount
-        request.session["subscription_days"] = duration
-        request.session["razorpay_order_id"] = razorpay_order["id"]
-        request.session["subscription_type"] = "admin"
-        request.session["subscription_for"] = "admin"
-        request.session["admin_id"] = admin_id
-
-        return render(request, "admin_subscription_payment.html", {
-            "order_id": razorpay_order["id"],
-            "amount": amount * 100,
-            "key_id": RAZORPAY_KEY_ID
-        })
-
+        try:
+            razorpay_order = client.order.create(data=order_data)
+            
+            # Save session details
+            request.session["subscription_amount"] = amount
+            request.session["subscription_days"] = duration
+            request.session["razorpay_order_id"] = razorpay_order["id"]
+            request.session["subscription_type"] = "admin"
+            request.session["subscription_for"] = "admin"
+            request.session["admin_id"] = admin_id
+    
+            return render(request, "admin_subscription_payment.html", {
+                "order_id": razorpay_order["id"],
+                "amount": amount * 100,
+                "key_id": RAZORPAY_KEY_ID
+            })
+        except requests.exceptions.ConnectionError as e:
+            # Handle connection errors (internet connectivity issues)
+            logger.error(f"Connection error with Razorpay API: {str(e)}")
+            messages.error(
+                request, 
+                "Unable to connect to payment gateway. Please check your internet connection or try again later."
+            )
+            return redirect("admin_dashboard")
+        except Exception as e:
+            logger.error(f"Failed to create Razorpay order: {str(e)}")
+            messages.error(request, f"Error creating payment: {str(e)}")
+            return redirect("admin_dashboard")
+    
     return render(request, "admin_select_subscription_plan.html")
 
 def customer_subscription_payment(request):
@@ -1156,28 +1689,42 @@ def customer_subscription_payment(request):
 
         amount = 100 if plan == "1month" else 180
         duration = 30 if plan == "1month" else 60
-
+        
         order_data = {
             "amount": amount * 100,  # In paise
+            "receipt": str(int(timezone.now().timestamp())),
             "currency": "INR",
             "payment_capture": "1"
         }
 
-        razorpay_order = client.order.create(data=order_data)
-
-        # Save session details
-        request.session["subscription_amount"] = amount
-        request.session["subscription_days"] = duration
-        request.session["razorpay_order_id"] = razorpay_order["id"]
-        request.session["subscription_type"] = "customer"
-        request.session["subscription_for"] = "customer"
-        request.session["admin_id"] = customer_id
-
-        return render(request, "customer_subscription_payment.html", {
-            "order_id": razorpay_order["id"],
-            "amount": amount * 100,
-            "key_id": RAZORPAY_KEY_ID
-        })
+        try:
+            razorpay_order = client.order.create(data=order_data)
+            
+            # Save session details
+            request.session["subscription_amount"] = amount
+            request.session["subscription_days"] = duration
+            request.session["razorpay_order_id"] = razorpay_order["id"]
+            request.session["subscription_type"] = "customer"
+            request.session["subscription_for"] = "customer"
+            request.session["admin_id"] = customer_id
+    
+            return render(request, "customer_subscription_payment.html", {
+                "order_id": razorpay_order["id"],
+                "amount": amount * 100,
+                "key_id": RAZORPAY_KEY_ID
+            })
+        except requests.exceptions.ConnectionError as e:
+            # Handle connection errors (internet connectivity issues)
+            logger.error(f"Connection error with Razorpay API: {str(e)}")
+            messages.error(
+                request, 
+                "Unable to connect to payment gateway. Please check your internet connection or try again later."
+            )
+            return redirect("customer_dashboard")
+        except Exception as e:
+            logger.error(f"Failed to create Razorpay order: {str(e)}")
+            messages.error(request, f"Error creating payment: {str(e)}")
+            return redirect("customer_dashboard")
 
     return render(request, "customer_select_subscription_plan.html")
 
@@ -1338,48 +1885,100 @@ def payment_success(request):
 
     return JsonResponse({"success": False, "message": "Invalid request. Expected POST method."})
 
+@role_required(["admin", "customer"])
 def swap_role(request):
-    current_role = request.session.get("role")
-    user_id = request.session.get("user_id")
-
-    if current_role == "admin":
-        try:
-            admin = AdminTable.objects.get(admin_id=user_id)
-            customer = CustomerTable.objects.get(phone_number=admin.phone_number)
-
-            # Logout admin
-            request.session.flush()
-
-            # Login as customer
-            request.session["user_id"] = customer.customer_id
-            request.session["role"] = "customer"
-            messages.success(request, "Switched to Customer account.")
-            return redirect("customer_dashboard")
-
-        except CustomerTable.DoesNotExist:
-            messages.warning(request, "You don’t have a Customer account linked. Please subscribe or contact support.")
-            return redirect("admin_dashboard")
-
-    elif current_role == "customer":
-        try:
-            customer = CustomerTable.objects.get(customer_id=user_id)
-            admin = AdminTable.objects.get(phone_number=customer.phone_number)
-
-            # Logout customer
-            request.session.flush()
-
-            # Login as admin
-            request.session["user_id"] = admin.admin_id
-            request.session["role"] = "admin"
-            messages.success(request, "Switched to Admin account.")
-            return redirect("admin_dashboard")
-
-        except AdminTable.DoesNotExist:
-            messages.warning(request, "You don’t have an Admin account linked. Please subscribe or contact support.")
-            return redirect("customer_dashboard")
-
-    messages.error(request, "Invalid session. Please log in again.")
-    return redirect("login")
+    """
+    Switch between admin and customer accounts.
+    
+    This function allows users who have both admin and customer accounts
+    (linked by phone number) to switch between roles without logging out.
+    The function validates that the linked account exists and is active
+    before switching roles.
+    """
+    try:
+        # Get current session info
+        current_role = request.session.get("role")
+        user_id = request.session.get("user_id")
+        
+        if not current_role or not user_id:
+            messages.error(request, "Session expired. Please log in again.")
+            return redirect("login")
+            
+        # Switch from admin to customer
+        if current_role == "admin":
+            try:
+                # Get the admin and find linked customer account
+                admin = get_object_or_404(AdminTable, admin_id=user_id)
+                customer = get_object_or_404(CustomerTable, phone_number=admin.phone_number)
+                
+                # Check if customer has active subscription
+                current_date = timezone.now().date()
+                has_active_subscription = Subscription.objects.filter(
+                    customer_id=customer,
+                    subscription_type="customer",
+                    end_date__gte=current_date
+                ).exists()
+                
+                if not has_active_subscription:
+                    messages.warning(request, "Your customer account subscription has expired. Please renew your subscription.")
+                    return redirect("admin_dashboard")
+                
+                # Log the role swap
+                logger.info(f"User {admin.email} swapped from admin to customer role")
+                
+                # Clear session and set new role
+                request.session.flush()
+                request.session["user_id"] = customer.customer_id
+                request.session["role"] = "customer"
+                messages.success(request, "Switched to Customer account successfully.")
+                return redirect("customer_dashboard")
+                
+            except CustomerTable.DoesNotExist:
+                messages.warning(request, "You don't have a Customer account linked. Please upgrade to customer first.")
+                return redirect("admin_dashboard")
+        
+        # Switch from customer to admin
+        elif current_role == "customer":
+            try:
+                # Get the customer and find linked admin account
+                customer = get_object_or_404(CustomerTable, customer_id=user_id)
+                admin = get_object_or_404(AdminTable, phone_number=customer.phone_number)
+                
+                # Check if admin has active subscription
+                current_date = timezone.now().date()
+                has_active_subscription = Subscription.objects.filter(
+                    admin_id=admin,
+                    subscription_type="admin",
+                    end_date__gte=current_date
+                ).exists()
+                
+                if not has_active_subscription:
+                    messages.warning(request, "Your admin account subscription has expired. Please renew your subscription.")
+                    return redirect("customer_dashboard")
+                
+                # Log the role swap
+                logger.info(f"User {customer.email} swapped from customer to admin role")
+                
+                # Clear session and set new role
+                request.session.flush()
+                request.session["user_id"] = admin.admin_id
+                request.session["role"] = "admin"
+                messages.success(request, "Switched to Admin account successfully.")
+                return redirect("admin_dashboard")
+                
+            except AdminTable.DoesNotExist:
+                messages.warning(request, "You don't have an Admin account linked. Please contact support.")
+                return redirect("customer_dashboard")
+        
+        # Invalid role in session
+        else:
+            messages.error(request, "Invalid role. Please log in again.")
+            return redirect("login")
+            
+    except Exception as e:
+        logger.error(f"Error in swap_role: {str(e)}")
+        messages.error(request, "An error occurred while switching roles. Please try again.")
+        return redirect("login")
 
 def view_admin_subscribers(request):
     admin_subscriptions = Subscription.objects.filter(subscription_type="admin") \
