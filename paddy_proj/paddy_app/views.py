@@ -23,8 +23,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-# RAZORPAY_KEY_ID=rzp_test_zOexMQY9CNEGzd
-# RAZORPAY_SECRET=Gmtv3UfGPIavIeneKQjkZTcu
+
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
 RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
 
