@@ -4,16 +4,13 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/admin_upgrade.css' %}">
-
-<div class="upgrade-container">
-    <!-- Page Header -->
-    <div class="upgrade-header">
-        <div>
-            <h1 class="upgrade-title">Upgrade to Customer</h1>
-            <p class="upgrade-subtitle">Convert this admin account to a customer profile</p>
-        </div>
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <div class="title-group">
+        <h1 class="page-title mb-0 me-3 i18n" data-i18n="placeOrder">Upgrade to Customer</h1>
+        <p class="upgrade-subtitle">Convert this admin account to a customer profile</p>
     </div>
-
+</div>
+<div class="upgrade-container">
     <!-- Main Card -->
     <div class="upgrade-card">
         <!-- Card Header -->
@@ -50,33 +47,35 @@
             <form method="POST" class="upgrade-form">
                 {% csrf_token %}
                 <h3 class="section-title">Business Information</h3>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="company_name" class="form-label required">Company Name</label>
                         <input type="text" id="company_name" name="company_name" class="form-control" required>
                         <small class="text-muted">This will be displayed on invoices and orders</small>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="GST" class="form-label">GST Number</label>
                         <input type="text" id="GST" name="GST" class="form-control" placeholder="22AAAAA0000A1Z5">
                         <small class="text-muted">Format: 22AAAAA0000A1Z5</small>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="address" class="form-label">Business Address</label>
-                    <textarea id="address" name="address" class="form-control" rows="4" placeholder="Full business address including city and postal code"></textarea>
+                    <textarea id="address" name="address" class="form-control" rows="4"
+                        placeholder="Full business address including city and postal code"></textarea>
                     <small class="text-muted">This will be used for shipping and billing</small>
                 </div>
-                
+
                 <!-- Important Note -->
                 <div class="alert-note">
                     <div class="alert-title">Important Notice</div>
-                    <p>This action cannot be undone. After upgrading to a customer, admin privileges will be also ubgraded Please verify all information before proceeding.</p>
+                    <p>This action cannot be undone. After upgrading to a customer, admin privileges will be also
+                        ubgraded Please verify all information before proceeding.</p>
                 </div>
-                
+
                 <!-- Submit Button -->
                 <button type="submit" class="submit-btn">
                     Confirm Upgrade to Customer
@@ -88,42 +87,40 @@
 
 <!-- Form Validation Script -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('.upgrade-form');
-    
-    form.addEventListener('submit', function(event) {
-        let isValid = true;
-        
-        // Validate required fields
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('.upgrade-form');
+
+        form.addEventListener('submit', function (event) {
+            let isValid = true;
+
+            // Validate required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+                alert('Please fill in all required fields');
+            }
+        });
+
+        // Real-time validation for required fields
         const requiredFields = form.querySelectorAll('[required]');
         requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                field.style.borderColor = '#e74c3c';
-                isValid = false;
-            } else {
-                field.style.borderColor = '#ddd';
-            }
-        });
-        
-        if (!isValid) {
-            event.preventDefault();
-            alert('Please fill in all required fields');
-        }
-    });
-    
-    // Real-time validation for required fields
-    const requiredFields = form.querySelectorAll('[required]');
-    requiredFields.forEach(field => {
-        field.addEventListener('input', function() {
-            if (this.value.trim()) {
-                this.style.borderColor = '#ddd';
-            }
+            field.addEventListener('input', function () {
+                if (this.value.trim()) {
+                    this.style.borderColor = '#ddd';
+                }
+            });
         });
     });
-});
 </script>
 
 {% endblock %}
 </script>
-
-

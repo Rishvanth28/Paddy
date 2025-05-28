@@ -253,3 +253,8 @@
         left: 1rem;
     }
 }
+
+.footer-logo, .logout-button {
+    font-size: unset !important;
+    font-weight: unset !important;
+}
