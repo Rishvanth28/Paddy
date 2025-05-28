@@ -1,5 +1,5 @@
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     font-size: 16px;
     background-color: #f4f6f8;
     color: #333;
@@ -7,7 +7,6 @@ body {
     padding: 0;
 }
 
-/* layout.css */
 .page-layout {
     display: flex;
     min-height: 100vh;
@@ -16,7 +15,6 @@ body {
 .side-section {
     width: 13vw;
     background-color: #f8f9fa;
-    /* Light gray */
 }
 
 .center-section {
@@ -44,9 +42,7 @@ body {
     text-transform: uppercase;
     padding-bottom: 0.6rem;
     text-align: left;
-    /* <-- Ensure left alignment */
 }
-
 
 .page-title::after {
     content: '';
@@ -55,35 +51,27 @@ body {
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
-    /* initial width */
     height: 4px;
     background-color: #000000;
     border-radius: 2px;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-    /* added transition for both properties */
 }
 
 .page-title:hover::after {
     width: 110%;
-    /* makes the underline grow */
     transform: translateX(-50%);
-    /* keep it centered */
 }
 
-
-/* Container to center the form and limit height */
 .form-container {
     display: flex;
     justify-content: center;
     align-items: flex-start;
     min-height: calc(100vh - 150px);
-    /* Adjust based on header/footer */
     padding: 20px;
     box-sizing: border-box;
     animation: fadeInUp 0.8s ease;
 }
 
-/* Style each form card */
 .form-card {
     width: 100%;
     max-width: 2500px;
@@ -93,8 +81,8 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
     background-color: #fff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
-
 
 .form-card:hover {
     transform: translateY(-2px);
@@ -104,7 +92,6 @@ body {
     font-weight: lighter;
 }
 
-/* Space between fields */
 .form-card label {
     margin-top: 15px;
     display: block;
@@ -132,16 +119,13 @@ body {
     background-color: #fff;
 }
 
-/* Form title */
 .form-card h2 {
     font-size: 24px;
     font-weight: 500;
     margin-bottom: 25px;
     text-align: left;
-
 }
 
-/* Form inputs */
 .form-card form label {
     display: block;
     margin: 10px 0 5px;
@@ -169,13 +153,11 @@ body {
     flex: 1;
 }
 
-/* Make sure the inputs and labels stack properly inside each .form-group */
 .form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
     color: #444;
-
 }
 
 .form-group input {
@@ -187,7 +169,6 @@ body {
     box-sizing: border-box;
 }
 
-/* Submit button */
 .form-card form button {
     padding: 10px 24px;
     background-color: #000;
@@ -224,9 +205,6 @@ body {
     transition: all 0.75s ease-in-out;
 }
 
-
-/* Flash messages */
-
 #message-container {
     width: 100%;
     max-width: 600px;
@@ -246,35 +224,26 @@ body {
     animation: fadeInUp 0.4s ease;
 }
 
-/* Success */
 .alert-success {
     background-color: #e2f9e1;
     color: #2e7d32;
 }
 
-/* Error */
 .alert-error {
     background-color: #fdecea;
     color: #d32f2f;
-
 }
 
-/* Warning */
 .alert-warning {
     background-color: #fff3cd;
     color: #856404;
-
 }
 
-/* Info */
 .alert-info {
     background-color: #e7f3fe;
     color: #31708f;
-
 }
 
-
-/* Responsive tweak */
 @media (max-width: 1024px) {
     .form-card {
         width: 100%;
@@ -283,17 +252,15 @@ body {
 }
 
 .tab-header {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     font-size: 16px;
     text-transform: capitalize;
     display: flex;
     justify-content: flex-start;
     gap: 10px;
     margin: 40px 0 30px 40px;
-
 }
 
-/* Style tab buttons */
 .tab-button {
     padding: 10px 20px;
     font-size: 15px;
@@ -303,6 +270,7 @@ body {
     color: #333;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 .tab-button:hover {
@@ -314,7 +282,6 @@ body {
     color: white;
 }
 
-/* Submit Button */
 button[type="submit"] {
     display: block;
     margin: 10px auto 0;
@@ -332,7 +299,6 @@ button[type="submit"]:hover {
     background-color: #222;
 }
 
-/* Flash Messages */
 #message-container {
     margin: 20px auto;
     border-radius: 8px;
@@ -343,7 +309,6 @@ button[type="submit"]:hover {
     animation: fadeIn 0.5s ease;
 }
 
-/* Animations */
 @keyframes fadeIn {
     0% {
         opacity: 0;
@@ -368,7 +333,6 @@ button[type="submit"]:hover {
     }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .form-row {
         flex-direction: column;
@@ -414,6 +378,7 @@ input[readonly] {
     font-size: 24px;
     font-weight: lighter;
     color: #1a202c;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 .tab-header {
@@ -428,7 +393,6 @@ input[readonly] {
     padding: 1rem 2rem;
 }
 
-/* Order Items Table */
 .items-section {
     margin-top: 2rem;
 }
@@ -442,6 +406,7 @@ input[readonly] {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 .items-table thead {
@@ -506,7 +471,6 @@ input[readonly] {
     background-color: #2980b9;
 }
 
-/* Total row styling */
 .items-table tfoot td {
     font-weight: bold;
     background-color: #f8f8f8;
