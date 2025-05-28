@@ -492,7 +492,7 @@ input[readonly] {
 
 #add-item-btn {
     margin-top: 1rem;
-    background-color: #3498db;
+    background-color: #0c0e0f;
     color: white;
     border: none;
     padding: 10px 16px;
@@ -503,7 +503,7 @@ input[readonly] {
 }
 
 #add-item-btn:hover {
-    background-color: #2980b9;
+    background-color: #101011;
 }
 
 /* Total row styling */
