@@ -6,16 +6,15 @@
 {% if messages %}
 <div class="custom-message-container">
     {% for message in messages %}
-        <div class="custom-alert custom-alert-{{ message.tags }}">
-            <span class="custom-alert-icon">
+        <div class="custom-alert custom-alert-{{ message.tags }}">            <span class="custom-alert-icon">
                 {% if message.tags == 'success' %}
-                <i class="bi bi-check-circle-fill"></i>
+                <span class="icon-check-circle-fill"></span>
                 {% elif message.tags == 'warning' %}
-                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span class="icon-exclamation-triangle-fill"></span>
                 {% elif message.tags == 'error' %}
-                <i class="bi bi-x-circle-fill"></i>
+                <span class="icon-x-circle-fill"></span>
                 {% else %}
-                <i class="bi bi-info-circle-fill"></i>
+                <span class="icon-info-circle-fill"></span>
                 {% endif %}
             </span>
             <span class="custom-alert-message">{{ message }}</span>
@@ -40,344 +39,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upgrade Subscription</title>
-    <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f8f9fa;
-            color: #212529;
-            line-height: 1.6;
-        }
-        
-        .dashboard-card {
-            background-color: white;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
-            margin: 2rem auto;
-        }
-        
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0;
-        }
-        
-        .upgrade-header {
-            margin-bottom: 0;
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .upgrade-header h2 {
-            color: #212529;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1.75rem;
-        }
-        
-        .upgrade-header p {
-            color: #6c757d;
-            font-size: 1rem;
-            margin-bottom: 0;
-        }
-        
-        .content-section {
-            padding: 2rem;
-        }
-        
-        .pricing-info {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid #0d6efd;
-        }
-        
-        .user-count {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #212529;
-        }
-        
-        .price-calculation {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e9ecef;
-        }
-        
-        .form-check {
-            margin-top: 1.5rem;
-            padding: 1.25rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-        
-        .form-check-input:checked {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-        
-        .form-check-label {
-            color: #495057;
-            font-size: 0.95rem;
-        }
-        
-        .btn-primary {
-            background-color: #0d6efd;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            transition: all 0.2s ease;
-            font-size: 1rem;
-            border-radius: 6px;
-        }
-        
-        .btn-primary:hover {
-            background-color: #0b5ed7;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.25);
-        }
-        
-        .btn-success {
-            background-color: #198754;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            transition: all 0.2s ease;
-            font-size: 1rem;
-            border-radius: 6px;
-        }
-        
-        .btn-success:hover {
-            background-color: #157347;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(25, 135, 84, 0.25);
-        }
-        
-        .alert {
-            border-left-width: 4px;
-            border-left-style: solid;
-            border-radius: 6px;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-            background-color: white;
-            border-top: 1px solid #e9ecef;
-            border-right: 1px solid #e9ecef;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .alert-warning {
-            border-left-color: #ffc107;
-            color: #664d03;
-            background-color: #fff3cd;
-        }
-        
-        .alert-info {
-            border-left-color: #0dcaf0;
-            color: #055160;
-            background-color: #cff4fc;
-        }
-        
-        .alert-danger {
-            border-left-color: #dc3545;
-            color: #842029;
-            background-color: #f8d7da;
-        }
-        
-        .alert-success {
-            border-left-color: #198754;
-            color: #0f5132;
-            background-color: #d1e7dd;
-        }
-        
-        .text-muted {
-            color: #6c757d !important;
-        }
-        
-        .text-success {
-            color: #198754 !important;
-        }
-        
-        .text-primary {
-            color: #0d6efd !important;
-        }
-        
-        .h4 {
-            color: #212529;
-            font-weight: 600;
-        }
-        
-        /* Modern input styling */
-        .form-control, .form-select {
-            background-color: white;
-            border: 1px solid #ced4da;
-            color: #212529;
-            border-radius: 6px;
-            padding: 0.5rem 0.75rem;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            background-color: white;
-            border-color: #86b7fe;
-            color: #212529;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-        
-        /* Price highlight */
-        .price-highlight {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #0d6efd;
-            margin: 0.5rem 0;
-        }
-        
-        /* Status indicator */
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        
-        .status-icon {
-            font-size: 1.5rem;
-        }
-        
-        .status-content h5 {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #212529;
-        }
-        
-        .status-content p {
-            margin-bottom: 0;
-            color: #495057;
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .upgrade-header {
-                padding: 1.5rem;
-            }
-            .content-section {
-                padding: 1.5rem;
-            }
-        }
-
-        .custom-message-container {
-            position: fixed;
-            top: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1050;
-            min-width: 320px;
-            max-width: 90vw;
-            width: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            pointer-events: none;
-        }
-        .custom-alert {
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            border-left: 5px solid #0d6efd;
-            padding: 1rem 1.5rem 1rem 1rem;
-            font-size: 1rem;
-            color: #212529;
-            min-width: 320px;
-            max-width: 600px;
-            margin: 0 auto;
-            opacity: 1;
-            transition: opacity 0.3s;
-            pointer-events: auto;
-            position: relative;
-        }
-        .custom-alert-success { border-left-color: #198754; }
-        .custom-alert-warning { border-left-color: #ffc107; }
-        .custom-alert-error { border-left-color: #dc3545; }
-        .custom-alert-info { border-left-color: #0dcaf0; }
-        .custom-alert .custom-alert-icon {
-            font-size: 1.4rem;
-            margin-right: 0.75rem;
-            display: flex;
-            align-items: center;
-        }
-        .custom-alert .custom-alert-message {
-            flex: 1;
-        }
-        .custom-alert .custom-alert-close {
-            background: none;
-            border: none;
-            color: #888;
-            font-size: 1.3rem;
-            margin-left: 1rem;
-            cursor: pointer;
-            transition: color 0.2s;
-            pointer-events: auto;
-            position: absolute;
-            right: 1rem;
-            top: 1rem;
-        }
-        .custom-alert .custom-alert-close:hover {
-            color: #212529;
-        }
-    </style>
+    <title>Upgrade Subscription</title> 
+    <link rel="stylesheet" href="{% static 'css/admin_add_subscription.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container form-container dashboard-card">
-        <div class="upgrade-header">
-            <h2><i class="bi bi-arrow-up-circle me-2"></i>User Limit Upgrade</h2>
-            <p class="text-muted">Increase your account capacity by 50 users</p>
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+        <div class="title-group">
+            <h1 class="page-title mb-0 me-3 i18n"><i class="icon-arrow-up"></i>User Limit Upgrade</h1>
+            <p class="upgrade-subtitle">Increase your account capacity by 50 users</p>
         </div>
+    </div>
+    
+    <div class="form-container dashboard-card">
 
         <div class="content-section">
             {# Display current subscription status #}
             {% if existing_subscription_obj %}
-                {% if existing_subscription_obj.subscription_status == 0 %}
-                    <div class="alert alert-warning">
+                {% if existing_subscription_obj.subscription_status == 0 %}                    <div class="alert alert-warning">
                         <div class="status-indicator">
-                            <i class="bi bi-hourglass-split status-icon"></i>
+                            <i class="icon-hourglass status-icon"></i>
                             <div class="status-content">
                                 <h5>Request Pending Approval</h5>
                                 <p>Your upgrade request is under review. We'll notify you once processed.</p>
                             </div>
                         </div>
                     </div>
-                {% elif existing_subscription_obj.subscription_status == 1 %}
-                    <div class="alert alert-info">
+                {% elif existing_subscription_obj.subscription_status == 1 %}                    <div class="alert alert-info">
                         <div class="status-indicator">
-                            <i class="bi bi-check-circle status-icon"></i>
+                            <i class="icon-check-circle status-icon"></i>
                             <div class="status-content">
                                 <h5>Request Approved</h5>
                                 <p>Your upgrade has been approved. Complete payment to activate.</p>
                             </div>
                         </div>
                     </div>
-                {% elif existing_subscription_obj.subscription_status == 2 %}
-                    <div class="alert alert-danger">
+                {% elif existing_subscription_obj.subscription_status == 2 %}                    <div class="alert alert-danger">
                         <div class="status-indicator">
-                            <i class="bi bi-x-circle status-icon"></i>
+                            <i class="icon-x-circle status-icon"></i>
                             <div class="status-content">
                                 <h5>Request Declined</h5>
                                 <p>Your previous request wasn't approved. You may submit a new request.</p>
                             </div>
                         </div>
                     </div>
-                {% elif existing_subscription_obj.subscription_status == 3 %}
-                    <div class="alert alert-success">
+                {% elif existing_subscription_obj.subscription_status == 3 %}                    <div class="alert alert-success">
                         <div class="status-indicator">
-                            <i class="bi bi-check-circle-fill status-icon"></i>
+                            <i class="icon-check-circle-fill status-icon"></i>
                             <div class="status-content">
                                 <h5>Upgrade Complete</h5>
                                 <p>Your user limit has been successfully increased.</p>
@@ -385,39 +93,35 @@
                         </div>
                     </div>
                 {% endif %}
-            {% else %}
-                <div class="alert alert-secondary">
+            {% else %}                <div class="alert alert-secondary">
                     <div class="status-indicator">
-                        <i class="bi bi-info-circle status-icon"></i>
+                        <i class="icon-info-circle status-icon"></i>
                         <div class="status-content">
                             <h5>Ready to Expand?</h5>
                             <p>Request an increase to accommodate more users in your account.</p>
                         </div>
                     </div>
                 </div>
-            {% endif %}
-
-            <div class="pricing-info">
-                <div class="row mb-3">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <p class="mb-1 text-muted">Current User Limit</p>
+            {% endif %}            <div class="pricing-info">
+                <div class="pricing-row">
+                    <div class="pricing-col">
+                        <p class="pricing-label">Current User Limit</p>
                         <p class="user-count">{{ user_count }}</p>
                     </div>
-                    <div class="col-md-6">
-                        <p class="mb-1 text-muted">New Limit After Upgrade</p>
-                        <p class="user-count text-success">{{ added_count }}</p>
+                    <div class="pricing-col">
+                        <p class="pricing-label">New Limit After Upgrade</p>
+                        <p class="user-count upgrade-count">{{ added_count }}</p>
                     </div>
                 </div>
-                
-                {% if existing_subscription_obj and existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}    
+                  {% if existing_subscription_obj and existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}    
                 <div class="price-calculation">
-                    <p class="mb-1 text-muted">One-Time Upgrade Fee</p>
+                    <p class="pricing-label">One-Time Upgrade Fee</p>
                     <p class="price-highlight">₹{{ payment_amount }}</p>
-                    <p class="text-muted small">Includes all applicable taxes</p>
+                    <p class="text-muted pricing-note">Includes all applicable taxes</p>
                 </div>
                 {% elif existing_subscription_obj and existing_subscription_obj.subscription_status == 0 %}
                 <div class="price-calculation">
-                    <p class="mb-1 text-muted">Upgrade Fee</p>
+                    <p class="pricing-label">Upgrade Fee</p>
                     <p class="text-muted">Pending approval confirmation</p>
                 </div>
                 {% endif %}
@@ -433,19 +137,17 @@
                     <label class="form-check-label" for="confirmUpgradeRequest">
                         I understand this will request a permanent increase of 50 users to my account limit, with applicable charges.
                     </label>
-                </div>
-                <div class="text-center mt-4">
+                </div>                <div class="button-container">
                     <button type="submit" class="btn btn-primary" id="submitUpgradeRequestBtn">
-                        <i class="bi bi-send-fill me-2"></i>Request Upgrade
+                        <i class="icon-send"></i>Request Upgrade
                     </button>
                 </div>
-            </form>
-            {% elif existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}
-            <div class="text-center mt-4">
+            </form>            {% elif existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}
+            <div class="button-container">
                 <button class="btn btn-success btn-lg" type="button" id="makeUserIncreasePaymentBtn">
-                    <i class="bi bi-credit-card-fill me-2"></i>Pay ₹{{ payment_amount }} Now
+                    <i class="icon-credit-card"></i>Pay ₹{{ payment_amount }} Now
                 </button>
-                <p class="text-muted small mt-3">Secure payment processed via Razorpay</p>
+                <p class="text-muted payment-note">Secure payment processed via Razorpay</p>
             </div>
             {% endif %}
         </div>
@@ -473,10 +175,9 @@
         const makePaymentButton = document.getElementById('makeUserIncreasePaymentBtn');
         if (makePaymentButton) {
             makePaymentButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                const originalText = makePaymentButton.innerHTML;
+                e.preventDefault();                const originalText = makePaymentButton.innerHTML;
                 makePaymentButton.disabled = true;
-                makePaymentButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+                makePaymentButton.innerHTML = '<span class="loading-spinner"></span>Processing...';
 
                 fetch("{% url 'create_admin_user_increase_order' %}", {
                     method: 'POST',
