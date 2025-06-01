@@ -10,7 +10,6 @@ body, .customer-list-container,
 .logout-button, .footer-logo {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1rem;
-    font-weight: 400;
 }
 
 /* Customer List Page - Clean Left-Aligned */
@@ -270,5 +269,4 @@ body, .customer-list-container,
 
 .footer-logo, .logout-button {
     font-size: 1rem !important;
-    font-weight: 500 !important;
 }
