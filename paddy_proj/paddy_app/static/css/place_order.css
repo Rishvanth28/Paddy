@@ -315,7 +315,7 @@ body {
 }
 
 /* Submit Button */
-button[type="submit"] {
+/* button[type="submit"] {
     display: block;
     margin: 10px auto 0;
     padding: 12px 30px;
@@ -330,7 +330,7 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: #222;
-}
+} */
 
 /* Flash Messages */
 #message-container {

@@ -7,6 +7,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Superadmin</title>
   <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
+  <style>
+    /* Sidebar Footer */
+.sidebar-footer-cng {
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid var(--sidebar-border);
+  margin-top: auto;
+}
+
+.footer-logo-cng {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.logout-form-cng {
+  width: 100%;
+}
+
+.logout-button-cng {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.logout-button-cng:hover {
+  background-color: #d32f2f;
+}
+  </style>
 </head>
 
 <body>
@@ -109,11 +144,11 @@
     </nav>
 
     <!-- Footer -->
-    <footer class="sidebar-footer">
-      <div class="footer-logo">Logo Here</div>
+    <footer class="sidebar-footer-cng">
+      <div class="footer-logo-cng">Logo Here</div>
       <form action="{% url 'logout' %}" method="post" class="logout-form">
         {% csrf_token %}
-        <button type="submit" class="logout-button">Logout</button>
+        <button type="submit" class="logout-button-cng">Logout</button>
       </form>
     </footer>
   </aside>
