@@ -2,16 +2,19 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}" />
 <div class="customer-list-container">
     <!-- Header with Title and Search -->
     <div class="customer-header">
-        <h1 class="customer-title">Customer List</h1>
+            <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+                <h1 class="page-title mb-0 me-3 i18n" data-i18n="placeNewOrder">Customer List</h1>
+            </div>
         <form class="search-form" method="GET" action="">
             <i class="fas fa-search search-icon"></i>
             <input type="search" name="q" class="search-input" placeholder="Search customers...">
         </form>
     </div>
-  <link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}" />
+
     <!-- Customer Table -->
     <div class="customer-table-container">
         {% if customers %}
