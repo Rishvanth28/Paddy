@@ -6,8 +6,7 @@ html {
 body, .customer-list-container,
 .customer-title, .search-input,
 .customer-table th, .customer-table td,
-.empty-state, .empty-state p,
-.logout-button, .footer-logo {
+.empty-state, .empty-state p {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1rem;
 }
@@ -267,6 +266,7 @@ body, .customer-list-container,
     }
 }
 
-.footer-logo, .logout-button {
+/* Remove sidebar footer overrides to ensure consistency with admin_base.css */
+/* .footer-logo, .logout-button {
     font-size: 1rem !important;
-}
+} */
