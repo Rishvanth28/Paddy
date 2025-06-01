@@ -1,10 +1,18 @@
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    color: #e5e5e5;
-    line-height: 1.6;
-    min-height: 100vh;
+/* Apply Inter or fallback to all base and interactive elements */
+html, body,
+input, textarea, select, button,
+h1, h2, h3, h4, h5, h6, p, span, div, label {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
 }
+
+/* Universal Box Model Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 
 .dashboard-card {
     background: linear-gradient(145deg, #2a2a2a, #1e1e1e);

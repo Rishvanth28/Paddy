@@ -334,14 +334,9 @@ body {
 }
 
 .footer-logo {
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  margin-bottom: 16px !important;
-  font-family: 'Inter', Arial, sans-serif !important;
-  width: 100%;
-  text-align: center;
-  position: static;
-  line-height: 1.2;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
 }
 
 .logout-form {
@@ -349,8 +344,6 @@ body {
 }
 
 .logout-button {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  font-size: 16px !important;
   width: 100%;
   padding: 12px;
   background-color: var(--primary-color);
@@ -359,9 +352,7 @@ body {
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  display: block;
-  margin: 0 auto;
+  transition: background-color var(--transition-speed) ease;
 }
 
 .logout-button:hover {
@@ -436,6 +427,24 @@ body {
   background-color: var(--sidebar-hover);
   color: var(--primary-color);
   box-shadow: inset 4px 0 0 var(--primary-color);
+}
+
+
+/* Sidebar Font Consistency Fix */
+.sidebar, .sidebar * {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em;
+}
+
+.sidebar-title, .footer-logo {
+  font-weight: 600 !important;
+}
+
+.nav-link, .submenu-link, .submenu-toggle, .nav-text {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
 }
 
 .nav-link,
