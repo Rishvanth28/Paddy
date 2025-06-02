@@ -25,6 +25,7 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
     overflow: hidden;
     margin: 2rem auto;
     backdrop-filter: blur(10px);
+    width: 71rem;
 }
 
 .form-container {
