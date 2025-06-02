@@ -175,3 +175,35 @@
 .logout-button:hover {
   background-color: #d32f2f;
 }
+
+/* Card/Panel/Section Styles for Customer Pages */
+.customer-card, .customer-panel, .customer-section, .customer-container, .customer-table, .customer-list, .customer-box {
+    background: #fff;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Table borders */
+.customer-table, .customer-table th, .customer-table td {
+    border: 1px solid #e0e0e0;
+    border-collapse: collapse;
+}
+
+/* Form borders */
+.customer-form {
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 1.5rem;
+    background: #fff;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+    .customer-card, .customer-panel, .customer-section, .customer-container, .customer-table, .customer-list, .customer-box, .customer-form {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+}
