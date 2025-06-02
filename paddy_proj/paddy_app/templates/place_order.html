@@ -1,15 +1,12 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
-{% if messages or request.GET.order_placed == '1' %}
+{% if messages %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 <ul class="messages">
     {% for message in messages %}
         <li class="{{ message.tags }}">{{ message }}</li>
     {% endfor %}
-    {% if request.GET.order_placed == '1' %}
-        <li class="success">Order placed successfully!</li>
-    {% endif %}
 </ul>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -17,7 +14,7 @@
             let messages = document.querySelectorAll('.messages');
             messages.forEach((message) => {
                 message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100);
+                setTimeout(() => message.remove(), 100); 
             });
         }, 5000);
     });
@@ -298,16 +295,15 @@
         // Razorpay integration
         function submitOrderForm(formId, categoryId) {
             const form = document.getElementById(formId);
-            
-            // Create FormData object
             const formData = new FormData(form);
-            
-            // Send form data to server using fetch API
+            // Get CSRF token from the form
+            const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]').value;
             fetch("{% url 'place_order' %}", {
                 method: "POST",
                 body: formData,
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": csrfToken
                 }
             })
             .then(response => response.json())
@@ -326,46 +322,62 @@
                             const paymentForm = document.createElement('form');
                             paymentForm.method = 'POST';
                             paymentForm.action = "{% url 'place_order' %}";
-                            
                             // Add CSRF token
-                            const csrfToken = document.createElement('input');
-                            csrfToken.type = 'hidden';
-                            csrfToken.name = 'csrfmiddlewaretoken';
-                            csrfToken.value = '{{ csrf_token }}';
-                            paymentForm.appendChild(csrfToken);
-                            
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = 'csrfmiddlewaretoken';
+                            csrfInput.value = csrfToken;
+                            paymentForm.appendChild(csrfInput);
                             // Add payment response fields
                             const paymentId = document.createElement('input');
                             paymentId.type = 'hidden';
                             paymentId.name = 'razorpay_payment_id';
                             paymentId.value = response.razorpay_payment_id;
                             paymentForm.appendChild(paymentId);
-                            
                             const orderId = document.createElement('input');
                             orderId.type = 'hidden';
                             orderId.name = 'razorpay_order_id';
                             orderId.value = response.razorpay_order_id;
                             paymentForm.appendChild(orderId);
-                            
                             const signature = document.createElement('input');
                             signature.type = 'hidden';
                             signature.name = 'razorpay_signature';
                             signature.value = response.razorpay_signature;
                             paymentForm.appendChild(signature);
-                            
                             // Add to DOM and submit
                             document.body.appendChild(paymentForm);
                             paymentForm.submit();
                         },
                         theme: {
                             color: "#3399cc"
+                        },
+                        method: {
+                            netbanking: true,
+                            card: true,
+                            upi: true,
+                            wallet: true,
+                            paylater: true
+                        },
+                        config: {
+                            display: {
+                                blocks: {
+                                    paylater: {
+                                        name: "Pay Later",
+                                        instruments: [
+                                            { method: "paylater" }
+                                        ]
+                                    }
+                                },
+                                sequence: ["block.paylater", "block.cards", "block.netbanking", "block.upi", "block.wallet"],
+                                preferences: {
+                                    show_default_blocks: true
+                                }
+                            }
                         }
                     };
-                    
                     const rzp = new Razorpay(options);
                     rzp.open();
                 } else {
-                    // Handle errors
                     alert(data.message || "An error occurred");
                 }
             })
@@ -374,6 +386,31 @@
                 alert("An error occurred while processing your request");
             });
         }
+
+        // Attach submit event listeners to all forms
+        document.addEventListener('DOMContentLoaded', function() {
+            const riceForm = document.getElementById('rice-order-form');
+            const paddyForm = document.getElementById('paddy-order-form');
+            const pesticideForm = document.getElementById('pesticide-order-form');
+            if (riceForm) {
+                riceForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitOrderForm('rice-order-form', 1);
+                });
+            }
+            if (paddyForm) {
+                paddyForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitOrderForm('paddy-order-form', 2);
+                });
+            }
+            if (pesticideForm) {
+                pesticideForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitOrderForm('pesticide-order-form', 3);
+                });
+            }
+        });
     </script>
 
     <!-- Tab Switch Script -->
