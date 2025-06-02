@@ -406,3 +406,13 @@ body {
     height: 1em;
     width: 1em;
 }
+
+.active-status {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.inactive-status {
+    color: #dc3545;
+    font-weight: bold;
+}
