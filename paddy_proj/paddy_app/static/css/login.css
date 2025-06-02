@@ -136,9 +136,11 @@ button {
     font-size: 16px;
     font-weight: bold;
     max-width: 300px;
-    background-color: #ff4d4d;
-    color: white;
+    background-color: var(--message-bg, #f5f5f5);
+    color: var(--message-fg, #222);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border: 1.5px solid var(--message-border, #e53935);
+    transition: background 0.2s, color 0.2s, border 0.2s;
 }
 
 .messages li {
@@ -150,6 +152,36 @@ button {
     padding: 0;
     margin: 0;
     text-align: left;
+}
+
+/* Theme: Light */
+:root {
+    --message-bg: #f5f5f5;
+    --message-fg: #222;
+    --message-border: #e53935;
+}
+
+/* Theme: Dark */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --message-bg: #23272f;
+        --message-fg: #fff;
+        --message-border: #8888ff;
+    }
+}
+
+/* Success, Error, Info, Warning Styles */
+.messages li.success, .messages li.message-success {
+    color: #388e3c;
+}
+.messages li.error, .messages li.message-error {
+    color: #e53935;
+}
+.messages li.info, .messages li.message-info {
+    color: #1976d2;
+}
+.messages li.warning, .messages li.message-warning {
+    color: #fbc02d;
 }
 
 @keyframes fadeIn {

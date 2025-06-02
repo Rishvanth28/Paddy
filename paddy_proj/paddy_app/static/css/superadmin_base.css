@@ -29,29 +29,6 @@ body {
     padding: 0;
 }
 
-/* Messages */
-.messages-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1100;
-  max-width: 400px;
-  width: 90%;
-}
-
-.messages {
-  list-style: none;
-  padding: 0;
-}
-
-.messages li {
-  padding: 12px 20px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  box-shadow: var(--shadow);
-  animation: fadeIn 0.3s ease-out;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -389,11 +366,6 @@ body {
 @media (max-width: 576px) {
   .main-content {
     padding: 15px;
-  }
-
-  .messages-container {
-    top: 10px;
-    right: 10px;
   }
 }
 
