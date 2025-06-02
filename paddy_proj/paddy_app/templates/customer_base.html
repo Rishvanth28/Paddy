@@ -93,6 +93,26 @@
     {% endblock %}
   </main>
 
+  <!-- Mobile Block Overlay -->
+  <div id="mobile-block-message" style="display:none;">
+    <div class="icon">🖥️</div>
+    <div class="text">Mobile view is not supported.<br>Please use a device with a larger screen.</div>
+  </div>
+  <script>
+    // Show the overlay on mobile
+    function showMobileBlockIfNeeded() {
+      if (window.innerWidth <= 720) {
+        document.getElementById('mobile-block-message').style.display = 'flex';
+        document.documentElement.setAttribute('data-mobile-block', '1');
+      } else {
+        document.getElementById('mobile-block-message').style.display = 'none';
+        document.documentElement.removeAttribute('data-mobile-block');
+      }
+    }
+    window.addEventListener('resize', showMobileBlockIfNeeded);
+    window.addEventListener('DOMContentLoaded', showMobileBlockIfNeeded);
+  </script>
+
   <!-- Translation Script -->
   <script>
     let translations = {};
