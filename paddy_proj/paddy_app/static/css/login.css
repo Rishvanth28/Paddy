@@ -129,16 +129,44 @@ option {
 
 /* Button - Centered */
 button {
-    background-color: black;
+    margin: 20px 0 0 0;
+    padding: 10px 24px;
+    background-color: #000000;
     color: white;
-    padding: 12px 20px;
     border: none;
+    border-radius: 6px;
+    font-size: 16px;
     cursor: pointer;
-    border-radius: 20px;
-    margin-top: 20px;
-    width: 100px;
-    text-align: center;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    align-self: flex-start;
 }
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-20deg);
+    transition: all 0.5s ease;
+    z-index: 0;
+}
+
+button:hover::before {
+    left: 125%;
+    transition: all 0.75s ease-in-out;
+}
+
 
 /* Alert Messages - Moved to Top Right */
 .messages {

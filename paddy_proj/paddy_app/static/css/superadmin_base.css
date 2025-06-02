@@ -260,7 +260,6 @@ body {
 
 .has-submenu.open .submenu {
   max-height: 500px;
-  padding: 8px 0;
 }
 
 .submenu-item {
