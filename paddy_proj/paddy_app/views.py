@@ -1398,3 +1398,86 @@ def view_customer_subscribers(request):
         "subscriptions": customer_subscriptions,
         "user_type": "customer",  # Added for dynamic display in HTML
     })
+
+def customer_signup(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        phone_number = request.POST.get("phone_number", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password")
+
+        # Basic validation
+        if not (name and phone_number and email and password):
+            messages.error(request, "All fields are required.")
+            return redirect("login")
+
+        # Check if phone number or email already exists
+        if CustomerTable.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "Phone number already registered.")
+            return redirect("login")
+
+        if CustomerTable.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return redirect("login")
+
+        try:
+            names = name.split(maxsplit=1)
+            first_name = names[0]
+            last_name = names[1] if len(names) > 1 else ""
+
+            CustomerTable.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                email=email,
+                password=password
+            )
+            messages.success(request, "Account created successfully! Please login.")
+            return redirect("login")
+        except Exception as e:
+            messages.error(request, "Failed to create account. Please try again.")
+            return redirect("login")
+
+    return redirect("login")
+
+def admin_signup(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        phone_number = request.POST.get("phone_number", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password")
+
+        # Basic validation
+        if not (name and phone_number and email and password):
+            messages.error(request, "All fields are required.")
+            return redirect("login")
+
+        # Check if phone number or email already exists
+        if AdminTable.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "Phone number already registered.")
+            return redirect("login")
+
+        if AdminTable.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return redirect("login")
+
+        try:
+            names = name.split(maxsplit=1)
+            first_name = names[0]
+            last_name = names[1] if len(names) > 1 else ""
+
+            AdminTable.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                email=email,
+                password=password,
+                user_count=50  # Default user count for new admins
+            )
+            messages.success(request, "Account created successfully! Please login.")
+            return redirect("login")
+        except Exception as e:
+            messages.error(request, "Failed to create account. Please try again.")
+            return redirect("login")
+
+    return redirect("login")

@@ -44,6 +44,73 @@
     position: relative;
 }
 
+/* Tab Container */
+.tab-container {
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* Tab Navigation */
+.tab-nav {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Sub-tabs for Sign Up */
+.subtab-nav {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.subtab-btn {
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+}
+
+.subtab-btn.active {
+    color: #8888ff;
+    font-weight: 600;
+}
+
+.subtab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.3s ease;
+}
+
+.subtab-content.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .image-overlay {
     position: absolute;
     width: 100%;
@@ -262,6 +329,54 @@ select {
     border-radius: 8px;
 }
 
+/* Form Fields */
+.login-section form {
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.login-section input,
+.login-section select {
+    width: 60%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-bottom: 1px solid #000;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.login-section input:focus,
+.login-section select:focus {
+    border-color: #8888ff;
+    outline: none;
+}
+
+.login-section button[type="submit"] {
+    margin: 20px 0 0 0;
+    padding: 10px 24px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    align-self: flex-start;
+    width: auto;
+}
+
+.login-section button[type="submit"]:hover {
+    background-color: #333;
+}
+
 /* Mobile View Adjustments */
 @media (max-width: 768px) {
     .container {
@@ -282,22 +397,20 @@ select {
     /* Login Form Section */
     .right-section {
         width: 100%;
+        height: 60vh;
         padding: 50px;
         background: white;
-        border-top-left-radius: 40px;
-        border-top-right-radius: 40px;
-        position: absolute;
-        bottom: 0;
-        z-index: 10;
-        /* Ensure form is on top */
-        box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.1);
-        /* Add shadow to separate sections */
+        border-radius: 40px 40px 0 0;
+        margin-top: -20px;
+        position: relative;
+        z-index: 2;
+        overflow-y: auto;
     }
 
-    /* Ensure Form is Pushed Down */
+    /* Container Adjustments */
     .login-section {
-        margin-top: 10px;
-        /* Adjust if needed */
+        margin: 0;
+        padding-bottom: 20px;
     }
 
     /* LOGO Placement */

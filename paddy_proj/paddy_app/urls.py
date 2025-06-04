@@ -45,12 +45,14 @@ urlpatterns = [
     path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),
     path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
     path('upgrade-to-customer/',upgrade_to_customer, name='upgrade_to_customer'),
+    path("customer-signup/", customer_signup, name="customer_signup"),
+    path("admin-signup/", admin_signup, name="admin_signup"),
 
 
 
 
 ]
-    
+
 
 
 
