@@ -11,6 +11,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from .decorators import role_required
 from .helpers import *
+from .helpers import create_notification
 import json
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
@@ -198,6 +199,14 @@ def create_customer(request):
 
         current_customer_count = CustomerTable.objects.filter(admin=admin).count()
         if current_customer_count >= admin.user_count:
+            # Create notification for user limit reached
+            create_notification(
+                user_type='admin',
+                user_id=admin_id,
+                notification_type='user_limit_reached',
+                title='User Limit Reached',
+                message=f'You have reached your customer limit of {admin.user_count}. Please upgrade to add more customers.',
+            )
             messages.error(request, "Customer limit reached for your account!")
             return redirect("onboard" if is_superadmin else "customer_onboard")
 
@@ -312,10 +321,32 @@ def place_order(request):
                     driver_ph_no=temp_data["driver_ph_no"],
                     order_date=date.today()
                 )
-                
-                # Update payment with order ID
+                  # Update payment with order ID
                 payment.order = order
                 payment.save()
+                
+                # Create notifications for order placement
+                product_name = "Rice" if temp_data["product_category_id"] == "1" else "Paddy"
+                
+                # Notification for customer
+                create_notification(
+                    user_type='customer',
+                    user_id=customer.customer_id,
+                    notification_type='order_placed',
+                    title=f'New {product_name} Order Placed',
+                    message=f'Your {product_name} order #{order.order_id} has been placed successfully. Quantity: {quantity}, Amount: ₹{overall_amount}',
+                    related_order_id=order.order_id
+                )
+                
+                # Notification for admin
+                create_notification(
+                    user_type='admin',
+                    user_id=admin_id,
+                    notification_type='order_placed',
+                    title=f'New {product_name} Order Received',
+                    message=f'New {product_name} order #{order.order_id} from {customer.first_name} {customer.last_name}. Amount: ₹{overall_amount}',
+                    related_order_id=order.order_id
+                )
                 
                 messages.success(request, "Order placed successfully after booking fee payment!")
                 
@@ -374,9 +405,28 @@ def place_order(request):
                 
                 order.overall_amount = sum(float(totals[i]) for i in range(len(totals)) if totals[i].strip())
                 order.save()
-                
-                # Bulk create items
+                  # Bulk create items
                 OrderItems.objects.bulk_create(order_items)
+                
+                # Create notifications for pesticide order
+                create_notification(
+                    user_type='customer',
+                    user_id=customer.customer_id,
+                    notification_type='order_placed',
+                    title='New Pesticide Order Placed',
+                    message=f'Your pesticide order #{order.order_id} with multiple items has been placed successfully. Total Amount: ₹{order.overall_amount}',
+                    related_order_id=order.order_id
+                )
+                
+                # Notification for admin
+                create_notification(
+                    user_type='admin',
+                    user_id=admin_id,
+                    notification_type='order_placed',
+                    title='New Pesticide Order Received',
+                    message=f'New pesticide order #{order.order_id} from {customer.first_name} {customer.last_name} with {len(order_items)} items. Total Amount: ₹{order.overall_amount}',
+                    related_order_id=order.order_id
+                )
                 
                 messages.success(request, "Order with multiple items placed successfully after booking fee payment!")
             
@@ -627,8 +677,7 @@ def verify_partial_payment(request):
         client.utility.verify_payment_signature(params_dict)
         
         order = get_object_or_404(Orders, order_id=application_order_id)
-        
-        # --- Create Payment Record ---
+          # --- Create Payment Record ---
         try:
             Payments.objects.create(
                 order=order,
@@ -649,10 +698,32 @@ def verify_partial_payment(request):
         
         if order.paid_amount >= order.overall_amount:
             order.payment_status = 2  # Fully paid
+            payment_status_text = "fully paid"
         else:
             order.payment_status = 1  # Partially paid
+            payment_status_text = "partially paid"
         
         order.save()
+        
+        # Create payment notifications
+        create_notification(
+            user_type='customer',
+            user_id=order.customer.customer_id,
+            notification_type='payment_received',
+            title='Payment Received',
+            message=f'Payment of ₹{amount_paid_this_transaction} received for order #{order.order_id}. Order is now {payment_status_text}.',
+            related_order_id=order.order_id
+        )
+        
+        # Notification for admin
+        create_notification(
+            user_type='admin',
+            user_id=order.admin.admin_id,
+            notification_type='payment_received',
+            title='Customer Payment Received',
+            message=f'Payment of ₹{amount_paid_this_transaction} received from {order.customer.first_name} {order.customer.last_name} for order #{order.order_id}. Order is now {payment_status_text}.',
+            related_order_id=order.order_id
+        )
         
         # Clear relevant session data if you stored any for this transaction
         # Example:
@@ -680,6 +751,21 @@ def customer_delivery_validation(request):
             order = Orders.objects.get(order_id=order_id)
             order.delivery_status = delivery_status
             order.save()
+            
+            # Create notification for admin when customer marks delivery as complete
+            if delivery_status == '1':  # Assuming 1 means delivered
+                product_name = "Rice" if order.product_category_id == 1 else "Paddy" if order.product_category_id == 2 else "Pesticide"
+                
+                # Notification for admin
+                create_notification(
+                    user_type='admin',
+                    user_id=order.admin.admin_id,
+                    notification_type='delivery_confirmed',
+                    title='Order Delivery Confirmed',
+                    message=f'Customer {order.customer.first_name} {order.customer.last_name} has confirmed delivery of {product_name} order #{order.order_id}.',
+                    related_order_id=order.order_id
+                )
+            
             messages.success(request, "Delivery status updated successfully.")
             return redirect('customer_orders')
         except Orders.DoesNotExist:
@@ -694,8 +780,7 @@ def admin_add_subscription(request):
     user_id = request.session.get("user_id")
     admin = get_object_or_404(AdminTable, admin_id=user_id)
     user_count = admin.user_count
-    
-    # Fetch the latest subscription request for this admin
+      # Fetch the latest subscription request for this admin
     existing_subscription = UserIncreaseSubscription.objects.filter(admin_id=admin).order_by('-sid').first()
 
     if request.method == "POST":
@@ -706,10 +791,21 @@ def admin_add_subscription(request):
                 messages.warning(request, "You already have an active subscription upgrade request.")
             else:
                 try:
-                    UserIncreaseSubscription.objects.create(
+                    subscription = UserIncreaseSubscription.objects.create(
                         admin_id=admin,
                         subscription_status=0 # Status 0: Pending Superadmin Approval
                     )
+                    
+                    # Create notification for superadmin about the new subscription request
+                    create_notification(
+                        user_type='superadmin',
+                        user_id='1000000',  # Super admin ID
+                        notification_type='subscription_request',
+                        title='New User Limit Upgrade Request',
+                        message=f'Admin {admin.first_name} {admin.last_name} has requested a user limit upgrade by 50 users. Please review the request.',
+                        related_subscription_id=subscription.sid
+                    )
+                    
                     messages.success(request, "Subscription upgrade request submitted successfully! It will be reviewed by the superadmin.")
                 except Exception as e:
                     messages.error(request, f"Failed to submit subscription request. Error: {str(e)}")
@@ -870,11 +966,29 @@ def verify_admin_user_increase_payment(request):
         subscription.subscription_status = 3 # Assuming 3 means 'Paid and Processed'
         # You might want to add a field to UserIncreaseSubscription to store razorpay_payment_id
         # subscription.razorpay_payment_id = razorpay_payment_id 
-        subscription.save()
-
-        # Increase admin's user count
+        subscription.save()        # Increase admin's user count
         admin_user.user_count += 50 # Or whatever the agreed increase is
         admin_user.save()
+
+        # Create notifications for user limit upgrade
+        create_notification(
+            user_type='admin',
+            user_id=admin_user.admin_id,
+            notification_type='subscription_upgrade',
+            title='User Limit Increased',
+            message=f'Your user limit has been successfully increased by 50. Payment of ₹{expected_amount} processed.',
+            related_subscription_id=subscription_sid
+        )
+
+        # Notification for superadmin
+        create_notification(
+            user_type='superadmin',
+            user_id='1000000',  # Super admin ID
+            notification_type='subscription_upgrade',
+            title='Admin User Limit Upgrade',
+            message=f'Admin {admin_user.first_name} {admin_user.last_name} upgraded user limit by 50 users. Payment: ₹{expected_amount}',
+            related_subscription_id=subscription_sid
+        )
 
         # Clear the session variables used for this payment to prevent reuse
         if 'user_increase_sub_id' in request.session: del request.session['user_increase_sub_id']
@@ -1302,11 +1416,29 @@ def payment_success(request):
             if existing_subscription:
                 start_date = existing_subscription.end_date + timedelta(days=1) if existing_subscription.end_date and existing_subscription.end_date >= now().date() else now().date()
                 existing_subscription.start_date = start_date
-                existing_subscription.end_date = start_date + timedelta(days=int(days)) - timedelta(days=1) # Inclusive end date
-                existing_subscription.payment_amount += float(amount)
+                existing_subscription.end_date = start_date + timedelta(days=int(days)) - timedelta(days=1) # Inclusive end date                existing_subscription.payment_amount += float(amount)
                 existing_subscription.subscription_status = 1 # Active
                 existing_subscription.save()
                 message_text = "Subscription extended successfully."
+                
+                # Create notifications for subscription extension
+                create_notification(
+                    user_type='admin',
+                    user_id=admin_user_id,
+                    notification_type='subscription_payment',
+                    title='Subscription Extended',
+                    message=f'Your subscription has been extended successfully. Payment of ₹{amount} received.',
+                    related_subscription_id=existing_subscription.sid
+                )
+                
+                # Notification for superadmin
+                create_notification(
+                    user_type='superadmin',
+                    user_id='1000000',  # Super admin ID
+                    notification_type='admin_payment',
+                    title='Admin Subscription Payment',
+                    message=f'Admin {admin_instance.first_name} {admin_instance.last_name} made subscription payment of ₹{amount}',
+                    related_subscription_id=existing_subscription.sid                )
             else:
                 Subscription.objects.create(
                     admin_id=admin_instance, # Use instance here
@@ -1317,6 +1449,24 @@ def payment_success(request):
                     subscription_status=1 # Active
                 )
                 message_text = "Subscription created successfully."
+                
+                # Create notifications for new subscription
+                create_notification(
+                    user_type='admin',
+                    user_id=admin_user_id,
+                    notification_type='subscription_payment',
+                    title='Subscription Activated',
+                    message=f'Your subscription has been activated successfully. Payment of ₹{amount} received.',
+                )
+                
+                # Notification for superadmin
+                create_notification(
+                    user_type='superadmin',
+                    user_id='1000000',  # Super admin ID
+                    notification_type='admin_payment',
+                    title='New Admin Subscription',
+                    message=f'Admin {admin_instance.first_name} {admin_instance.last_name} activated subscription with payment of ₹{amount}',
+                )
 
             # Clear session variables for this subscription payment
             if "subscription_amount" in request.session: del request.session["subscription_amount"]
@@ -1399,85 +1549,99 @@ def view_customer_subscribers(request):
         "user_type": "customer",  # Added for dynamic display in HTML
     })
 
-def customer_signup(request):
-    if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-        phone_number = request.POST.get("phone_number", "").strip()
-        email = request.POST.get("email", "").strip()
-        password = request.POST.get("password")
+@role_required(["customer"])
+def customer_notifications(request):
+    """Display notifications for customer"""
+    customer_id = request.session.get("user_id")
+    if not customer_id:
+        return redirect('login')
+    
+    notifications = get_user_notifications('customer', customer_id)
+    unread_count = get_unread_notification_count('customer', customer_id)
+    
+    context = {
+        'notifications': notifications,
+        'unread_count': unread_count
+    }
+    return render(request, 'customer_notifications.html', context)
 
-        # Basic validation
-        if not (name and phone_number and email and password):
-            messages.error(request, "All fields are required.")
-            return redirect("login")
 
-        # Check if phone number or email already exists
-        if CustomerTable.objects.filter(phone_number=phone_number).exists():
-            messages.error(request, "Phone number already registered.")
-            return redirect("login")
+@role_required(["admin"])
+def admin_notifications(request):
+    """Display notifications for admin"""
+    admin_id = request.session.get("user_id")
+    if not admin_id:
+        return redirect('login')
+    
+    notifications = get_user_notifications('admin', admin_id)
+    unread_count = get_unread_notification_count('admin', admin_id)
+    
+    context = {
+        'notifications': notifications,
+        'unread_count': unread_count
+    }
+    return render(request, 'admin_notifications.html', context)
 
-        if CustomerTable.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered.")
-            return redirect("login")
 
-        try:
-            names = name.split(maxsplit=1)
-            first_name = names[0]
-            last_name = names[1] if len(names) > 1 else ""
+@role_required(["superadmin"])
+def superadmin_notifications(request):
+    """Display notifications for superadmin"""
+    admin_id = request.session.get("user_id")
+    if not admin_id:
+        return redirect('login')
+    
+    # Get all admin payment and subscription notifications
+    notifications = Notification.objects.filter(
+        Q(user_type='admin', notification_type__in=['subscription_payment', 'subscription_upgrade', 'admin_payment']) |
+        Q(user_type='superadmin', user_id=str(admin_id))
+    ).order_by('-created_at')[:50]
+    
+    unread_count = Notification.objects.filter(
+        Q(user_type='admin', notification_type__in=['subscription_payment', 'subscription_upgrade', 'admin_payment']) |
+        Q(user_type='superadmin', user_id=str(admin_id)),
+        is_read=False
+    ).count()
+    
+    context = {
+        'notifications': notifications,
+        'unread_count': unread_count
+    }
+    return render(request, 'superadmin_notifications.html', context)
 
-            CustomerTable.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                phone_number=phone_number,
-                email=email,
-                password=password
-            )
-            messages.success(request, "Account created successfully! Please login.")
-            return redirect("login")
-        except Exception as e:
-            messages.error(request, "Failed to create account. Please try again.")
-            return redirect("login")
 
-    return redirect("login")
+@require_POST
+def mark_notification_read(request):
+    """Mark a notification as read via AJAX"""
+    try:
+        data = json.loads(request.body)
+        notification_id = data.get('notification_id')
+        
+        if mark_notification_as_read(notification_id):
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'message': 'Notification not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
 
-def admin_signup(request):
-    if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-        phone_number = request.POST.get("phone_number", "").strip()
-        email = request.POST.get("email", "").strip()
-        password = request.POST.get("password")
 
-        # Basic validation
-        if not (name and phone_number and email and password):
-            messages.error(request, "All fields are required.")
-            return redirect("login")
-
-        # Check if phone number or email already exists
-        if AdminTable.objects.filter(phone_number=phone_number).exists():
-            messages.error(request, "Phone number already registered.")
-            return redirect("login")
-
-        if AdminTable.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered.")
-            return redirect("login")
-
-        try:
-            names = name.split(maxsplit=1)
-            first_name = names[0]
-            last_name = names[1] if len(names) > 1 else ""
-
-            AdminTable.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                phone_number=phone_number,
-                email=email,
-                password=password,
-                user_count=50  # Default user count for new admins
-            )
-            messages.success(request, "Account created successfully! Please login.")
-            return redirect("login")
-        except Exception as e:
-            messages.error(request, "Failed to create account. Please try again.")
-            return redirect("login")
-
-    return redirect("login")
+@require_POST
+def mark_all_notifications_read(request):
+    """Mark all notifications as read for current user"""
+    try:
+        user_id = request.session.get("user_id")
+        role = request.session.get("role")
+        
+        if not user_id or not role:
+            return JsonResponse({'success': False, 'message': 'Session expired'})
+        
+        user_type = 'superadmin' if role == 'superadmin' else role
+        
+        Notification.objects.filter(
+            user_type=user_type,
+            user_id=str(user_id),
+            is_read=False
+        ).update(is_read=True)
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})

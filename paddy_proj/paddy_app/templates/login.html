@@ -53,11 +53,10 @@
                             <select name="signup_role" id="signup-role">
                                 <option value="customer">Customer</option>
                                 <option value="admin">Admin</option>
-                            </select>
-                            <!-- Add URL variables for JavaScript -->
+                            </select>                            <!-- Add URL variables for JavaScript -->
                             <script>
-                                const adminSignupUrl = "{% url 'admin_signup' %}";
-                                const customerSignupUrl = "{% url 'customer_signup' %}";
+                                const adminSignupUrl = "{% url 'create_admin' %}";
+                                const customerSignupUrl = "{% url 'create_customer' %}";
                             </script>
 
                             <label class="text" for="signup-name">NAME</label>

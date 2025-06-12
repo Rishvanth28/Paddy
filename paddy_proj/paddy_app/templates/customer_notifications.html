@@ -1,0 +1,159 @@
+{% extends 'customer_base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'css/notifications.css' %}">
+</head>
+
+<div class="container-fluid">
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-4">
+        <h1 class="page-title mb-0 me-3">
+            <i class="bi bi-bell-fill me-2"></i>Notifications
+            {% if unread_count > 0 %}
+                <span class="badge bg-danger ms-2">{{ unread_count }}</span>
+            {% endif %}
+        </h1>
+        
+        {% if notifications %}
+            <button class="btn btn-outline-primary btn-sm" onclick="markAllAsRead()">
+                <i class="bi bi-check-all me-1"></i>Mark All as Read
+            </button>
+        {% endif %}
+    </div>
+
+    <div class="notifications-container">
+        {% if notifications %}
+            {% for notification in notifications %}
+                <div class="notification-card {% if not notification.is_read %}unread{% endif %}" 
+                     data-notification-id="{{ notification.notification_id }}">
+                    <div class="notification-header">
+                        <div class="notification-icon">
+                            {% if notification.notification_type == 'order_placed' %}
+                                <i class="bi bi-cart-plus text-success"></i>
+                            {% elif notification.notification_type == 'payment_received' %}
+                                <i class="bi bi-credit-card text-primary"></i>
+                            {% elif notification.notification_type == 'order_delivered' %}
+                                <i class="bi bi-truck text-info"></i>
+                            {% elif notification.notification_type == 'subscription_payment' %}
+                                <i class="bi bi-crown text-warning"></i>
+                            {% else %}
+                                <i class="bi bi-info-circle text-secondary"></i>
+                            {% endif %}
+                        </div>
+                        <div class="notification-title">{{ notification.title }}</div>
+                        <div class="notification-time">
+                            {{ notification.created_at|timesince }} ago
+                        </div>
+                        {% if not notification.is_read %}
+                            <div class="unread-indicator"></div>
+                        {% endif %}
+                    </div>
+                    <div class="notification-message">
+                        {{ notification.message }}
+                    </div>
+                    {% if notification.related_order_id %}
+                        <div class="notification-actions">
+                            <form method="post" action="{% url 'payment' %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="order_id" value="{{ notification.related_order_id }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye me-1"></i>View Order
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-bell"></i>
+                </div>
+                <h3>No Notifications</h3>
+                <p>You don't have any notifications yet. When you place orders or make payments, you'll see updates here.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function markAsRead(notificationId) {
+        fetch('/mark_notification_read/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                notification_id: notificationId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const notificationElement = document.querySelector(`[data-notification-id="${notificationId}"]`);
+                if (notificationElement) {
+                    notificationElement.classList.remove('unread');
+                    const unreadIndicator = notificationElement.querySelector('.unread-indicator');
+                    if (unreadIndicator) {
+                        unreadIndicator.remove();
+                    }
+                }
+                updateUnreadCount();
+            }
+        });
+    }
+
+    function markAllAsRead() {
+        fetch('/mark_all_notifications_read/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
+    }
+
+    function updateUnreadCount() {
+        const unreadCards = document.querySelectorAll('.notification-card.unread');
+        const badge = document.querySelector('.badge');
+        if (unreadCards.length === 0 && badge) {
+            badge.remove();
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Auto-mark as read when notification is clicked
+    document.addEventListener('DOMContentLoaded', function() {
+        const notificationCards = document.querySelectorAll('.notification-card.unread');
+        notificationCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const notificationId = this.getAttribute('data-notification-id');
+                markAsRead(notificationId);
+            });
+        });
+    });
+</script>
+
+{% endblock %}

@@ -42,15 +42,15 @@ urlpatterns = [
     path('create_partial_payment_order/', create_partial_payment_order, name='create_partial_payment_order'),
     path('verify_partial_payment/', verify_partial_payment, name='verify_partial_payment'),
     path('ajax/create_admin_user_increase_order/', create_admin_user_increase_order, name='create_admin_user_increase_order'),
-    path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),
-    path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
+    path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),    path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
     path('upgrade-to-customer/',upgrade_to_customer, name='upgrade_to_customer'),
-    path("customer-signup/", customer_signup, name="customer_signup"),
-    path("admin-signup/", admin_signup, name="admin_signup"),
-
-
-
-
+    # path("customer-signup/", customer_signup, name="customer_signup"),
+    # path("admin-signup/", admin_signup, name="admin_signup"),    # Notification URLs
+    path('customer/notifications/', customer_notifications, name='customer_notifications'),
+    path('admin-notifications/', admin_notifications, name='admin_notifications'),
+    path('superadmin/notifications/', superadmin_notifications, name='superadmin_notifications'),
+    path('mark_notification_read/', mark_notification_read, name='mark_notification_read'),
+    path('mark_all_notifications_read/', mark_all_notifications_read, name='mark_all_notifications_read'),
 ]
 
 

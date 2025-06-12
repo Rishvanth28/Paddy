@@ -46,12 +46,17 @@
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard Icon">
             <span class="nav-text i18n" data-i18n="dashboard">Dashboard</span>
           </a>
-        </li>
-
-        <li class="nav-item">
+        </li>        <li class="nav-item">
           <a href="{% url 'customer_orders' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Orders Icon">
             <span class="nav-text i18n" data-i18n="viewOrders">View Orders</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'customer_notifications' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Notifications Icon">
+            <span class="nav-text i18n" data-i18n="notifications">Notifications</span>
           </a>
         </li>
 

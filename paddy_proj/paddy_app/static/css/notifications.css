@@ -1,0 +1,234 @@
+/* Notifications Page Styles */
+.notifications-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.notification-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.notification-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.notification-card.unread {
+    border-left: 4px solid #007bff;
+    background: #f8f9ff;
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem 0.5rem;
+    gap: 0.75rem;
+    position: relative;
+}
+
+.notification-icon {
+    font-size: 1.25rem;
+    min-width: 24px;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: #2c3e50;
+    flex: 1;
+}
+
+.notification-time {
+    font-size: 0.875rem;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+.unread-indicator {
+    width: 8px;
+    height: 8px;
+    background: #dc3545;
+    border-radius: 50%;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.notification-message {
+    padding: 0 1.25rem;
+    color: #495057;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+.notification-actions {
+    padding: 0 1.25rem 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.notification-meta {
+    padding: 0 1.25rem 1rem;
+    border-top: 1px solid #f1f3f4;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6c757d;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #dee2e6;
+    margin-bottom: 1.5rem;
+}
+
+.empty-state h3 {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Header Bar */
+.header-bar {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 1rem;
+}
+
+.page-title {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notifications-container {
+        margin: 0 -0.5rem;
+    }
+    
+    .notification-card {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        border-radius: 6px;
+    }
+    
+    .notification-header {
+        padding: 0.75rem 1rem 0.5rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .notification-time {
+        order: 3;
+        flex-basis: 100%;
+        margin-top: 0.25rem;
+    }
+    
+    .notification-message,
+    .notification-actions,
+    .notification-meta {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .notification-card {
+        background: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .notification-card.unread {
+        background: #2a4365;
+        border-left-color: #3182ce;
+    }
+    
+    .notification-title {
+        color: #f7fafc;
+    }
+    
+    .notification-time {
+        color: #a0aec0;
+    }
+    
+    .notification-message {
+        color: #cbd5e0;
+    }
+    
+    .notification-meta {
+        border-top-color: #4a5568;
+    }
+    
+    .empty-state {
+        color: #a0aec0;
+    }
+    
+    .empty-state h3 {
+        color: #e2e8f0;
+    }
+    
+    .empty-icon {
+        color: #4a5568;
+    }
+}
+
+/* Animation for new notifications */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notification-card.new {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Notification type specific styles */
+.notification-card[data-type="order_placed"] {
+    border-left-color: #28a745;
+}
+
+.notification-card[data-type="payment_received"] {
+    border-left-color: #007bff;
+}
+
+.notification-card[data-type="subscription_payment"] {
+    border-left-color: #ffc107;
+}
+
+.notification-card[data-type="admin_payment"] {
+    border-left-color: #17a2b8;
+}
