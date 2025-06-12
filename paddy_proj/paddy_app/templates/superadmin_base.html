@@ -138,7 +138,12 @@
             <span class="nav-text">Admin Activities</span>
           </a>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'super_admin_orders' %}">
+            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}">
+            <span>Orders</span>
+          </a>
+        </li>
         <!-- Subscription -->
         <li class="nav-item">
           <a href="{% url 'superadmin_subscription' %}" class="nav-link">

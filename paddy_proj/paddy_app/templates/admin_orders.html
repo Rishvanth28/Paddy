@@ -1,0 +1,1114 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    :root {
+        --primary: #0d6efd;
+        --primary-hover: #0b5ed7;
+        --success: #198754;
+        --warning: #ffc107;
+        --danger: #dc3545;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --border: #e9ecef;
+    }
+    
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #f8f9fa;
+        color: #212529;
+        line-height: 1.6;
+    }
+    
+    .dashboard-card {
+        background-color: white;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background-color: white;
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+    }
+    
+    .card-header h5 {
+        font-weight: 600;
+        margin-bottom: 0;
+        color: var(--dark);
+    }
+    
+    .list-group-item {
+        padding: 1.25rem 1.5rem;
+        border-color: var(--border);
+        transition: all 0.2s ease;
+    }
+    
+    .list-group-item:hover {
+        background-color: var(--light);
+    }
+    
+    .list-group-item.active {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    
+    .badge {
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn-group .btn {
+        border-radius: 6px !important;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 6px;
+        border: 1px solid var(--border);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+    
+    .text-muted {
+        color: var(--gray) !important;
+    }
+    
+    .highlight {
+        animation: highlight-fade 1.5s ease-out;
+    }
+    
+    @keyframes highlight-fade {
+        0% { background-color: rgba(13, 110, 253, 0.1); }
+        100% { background-color: transparent; }
+    }
+    
+    .order-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .order-status-icon {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+    
+    .status-pending {
+        background-color: var(--warning);
+    }
+    
+    .status-completed {
+        background-color: var(--success);
+    }
+    
+    .status-processing {
+        background-color: var(--primary);
+    }
+    
+    .status-failed {
+        background-color: var(--danger);
+    }
+    
+    .table-sm td, .table-sm th {
+        padding: 0.5rem;
+    }
+    
+    .loading-spinner {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-width: 0.2em;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .col-md-4, .col-md-8 {
+            width: 100%;
+        }
+        
+        .col-md-4 {
+            margin-bottom: 1.5rem;
+        }
+    }
+    
+    /* Filter section styling */
+    .filter-section {
+        background-color: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .filter-section h5 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+    
+    /* Order list styling */
+    .order-list-container {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .order-item {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .order-item:hover {
+        transform: translateX(2px);
+    }
+    
+    .order-item .badge {
+        font-size: 0.75em;
+    }
+    
+    /* Order detail styling */
+    .order-detail-section {
+        padding: 1.5rem;
+    }
+    
+    .detail-header {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .detail-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-section h6 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+    
+    /* Item table styling */
+    .items-table {
+        margin-top: 1rem;
+    }
+    
+    .items-table th {
+        font-weight: 500;
+        background-color: var(--light);
+    }
+    
+    /* Search input styling */
+    .search-container {
+        position: relative;
+    }
+    
+    .search-container .bi-search {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray);
+    }
+    
+    .search-input {
+        padding-left: 35px;
+    }
+</style>
+{% endblock %}
+
+{% if messages %}
+<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1100;">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+        <div class="d-flex align-items-center">
+            {% if message.tags == 'success' %}
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {% elif message.tags == 'warning' %}
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {% elif message.tags == 'error' %}
+            <i class="bi bi-x-circle-fill me-2"></i>
+            {% else %}
+            <i class="bi bi-info-circle-fill me-2"></i>
+            {% endif %}
+            <div>{{ message }}</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+            document.querySelectorAll('.alert').forEach(alert => {
+                let bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
+</script>
+{% endif %}
+
+<div class="container-fluid my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
+        <div class="text-muted" id="order-count-text">0 orders found</div>
+    </div>
+    
+    <!-- Filters section -->
+    <div class="filter-section mb-4">
+        <div class="row g-3">
+            <!-- Status filters -->
+            <div class="col-md-3">
+                <label class="form-label">Order Status</label>
+                <div class="d-flex flex-wrap">
+                    <button type="button" class="btn btn-sm btn-primary status-filter" data-filter="all">All</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary status-filter" data-filter="recent">Recent</button>
+                    <button type="button" class="btn btn-sm btn-outline-success status-filter" data-filter="completed">Completed</button>
+                    <button type="button" class="btn btn-sm btn-outline-warning status-filter" data-filter="ongoing">Processing</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger status-filter" data-filter="pending_payment">Pending Payment</button>
+                </div>
+            </div>
+            
+            <!-- Date filters -->
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-5">
+                        <label for="date_from" class="form-label">From Date</label>
+                        <input type="date" class="form-control form-control-sm" id="date_from">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="date_to" class="form-label">To Date</label>
+                        <input type="date" class="form-control form-control-sm" id="date_to">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-sm btn-primary w-100" id="apply-date-filter">Apply</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin filter for superadmin only -->
+            {% if request.session.role == 'superadmin' %}
+            <div class="col-md-3">
+                <label for="admin-filter" class="form-label">Filter by Admin</label>
+                <select id="admin-filter" class="form-select form-select-sm">
+                    <option value="all">All Admins</option>
+                    <!-- This will be populated via JavaScript -->
+                </select>
+            </div>
+            {% endif %}
+            
+            <!-- Category filter -->
+            <div class="{% if request.session.role == 'superadmin' %}col-md-3{% else %}col-md-3{% endif %}">
+                <label for="category-filter" class="form-label">Category</label>
+                <select id="category-filter" class="form-select form-select-sm">
+                    <option value="all">All Categories</option>
+                    <option value="1">Rice</option>
+                    <option value="2">Paddy</option>
+                    <option value="3">Pesticide</option>
+                </select>
+            </div>
+            
+            <!-- Sorting options -->
+            <div class="col-md-3">
+                <label for="sort" class="form-label">Sort By</label>
+                <select class="form-select form-select-sm" id="sort">
+                    <option value="-order_id">Newest First</option>
+                    <option value="order_id">Oldest First</option>
+                    <option value="-overall_amount">Amount (High to Low)</option>
+                    <option value="overall_amount">Amount (Low to High)</option>
+                </select>
+            </div>
+            
+            <!-- Search box -->
+            <div class="col-md-12 mt-3">
+                <div class="search-container">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main content with two-panel layout -->
+    <div class="row">
+        <!-- Left panel: Order list -->
+        <div class="col-md-4">
+            <div class="dashboard-card order-list-container">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Order List</h5>
+                    <div class="spinner-border spinner-border-sm text-primary d-none" id="loading-spinner" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                {% csrf_token %}
+                <div class="list-group list-group-flush" id="orders-list">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary loading-spinner" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right panel: Order details -->
+        <div class="col-md-8">
+            <div class="dashboard-card h-100">
+                <div class="card-header">
+                    <h5>Order Details</h5>
+                </div>
+                <div class="order-detail-section" id="order-details">
+                    <div class="text-center py-5">
+                        <i class="bi bi-box-seam text-muted" style="font-size: 2.5rem;"></i>
+                        <p class="mt-3">Select an order to view details</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Global variables
+        let allOrders = [];
+        let filteredOrders = [];
+        let selectedOrderId = null;
+        let currentFilter = 'all';
+        let currentSort = '-order_id';
+        let dateFrom = '';
+        let dateTo = '';
+        let currentCategory = 'all';
+        let searchQuery = '';
+        let currentAdmin = 'all'; // For superadmin filtering
+        let isSuperadmin = {% if request.session.role == 'superadmin' %}true{% else %}false{% endif %};
+        
+        // DOM Elements
+        const ordersList = document.getElementById('orders-list');
+        const orderDetails = document.getElementById('order-details');
+        const orderCountText = document.getElementById('order-count-text');
+        const statusFilters = document.querySelectorAll('.status-filter');
+        const dateFromInput = document.getElementById('date_from');
+        const dateToInput = document.getElementById('date_to');
+        const applyDateBtn = document.getElementById('apply-date-filter');
+        const sortSelect = document.getElementById('sort');
+        const categorySelect = document.getElementById('category-filter');
+        const searchInput = document.getElementById('search-input');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const adminSelect = isSuperadmin ? document.getElementById('admin-filter') : null;
+        
+        // Set CSRF token for AJAX requests
+        const csrfToken = getCookie('csrftoken');
+        
+        // Initialization
+        if (isSuperadmin) {
+            fetchAdmins();
+        }
+        fetchOrders();
+        
+        // Event Listeners
+        statusFilters.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update UI for selected filter
+                statusFilters.forEach(b => {
+                    const filterType = b.dataset.filter;
+                    const btnType = getButtonType(filterType);
+                    b.classList.remove(`btn-${btnType}`);
+                    b.classList.add(`btn-outline-${btnType}`);
+                });
+                
+                const filterType = this.dataset.filter;
+                const btnType = getButtonType(filterType);
+                this.classList.remove(`btn-outline-${btnType}`);
+                this.classList.add(`btn-${btnType}`);
+                
+                // Apply filter
+                currentFilter = filterType;
+                applyFilters();
+            });
+        });
+        
+        applyDateBtn.addEventListener('click', function() {
+            dateFrom = dateFromInput.value;
+            dateTo = dateToInput.value;
+            applyFilters();
+        });
+        
+        sortSelect.addEventListener('change', function() {
+            currentSort = this.value;
+            applyFilters();
+        });
+        
+        categorySelect.addEventListener('change', function() {
+            currentCategory = this.value;
+            applyFilters();
+        });
+        
+        if (isSuperadmin && adminSelect) {
+            adminSelect.addEventListener('change', function() {
+                currentAdmin = this.value;
+                applyFilters();
+            });
+        }
+        
+        // Debounce search input
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchQuery = this.value.trim();
+                applyFilters();
+            }, 500);
+        });
+        
+        // Helper function to get button type based on filter
+        function getButtonType(filter) {
+            switch(filter) {
+                case 'completed': return 'success';
+                case 'ongoing': return 'warning';
+                case 'pending_payment': return 'danger';
+                default: return 'primary';
+            }
+        }
+        
+        // Functions
+        function fetchAdmins() {
+            if (!isSuperadmin) return;
+            
+            fetch('/api/get-admins/', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+                
+                let html = '<option value="all">All Admins</option>';
+                data.admins.forEach(admin => {
+                    html += `<option value="${admin.admin_id}">${admin.first_name} ${admin.last_name}</option>`;
+                });
+                adminSelect.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error fetching admins:', error);
+            });
+        }
+        
+        function fetchOrders() {
+            showLoading(true);
+            
+            // Build URL with query parameters
+            const url = new URL(window.location.pathname, window.location.origin);
+            if (currentFilter !== 'all') url.searchParams.append('status', currentFilter);
+            if (dateFrom) url.searchParams.append('date_from', dateFrom);
+            if (dateTo) url.searchParams.append('date_to', dateTo);
+            if (currentCategory !== 'all') url.searchParams.append('category', currentCategory);
+            if (searchQuery) url.searchParams.append('search', searchQuery);
+            url.searchParams.append('sort', currentSort);
+            
+            // Add admin filter for superadmin
+            if (isSuperadmin && currentAdmin !== 'all') {
+                url.searchParams.append('admin_id', currentAdmin);
+            }
+            
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                allOrders = data.orders;
+                
+                // Convert string dates to Date objects for easier handling
+                allOrders.forEach(order => {
+                    order.orderDateObj = new Date(order.order_date);
+                    if (order.delivery_date) {
+                        order.deliveryDateObj = new Date(order.delivery_date);
+                    }
+                });
+                
+                // Set filtered orders to all orders initially
+                filteredOrders = [...allOrders];
+                
+                // Update order count text
+                updateOrderCountText();
+                
+                // Render the orders list
+                renderOrdersList();
+                
+                // Update selected order if needed
+                updateSelectedOrder();
+                
+                // Render order details
+                renderOrderDetails();
+                
+                showLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching orders:', error);
+                ordersList.innerHTML = `
+                    <div class="list-group-item">
+                        <div class="text-center text-danger py-3">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            Error loading orders: ${error.message}
+                        </div>
+                    </div>
+                `;
+                showLoading(false);
+            });
+        }
+        
+        function applyFilters() {
+            showLoading(true);
+            fetchOrders();
+            updateURL();
+        }
+        
+        function updateOrderCountText() {
+            const count = filteredOrders.length;
+            orderCountText.textContent = `${count} ${count === 1 ? 'order' : 'orders'} found`;
+        }
+        
+        function renderOrdersList() {
+            if (filteredOrders.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="list-group-item">
+                        <div class="text-center py-3">
+                            <i class="bi bi-search me-2"></i>
+                            No orders match your filters
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            filteredOrders.forEach(order => {
+                const isActive = order.order_id === selectedOrderId;
+                const statusClass = order.delivery_status === 1 ? 'status-completed' : 'status-pending';
+                const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
+                const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
+                
+                html += `
+                    <div class="list-group-item order-item ${isActive ? 'active' : ''}" 
+                         data-order-id="${order.order_id}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <span class="fw-medium">Order #${order.order_id}</span>
+                                <span class="order-status ms-2">
+                                    <span class="order-status-icon ${statusClass}"></span>
+                                    <small>${paymentStatusBadge}</small>
+                                </span>
+                            </div>
+                            <small class="text-muted">${formatDate(order.order_date)}</small>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <div>
+                                <small class="text-muted">${getCategoryName(order.product_category_id)}</small>
+                                <small class="d-block">${order.customer_full_name}</small>
+                                ${isSuperadmin && order.admin_name ? `<small class="d-block text-muted">Admin: ${order.admin_name}</small>` : ''}
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-medium">₹${order.overall_amount.toLocaleString()}</div>
+                                <small>${deliveryStatusBadge}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            ordersList.innerHTML = html;
+            
+            // Add click event listeners
+            document.querySelectorAll('#orders-list .order-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const orderId = parseInt(this.dataset.orderId);
+                    
+                    // Update selected order
+                    document.querySelectorAll('#orders-list .order-item').forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    selectedOrderId = orderId;
+                    renderOrderDetails();
+                    updateURL();
+                });
+            });
+        }
+        
+        function updateSelectedOrder() {
+            if (!selectedOrderId || !filteredOrders.some(order => order.order_id === selectedOrderId)) {
+                selectedOrderId = filteredOrders.length > 0 ? filteredOrders[0].order_id : null;
+            }
+        }
+        
+        function renderOrderDetails() {
+            if (!selectedOrderId) {
+                orderDetails.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-box-seam text-muted" style="font-size: 2.5rem;"></i>
+                        <p class="mt-3">Select an order to view details</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const order = filteredOrders.find(o => o.order_id === selectedOrderId);
+            if (!order) {
+                orderDetails.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-exclamation-triangle text-muted" style="font-size: 2.5rem;"></i>
+                        <p class="mt-3">Order not found</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
+            const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
+            
+            // For superadmin, show admin information
+            let adminInfoHtml = '';
+            if (isSuperadmin && order.admin_id) {
+                adminInfoHtml = `
+                    <div class="detail-section">
+                        <h6>Admin Information</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td class="text-muted">Admin ID:</td>
+                                <td>${order.admin_id}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Admin Name:</td>
+                                <td>${order.admin_name || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Admin Email:</td>
+                                <td>${order.admin_email || 'N/A'}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            // Order items section
+            let orderItemsHtml = '';
+            if (order.product_category_id === 3) { // Multiple items (pesticides)
+                orderItemsHtml = `
+                    <div class="detail-section">
+                        <h6>Order Items</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped items-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Batch #</th>
+                                        <th>Expiry</th>
+                                        <th>Quantity</th>
+                                        <th>Price/Unit</th>
+                                        <th>Unit</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${order.order_items.map(item => `
+                                        <tr>
+                                            <td>${item.product_name}</td>
+                                            <td>${item.batch_number}</td>
+                                            <td>${item.expiry_date !== 'N/A' ? formatDate(item.expiry_date) : 'N/A'}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>₹${item.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                            <td>${item.unit}</td>
+                                            <td>₹${item.total_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fw-bold">
+                                        <td colspan="6" class="text-end">Total:</td>
+                                        <td>₹${order.overall_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // For single item orders (rice or paddy)
+                const productName = order.product_category_id === 1 ? 'Rice' : 'Paddy';
+                orderItemsHtml = `
+                    <div class="detail-section">
+                        <h6>Order Items</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td class="text-muted">Product Type:</td>
+                                <td>${productName}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Quantity:</td>
+                                <td>${order.quantity || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Price Per Unit:</td>
+                                <td>₹${order.price_per_unit ? order.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Total Amount:</td>
+                                <td class="fw-medium">₹${order.overall_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            orderDetails.innerHTML = `
+                <div class="detail-header">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="fw-bold">Order #${order.order_id}</h5>
+                            <p class="text-muted mb-0">Placed on ${formatDate(order.order_date)}</p>
+                        </div>
+                        <div>
+                            ${paymentStatusBadge} ${deliveryStatusBadge}
+                        </div>
+                    </div>
+                </div>
+                
+                ${adminInfoHtml}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="detail-section">
+                            <h6>Customer Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Customer ID:</td>
+                                    <td>${order.customer_id}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Customer Name:</td>
+                                    <td>${order.customer_full_name}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Phone:</td>
+                                    <td>${order.customer_phone || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">GST:</td>
+                                    <td>${order.GST || 'N/A'}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="detail-section">
+                            <h6>Payment Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Total Amount:</td>
+                                    <td>₹${order.overall_amount.toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Paid Amount:</td>
+                                    <td>₹${order.paid_amount.toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Balance:</td>
+                                    <td>₹${(order.overall_amount - order.paid_amount).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Payment Terms:</td>
+                                    <td>${order.payment_deadline || 0} days</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Status:</td>
+                                    <td>${paymentStatusBadge}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                ${orderItemsHtml}
+                
+                <div class="detail-section">
+                    <h6>Delivery Information</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Delivery Date:</td>
+                                    <td>${formatDate(order.delivery_date) || 'Not scheduled'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Status:</td>
+                                    <td>${deliveryStatusBadge}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Vehicle Number:</td>
+                                    <td>${order.lorry_number || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Driver:</td>
+                                    <td>${order.driver_name || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Driver Phone:</td>
+                                    <td>${order.driver_ph_no || 'N/A'}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            `;
+            
+            // Add highlight animation
+            orderDetails.classList.add('highlight');
+            setTimeout(() => {
+                orderDetails.classList.remove('highlight');
+            }, 1000);
+        }
+        
+        // Helper Functions
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+        
+        function getCategoryName(categoryId) {
+            switch(parseInt(categoryId)) {
+                case 1: return 'Rice';
+                case 2: return 'Paddy';
+                case 3: return 'Pesticide';
+                default: return 'Other';
+            }
+        }
+        
+        function getPaymentStatusBadge(status) {
+            switch(parseInt(status)) {
+                case 0: return '<span class="badge bg-danger">Unpaid</span>';
+                case 1: return '<span class="badge bg-warning text-dark">Partially Paid</span>';
+                case 2: return '<span class="badge bg-success">Fully Paid</span>';
+                default: return '<span class="badge bg-secondary">Unknown</span>';
+            }
+        }
+        
+        function getDeliveryStatusBadge(status) {
+            return status === 1 
+                ? '<span class="badge bg-success">Delivered</span>' 
+                : '<span class="badge bg-warning text-dark">Processing</span>';
+        }
+        
+        function showLoading(isLoading) {
+            loadingSpinner.classList.toggle('d-none', !isLoading);
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // URL handling for browser history and bookmarking
+        function updateURL() {
+            const url = new URL(window.location.href);
+            
+            if (currentFilter !== 'all') url.searchParams.set('status', currentFilter);
+            else url.searchParams.delete('status');
+            
+            if (dateFrom) url.searchParams.set('date_from', dateFrom);
+            else url.searchParams.delete('date_from');
+            
+            if (dateTo) url.searchParams.set('date_to', dateTo);
+            else url.searchParams.delete('date_to');
+            
+            url.searchParams.set('sort', currentSort);
+            
+            if (selectedOrderId) url.searchParams.set('order_id', selectedOrderId);
+            else url.searchParams.delete('order_id');
+            
+            if (currentCategory !== 'all') url.searchParams.set('category', currentCategory);
+            else url.searchParams.delete('category');
+            
+            if (searchQuery) url.searchParams.set('search', searchQuery);
+            else url.searchParams.delete('search');
+            
+            if (isSuperadmin && currentAdmin !== 'all') {
+                url.searchParams.set('admin_id', currentAdmin);
+            } else {
+                url.searchParams.delete('admin_id');
+            }
+            
+            window.history.replaceState({}, '', url);
+        }
+        
+        // Order status update functions (these would need backend endpoints)
+        window.updateOrderDeliveryStatus = function(orderId, status) {
+            if (confirm(`Are you sure you want to ${status === 1 ? 'mark this order as delivered' : 'change this order back to processing'}?`)) {
+                fetch('/api/update-order-delivery-status/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        delivery_status: status
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    
+                    // Show success message
+                    alert('Order status updated successfully!');
+                    
+                    // Refresh orders to show updated status
+                    fetchOrders();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating the order status.');
+                });
+            }
+        };
+        
+        window.recordPayment = function(orderId) {
+            // Implementation would depend on your system's payment recording functionality
+            alert('Payment recording functionality to be implemented');
+        };
+        
+        window.viewPaymentHistory = function(orderId) {
+            // Implementation would depend on your system's payment history tracking
+            alert('Payment history functionality to be implemented');
+        };
+        
+        window.sendPaymentReminder = function(orderId) {
+            // Implementation would depend on your system's notification functionality
+            alert('Payment reminder functionality to be implemented');
+        };
+        
+        // Initialize from URL parameters
+        function initFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('status')) {
+                currentFilter = urlParams.get('status');
+                
+                // Update status filter buttons
+                statusFilters.forEach(btn => {
+                    const filterType = btn.dataset.filter;
+                    const btnType = getButtonType(filterType);
+                    
+                    btn.classList.remove('btn-primary', 'btn-success', 'btn-warning', 'btn-danger');
+                    btn.classList.add(`btn-outline-${btnType}`);
+                    
+                    if (filterType === currentFilter) {
+                        btn.classList.remove(`btn-outline-${btnType}`);
+                        btn.classList.add(`btn-${btnType}`);
+                    }
+                });
+            }
+            
+            if (urlParams.has('date_from')) {
+                dateFrom = urlParams.get('date_from');
+                dateFromInput.value = dateFrom;
+            }
+            
+            if (urlParams.has('date_to')) {
+                dateTo = urlParams.get('date_to');
+                dateToInput.value = dateTo;
+            }
+            
+            if (urlParams.has('sort')) {
+                currentSort = urlParams.get('sort');
+                sortSelect.value = currentSort;
+            }
+            
+            if (urlParams.has('order_id')) {
+                selectedOrderId = parseInt(urlParams.get('order_id'));
+            }
+            
+            if (urlParams.has('category')) {
+                currentCategory = urlParams.get('category');
+                categorySelect.value = currentCategory;
+            }
+            
+            if (urlParams.has('search')) {
+                searchQuery = urlParams.get('search');
+                searchInput.value = searchQuery;
+            }
+            
+            if (isSuperadmin && urlParams.has('admin_id')) {
+                currentAdmin = urlParams.get('admin_id');
+                // We'll set the adminSelect value after it's loaded
+            }
+        }
+        
+        // Initialize from URL if parameters exist
+        initFromURL();
+        
+        // Handle browser back/forward
+        window.addEventListener('popstate', function() {
+            initFromURL();
+            fetchOrders();
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

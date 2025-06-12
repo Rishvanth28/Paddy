@@ -1063,6 +1063,262 @@ def superadmin_subscription_review(request):
     # If not POST, redirect to the list view
     return redirect('superadmin_subscription')
 
+@role_required(["superadmin"])
+def super_admin_orders(request):
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+
+        user_id = request.session.get("user_id")
+        role = request.session.get("role")
+
+        if not user_id or not role:
+            return JsonResponse({'error': 'Authentication required'}, status=401)
+
+        orders_query = Orders.objects.all()
+
+        if role == 'admin':
+            # Admins can only see orders associated with their customers
+            try:
+                admin_instance = AdminTable.objects.get(admin_id=user_id)
+                customer_ids_for_admin = CustomerTable.objects.filter(admin=admin_instance).values_list('customer_id', flat=True)
+                orders_query = orders_query.filter(customer__customer_id__in=customer_ids_for_admin)
+            except AdminTable.DoesNotExist:
+                return JsonResponse({'error': 'Admin not found'}, status=404)
+
+        # Apply filters from query parameters
+        status_filter = request.GET.get('status', 'all')
+        date_from_str = request.GET.get('date_from')
+        date_to_str = request.GET.get('date_to')
+        category_filter = request.GET.get('category', 'all')
+        search_query = request.GET.get('search', '').strip()
+        sort_by = request.GET.get('sort', '-order_id') # Default sort by latest order
+
+        # Status filter
+        if status_filter == 'completed':
+            orders_query = orders_query.filter(delivery_status=1)
+        elif status_filter == 'ongoing':
+            orders_query = orders_query.filter(delivery_status=0)
+        elif status_filter == 'pending_payment':
+            orders_query = orders_query.filter(payment_status=0)
+        elif status_filter == 'recent':
+            seven_days_ago = timezone.now().date() - timedelta(days=7)
+            orders_query = orders_query.filter(order_date__gte=seven_days_ago)
+
+        # Date range filter
+        if date_from_str:
+            try:
+                date_from = date.fromisoformat(date_from_str)
+                orders_query = orders_query.filter(order_date__gte=date_from)
+            except ValueError:
+                pass # Invalid date format, ignore filter
+        if date_to_str:
+            try:
+                date_to = date.fromisoformat(date_to_str)
+                orders_query = orders_query.filter(order_date__lte=date_to)
+            except ValueError:
+                pass # Invalid date format, ignore filter
+
+        # Category filter
+        if category_filter != 'all':
+            try:
+                category_id = int(category_filter)
+                orders_query = orders_query.filter(product_category_id=category_id)
+            except ValueError:
+                pass # Invalid category ID, ignore filter
+
+        # Search filter (order ID, customer ID, customer name)
+        if search_query:
+            orders_query = orders_query.filter(
+                Q(order_id__icontains=search_query) |
+                Q(customer__customer_id__icontains=search_query) |
+                Q(customer__first_name__icontains=search_query) |
+                Q(customer__last_name__icontains=search_query)
+            )
+
+        # Apply sorting
+        orders_query = orders_query.order_by(sort_by)
+
+        orders_data = []
+        for order in orders_query:
+            order_items_data = []
+            if order.product_category_id == 3: # Assuming 3 is for multiple items
+                for item in order.items.all():
+                    order_items_data.append({
+                        'product_name': item.product_name,
+                        'batch_number': item.batch_number,
+                        'expiry_date': str(item.expiry_date),
+                        'quantity': item.quantity,
+                        'price_per_unit': float(item.price_per_unit),
+                        'total_amount': float(item.total_amount),
+                        'unit': item.unit,
+                    })
+            else:
+                # For single item orders, infer product name
+                product_name = "Paddy" if order.product_category_id == 2 else "Rice" if order.product_category_id == 1 else "Unknown"
+                order_items_data.append({
+                    'product_name': product_name,
+                    'quantity': order.quantity,
+                    'price_per_unit': float(order.price_per_unit),
+                    'total_amount': float(order.overall_amount),
+                    'batch_number': 'N/A', # Not applicable for single items based on current model
+                    'expiry_date': 'N/A', # Not applicable for single items based on current model
+                    'unit': 'N/A', # Not applicable for single items based on current model
+                })
+
+            customer_full_name = f"{order.customer.first_name} {order.customer.last_name}" if order.customer else "N/A"
+
+            orders_data.append({
+                'order_id': order.order_id,
+                'customer_id': order.customer.customer_id if order.customer else None,
+                'customer_full_name': customer_full_name,
+                'admin_id': order.admin.admin_id if order.admin else None,
+                'payment_status': order.payment_status,
+                'delivery_status': order.delivery_status,
+                'product_category_id': order.product_category_id,
+                'category': order.category,
+                'quantity': float(order.quantity),
+                'price_per_unit': float(order.price_per_unit),
+                'overall_amount': float(order.overall_amount),
+                'GST': order.GST,
+                'lorry_number': order.lorry_number,
+                'driver_name': order.driver_name,
+                'delivery_date': str(order.delivery_date),
+                'driver_ph_no': order.driver_ph_no,
+                'order_date': str(order.order_date),
+                'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
+                'order_items': order_items_data,
+            })
+        return JsonResponse({'orders': orders_data})
+
+    return render(request, "superadmin_orders.html")
+
+@role_required(["admin"])
+def admin_orders(request):
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+
+        user_id = request.session.get("user_id")
+        role = request.session.get("role")
+
+        if not user_id or not role:
+            return JsonResponse({'error': 'Authentication required'}, status=401)
+
+        orders_query = Orders.objects.all()
+
+        if role == 'admin':
+            # Admins can only see orders associated with their customers
+            try:
+                admin_instance = AdminTable.objects.get(admin_id=user_id)
+                customer_ids_for_admin = CustomerTable.objects.filter(admin=admin_instance).values_list('customer_id', flat=True)
+                orders_query = orders_query.filter(customer__customer_id__in=customer_ids_for_admin)
+            except AdminTable.DoesNotExist:
+                return JsonResponse({'error': 'Admin not found'}, status=404)
+
+        # Apply filters from query parameters
+        status_filter = request.GET.get('status', 'all')
+        date_from_str = request.GET.get('date_from')
+        date_to_str = request.GET.get('date_to')
+        category_filter = request.GET.get('category', 'all')
+        search_query = request.GET.get('search', '').strip()
+        sort_by = request.GET.get('sort', '-order_id') # Default sort by latest order
+
+        # Status filter
+        if status_filter == 'completed':
+            orders_query = orders_query.filter(delivery_status=1)
+        elif status_filter == 'ongoing':
+            orders_query = orders_query.filter(delivery_status=0)
+        elif status_filter == 'pending_payment':
+            orders_query = orders_query.filter(payment_status=0)
+        elif status_filter == 'recent':
+            seven_days_ago = timezone.now().date() - timedelta(days=7)
+            orders_query = orders_query.filter(order_date__gte=seven_days_ago)
+
+        # Date range filter
+        if date_from_str:
+            try:
+                date_from = date.fromisoformat(date_from_str)
+                orders_query = orders_query.filter(order_date__gte=date_from)
+            except ValueError:
+                pass # Invalid date format, ignore filter
+        if date_to_str:
+            try:
+                date_to = date.fromisoformat(date_to_str)
+                orders_query = orders_query.filter(order_date__lte=date_to)
+            except ValueError:
+                pass # Invalid date format, ignore filter
+
+        # Category filter
+        if category_filter != 'all':
+            try:
+                category_id = int(category_filter)
+                orders_query = orders_query.filter(product_category_id=category_id)
+            except ValueError:
+                pass # Invalid category ID, ignore filter
+
+        # Search filter (order ID, customer ID, customer name)
+        if search_query:
+            orders_query = orders_query.filter(
+                Q(order_id__icontains=search_query) |
+                Q(customer__customer_id__icontains=search_query) |
+                Q(customer__first_name__icontains=search_query) |
+                Q(customer__last_name__icontains=search_query)
+            )
+
+        # Apply sorting
+        orders_query = orders_query.order_by(sort_by)
+
+        orders_data = []
+        for order in orders_query:
+            order_items_data = []
+            if order.product_category_id == 3: # Assuming 3 is for multiple items
+                for item in order.items.all():
+                    order_items_data.append({
+                        'product_name': item.product_name,
+                        'batch_number': item.batch_number,
+                        'expiry_date': str(item.expiry_date),
+                        'quantity': item.quantity,
+                        'price_per_unit': float(item.price_per_unit),
+                        'total_amount': float(item.total_amount),
+                        'unit': item.unit,
+                    })
+            else:
+                # For single item orders, infer product name
+                product_name = "Paddy" if order.product_category_id == 2 else "Rice" if order.product_category_id == 1 else "Unknown"
+                order_items_data.append({
+                    'product_name': product_name,
+                    'quantity': order.quantity,
+                    'price_per_unit': float(order.price_per_unit),
+                    'total_amount': float(order.overall_amount),
+                    'batch_number': 'N/A', # Not applicable for single items based on current model
+                    'expiry_date': 'N/A', # Not applicable for single items based on current model
+                    'unit': 'N/A', # Not applicable for single items based on current model
+                })
+
+            customer_full_name = f"{order.customer.first_name} {order.customer.last_name}" if order.customer else "N/A"
+
+            orders_data.append({
+                'order_id': order.order_id,
+                'customer_id': order.customer.customer_id if order.customer else None,
+                'customer_full_name': customer_full_name,
+                'admin_id': order.admin.admin_id if order.admin else None,
+                'payment_status': order.payment_status,
+                'delivery_status': order.delivery_status,
+                'product_category_id': order.product_category_id,
+                'category': order.category,
+                'quantity': float(order.quantity),
+                'price_per_unit': float(order.price_per_unit),
+                'overall_amount': float(order.overall_amount),
+                'GST': order.GST,
+                'lorry_number': order.lorry_number,
+                'driver_name': order.driver_name,
+                'delivery_date': str(order.delivery_date),
+                'driver_ph_no': order.driver_ph_no,
+                'order_date': str(order.order_date),
+                'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
+                'order_items': order_items_data,
+            })
+        return JsonResponse({'orders': orders_data})
+
+    return render(request, "admin_orders.html")
+
 @role_required(["customer"])
 def upgrade_to_admin(request):
     customer_id = request.session.get('user_id')

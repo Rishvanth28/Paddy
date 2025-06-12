@@ -19,7 +19,10 @@ urlpatterns = [
     path("admin-place-order/", place_order, name="admin_place_order"),
     path("admin-add-subscription/", admin_add_subscription, name="admin_add_subscription"),
     path("upgrade-plan/", upgrade_plan, name="upgrade_plan"),
-
+    
+    path('admin-orders/', admin_orders, name='admin_orders'),
+    path('super-admin-orders/', super_admin_orders, name='super_admin_orders'),
+    
     path('customer/dashboard/',customer_dashboard, name='customer_dashboard'), 
     path('customer-list/',customers_under_admin, name='customer_list'),
     path('admin_customer-list/',customers_under_admin, name='admin_customer_list'),
