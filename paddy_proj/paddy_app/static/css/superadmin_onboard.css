@@ -336,7 +336,7 @@ body {
 }
 
 /* Submit Button */
-button[type="submit"] {
+/* button[type="submit"] {
     display: block;
     margin: 10px auto 0;
     padding: 12px 30px;
@@ -351,7 +351,7 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: #222;
-}
+} */
 
 /* Flash Messages */
 #message-container {
@@ -429,4 +429,31 @@ button[type="submit"]:hover {
     font-size: 24px;
     font-weight: lighter;
     color: #1a202c;
+}
+
+/* Sidebar Footer Consistency Fix: Enforce canonical style for sidebar footer */
+.sidebar-footer, .footer-logo, .logout-form, .logout-button {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.01em;
+}
+.footer-logo {
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    margin-bottom: 16px;
+}
+.logout-button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+.logout-button:hover {
+    background-color: #d32f2f;
 }

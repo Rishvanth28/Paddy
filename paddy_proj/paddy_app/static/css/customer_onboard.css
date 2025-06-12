@@ -310,7 +310,7 @@ body {
 }
 
 /* Form Submit Button Global */
-button[type="submit"] {
+.create-cutomer-button button[type="submit"] {
     display: block;
     margin: 10px auto 0;
     padding: 12px 30px;
@@ -318,7 +318,7 @@ button[type="submit"] {
     background-color: #000;
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px !important;
     cursor: pointer;
     transition: background-color 0.3s ease;
     font-family: 'Inter', 'Segoe UI', sans-serif;

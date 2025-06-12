@@ -16,24 +16,70 @@
         <div class="right-section">
             <div class="login-section">
                 <h1><span class="highlight">Hey !</span> <br> Welcome Back</h1>
-                <form method="POST" action="{% url 'login' %}">
-                    {% csrf_token %}  <!-- Security Token -->
-                    
-                    <label class="text" for="role">SELECT ROLE</label>
-                    <select name="role" id="role">
-                        <option value="superadmin">Superadmin</option>
-                        <option value="admin">Admin</option>
-                        <option value="customer">Customer</option>
-                    </select>
+                
+                <!-- Main tabs -->
+                <div class="tab-container">
+                    <div class="tab-nav">
+                        <button class="login tab-btn active" data-tab="signin">Sign In</button>
+                        <button class="login tab-btn" data-tab="signup">Sign Up</button>
+                    </div>
 
-                    <label class="text" for="username">USERNAME</label>
-                    <input type="text" name="username" id="username">
-                    
-                    <label class="text" for="password">PASSWORD</label>
-                    <input type="password" name="password" id="password">
-                    
-                    <button class="login" type="submit">LOG IN</button>
-                </form>
+                    <!-- Sign In Tab -->
+                    <div class="tab-content active" id="signin">
+                        <form method="POST" action="{% url 'login' %}">
+                            {% csrf_token %}  <!-- Security Token -->
+
+                            <label class="text" for="role">SELECT ROLE</label>
+                            <select name="role" id="role">
+                                <option value="superadmin">Superadmin</option>
+                                <option value="admin">Admin</option>
+                                <option value="customer">Customer</option>
+                            </select>
+                        
+                            <label class="text" for="username">USERNAME</label>
+                            <input type="text" name="username" id="username">
+
+                            <label class="text" for="password">PASSWORD</label>
+                            <input type="password" name="password" id="password">
+
+                            <button class="login" type="submit">LOG IN</button>
+                        </form>
+                    </div>                    
+                    <!-- Sign Up Tab -->
+                    <div class="tab-content" id="signup">
+                        <form method="POST" id="signupForm">
+                            {% csrf_token %}
+                            <label class="text" for="signup-role">SELECT ROLE</label>
+                            <select name="signup_role" id="signup-role">
+                                <option value="customer">Customer</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <!-- Add URL variables for JavaScript -->
+                            <script>
+                                const adminSignupUrl = "{% url 'admin_signup' %}";
+                                const customerSignupUrl = "{% url 'customer_signup' %}";
+                            </script>
+
+                            <label class="text" for="signup-name">NAME</label>
+                            <input type="text" name="name" id="signup-name" required>
+                            
+                            <label class="text" for="signup-phone">PHONE NUMBER</label>
+                            <input type="tel" name="phone_number" id="signup-phone" required>
+                            
+                            <label class="text" for="signup-email">EMAIL</label>
+                            <input type="email" name="email" id="signup-email" required>
+                            
+                            <label class="text" for="signup-password">PASSWORD</label>
+                            <input type="password" name="password" id="signup-password" required>
+                            
+                            <label class="text" for="signup-confirm-password">CONFIRM PASSWORD</label>
+                            <input type="password" name="confirm_password" id="signup-confirm-password" required>
+                            
+                            <button class="login" type="submit">SIGN UP</button>
+                        </form>
+                    </div>
+
+                </div>
 
                 <!-- Show error messages -->
                 {% if messages %}

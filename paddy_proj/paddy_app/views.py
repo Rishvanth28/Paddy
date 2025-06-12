@@ -244,7 +244,6 @@ def create_customer(request):
 
     return render(request, "onboard.html" if is_superadmin else "customer_onboard.html")
 
-
 @role_required(["superadmin", "admin"])
 def place_order(request):
     role = request.session.get("role")
@@ -288,8 +287,7 @@ def place_order(request):
             )
             
             # Now proceed with order creation
-            if temp_data["product_category_id"] != "3":
-                # Regular order flow
+            if temp_data["product_category_id"] != "3":                # Regular order flow
                 customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
                 gst = customer.GST
 
@@ -303,6 +301,7 @@ def place_order(request):
                     payment_status=0,
                     delivery_status=0,
                     product_category_id=temp_data["product_category_id"],
+                    category=temp_data.get("category"),  # Add category field
                     quantity=quantity,
                     price_per_unit=price_per_unit,
                     overall_amount=overall_amount,
@@ -324,14 +323,14 @@ def place_order(request):
                 # Multiple products order flow
                 customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
                 gst = customer.GST
-                
-                # Create order
+                  # Create order
                 order = Orders.objects.create(
                     customer=customer,
                     admin=AdminTable.objects.get(admin_id=admin_id),
                     payment_status=0,
                     quantity=0,
                     product_category_id=temp_data["product_category_id"],
+                    category=temp_data.get("category"),  # Add category field
                     GST=gst,
                     lorry_number=temp_data["lorry_number"],
                     driver_name=temp_data["driver_name"],
@@ -389,9 +388,7 @@ def place_order(request):
             
         except Exception as e:
             messages.error(request, f"Payment verification failed: {str(e)}")
-            return redirect("place_order" if is_superadmin else "admin_place_order")
-
-    # Handle AJAX request for creating Razorpay order
+            return redirect("place_order" if is_superadmin else "admin_place_order")    # Handle AJAX request for creating Razorpay order
     elif request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Store order data temporarily
         temp_data = {}
@@ -401,6 +398,7 @@ def place_order(request):
             temp_data = {
                 "customer_id": request.POST.get("customer"),
                 "product_category_id": request.POST.get("product_category_id"),
+                "category": request.POST.get("category"),  # Add category field
                 "quantity": request.POST.get("quantity"),
                 "price_per_unit": request.POST.get("price_per_unit"),
                 "lorry_number": request.POST.get("vehicle_number"),
@@ -414,6 +412,7 @@ def place_order(request):
             temp_data = {
                 "customer_id": request.POST.get("customer"),
                 "product_category_id": request.POST.get("product_category_id"),
+                "category": request.POST.get("category"),  # Add category field
                 "lorry_number": request.POST.get("vehicle_number"),
                 "driver_name": request.POST.get("driver_name"),
                 "driver_ph_no": request.POST.get("driver_ph_no"),
@@ -1399,3 +1398,86 @@ def view_customer_subscribers(request):
         "subscriptions": customer_subscriptions,
         "user_type": "customer",  # Added for dynamic display in HTML
     })
+
+def customer_signup(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        phone_number = request.POST.get("phone_number", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password")
+
+        # Basic validation
+        if not (name and phone_number and email and password):
+            messages.error(request, "All fields are required.")
+            return redirect("login")
+
+        # Check if phone number or email already exists
+        if CustomerTable.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "Phone number already registered.")
+            return redirect("login")
+
+        if CustomerTable.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return redirect("login")
+
+        try:
+            names = name.split(maxsplit=1)
+            first_name = names[0]
+            last_name = names[1] if len(names) > 1 else ""
+
+            CustomerTable.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                email=email,
+                password=password
+            )
+            messages.success(request, "Account created successfully! Please login.")
+            return redirect("login")
+        except Exception as e:
+            messages.error(request, "Failed to create account. Please try again.")
+            return redirect("login")
+
+    return redirect("login")
+
+def admin_signup(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        phone_number = request.POST.get("phone_number", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password")
+
+        # Basic validation
+        if not (name and phone_number and email and password):
+            messages.error(request, "All fields are required.")
+            return redirect("login")
+
+        # Check if phone number or email already exists
+        if AdminTable.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "Phone number already registered.")
+            return redirect("login")
+
+        if AdminTable.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return redirect("login")
+
+        try:
+            names = name.split(maxsplit=1)
+            first_name = names[0]
+            last_name = names[1] if len(names) > 1 else ""
+
+            AdminTable.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                email=email,
+                password=password,
+                user_count=50  # Default user count for new admins
+            )
+            messages.success(request, "Account created successfully! Please login.")
+            return redirect("login")
+        except Exception as e:
+            messages.error(request, "Failed to create account. Please try again.")
+            return redirect("login")
+
+    return redirect("login")

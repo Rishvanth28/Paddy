@@ -6,16 +6,13 @@ html {
 body, .customer-list-container,
 .customer-title, .search-input,
 .customer-table th, .customer-table td,
-.empty-state, .empty-state p,
-.logout-button, .footer-logo {
+.empty-state, .empty-state p {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1rem;
-    font-weight: 400;
 }
 
 /* Customer List Page - Clean Left-Aligned */
 .customer-list-container {
-    padding: 2.5rem;
     min-height: 100vh;
     transition: all var(--transition-speed) ease;
     animation: fadeIn 0.5s ease-out;
@@ -268,7 +265,53 @@ body, .customer-list-container,
     }
 }
 
-.footer-logo, .logout-button {
+/* Remove sidebar footer overrides to ensure consistency with admin_base.css */
+/* .footer-logo, .logout-button {
     font-size: 1rem !important;
-    font-weight: 500 !important;
+} */
+
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 3rem;
+    margin-top: 3rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 1px;
+    color: #000000;
+    position: relative;
+    text-transform: uppercase;
+    padding-bottom: 0.6rem;
+    text-align: left;
+    /* <-- Ensure left alignment */
+}
+
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    /* initial width */
+    height: 4px;
+    background-color: #000000;
+    border-radius: 2px;
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    /* added transition for both properties */
+}
+
+.page-title:hover::after {
+    width: 110%;
+    /* makes the underline grow */
+    transform: translateX(-50%);
+    /* keep it centered */
 }

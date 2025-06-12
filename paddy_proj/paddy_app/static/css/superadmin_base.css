@@ -21,36 +21,12 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
-  line-height: 1.6;
-  display: flex;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Messages */
-.messages-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1100;
-  max-width: 400px;
-  width: 90%;
-}
-
-.messages {
-  list-style: none;
-  padding: 0;
-}
-
-.messages li {
-  padding: 12px 20px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  box-shadow: var(--shadow);
-  animation: fadeIn 0.3s ease-out;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
 
 @keyframes fadeIn {
@@ -284,7 +260,6 @@ body {
 
 .has-submenu.open .submenu {
   max-height: 500px;
-  padding: 8px 0;
 }
 
 .submenu-item {
@@ -391,10 +366,31 @@ body {
   .main-content {
     padding: 15px;
   }
+}
 
-  .messages-container {
-    top: 10px;
-    right: 10px;
+/* Block site on mobile devices (<= 720px) */
+@media (max-width: 720px) {
+  body::before {
+    content: 'Mobile view is not supported. Please use a device with a larger screen.';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: #23272f;
+    color: #fff;
+    font-size: 1.4rem;
+    text-align: center;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  body > *:not(style):not(script) {
+    filter: blur(8px) grayscale(1) brightness(0.7);
+    pointer-events: none !important;
+    user-select: none !important;
   }
 }
 

@@ -44,6 +44,73 @@
     position: relative;
 }
 
+/* Tab Container */
+.tab-container {
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* Tab Navigation */
+.tab-nav {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Sub-tabs for Sign Up */
+.subtab-nav {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.subtab-btn {
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+}
+
+.subtab-btn.active {
+    color: #8888ff;
+    font-weight: 600;
+}
+
+.subtab-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.3s ease;
+}
+
+.subtab-content.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .image-overlay {
     position: absolute;
     width: 100%;
@@ -75,7 +142,8 @@ form {
     margin-top: 5vh;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align input fields to the left */
+    align-items: flex-start;
+    /* Align input fields to the left */
 }
 
 label {
@@ -84,7 +152,8 @@ label {
     margin-top: 15px;
 }
 
-input, select {
+input,
+select {
     width: 60%;
     padding: 10px;
     margin-top: 5px;
@@ -95,31 +164,76 @@ input, select {
 }
 
 select {
-    background-color: #8888ff;
-    opacity: 0.9;
-    font-size: medium;
-    font-weight: bold;
-    appearance: none;        /* Hide default styles */
+    width: 60%;
+    padding: 12px;
+    padding-right: 40px;
+    /* Space for arrow */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #95A4FC;
+    font-size: 1rem;
+    font-weight: 500;
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px 20px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
 }
 
-option{
+select:focus {
+    border-color: #8888ff;
+    outline: none;
+}
+
+
+option {
     background-color: white;
 }
 
 /* Button - Centered */
 button {
-    background-color: black;
+    margin: 20px 0 0 0;
+    padding: 10px 24px;
+    background-color: #000000;
     color: white;
-    padding: 12px 20px;
     border: none;
+    border-radius: 6px;
+    font-size: 16px;
     cursor: pointer;
-    border-radius: 20px;
-    margin-top: 20px;
-    width: 100px;
-    text-align: center;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    align-self: flex-start;
 }
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-20deg);
+    transition: all 0.5s ease;
+    z-index: 0;
+}
+
+button:hover::before {
+    left: 125%;
+    transition: all 0.75s ease-in-out;
+}
+
 
 /* Alert Messages - Moved to Top Right */
 .messages {
@@ -136,9 +250,11 @@ button {
     font-size: 16px;
     font-weight: bold;
     max-width: 300px;
-    background-color: #ff4d4d;
-    color: white;
+    background-color: var(--message-bg, #f5f5f5);
+    color: var(--message-fg, #222);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border: 1.5px solid var(--message-border, #e53935);
+    transition: background 0.2s, color 0.2s, border 0.2s;
 }
 
 .messages li {
@@ -152,19 +268,113 @@ button {
     text-align: left;
 }
 
+/* Theme: Light */
+:root {
+    --message-bg: #f5f5f5;
+    --message-fg: #222;
+    --message-border: #e53935;
+}
+
+/* Theme: Dark */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --message-bg: #23272f;
+        --message-fg: #fff;
+        --message-border: #8888ff;
+    }
+}
+
+/* Success, Error, Info, Warning Styles */
+.messages li.success,
+.messages li.message-success {
+    color: #388e3c;
+}
+
+.messages li.error,
+.messages li.message-error {
+    color: #e53935;
+}
+
+.messages li.info,
+.messages li.message-info {
+    color: #1976d2;
+}
+
+.messages li.warning,
+.messages li.message-warning {
+    color: #fbc02d;
+}
+
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Hide duplicate containers if any */
-.messages + .messages, #messages-wrapper + #messages-wrapper {
+.messages+.messages,
+#messages-wrapper+#messages-wrapper {
     display: none !important;
 }
 
-input, select {
+input,
+select {
     padding: 12px;
     border-radius: 8px;
+}
+
+/* Form Fields */
+.login-section form {
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.login-section input,
+.login-section select {
+    width: 60%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-bottom: 1px solid #000;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.login-section input:focus,
+.login-section select:focus {
+    border-color: #8888ff;
+    outline: none;
+}
+
+.login-section button[type="submit"] {
+    margin: 20px 0 0 0;
+    padding: 10px 24px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    align-self: flex-start;
+    width: auto;
+}
+
+.login-section button[type="submit"]:hover {
+    background-color: #333;
 }
 
 /* Mobile View Adjustments */
@@ -187,19 +397,20 @@ input, select {
     /* Login Form Section */
     .right-section {
         width: 100%;
+        height: 60vh;
         padding: 50px;
         background: white;
-        border-top-left-radius: 40px;
-        border-top-right-radius: 40px;
-        position: absolute;
-        bottom: 0;
-        z-index: 10; /* Ensure form is on top */
-        box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.1); /* Add shadow to separate sections */
+        border-radius: 40px 40px 0 0;
+        margin-top: -20px;
+        position: relative;
+        z-index: 2;
+        overflow-y: auto;
     }
 
-    /* Ensure Form is Pushed Down */
+    /* Container Adjustments */
     .login-section {
-        margin-top: 10px; /* Adjust if needed */
+        margin: 0;
+        padding-bottom: 20px;
     }
 
     /* LOGO Placement */
@@ -213,7 +424,9 @@ input, select {
     }
 
     /* Full-width Inputs and Buttons */
-    input, select, button {
+    input,
+    select,
+    button {
         width: 100%;
         padding: 12px;
         border-radius: 8px;
@@ -225,5 +438,82 @@ input, select {
         border-radius: 20px;
         text-transform: uppercase;
         font-weight: bold;
+    }
+}
+
+/* Block site on mobile devices (<= 720px) */
+@media (max-width: 720px) {
+
+    html,
+    body {
+        width: 100vw !important;
+        height: 100vh !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        z-index: 99999;
+        top: 0;
+        left: 0;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: linear-gradient(135deg, #23272f 60%, #4f5b93 100%);
+        display: block;
+    }
+
+    #mobile-block-message {
+        position: fixed;
+        z-index: 100000;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        pointer-events: all;
+        background: transparent;
+    }
+
+    #mobile-block-message .icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+    }
+
+    #mobile-block-message .text {
+        color: #fff;
+        font-size: 1.25rem;
+        font-family: 'Inter', Arial, sans-serif;
+        text-align: center;
+        padding: 0 2rem;
+        letter-spacing: 0.01em;
+        font-weight: 500;
+        line-height: 1.6;
+        background: rgba(35, 39, 47, 0.85);
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    body>*:not(style):not(script):not(#mobile-block-message) {
+        filter: blur(8px) grayscale(1) brightness(0.7);
+        pointer-events: none !important;
+        user-select: none !important;
+    }
+}
+
+@media (max-width: 720px) {
+
+    /* Insert the overlay message via JS if not present */
+    html:not([data-mobile-block]) body {
+        position: relative;
     }
 }

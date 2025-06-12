@@ -77,6 +77,7 @@ class CustomerTable(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} (Customer)"
+# ...existing code...
 class Orders(models.Model):
     order_id = models.BigAutoField(primary_key=True)
     customer = models.ForeignKey(CustomerTable, on_delete=models.CASCADE)
@@ -85,6 +86,7 @@ class Orders(models.Model):
     overall_amount = models.BigIntegerField(default=0)
     paid_amount = models.BigIntegerField(null=True, blank=True)
     product_category_id = models.IntegerField()
+    category = models.CharField(max_length=255, null=True, blank=True)  # New category field
     quantity = models.IntegerField()
     price_per_unit = models.FloatField(default=0.0)
     GST = models.CharField(max_length=50, null=True, blank=True)
@@ -97,6 +99,7 @@ class Orders(models.Model):
     payment_deadline = models.IntegerField(default=90)  # in days
     def __str__(self):
         return f"Order {self.order_id} - Customer: {self.customer.first_name} {self.customer.last_name}"
+
 
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='items')

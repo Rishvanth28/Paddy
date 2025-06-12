@@ -26,18 +26,15 @@
 </head>
 
 <body>
-    
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h1 class="page-title mb-0 me-3 i18n" data-i18n="placeNewOrder">Place New Order</h1>
     </div>
-
     <!-- Tab Buttons -->
     <div class="tab-header">
         <button class="tab-button active i18n" data-i18n="rice" type="button" onclick="showForm('Rice')">Rice</button>
         <button class="tab-button i18n" data-i18n="paddy" type="button" onclick="showForm('Paddy')">Paddy</button>
         <button class="tab-button i18n" data-i18n="pesticide" type="button" onclick="showForm('Pesticide')">Pesticide</button>
     </div>
-
     <div class="form-container">
         <!-- RICE FORM -->
         <div id="rice-form" class="form-card">
@@ -46,28 +43,21 @@
             <form method="POST" id="rice-order-form" class="order-form">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="1">
-        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-rice">First Name</label>
                         <select name="customer" id="customer-select-rice" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option 
-                                value="{{ customer.customer_id }}" 
-                                data-last-name="{{ customer.last_name }}">
-                                {{ customer.first_name }} {{ customer.last_name }}
-                            </option>
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }} {{ customer.last_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-        
                     <div class="form-group">
                         <label for="customer-last-name-rice">Last Name</label>
                         <input type="text" id="customer-last-name-rice" readonly>
                     </div>
                 </div>
-        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
@@ -78,37 +68,35 @@
                         <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
-        
                 <label for="driver_ph_no">Driver Phone No*</label>
                 <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
-        
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
-        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
                         <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">
                     </div>
                     <div class="form-group">
+                        <label for="category-rice">Category</label>
+                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required>
+                    </div>
+                    <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
                         <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01">
                     </div>
                 </div>
-        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
                         <input type="date" name="delivery_date" required>
                     </div>
                 </div>
-        
                 <div class="form-actions">
-                    <button type="button" id="rice-submit-btn" onclick="submitOrderForm('rice-order-form', 1)" disabled>Place Rice Order</button>
+                    <button type="submit" id="rice-submit-btn">Place Rice Order</button>
                 </div>
             </form>
         </div>
-
         <!-- PADDY FORM -->
         <div style="display: none;" id="paddy-form" class="form-card">
             <h3 class="i18n" data-i18n="customerDetails">Customer Details <span title="Fill customer information">ⓘ</span></h3>
@@ -116,28 +104,21 @@
             <form method="POST" id="paddy-order-form" class="order-form">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="2">
-        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-paddy">First Name</label>
                         <select name="customer" id="customer-select-paddy" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option 
-                                value="{{ customer.customer_id }}" 
-                                data-last-name="{{ customer.last_name }}">
-                                {{ customer.first_name }} {{ customer.last_name }}
-                            </option>
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }} {{ customer.last_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-        
                     <div class="form-group">
                         <label for="customer-last-name-paddy">Last Name</label>
                         <input type="text" id="customer-last-name-paddy" readonly>
                     </div>
                 </div>
-        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
@@ -148,10 +129,8 @@
                         <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
-        
                 <label for="driver_ph_no">Driver Phone No*</label>
                 <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
-        
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
@@ -164,20 +143,17 @@
                         <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01">
                     </div>
                 </div>
-        
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
                         <input type="date" name="delivery_date" required>
                     </div>
                 </div>
-        
                 <div class="form-actions">
-                    <button type="button" id="paddy-submit-btn" onclick="submitOrderForm('paddy-order-form', 2)" disabled>Place Paddy Order</button>
+                    <button type="submit" id="paddy-submit-btn">Place Paddy Order</button>
                 </div>
             </form>
         </div>
-        
         <!-- PESTICIDE FORM -->
         <div style="display: none;" id="pesticide-form" class="form-card">
             <h3 class="i18n" data-i18n="customerDetails">Customer Details <span title="Fill customer information">ⓘ</span></h3>
@@ -185,28 +161,21 @@
             <form method="POST" id="pesticide-order-form" class="order-form">
                 {% csrf_token %}
                 <input type="hidden" name="product_category_id" value="3">
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-pesticide">First Name</label>
                         <select name="customer" id="customer-select-pesticide" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option 
-                                value="{{ customer.customer_id }}" 
-                                data-last-name="{{ customer.last_name }}">
-                                {{ customer.first_name }} {{ customer.last_name }}
-                            </option>
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }} {{ customer.last_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="customer-last-name-pesticide">Last Name</label>
                         <input type="text" id="customer-last-name-pesticide" readonly>
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
@@ -217,17 +186,13 @@
                         <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
-    
-
                 <label for="driver_ph_no">Driver Phone No*</label>
                 <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
-        
-
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="items-section">
                     <h3>Order Items</h3>
-                    <table id="items-table" class="items-table">
+                    <table id="pesticide-items-table" class="items-table">
                         <thead>
                             <tr>
                                 <th>Product Name</th>
@@ -240,19 +205,13 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="items-container">
+                        <tbody id="pesticide-items-container">
                             <tr class="item-row">
-                                <td>
-                                    <input type="text" name="product_name[]" class="product-name" required>
-                                </td>
-                                <td>
-                                    <input type="text" name="batch_number[]" class="batch-number" required>
-                                </td>
-                                <td>
-                                    <input type="date" name="expiry_date[]" class="expiry-date" required>
-                                </td>
-                                <td><input type="number" name="quantity[]" class="quantity" step="0.01" required onchange="calculateRowTotal(this)"></td>
-                                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" required onchange="calculateRowTotal(this)"></td>
+                                <td><input type="text" name="product_name[]" class="product-name" required></td>
+                                <td><input type="text" name="batch_number[]" class="batch-number" required></td>
+                                <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
+                                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
+                                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
                                 <td>
                                     <select name="unit[]" class="unit" required>
                                         <option value="Nos">Nos</option>
@@ -260,32 +219,23 @@
                                         <option value="Ltr">Ltr</option>
                                     </select>
                                 </td>
-                                <td>
-                                    <input type="number" name="total_amount[]" class="row-total" step="0.01" readonly>
-                                </td>
-                                <td>
-                                    <button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button>
-                                </td>
+                                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
+                                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="6" style="text-align: right;"><strong>Total:</strong></td>
-                                <td>
-                                    <input type="number" id="grand-total" name="grand_total" step="0.01" readonly>
-                                </td>
+                                <td><input type="number" id="pesticide-grand-total" name="grand_total" step="0.01" readonly></td>
                                 <td></td>
                             </tr>
                         </tfoot>
                     </table>
-                
-                    <div style="margin-top: 1rem;">
-                        <button type="button" id="add-item-btn" onclick="addNewRow()">+ Add Item</button>
+                    <div class="form-row" style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
+                        <button type="button" id="pesticide-add-item-btn" class="add-item-btn" onclick="addPesticideRow()">+ Add Item</button>
+                        <button type="button" id="pesticide-save-btn" class="submit-btn" style="background:#2196F3;" onclick="savePesticideOrderDraft()" disabled>Save Order</button>
+                        <button type="submit" id="pesticide-submit-btn" class="submit-btn">Place Pesticide Order</button>
                     </div>
-                </div>
-        
-                <div class="form-actions">
-                    <button style="margin-top: 2vh;" type="button" id="paddy-submit-btn" onclick="submitOrderForm('pesticide-order-form', 3)" disabled>Place Pesticide Order</button>
                 </div>
             </form>
         </div>
@@ -349,16 +299,15 @@
         // Razorpay integration
         function submitOrderForm(formId, categoryId) {
             const form = document.getElementById(formId);
-            
-            // Create FormData object
             const formData = new FormData(form);
-            
-            // Send form data to server using fetch API
+            // Get CSRF token from the form
+            const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]').value;
             fetch("{% url 'place_order' %}", {
                 method: "POST",
                 body: formData,
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": csrfToken
                 }
             })
             .then(response => response.json())
@@ -377,46 +326,62 @@
                             const paymentForm = document.createElement('form');
                             paymentForm.method = 'POST';
                             paymentForm.action = "{% url 'place_order' %}";
-                            
                             // Add CSRF token
-                            const csrfToken = document.createElement('input');
-                            csrfToken.type = 'hidden';
-                            csrfToken.name = 'csrfmiddlewaretoken';
-                            csrfToken.value = '{{ csrf_token }}';
-                            paymentForm.appendChild(csrfToken);
-                            
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = 'csrfmiddlewaretoken';
+                            csrfInput.value = csrfToken;
+                            paymentForm.appendChild(csrfInput);
                             // Add payment response fields
                             const paymentId = document.createElement('input');
                             paymentId.type = 'hidden';
                             paymentId.name = 'razorpay_payment_id';
                             paymentId.value = response.razorpay_payment_id;
                             paymentForm.appendChild(paymentId);
-                            
                             const orderId = document.createElement('input');
                             orderId.type = 'hidden';
                             orderId.name = 'razorpay_order_id';
                             orderId.value = response.razorpay_order_id;
                             paymentForm.appendChild(orderId);
-                            
                             const signature = document.createElement('input');
                             signature.type = 'hidden';
                             signature.name = 'razorpay_signature';
                             signature.value = response.razorpay_signature;
                             paymentForm.appendChild(signature);
-                            
                             // Add to DOM and submit
                             document.body.appendChild(paymentForm);
                             paymentForm.submit();
                         },
                         theme: {
                             color: "#3399cc"
+                        },
+                        method: {
+                            netbanking: true,
+                            card: true,
+                            upi: true,
+                            wallet: true,
+                            paylater: true
+                        },
+                        config: {
+                            display: {
+                                blocks: {
+                                    paylater: {
+                                        name: "Pay Later",
+                                        instruments: [
+                                            { method: "paylater" }
+                                        ]
+                                    }
+                                },
+                                sequence: ["block.paylater", "block.cards", "block.netbanking", "block.upi", "block.wallet"],
+                                preferences: {
+                                    show_default_blocks: true
+                                }
+                            }
                         }
                     };
-                    
                     const rzp = new Razorpay(options);
                     rzp.open();
                 } else {
-                    // Handle errors
                     alert(data.message || "An error occurred");
                 }
             })
@@ -425,6 +390,31 @@
                 alert("An error occurred while processing your request");
             });
         }
+
+        // Attach submit event listeners to all forms
+        document.addEventListener('DOMContentLoaded', function() {
+            const riceForm = document.getElementById('rice-order-form');
+            const paddyForm = document.getElementById('paddy-order-form');
+            const pesticideForm = document.getElementById('pesticide-order-form');
+            if (riceForm) {
+                riceForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitOrderForm('rice-order-form', 1);
+                });
+            }
+            if (paddyForm) {
+                paddyForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitOrderForm('paddy-order-form', 2);
+                });
+            }
+            if (pesticideForm) {
+                pesticideForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitOrderForm('pesticide-order-form', 3);
+                });
+            }
+        });
     </script>
 
     <!-- Tab Switch Script -->
@@ -443,6 +433,10 @@
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.tab-button[onclick="showForm('${formType}')"]`).classList.add('active');
         }
+        // Show only the first form on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            showForm('Rice');
+        });
     </script>
 
     <!-- Customer last name script for all forms -->
@@ -695,6 +689,90 @@
         
         input:required:invalid, select:required:invalid {
             border-left: 3px solid #ff6b6b;
+        }
+        .add-item-btn {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            transition: background 0.2s, box-shadow 0.2s;
+            margin-right: 0.5rem;
+        }
+        .add-item-btn:hover:not(:disabled) {
+            background: #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .submit-btn, .form-actions button {
+            background: #fff;
+            color: #e53935;
+            border: 1.5px solid #e53935;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: none;
+        }
+        .submit-btn:hover:not(:disabled), .form-actions button:hover:not(:disabled) {
+            background: #e53935;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(229,57,53,0.13);
+        }
+        .submit-btn.ready, .form-actions button.ready {
+            background: #e53935;
+            color: #fff;
+        }
+        #pesticide-save-btn {
+            background: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+            margin-right: 0.5rem;
+        }
+        #pesticide-save-btn:hover:not(:disabled) {
+            background: #1565c0;
+            box-shadow: 0 4px 12px rgba(33,150,243,0.13);
+        }
+        .remove-row-btn {
+            background: #fff;
+            color: #e53935;
+            border: 1.5px solid #e53935;
+            border-radius: 50px;
+            padding: 0.3rem 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .remove-row-btn:hover:not(:disabled) {
+            background: #e53935;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(229,57,53,0.13);
+        }
+        .order-placed-success {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            z-index: 9999;
+            box-shadow: 0 4px 16px rgba(76,175,80,0.18);
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
     </style>
 </body>
