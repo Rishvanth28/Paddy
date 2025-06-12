@@ -104,7 +104,7 @@
                 </div>
         
                 <div class="form-actions">
-                    <button type="button" id="rice-submit-btn" onclick="submitOrderForm('rice-form', 1)" disabled>Place Rice Order</button>
+                    <button type="button" id="rice-submit-btn" onclick="submitOrderForm('rice-order-form', 1)" disabled>Place Rice Order</button>
                 </div>
             </form>
         </div>
@@ -173,7 +173,7 @@
                 </div>
         
                 <div class="form-actions">
-                    <button type="button" id="paddy-submit-btn" onclick="submitOrderForm('paddy-form', 2)" disabled>Place Paddy Order</button>
+                    <button type="button" id="paddy-submit-btn" onclick="submitOrderForm('paddy-order-form', 2)" disabled>Place Paddy Order</button>
                 </div>
             </form>
         </div>
@@ -251,12 +251,8 @@
                                 <td>
                                     <input type="date" name="expiry_date[]" class="expiry-date" required>
                                 </td>
-                                <td>
-                                    <input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required>
-                                </td>
-                                <td>
-                                    <input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required>
-                                </td>
+                               <td><input type="number" name="quantity[]" class="quantity" step="0.01" required onchange="calculateRowTotal(this)"></td>
+                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" required onchange="calculateRowTotal(this)"></td>
                                 <td>
                                     <select name="unit[]" class="unit" required>
                                         <option value="Nos">Nos</option>
@@ -289,7 +285,7 @@
                 </div>
         
                 <div class="form-actions">
-                    <button style="margin-top: 2vh;" type="button" id="paddy-submit-btn" onclick="submitOrderForm('paddy-form', 2)" disabled>Place Pesticide Order</button>
+                    <button style="margin-top: 2vh;" type="button" id="paddy-submit-btn" onclick="submitOrderForm('pesticide-order-form', 3)" disabled>Place Pesticide Order</button>
                 </div>
             </form>
         </div>
@@ -344,6 +340,7 @@
             document.querySelectorAll(".row-total").forEach(input => {
                 grandTotal += parseFloat(input.value) || 0;
             });
+            console.log("Grand Total:", grandTotal);
             document.getElementById("grand-total").value = grandTotal.toFixed(2);
         }
     </script>
