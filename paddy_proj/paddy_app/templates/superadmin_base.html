@@ -123,13 +123,19 @@
             <img class="nav-icon" src="{% static 'media/Group 2.png' %}" alt="Admins">
             <span class="nav-text">Admins</span>
           </a>
-        </li>
-
-        <!-- Place Order -->
+        </li>        <!-- Place Order -->
         <li class="nav-item">
           <a href="{% url 'place_order' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
             <span class="nav-text">Place Order</span>
+          </a>
+        </li>
+
+        <!-- Notifications -->
+        <li class="nav-item">
+          <a href="{% url 'superadmin_notifications' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Notifications">
+            <span class="nav-text">Admin Activities</span>
           </a>
         </li>
 

@@ -77,7 +77,7 @@ class CustomerTable(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} (Customer)"
-# ...existing code...
+
 class Orders(models.Model):
     order_id = models.BigAutoField(primary_key=True)
     customer = models.ForeignKey(CustomerTable, on_delete=models.CASCADE)
@@ -154,4 +154,42 @@ class UserIncreaseSubscription(models.Model):
     end_date = models.DateField(null=True, blank=True)
     additional_users = models.IntegerField(default=50)  # Number of additional users added
     def __str__(self):
-        return f"Subscription {self.sid}"    
+        return f"Subscription {self.sid}"
+
+
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('order_placed', 'Order Placed'),
+        ('payment_received', 'Payment Received'),
+        ('order_delivered', 'Order Delivered'),
+        ('subscription_payment', 'Subscription Payment'),
+        ('subscription_upgrade', 'Subscription Upgrade'),
+        ('subscription_expiry', 'Subscription Expiry Warning'),
+        ('user_limit_reached', 'User Limit Reached'),
+        ('admin_payment', 'Admin Payment Made'),
+        ('general', 'General Notification'),
+    ]
+    
+    USER_TYPES = [
+        ('customer', 'Customer'),
+        ('admin', 'Admin'),
+        ('superadmin', 'Super Admin'),
+    ]
+    
+    notification_id = models.BigAutoField(primary_key=True)
+    user_type = models.CharField(max_length=20, choices=USER_TYPES)
+    user_id = models.CharField(max_length=50)  # Can store customer_id or admin_id
+    notification_type = models.CharField(max_length=30, choices=NOTIFICATION_TYPES)
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    related_order_id = models.BigIntegerField(null=True, blank=True)  # Reference to order if applicable
+    related_payment_id = models.BigIntegerField(null=True, blank=True)  # Reference to payment if applicable
+    related_subscription_id = models.BigIntegerField(null=True, blank=True)  # Reference to subscription if applicable
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user_type} - {self.title} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
