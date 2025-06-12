@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 <ul class="messages">
     {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
+    <li class="{{ message.tags }}">{{ message }}</li>
     {% endfor %}
 </ul>
 <script>
@@ -14,14 +14,14 @@
             let messages = document.querySelectorAll('.messages');
             messages.forEach((message) => {
                 message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
+                setTimeout(() => message.remove(), 100);
             });
         }, 5000);
     });
 </script>
 {% endif %}
+
 <head>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/admin_customers.css' %}">
 </head>
@@ -42,18 +42,17 @@
 
         </div>
         <div class="card">
-            <!-- Table Section -->
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Customer ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Company</th>
-                            <th>GST</th>
-                            <th>Action</th>
+                            <th class="i18n" data-i18n="customerID">Customer ID</th>
+                            <th class="i18n" data-i18n="name">Name</th>
+                            <th class="i18n" data-i18n="email">Email</th>
+                            <th class="i18n" data-i18n="phone">Phone</th>
+                            <th class="i18n" data-i18n="company">Company</th>
+                            <th class="i18n" data-i18n="gst">GST</th>
+                            <th class="i18n" data-i18n="actions">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,7 +76,7 @@
                         </tr>
                         {% empty %}
                         <tr class="no-customers">
-                            <td colspan="7">No customers found for this admin.</td>
+                            <td colspan="7" class="i18n" data-i18n="noCustomersFound">No customers found for this admin.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -86,14 +85,13 @@
 
         </div>
         <div class="btn-back-wrapper">
-            <a href="/view-admins" class="btn-back">
+            <a href="/view-admins" class="btn-back i18n" data-i18n="backToAdminList">
                 <i class="fas fa-arrow-left me-2"></i> Back to Admin List
             </a>
         </div>
 
     </div>
 
-    <!-- Script -->
     <script src="{% static 'js/admin_customers.js' %}" defer></script>
 </body>
 

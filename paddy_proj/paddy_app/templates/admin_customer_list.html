@@ -4,29 +4,27 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}" />
 <div class="customer-list-container">
-    <!-- Header with Title and Search -->
     <div class="customer-header">
-            <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-                <h1 class="page-title mb-0 me-3 i18n" data-i18n="placeNewOrder">Customer List</h1>
-            </div>
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+            <h1 class="page-title mb-0 me-3 i18n" data-i18n="customerList">Customer List</h1>
+        </div>
         <form class="search-form" method="GET" action="">
             <i class="fas fa-search search-icon"></i>
             <input type="search" name="q" class="search-input" placeholder="Search customers...">
         </form>
     </div>
 
-    <!-- Customer Table -->
     <div class="customer-table-container">
         {% if customers %}
         <table class="customer-table">
             <thead>
                 <tr>
-                    <th>Customer ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Company</th>
-                    <th>GST</th>
+                    <th class="i18n" data-i18n="customerID">Customer ID</th>
+                    <th class="i18n" data-i18n="fullName">Full Name</th>
+                    <th class="i18n" data-i18n="email">Email</th>
+                    <th class="i18n" data-i18n="phone">Phone</th>
+                    <th class="i18n" data-i18n="company">Company</th>
+                    <th class="i18n" data-i18n="gst">GST</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,32 +45,69 @@
             <div class="empty-icon">
                 <i class="fas fa-user-friends"></i>
             </div>
-            <p>No customers found for this admin.</p>
+            <p class="i18n" data-i18n="noCustomersFound">No customers found for this admin.</p>
         </div>
         {% endif %}
     </div>
 </div>
 
-<!-- Messages handling (same as your original) -->
 {% if messages %}
 <div class="messages-container">
     <ul class="messages">
         {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
+        <li class="{{ message.tags }}">{{ message }}</li>
         {% endfor %}
     </ul>
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        setTimeout(function() {
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
             let messages = document.querySelectorAll('.messages');
             messages.forEach((message) => {
                 message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
+                setTimeout(() => message.remove(), 100);
             });
         }, 5000);
     });
 </script>
+<!-- Translation Script -->
+  <script>
+    let translations = {};
+    let currentLanguage = 'en';
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      const savedLanguage = localStorage.getItem('preferred_language') || 'en';
+      await loadTranslations(savedLanguage);
+      document.getElementById('language-select').value = savedLanguage;
+    });
+
+    async function changeLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('preferred_language', lang);
+      await loadTranslations(lang);
+    }
+
+    async function loadTranslations(lang) {
+      try {
+        const response = await fetch(`{% static 'js/i18n/' %}${lang}.json`);
+        if (!response.ok) return;
+        translations = await response.json();
+        updatePageText();
+      } catch (error) {
+        console.error('Translation error:', error);
+      }
+    }
+
+    function updatePageText() {
+      const elements = document.querySelectorAll('.i18n');
+      elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[key]) {
+          el.textContent = translations[key];
+        }
+      });
+    }
+  </script>
 {% endif %}
 
 {% endblock %}
