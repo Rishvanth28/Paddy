@@ -677,6 +677,10 @@
                                     <td class="text-muted">Category:</td>
                                     <td>${getCategoryName(order.product_category_id)}</td>
                                 </tr>
+                                <tr>
+                                    <td class="text-muted">Category:</td>
+                                    <td>${order.category}</td>
+                                </tr>
                                 ${order.product_category_id === 3 ? '' : `
                                 <tr>
                                     <td class="text-muted">Quantity:</td>
@@ -691,6 +695,7 @@
                                     <td class="text-muted">Total Amount:</td>
                                     <td class="fw-medium">₹${order.overall_amount.toLocaleString()}</td>
                                 </tr>
+                                
                             </table>
                         </div>
                         <div class="col-md-6">

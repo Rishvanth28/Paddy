@@ -534,9 +534,9 @@ def customer_orders(request):
             'lorry_number': order.lorry_number,
             'driver_name': order.driver_name,
             'driver_ph_no': order.driver_ph_no,
-            'product_category_id': order.product_category_id
+            'product_category_id': order.product_category_id,
+            'category': order.category,  # Include category field
         } for order in orders]
-        
         return JsonResponse({'orders': orders_data})
     
     # For regular page load, just render the template (JS will fetch data)
