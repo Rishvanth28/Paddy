@@ -209,7 +209,7 @@
 }
 
 /* Block site on mobile devices (<= 720px) */
-@media (max-width: 720px) {
+/* @media (max-width: 720px) {
   body::before {
     content: 'Mobile view is not supported. Please use a device with a larger screen.';
     display: flex;
@@ -232,4 +232,4 @@
     pointer-events: none !important;
     user-select: none !important;
   }
-}
+} */
