@@ -139,7 +139,6 @@ h1 {
 }
 
 form {
-    margin-top: 5vh;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -153,7 +152,8 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
     width: 60%;
     padding: 10px;
     margin-top: 5px;
@@ -161,6 +161,15 @@ select {
     border-bottom: 1px solid #000;
     outline: none;
     box-sizing: border-box;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: inherit;
+    width: 165%;
 }
 
 select {
@@ -331,7 +340,6 @@ select {
 
 /* Form Fields */
 .login-section form {
-    margin-top: 5vh;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -375,6 +383,37 @@ select {
 
 .login-section button[type="submit"]:hover {
     background-color: #333;
+}
+
+/* Customer Fields Transition */
+#customer-fields {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+#customer-fields label {
+    margin-top: 15px;
+}
+
+#customer-fields textarea {
+    width: 60%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 80px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+#customer-fields textarea:focus {
+    border-color: #8888ff;
+    outline: none;
+}
+
+#customer-fields input,
+#customer-fields textarea {
+    background-color: #fff;
 }
 
 /* Mobile View Adjustments */
@@ -516,4 +555,25 @@ select {
     html:not([data-mobile-block]) body {
         position: relative;
     }
+}
+
+/* Form Card */
+.form-card {
+    width: 100%;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+/* Grid Layout for Form */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 75%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
