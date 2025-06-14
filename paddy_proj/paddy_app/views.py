@@ -1186,6 +1186,7 @@ def super_admin_orders(request):
                 'order_date': str(order.order_date),
                 'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
                 'order_items': order_items_data,
+                'category': order.category,
             })
         return JsonResponse({'orders': orders_data})
 
@@ -1314,6 +1315,7 @@ def admin_orders(request):
                 'order_date': str(order.order_date),
                 'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
                 'order_items': order_items_data,
+                'category': order.category,
             })
         return JsonResponse({'orders': orders_data})
 
