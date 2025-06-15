@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .models import *
 from django.db import IntegrityError
 from datetime import date
@@ -24,6 +24,8 @@ from dotenv import load_dotenv
 import os
 from django.db.models import Case, When, Sum, Count, F
 from django.db.models.functions import ExtractMonth, ExtractYear
+import xlsxwriter
+import io
 
 load_dotenv()
 
@@ -1984,3 +1986,79 @@ def unified_report(request):
     }
     
     return render(request, "unified_report.html", context)
+
+@role_required(["superadmin", "admin"])
+def download_report_excel(request):
+    # Create Excel file in memory
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(output)
+    
+    # Get data based on role
+    admin_id = request.session.get("user_id")
+    role = request.session.get("role")
+    
+    # Formatting
+    header_format = workbook.add_format({'bold': True, 'bg_color': '#f4f4f4', 'border': 1})
+    cell_format = workbook.add_format({'border': 1})
+    
+    # Orders Sheet
+    sheet = workbook.add_worksheet('Orders')
+    headers = ['Order ID', 'Customer', 'Date', 'Category', 'Amount', 'Status']
+    
+    for col, header in enumerate(headers):
+        sheet.write(0, col, header, header_format)
+    
+    # Get orders
+    if role == "superadmin":
+        orders = Orders.objects.select_related('customer').all()
+    else:
+        orders = Orders.objects.select_related('customer').filter(admin__admin_id=admin_id)
+    
+    # Write orders data
+    for row, order in enumerate(orders, 1):
+        data = [
+            order.order_id,
+            f"{order.customer.first_name} {order.customer.last_name}",
+            order.order_date.strftime('%Y-%m-%d'),
+            order.category or 'N/A',
+            order.overall_amount,
+            'Paid' if order.payment_status == 1 else 'Unpaid'
+        ]
+        for col, value in enumerate(data):
+            sheet.write(row, col, value, cell_format)
+    
+    # Payments Sheet
+    sheet = workbook.add_worksheet('Payments')
+    headers = ['Payment ID', 'Order ID', 'Amount', 'Date', 'Method']
+    
+    for col, header in enumerate(headers):
+        sheet.write(0, col, header, header_format)
+    
+    # Get payments
+    if role == "superadmin":
+        payments = Payments.objects.select_related('order').all()
+    else:
+        payments = Payments.objects.select_related('order').filter(order__admin__admin_id=admin_id)
+    
+    # Write payments data
+    for row, payment in enumerate(payments, 1):
+        data = [
+            payment.payment_id,
+            payment.order.order_id if payment.order else 'N/A',
+            payment.amount,
+            payment.date.strftime('%Y-%m-%d'),
+            payment.payment_method
+        ]
+        for col, value in enumerate(data):
+            sheet.write(row, col, value, cell_format)
+    
+    # Close and return
+    workbook.close()
+    output.seek(0)
+    
+    response = HttpResponse(
+        output.getvalue(),
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="report_{timezone.now().strftime("%Y%m%d")}.xlsx"'
+    return response

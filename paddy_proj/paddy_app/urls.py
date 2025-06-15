@@ -56,6 +56,8 @@ urlpatterns = [
     path('mark_all_notifications_read/', mark_all_notifications_read, name='mark_all_notifications_read'),
     # Reports URLs
     path('unified-report/', unified_report, name='unified_report'),
+    path('download-report-excel/', download_report_excel, name='download_report_excel'),
+
 ]
 
 
