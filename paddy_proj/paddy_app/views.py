@@ -534,9 +534,9 @@ def customer_orders(request):
             'lorry_number': order.lorry_number,
             'driver_name': order.driver_name,
             'driver_ph_no': order.driver_ph_no,
-            'product_category_id': order.product_category_id
+            'product_category_id': order.product_category_id,
+            'category': order.category,  # Include category field
         } for order in orders]
-        
         return JsonResponse({'orders': orders_data})
     
     # For regular page load, just render the template (JS will fetch data)
@@ -1186,6 +1186,7 @@ def super_admin_orders(request):
                 'order_date': str(order.order_date),
                 'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
                 'order_items': order_items_data,
+                'category': order.category,
             })
         return JsonResponse({'orders': orders_data})
 
@@ -1314,6 +1315,7 @@ def admin_orders(request):
                 'order_date': str(order.order_date),
                 'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
                 'order_items': order_items_data,
+                'category': order.category,
             })
         return JsonResponse({'orders': orders_data})
 

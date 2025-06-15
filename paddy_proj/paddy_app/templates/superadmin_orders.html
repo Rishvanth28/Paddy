@@ -734,10 +734,10 @@
                     <div class="detail-section">
                         <h6>Order Items</h6>
                         <div class="table-responsive">
-                            <table class="table table-sm table-striped items-table">
-                                <thead>
+                            <table class="table table-sm table-striped items-table">                                <thead>
                                     <tr>
                                         <th>Product</th>
+                                        <th>Category</th>
                                         <th>Batch #</th>
                                         <th>Expiry</th>
                                         <th>Quantity</th>
@@ -750,6 +750,7 @@
                                     ${order.order_items.map(item => `
                                         <tr>
                                             <td>${item.product_name}</td>
+                                            <td>${item.category || 'N/A'}</td>
                                             <td>${item.batch_number}</td>
                                             <td>${item.expiry_date !== 'N/A' ? formatDate(item.expiry_date) : 'N/A'}</td>
                                             <td>${item.quantity}</td>
@@ -774,11 +775,14 @@
                 const productName = order.product_category_id === 1 ? 'Rice' : 'Paddy';
                 orderItemsHtml = `
                     <div class="detail-section">
-                        <h6>Order Items</h6>
-                        <table class="table table-sm">
+                        <h6>Order Items</h6>                        <table class="table table-sm">
                             <tr>
                                 <td class="text-muted">Product Type:</td>
                                 <td>${productName}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Category:</td>
+                                <td>${order.category || 'N/A'}</td>
                             </tr>
                             <tr>
                                 <td class="text-muted">Quantity:</td>

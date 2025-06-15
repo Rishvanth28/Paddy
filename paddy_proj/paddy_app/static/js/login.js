@@ -22,18 +22,36 @@ document.addEventListener('DOMContentLoaded', function() {
             button.classList.add('active');
             const tabId = button.getAttribute('data-tab');
             document.getElementById(tabId).classList.add('active');
-        });
-    });    // Handle signup form dynamic action
+        });    });
+
+    // Handle signup form dynamic action
     const signupForm = document.getElementById('signupForm');
     const signupRole = document.getElementById('signup-role');
-    
-    if (signupForm && signupRole) {
-        // Set initial form action
-        signupForm.action = signupRole.value === 'admin' ? adminSignupUrl : customerSignupUrl;
+      if (signupForm && signupRole) {
+        const customerFields = document.getElementById('customer-fields');
+        const companyField = document.getElementById('signup-company');
+        const addressField = document.getElementById('signup-address');
         
-        // Update form action when role changes
+        function updateFormForRole(role) {
+            // Update form action
+            signupForm.action = role === 'admin' ? adminSignupUrl : customerSignupUrl;
+            
+            // Toggle customer fields visibility
+            if (customerFields) {
+                customerFields.style.display = role === 'customer' ? 'block' : 'none';
+                
+                // Update required attributes for customer fields
+                if (companyField) companyField.required = role === 'customer';
+                if (addressField) addressField.required = role === 'customer';
+            }
+        }
+        
+        // Set initial state
+        updateFormForRole(signupRole.value);
+        
+        // Update when role changes
         signupRole.addEventListener('change', function() {
-            signupForm.action = this.value === 'admin' ? adminSignupUrl : customerSignupUrl;
+            updateFormForRole(this.value);
         });
     }
 
