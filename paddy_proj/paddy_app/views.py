@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .models import *
 from django.db import IntegrityError
 from datetime import date
@@ -22,6 +22,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from dotenv import load_dotenv
 import os
+from django.db.models import Case, When, Sum, Count, F
+from django.db.models.functions import ExtractMonth, ExtractYear
+import xlsxwriter
+import io
 
 load_dotenv()
 
@@ -862,7 +866,7 @@ def create_admin_user_increase_order(request):
         razorpay_order = client.order.create(data=razorpay_order_data)
 
         # Store necessary details in session for the verification step
-        request.session['user_increase_sub_id'] = subscription.sid
+        request.session['user_increase_sub_id'] = razorpay_order['id']
         request.session['user_increase_payment_amount'] = float(subscription.payment_amount)
         request.session['user_increase_razorpay_order_id'] = razorpay_order['id']
 
@@ -1844,11 +1848,10 @@ def admin_notifications(request):
 @role_required(["superadmin"])
 def superadmin_notifications(request):
     """Display notifications for superadmin"""
-    admin_id = request.session.get("user_id")
-    if not admin_id:
-        return redirect('login')
+    admin_id = request.session.get
     
     # Get all admin payment and subscription notifications
+   
     notifications = Notification.objects.filter(
         Q(user_type='admin', notification_type__in=['subscription_payment', 'subscription_upgrade', 'admin_payment']) |
         Q(user_type='superadmin', user_id=str(admin_id))
@@ -1903,3 +1906,159 @@ def mark_all_notifications_read(request):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
+
+@role_required(["superadmin", "admin"])
+def unified_report(request):
+    admin_id = request.session.get("user_id")
+    role = request.session.get("role")
+
+    # Get orders with order items and customer details
+    order_query = Orders.objects.select_related('customer', 'admin').prefetch_related('items')
+    payment_query = Payments.objects.select_related("order", "order__customer")
+
+    if role == "superadmin":
+        orders = order_query.all().order_by('-order_date')
+        payments = payment_query.all().order_by("-date")
+    else:
+        orders = order_query.filter(admin__admin_id=admin_id).order_by('-order_date')
+        payments = payment_query.filter(order__admin__admin_id=admin_id).order_by("-date")
+
+    # Calculate overall statistics
+    total_orders = orders.count()
+    total_payments = payments.aggregate(total=models.Sum('amount'))['total'] or 0
+    total_order_amount = orders.aggregate(total=models.Sum('overall_amount'))['total'] or 0
+    pending_amount = total_order_amount - total_payments
+
+    # Get payment status counts
+    paid_orders = orders.filter(payment_status=1).count()
+    unpaid_orders = orders.filter(payment_status=0).count()
+
+    # Group orders by category
+    category_stats = orders.values('category').annotate(
+        count=models.Count('order_id'),
+        total_amount=models.Sum('overall_amount'),
+        paid_amount=models.Sum(Case(
+            When(payment_status=1, then='overall_amount'),
+            default=0,
+            output_field=models.DecimalField(),
+        ))
+    ).order_by('-count')
+
+    # Get top products from OrderItems
+    top_products = OrderItems.objects.filter(
+        order__in=orders
+    ).values('product_name').annotate(
+        total_quantity=models.Sum('quantity'),
+        total_amount=models.Sum('total_amount')
+    ).order_by('-total_amount')[:10]
+
+    # Get monthly order trends
+    monthly_trends = orders.annotate(
+        month=ExtractMonth('order_date'),
+        year=ExtractYear('order_date')
+    ).values('month', 'year').annotate(
+        order_count=models.Count('order_id'),
+        total_amount=models.Sum('overall_amount')
+    ).order_by('year', 'month')
+
+    # Get payment methods distribution
+    payment_methods = payments.values('payment_method').annotate(
+        count=models.Count('payment_id'),
+        total_amount=models.Sum('amount')
+    ).order_by('-total_amount')
+
+    context = {
+        "orders": orders,
+        "payments": payments,
+        "statistics": {
+            "total_orders": total_orders,
+            "total_payments": total_payments,
+            "total_order_amount": total_order_amount,
+            "pending_amount": pending_amount,
+            "paid_orders": paid_orders,
+            "unpaid_orders": unpaid_orders,
+        },
+        "category_stats": category_stats,
+        "top_products": top_products,
+        "monthly_trends": monthly_trends,
+        "payment_methods": payment_methods,
+    }
+    
+    return render(request, "unified_report.html", context)
+
+@role_required(["superadmin", "admin"])
+def download_report_excel(request):
+    # Create Excel file in memory
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(output)
+    
+    # Get data based on role
+    admin_id = request.session.get("user_id")
+    role = request.session.get("role")
+    
+    # Formatting
+    header_format = workbook.add_format({'bold': True, 'bg_color': '#f4f4f4', 'border': 1})
+    cell_format = workbook.add_format({'border': 1})
+    
+    # Orders Sheet
+    sheet = workbook.add_worksheet('Orders')
+    headers = ['Order ID', 'Customer', 'Date', 'Category', 'Amount', 'Status']
+    
+    for col, header in enumerate(headers):
+        sheet.write(0, col, header, header_format)
+    
+    # Get orders
+    if role == "superadmin":
+        orders = Orders.objects.select_related('customer').all()
+    else:
+        orders = Orders.objects.select_related('customer').filter(admin__admin_id=admin_id)
+    
+    # Write orders data
+    for row, order in enumerate(orders, 1):
+        data = [
+            order.order_id,
+            f"{order.customer.first_name} {order.customer.last_name}",
+            order.order_date.strftime('%Y-%m-%d'),
+            order.category or 'N/A',
+            order.overall_amount,
+            'Paid' if order.payment_status == 1 else 'Unpaid'
+        ]
+        for col, value in enumerate(data):
+            sheet.write(row, col, value, cell_format)
+    
+    # Payments Sheet
+    sheet = workbook.add_worksheet('Payments')
+    headers = ['Payment ID', 'Order ID', 'Amount', 'Date', 'Method']
+    
+    for col, header in enumerate(headers):
+        sheet.write(0, col, header, header_format)
+    
+    # Get payments
+    if role == "superadmin":
+        payments = Payments.objects.select_related('order').all()
+    else:
+        payments = Payments.objects.select_related('order').filter(order__admin__admin_id=admin_id)
+    
+    # Write payments data
+    for row, payment in enumerate(payments, 1):
+        data = [
+            payment.payment_id,
+            payment.order.order_id if payment.order else 'N/A',
+            payment.amount,
+            payment.date.strftime('%Y-%m-%d'),
+            payment.payment_method
+        ]
+        for col, value in enumerate(data):
+            sheet.write(row, col, value, cell_format)
+    
+    # Close and return
+    workbook.close()
+    output.seek(0)
+    
+    response = HttpResponse(
+        output.getvalue(),
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="report_{timezone.now().strftime("%Y%m%d")}.xlsx"'
+    return response
