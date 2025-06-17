@@ -1,0 +1,74 @@
+{% extends 'superadmin_base.html' %}
+{% load static %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-image">
+                <img src="{% static 'images/default-profile.jpg' %}" alt="Profile Picture">
+            </div>
+            <h1 class="profile-name">John Doe</h1>
+            <p class="profile-title">Senior Manager</p>
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fa fa-linkedin"></i></a>
+                <a href="#" class="social-link"><i class="fa fa-twitter"></i></a>
+                <a href="#" class="social-link"><i class="fa fa-facebook"></i></a>
+                <a href="#" class="social-link"><i class="fa fa-envelope"></i></a>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="info-section">
+                <h2 class="section-title">Personal Information</h2>
+                <div class="info-row">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value">John Doe</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">john.doe@company.com</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Phone</div>
+                    <div class="info-value">+1 (555) 123-4567</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Location</div>
+                    <div class="info-value">New York, USA</div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2 class="section-title">Work Information</h2>
+                <div class="info-row">
+                    <div class="info-label">Department</div>
+                    <div class="info-value">Management</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Position</div>
+                    <div class="info-value">Senior Manager</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Employee ID</div>
+                    <div class="info-value">EMP123456</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Join Date</div>
+                    <div class="info-value">January 15, 2023</div>
+                </div>
+            </div>
+
+            <button class="contact-button">
+                <i class="fa fa-envelope"></i> Send Message
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
