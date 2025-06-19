@@ -2,15 +2,20 @@
 {% load static %}
 {% block content %}
 <div class="report-container">
-    <div class="report-header">
-        <div class="header-content">
+    <div class="report-header">        <div class="header-content">
             <h1 class="report-title">Unified Business Report</h1>
             <p class="report-subtitle">Comprehensive overview of orders, payments, and product performance</p>
         </div>
-        <a href="{% url 'download_report_excel' %}" class="download-btn">
-            <img src="{% static 'media/excel.png' %}" alt="Excel" class="excel-icon">
-            Export to Excel
-        </a>
+        <div class="download-buttons">
+            <a href="{% url 'download_report_excel' %}" class="download-btn excel">
+                <i class="fas fa-file-excel"></i>
+                Export to Excel
+            </a>
+            <a href="{% url 'download_invoice_pdf' %}" class="download-btn pdf">
+                <i class="fas fa-file-pdf"></i>
+                Export to PDF
+            </a>
+        </div>
     </div>
 
     <div class="statistics-section">
@@ -77,7 +82,7 @@
                         <td>₹{{ category.paid_amount|floatformat:2 }}</td>
                         <td>
                             <div class="progress-container">
-                                <div class="progress-bar" style="width: {% widthratio category.paid_amount category.total_amount 100 %}%"></div>
+                                <div class="progress-bar" style="width: {% widthratio category.paid_amount category.total_amount 100 %}"></div>
                                 <span>{% widthratio category.paid_amount category.total_amount 100 %}%</span>
                             </div>
                         </td>
@@ -292,31 +297,41 @@
     font-size: 14px;
 }
 
+.download-buttons {
+    display: flex;
+    gap: 10px;
+}
+
 .download-btn {
     display: flex;
     align-items: center;
-    background-color: var(--success-color);
-    color: white;
-    padding: 12px 24px;
-    border-radius: var(--border-radius);
+    padding: 10px 20px;
+    border-radius: 4px;
     text-decoration: none;
     font-weight: 500;
-    transition: var(--transition);
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
+    transition: background-color 0.2s;
+    color: white;
 }
 
-.download-btn:hover {
+.download-btn i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.download-btn.excel {
+    background-color: #1e7e34;
+}
+
+.download-btn.excel:hover {
     background-color: #218838;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.excel-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 10px;
+.download-btn.pdf {
+    background-color: #dc3545;
+}
+
+.download-btn.pdf:hover {
+    background-color: #c82333;
 }
 
 /* Section Styles */

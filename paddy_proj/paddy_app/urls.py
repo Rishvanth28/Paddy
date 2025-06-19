@@ -57,7 +57,7 @@ urlpatterns = [
     # Reports URLs
     path('unified-report/', unified_report, name='unified_report'),
     path('download-report-excel/', download_report_excel, name='download_report_excel'),
-
+    path("download-invoice-pdf/", download_invoice_pdf, name="download_invoice_pdf"),
 ]
 
 
