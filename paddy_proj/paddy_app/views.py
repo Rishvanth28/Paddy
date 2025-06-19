@@ -303,8 +303,8 @@ def create_admin_signup(request):
 
 
 def create_customer_signup(request):
-    role = request.session.get("role")
-    is_superadmin = role == "superadmin"
+    # role = request.session.get("role")
+    # is_superadmin = role == "superadmin"
 
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -316,7 +316,7 @@ def create_customer_signup(request):
         gst = request.POST.get("gst")
         address = request.POST.get("address")
 
-        admin_id = request.session.get("user_id")
+        admin_id = 1000000
         if not admin_id:
             messages.error(request, "Session expired. Please log in again.")
             return redirect("login")
