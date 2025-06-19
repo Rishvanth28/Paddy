@@ -2035,6 +2035,56 @@ def mark_all_notifications_read(request):
         return JsonResponse({'success': False, 'message': str(e)})
 
 
+@require_POST
+def delete_notifications(request):
+    """Delete selected notifications for current user"""
+    try:
+        # Parse request data
+        data = json.loads(request.body)
+        notification_ids = data.get('notification_ids', [])
+        
+        # Validate session
+        user_id = request.session.get("user_id")
+        role = request.session.get("role")
+        
+        if not user_id or not role:
+            return JsonResponse({'success': False, 'error': 'Session expired'})
+        
+        if not notification_ids:
+            return JsonResponse({'success': False, 'error': 'No notifications selected'})
+        
+        # Validate notification IDs
+        if not isinstance(notification_ids, list):
+            return JsonResponse({'success': False, 'error': 'Invalid notification IDs format'})
+        
+        # Determine user type
+        user_type = 'superadmin' if role == 'superadmin' else role
+        
+        # Delete notifications that belong to the current user
+        deleted_count = Notification.objects.filter(
+            notification_id__in=notification_ids,
+            user_type=user_type,
+            user_id=str(user_id)
+        ).delete()[0]
+        
+        if deleted_count > 0:
+            return JsonResponse({
+                'success': True, 
+                'message': f'{deleted_count} notification(s) deleted successfully',
+                'deleted_count': deleted_count
+            })
+        else:
+            return JsonResponse({
+                'success': False, 
+                'error': 'No notifications found or unauthorized access'
+            })
+            
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Invalid JSON data'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': f'Server error: {str(e)}'})
+
+
 @role_required(["superadmin", "admin"])
 def unified_report(request):
     admin_id = request.session.get("user_id")

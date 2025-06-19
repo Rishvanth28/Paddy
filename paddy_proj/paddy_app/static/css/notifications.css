@@ -105,7 +105,7 @@
 
 /* Header Bar */
 .header-bar {
-    border-bottom: 1px solid #e9ecef;
+    /* border-bottom: 1px solid #e9ecef; */
     padding-bottom: 1rem;
 }
 
