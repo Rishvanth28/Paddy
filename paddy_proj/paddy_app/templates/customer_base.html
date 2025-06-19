@@ -25,7 +25,10 @@
       --card-bg: #2a2a2a;
       --text-light: #e0e0e0;
       --text-muted: #b0b0b0;
-    }    body {
+      --text-muted-order: #000000;
+    }
+
+    body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       color: #333;
       line-height: 1.6;
@@ -36,7 +39,7 @@
       position: relative;
       overflow-x: hidden;
     }
-    
+
     body::before {
       content: '';
       position: fixed;
@@ -44,10 +47,10 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: 
-          radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.05) 0%, transparent 50%);
+      background:
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.05) 0%, transparent 50%);
       z-index: -1;
       pointer-events: none;
     }
@@ -192,13 +195,13 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #333, #555);
+      /* background: linear-gradient(135deg, #333, #555); */
       color: var(--text-light);
       border-color: #666;
     }
 
     .btn-primary:hover {
-      background: linear-gradient(135deg, #555, #777);
+      /* background: linear-gradient(135deg, #555, #777); */
       border-color: #888;
       transform: translateY(-1px);
     }
@@ -237,7 +240,7 @@
     }
 
     .btn-warning {
-      background: linear-gradient(135deg, #ff9800, #e68900);
+      /* background: linear-gradient(135deg, #ff9800, #e68900); */
       color: white;
       border-color: #ff9800;
     }
@@ -254,8 +257,8 @@
     }
 
     .btn-danger {
-      background: linear-gradient(135deg, #f44336, #d32f2f);
-      color: white;
+      /* background: linear-gradient(135deg, #f44336, #d32f2f); */
+      color: #dc3545;
       border-color: #f44336;
     }
 
@@ -314,6 +317,7 @@
       color: var(--text-light);
       margin-bottom: 0.5rem;
       display: block;
+      cursor: pointer !important;
     }
 
     /* Header Bar */
@@ -682,6 +686,153 @@
       }
     }
 
+    /* Custom Order Status Filter Button Styles */    /* Professional Status Filter Buttons */
+    .status-filter {
+      font-weight: 500 !important;
+      font-size: 0.875rem !important;
+      letter-spacing: 0.025em !important;
+      padding: 10px 20px !important;
+      border-radius: 8px !important;
+      border: 1px solid !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      position: relative !important;
+      cursor: pointer !important;
+      user-select: none !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-width: 80px !important;
+      margin: 4px !important;
+    }
+
+    /* All Button - Professional Blue */
+    .status-filter[data-filter="all"] {
+      color: #1e40af !important;
+      border-color: #d1d5db !important;
+      background-color: #ffffff !important;
+    }
+
+    .status-filter[data-filter="all"]:hover {
+      color: #1e40af !important;
+      border-color: #1e40af !important;
+      background-color: #f8faff !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 4px rgba(30, 64, 175, 0.1) !important;
+    }
+
+    .status-filter[data-filter="all"].active {
+      color: #0d6efd !important;
+      border-color: #1e40af !important;
+      /* background-color: #1e40af !important; */
+      box-shadow: 0 3px 8px rgba(30, 64, 175, 0.3) !important;
+    }
+
+    /* Recent Button - Professional Indigo */
+    .status-filter[data-filter="recent"] {
+      color: #4338ca !important;
+      border-color: #d1d5db !important;
+      background-color: #ffffff !important;
+    }
+
+    .status-filter[data-filter="recent"]:hover {
+      color: #4338ca !important;
+      border-color: #4338ca !important;
+      background-color: #faf9ff !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 4px rgba(67, 56, 202, 0.1) !important;
+    }
+
+    .status-filter[data-filter="recent"].active {
+      color: #ffffff !important;
+      border-color: #4338ca !important;
+      /* background-color: #4338ca !important; */
+      box-shadow: 0 3px 8px rgba(67, 56, 202, 0.3) !important;
+    }
+
+    /* Completed Button - Professional Green */
+    .status-filter[data-filter="completed"] {
+      color: #047857 !important;
+      border-color: #d1d5db !important;
+      background-color: #ffffff !important;
+    }
+
+    .status-filter[data-filter="completed"]:hover {
+      color: #047857 !important;
+      border-color: #047857 !important;
+      background-color: #f0fdf4 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 4px rgba(4, 120, 87, 0.1) !important;
+    }
+
+    .status-filter[data-filter="completed"].active {
+      color: #ffffff !important;
+      border-color: #047857 !important;
+      /* background-color: #047857 !important; */
+      box-shadow: 0 3px 8px rgba(4, 120, 87, 0.3) !important;
+    }
+
+    /* Ongoing Button - Professional Amber */
+    .status-filter[data-filter="ongoing"] {
+      color: #d97706 !important;
+      border-color: #d1d5db !important;
+      background-color: #ffffff !important;
+    }
+
+    .status-filter[data-filter="ongoing"]:hover {
+      color: #d97706 !important;
+      border-color: #d97706 !important;
+      background-color: #fffbeb !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 4px rgba(217, 119, 6, 0.1) !important;
+    }
+
+    .status-filter[data-filter="ongoing"].active {
+      color: #ffffff !important;
+      border-color: #d97706 !important;
+      /* background-color: #d97706 !important; */
+      box-shadow: 0 3px 8px rgba(217, 119, 6, 0.3) !important;
+    }
+
+    /* Pending Payment Button - Professional Red */
+    .status-filter[data-filter="pending_payment"] {
+      color: #dc2626 !important;
+      border-color: #d1d5db !important;
+      background-color: #ffffff !important;
+    }
+
+    .status-filter[data-filter="pending_payment"]:hover {
+      color: #dc2626 !important;
+      border-color: #dc2626 !important;
+      background-color: #fef2f2 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1) !important;
+    }
+
+    .status-filter[data-filter="pending_payment"].active {
+      color: #ffffff !important;
+      border-color: #dc2626 !important;
+      /* background-color: #dc2626 !important; */
+      box-shadow: 0 3px 8px rgba(220, 38, 38, 0.3) !important;
+    }    /* Professional focus states for accessibility */
+    .status-filter:focus {
+      outline: 2px solid transparent !important;
+      outline-offset: 2px !important;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5) !important;
+    }
+
+    .status-filter:focus-visible {
+      outline: none;
+    }
+
+    /* Disabled state */
+    .status-filter:disabled {
+      opacity: 0.4 !important;
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+    }
+
+    /* Your existing order status styles remain the same */
     .order-status {
       display: inline-flex;
       align-items: center;
@@ -689,25 +840,42 @@
     }
 
     .order-status-icon {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
+      position: relative;
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 currentColor;
+      }
+
+      70% {
+        box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+      }
     }
 
     .status-pending {
-      background-color: var(--warning);
+      background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
     }
 
     .status-completed {
-      background-color: var(--success);
+      background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
     }
 
     .status-processing {
-      background-color: var(--primary);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
     .status-failed {
-      background-color: var(--danger);
+      background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
     }
 
     .loading-spinner {
@@ -852,7 +1020,8 @@
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Upgrade Icon">
             <span class="nav-text i18n" data-i18n="upgradeAdmin">Upgrade to Admin</span>
           </a>
-        </li>        <li class="nav-item">
+        </li>
+        <li class="nav-item">
           <div class="switch-container">
             <label class="switch">
               <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'" {% if request.session.role == 'customer' %}checked{% endif %}>

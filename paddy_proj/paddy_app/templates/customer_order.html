@@ -3,7 +3,8 @@
 
 {% block head %}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>    :root {
+<style>
+    :root {
         --primary: #667eea;
         --primary-hover: #5a6fd8;
         --secondary: #764ba2;
@@ -18,7 +19,8 @@
         --card-bg: rgba(42, 42, 42, 0.9);
         --card-hover: rgba(51, 51, 51, 0.9);
         --text-light: #e0e0e0;
-        --text-muted: #b0b0b0;
+        --text-muted: #9e9e9e;
+        --text-muted-order: #000000;
         --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
         --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.3);
         --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.4);
@@ -33,11 +35,12 @@
         --blur-md: blur(20px);
         --blur-lg: blur(40px);
     }
-    
+
     * {
         box-sizing: border-box;
     }
-      body {
+
+    body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         color: #333;
         line-height: 1.6;
@@ -48,7 +51,7 @@
         position: relative;
         overflow-x: hidden;
     }
-    
+
     body::before {
         content: '';
         position: fixed;
@@ -56,13 +59,15 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: 
+        background:
             radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
             radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
             radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.05) 0%, transparent 50%);
         z-index: -1;
         pointer-events: none;
-    }    /* Container and Layout */    
+    }
+
+    /* Container and Layout */
     .container-fluid {
         max-width: 1400px;
         margin: 0 auto;
@@ -70,7 +75,7 @@
         background: transparent;
         position: relative;
     }
-    
+
     .container-fluid::before {
         content: '';
         position: absolute;
@@ -112,7 +117,10 @@
         flex: 0 0 41.666667%;
         max-width: 41.666667%;
         padding: 0.75rem;
-    }    @media (max-width: 768px) {
+    }
+
+    @media (max-width: 768px) {
+
         .col-md-4,
         .col-md-8,
         .col-md-2,
@@ -120,53 +128,55 @@
             flex: 0 0 100%;
             max-width: 100%;
         }
-        
+
         .page-title {
             font-size: 1.8rem;
         }
-        
+
         .container-fluid {
             padding: 1rem 0.5rem;
         }
-        
+
         .filter-section {
             padding: 1.5rem;
         }
-        
+
         .order-list-container {
             max-height: 50vh;
         }
-        
+
         .dashboard-card:hover,
         .customer-card:hover {
             transform: translateY(-2px) scale(1.005);
         }
     }
-    
+
     @media (max-width: 480px) {
         .page-title {
             font-size: 1.5rem;
         }
-        
+
         .btn {
             padding: 0.6rem 1rem;
             font-size: 0.8rem;
         }
-        
+
         .filter-section {
             padding: 1rem;
         }
-        
+
         .detail-section {
             padding: 1rem;
         }
-    }/* Cards */
+    }
+
+    /* Cards */
     .dashboard-card,
     .customer-card {
         background: linear-gradient(145deg, var(--card-bg) 0%, rgba(42, 42, 42, 0.95) 100%);
         border-radius: var(--border-radius);
         border: 1px solid rgba(68, 68, 68, 0.8);
-        box-shadow: 
+        box-shadow:
             var(--shadow-medium),
             inset 0 1px 0 rgba(255, 255, 255, 0.05);
         overflow: hidden;
@@ -175,8 +185,8 @@
         backdrop-filter: blur(20px);
         position: relative;
     }
-    
-    .dashboard-card::before, 
+
+    .dashboard-card::before,
     .customer-card::before {
         content: '';
         position: absolute;
@@ -188,29 +198,31 @@
         opacity: 0;
         transition: var(--transition);
     }
-    
-    .dashboard-card:hover, 
+
+    .dashboard-card:hover,
     .customer-card:hover {
         transform: translateY(-6px) scale(1.01);
-        box-shadow: 
+        box-shadow:
             0 20px 40px rgba(0, 0, 0, 0.4),
             inset 0 1px 0 rgba(255, 255, 255, 0.1);
         border-color: rgba(102, 119, 234, 0.3);
     }
-    
-    .dashboard-card:hover::before, 
+
+    .dashboard-card:hover::before,
     .customer-card:hover::before {
         opacity: 1;
-    }    .card-header {
-        background: linear-gradient(135deg, 
-            rgba(42, 42, 42, 0.9) 0%, 
-            rgba(51, 51, 51, 0.9) 100%);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg,
+                rgba(42, 42, 42, 0.9) 0%,
+                rgba(51, 51, 51, 0.9) 100%);
         border-bottom: 1px solid rgba(102, 119, 234, 0.2);
         padding: 1.5rem 2rem;
         position: relative;
         backdrop-filter: blur(10px);
     }
-    
+
     .card-header::after {
         content: '';
         position: absolute;
@@ -228,7 +240,9 @@
         font-size: 1.2rem;
         letter-spacing: 0.5px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }    /* Messages */
+    }
+
+    /* Messages */
     .alert {
         padding: 1rem 1.5rem;
         margin-bottom: 1rem;
@@ -240,12 +254,13 @@
         backdrop-filter: blur(20px);
         animation: slideInDown 0.5s ease-out;
     }
-    
+
     @keyframes slideInDown {
         from {
             transform: translateY(-20px);
             opacity: 0;
         }
+
         to {
             transform: translateY(0);
             opacity: 1;
@@ -295,7 +310,9 @@
 
     .btn-close:hover {
         opacity: 1;
-    }    /* Buttons */
+    }
+
+    /* Buttons */
     .btn {
         display: inline-flex;
         align-items: center;
@@ -316,7 +333,7 @@
         text-transform: uppercase;
         font-size: 0.85rem;
     }
-    
+
     .btn::before {
         content: '';
         position: absolute;
@@ -324,10 +341,10 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
         transition: left 0.5s;
     }
-    
+
     .btn:hover::before {
         left: 100%;
     }
@@ -344,7 +361,9 @@
         border-color: rgba(102, 119, 234, 0.6);
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(102, 119, 234, 0.5);
-    }    .btn-outline-primary {
+    }
+
+    .btn-outline-primary {
         background: rgba(102, 119, 234, 0.1);
         color: #667eea;
         border-color: rgba(102, 119, 234, 0.3);
@@ -437,7 +456,9 @@
 
     .w-100 {
         width: 100%;
-    }    /* Forms */
+    }
+
+    /* Forms */
     .form-control,
     .form-select {
         display: block;
@@ -453,6 +474,8 @@
         transition: var(--transition);
         box-sizing: border-box;
         backdrop-filter: blur(15px);
+        cursor: pointer;
+        /* Added cursor pointer */
     }
 
     .form-control:focus,
@@ -462,12 +485,16 @@
         box-shadow: 0 0 0 3px rgba(102, 119, 234, 0.15);
         background: linear-gradient(145deg, rgba(51, 51, 51, 0.9) 0%, rgba(42, 42, 42, 0.9) 100%);
         transform: translateY(-1px);
+        cursor: pointer;
+        /* Maintain cursor pointer on focus */
     }
 
     .form-control:hover,
     .form-select:hover {
         border-color: rgba(102, 119, 234, 0.4);
         background: linear-gradient(145deg, rgba(51, 51, 51, 0.9) 0%, rgba(42, 42, 42, 0.9) 100%);
+        cursor: pointer;
+        /* Maintain cursor pointer on hover */
     }
 
     .form-control-sm,
@@ -475,13 +502,32 @@
         padding: 0.5rem 0.75rem;
         font-size: 0.875rem;
         border-radius: 6px;
+        cursor: pointer;
+        /* Added cursor pointer for small form elements */
     }
 
-    .form-label {
-        font-weight: 500;
-        color: var(--text-light);
-        margin-bottom: 0.5rem;
-        display: block;
+    /* Specific styles for date inputs */
+    input[type="date"] {
+        cursor: pointer !important;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s ease;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+        opacity: 1;
+    }
+
+    /* Select dropdown arrow styling */
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        cursor: pointer !important;
     }
 
     /* List Groups */
@@ -490,7 +536,9 @@
         flex-direction: column;
         padding-left: 0;
         margin-bottom: 0;
-    }    .list-group-item {
+    }
+
+    .list-group-item {
         position: relative;
         display: block;
         padding: 1.25rem 1.5rem;
@@ -533,7 +581,9 @@
         border-right: 0;
         border-left: 0;
         border-radius: 0;
-    }    /* Tables */
+    }
+
+    /* Tables */
     .table {
         width: 100%;
         margin-bottom: 1rem;
@@ -551,7 +601,7 @@
         border-top: 1px solid rgba(68, 68, 68, 0.3);
         transition: background-color 0.2s ease;
     }
-    
+
     .table tr:hover {
         background-color: rgba(102, 119, 234, 0.05);
     }
@@ -611,7 +661,7 @@
     }
 
     .text-muted {
-        color: var(--text-muted) !important;
+        color: var(--text-muted-order) !important;
     }
 
     .text-success {
@@ -710,7 +760,9 @@
         white-space: nowrap;
         vertical-align: baseline;
         border-radius: 0.375rem;
-    }    /* Spinners */
+    }
+
+    /* Spinners */
     .spinner-border {
         display: inline-block;
         width: 2rem;
@@ -734,7 +786,7 @@
             transform: rotate(360deg);
         }
     } */
-    
+
     .loading-spinner {
         width: 2rem;
         height: 2rem;
@@ -821,7 +873,8 @@
         display: inline-block;
     }
 
-    /* Page specific styles */    .highlight {
+    /* Page specific styles */
+    .highlight {
         animation: highlight-fade 2s ease-out;
     }
 
@@ -830,20 +883,159 @@
             background: linear-gradient(135deg, rgba(102, 119, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
             transform: scale(1.02);
         }
+
         50% {
             background: linear-gradient(135deg, rgba(102, 119, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
         }
+
         100% {
             background: transparent;
             transform: scale(1);
         }
+    }    /* Custom Order Status Filter Button Styles */
+    .status-filter {
+        margin: 2px;
+        font-weight: 500;
+        border-width: 2px !important;
+        transition: all 0.3s ease;
+        position: relative;
     }
 
+    /* Active state general styles */
+    .status-filter.active {
+        font-weight: 700 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* All Button - Blue */
+    .status-filter[data-filter="all"] {
+        color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        background-color: transparent !important;
+    }
+
+    .status-filter[data-filter="all"]:hover {
+        color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        background-color: rgba(13, 110, 253, 0.1) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2) !important;
+    }
+
+    .status-filter[data-filter="all"].active {
+        color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        /* background-color: #0d6efd !important; */
+        box-shadow: 0 3px 8px rgba(13, 110, 253, 0.3) !important;
+    }
+
+    /* Recent Button - Purple */
+    .status-filter[data-filter="recent"] {
+        color: #6f42c1 !important;
+        border-color: #6f42c1 !important;
+        background-color: transparent !important;
+    }
+
+    .status-filter[data-filter="recent"]:hover {
+        color: #6f42c1 !important;
+        border-color: #6f42c1 !important;
+        background-color: rgba(111, 66, 193, 0.1) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 4px rgba(111, 66, 193, 0.2) !important;
+    }
+
+    .status-filter[data-filter="recent"].active {
+        color: #ffffff !important;
+        border-color: #6f42c1 !important;
+        /* background-color: #6f42c1 !important; */
+        box-shadow: 0 3px 8px rgba(111, 66, 193, 0.3) !important;
+    }
+
+    /* Completed Button - Green */
+    .status-filter[data-filter="completed"] {
+        color: #198754 !important;
+        border-color: #198754 !important;
+        background-color: transparent !important;
+    }
+
+    .status-filter[data-filter="completed"]:hover {
+        color: #198754 !important;
+        border-color: #198754 !important;
+        background-color: rgba(25, 135, 84, 0.1) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 4px rgba(25, 135, 84, 0.2) !important;
+    }
+
+    .status-filter[data-filter="completed"].active {
+        color: #ffffff !important;
+        border-color: #198754 !important;
+        /* background-color: #198754 !important; */
+        box-shadow: 0 3px 8px rgba(25, 135, 84, 0.3) !important;
+    }
+
+    /* Ongoing Button - Orange */
+    .status-filter[data-filter="ongoing"] {
+        color: #fd7e14 !important;
+        border-color: #fd7e14 !important;
+        background-color: transparent !important;
+    }
+
+    .status-filter[data-filter="ongoing"]:hover {
+        color: #fd7e14 !important;
+        border-color: #fd7e14 !important;
+        background-color: rgba(253, 126, 20, 0.1) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 4px rgba(253, 126, 20, 0.2) !important;
+    }
+
+    .status-filter[data-filter="ongoing"].active {
+        color: #ffffff !important;
+        border-color: #fd7e14 !important;
+        /* background-color: #fd7e14 !important; */
+        box-shadow: 0 3px 8px rgba(253, 126, 20, 0.3) !important;
+    }
+
+    /* Pending Payment Button - Red */
+    .status-filter[data-filter="pending_payment"] {
+        color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        background-color: transparent !important;
+    }
+
+    .status-filter[data-filter="pending_payment"]:hover {
+        color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        background-color: rgba(220, 53, 69, 0.1) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2) !important;
+    }
+
+    .status-filter[data-filter="pending_payment"].active {
+        color: #ffffff !important;
+        border-color: #dc3545 !important;
+        /* background-color: #dc3545 !important; */
+        box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3) !important;
+    }
+
+    /* Focus states for accessibility */
+    .status-filter:focus {
+        box-shadow: 0 0 0 0.2rem rgba(var(--bs-btn-focus-shadow-rgb), 0.5) !important;
+    }
+
+    /* Remove Bootstrap default focus shadow and use custom */
+    .status-filter:focus-visible {
+        outline: none;
+    }
+
+    /* Your existing order status styles remain the same */
     .order-status {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-    }    .order-status-icon {
+    }
+
+    .order-status-icon {
         width: 12px;
         height: 12px;
         border-radius: 50%;
@@ -851,14 +1043,16 @@
         display: inline-block;
         animation: pulse 2s infinite;
     }
-    
+
     @keyframes pulse {
         0% {
             box-shadow: 0 0 0 0 currentColor;
         }
+
         70% {
             box-shadow: 0 0 0 8px rgba(0, 0, 0, 0);
         }
+
         100% {
             box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
         }
@@ -884,13 +1078,15 @@
         width: 1.5rem;
         height: 1.5rem;
         border-width: 0.2em;
-    }    /* Filter section styling */
+    }
+
+    /* Filter section styling */
     .filter-section {
         background: linear-gradient(145deg, rgba(42, 42, 42, 0.9) 0%, rgba(51, 51, 51, 0.9) 100%);
         border-radius: 12px;
         padding: 2rem;
         margin-bottom: 1.5rem;
-        box-shadow: 
+        box-shadow:
             0 8px 32px rgba(0, 0, 0, 0.3),
             inset 0 1px 0 rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(102, 119, 234, 0.2);
@@ -899,7 +1095,7 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .filter-section::before {
         content: '';
         position: absolute;
@@ -917,28 +1113,30 @@
         margin-bottom: 1.5rem;
         color: var(--text-light);
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }    /* Order list styling */
+    }
+
+    /* Order list styling */
     .order-list-container {
         max-height: 70vh;
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: rgba(102, 119, 234, 0.5) transparent;
     }
-    
+
     .order-list-container::-webkit-scrollbar {
         width: 6px;
     }
-    
+
     .order-list-container::-webkit-scrollbar-track {
         background: rgba(68, 68, 68, 0.2);
         border-radius: 3px;
     }
-    
+
     .order-list-container::-webkit-scrollbar-thumb {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border-radius: 3px;
     }
-    
+
     .order-list-container::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
     }
@@ -960,7 +1158,9 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    }    /* Order detail styling */
+    }
+
+    /* Order detail styling */
     .order-detail-section {
         padding: 2rem;
         background: linear-gradient(145deg, rgba(42, 42, 42, 0.5) 0%, rgba(51, 51, 51, 0.5) 100%);
@@ -975,7 +1175,7 @@
         border-bottom: 1px solid rgba(102, 119, 234, 0.2);
         position: relative;
     }
-    
+
     .detail-header::after {
         content: '';
         position: absolute;
@@ -1000,7 +1200,9 @@
         color: var(--text-light);
         font-size: 1.1rem;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }    /* Payment button styling */
+    }
+
+    /* Payment button styling */
     .payment-btn {
         padding: 0.75rem 2rem;
         font-weight: 600;
@@ -1012,7 +1214,7 @@
         overflow: hidden;
         transition: var(--transition);
     }
-    
+
     .payment-btn::before {
         content: '';
         position: absolute;
@@ -1020,14 +1222,14 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         transition: left 0.6s;
     }
-    
+
     .payment-btn:hover::before {
         left: 100%;
     }
-    
+
     .payment-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(102, 119, 234, 0.4);
@@ -1042,7 +1244,9 @@
         gap: 1rem;
         margin-left: 0.5rem;
         margin-top: -1rem;
-    }    .page-title {
+    }
+
+    .page-title {
         font-size: 2.2rem;
         font-weight: 700;
         margin: 0;
@@ -1117,7 +1321,7 @@
 <div class="container-fluid my-4">
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h1 class="page-title mb-0 me-3">My Orders</h1>
-        <div class="text-muted" id="order-count-text">0 orders found</div>
+        <div class="text-muted" style="color : rgb(0, 0, 0)  !important;" id="order-count-text">0 orders found</div>
     </div>
 
     <!-- Filters section -->
@@ -1125,17 +1329,14 @@
         <div class="row g-3">
             <!-- Status filters -->
             <div class="col-md-4">
-                <label class="form-label">Order Status</label>
+                <label class="form-label" style="cursor: pointer !important;">Order Status</label>
                 <div class="d-flex flex-wrap">
-                    <button type="button" class="btn btn-sm btn-primary status-filter" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary status-filter"
-                        data-filter="recent">Recent</button>
-                    <button type="button" class="btn btn-sm btn-outline-success status-filter"
-                        data-filter="completed">Completed</button>
-                    <button type="button" class="btn btn-sm btn-outline-warning status-filter"
-                        data-filter="ongoing">Ongoing</button>
-                    <button type="button" class="btn btn-sm btn-outline-danger status-filter"
-                        data-filter="pending_payment">Pending Payment</button>
+                    <button type="button" class="btn btn-sm status-filter active" data-filter="all">All</button>
+                    <button type="button" class="btn btn-sm status-filter" data-filter="recent">Recent</button>
+                    <button type="button" class="btn btn-sm status-filter" data-filter="completed">Completed</button>
+                    <button type="button" class="btn btn-sm status-filter" data-filter="ongoing">Ongoing</button>
+                    <button type="button" class="btn btn-sm status-filter" data-filter="pending_payment">Pending
+                        Payment</button>
                 </div>
             </div>
 
@@ -1143,15 +1344,16 @@
             <div class="col-md-4">
                 <div class="row">
                     <div class="col-md-5">
-                        <label for="date_from" class="form-label">From Date</label>
-                        <input type="date" class="form-control form-control-sm" id="date_from">
+                        <label for="date_from" class="form-label" style="cursor: pointer;">From Date</label>
+                        <input type="date" class="form-control form-control-sm" style="cursor: pointer;" id="date_from">
                     </div>
                     <div class="col-md-5">
                         <label for="date_to" class="form-label">To Date</label>
-                        <input type="date" class="form-control form-control-sm" id="date_to">
+                        <input type="date" class="form-control form-control-sm" style="cursor: pointer;" id="date_to">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="button" class="btn btn-sm btn-primary w-100" id="apply-date-filter">Apply</button>
+                        <button type="button" class="btn btn-sm btn-primary w-100"
+                            style="width: max-content;margin-left: -7px;background: linear-gradient(135deg, #333, #555);" id="apply-date-filter">Apply</button>
                     </div>
                 </div>
             </div>
@@ -1159,7 +1361,7 @@
             <!-- Sorting options -->
             <div class="col-md-2">
                 <label for="sort" class="form-label">Sort By</label>
-                <select class="form-select form-select-sm" id="sort">
+                <select class="form-select form-select-sm" style="cursor: pointer;" id="sort">
                     <option value="-order_date">Newest First</option>
                     <option value="order_date">Oldest First</option>
                     <option value="-overall_amount">Amount (High to Low)</option>
@@ -1168,7 +1370,7 @@
             </div>
             <div class="col-md-2">
                 <label for="category-filter" class="form-label">Category</label>
-                <select id="category-filter" class="form-select form-select-sm">
+                <select id="category-filter" class="form-select form-select-sm" style="cursor: pointer;">
                     <option value="all">All Categories</option>
                     <option value="1">Rice</option>
                     <option value="2">Paddy</option>
@@ -1185,17 +1387,14 @@
             <div class="dashboard-card order-list-container customer-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5>Order List</h5>
-                    <div class="spinner-border spinner-border-sm text-primary d-none" id="loading-spinner"
-                        role="status">
-                        <span class="visually-hidden">Loading...</span>
+                    <div class=" spinner-border-sm text-primary d-none" id="loading-spinner" role="status">
+
                     </div>
                 </div>
                 {% csrf_token %}
                 <div class="list-group list-group-flush" id="orders-list">
                     <div class="text-center py-4">
-                        <div class="spinner-border text-primary loading-spinner" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -1469,6 +1668,10 @@
                                 <small class="text-muted">${getCategoryName(order.product_category_id)}</small>
                                 <small class="d-block">${order.quantity} item(s)</small>
                             </div>
+                            <div>
+                                <small class="text-muted">${getCategoryName(order.category)}</small>
+                                <small class="d-block">${order.quantity} item(s)</small>
+                            </div>
                             <div class="text-end">
                                 <div class="fw-medium">₹${order.overall_amount.toLocaleString()}</div>
                                 <small class="text-muted">${order.delivery_status === 1 ? 'Delivered' : 'Processing'}</small>
@@ -1552,10 +1755,6 @@
                                     <td class="text-muted">Category:</td>
                                     <td>${getCategoryName(order.product_category_id)}</td>
                                 </tr>
-                                <tr>
-                                    <td class="text-muted">Category:</td>
-                                    <td>${order.category}</td>
-                                </tr>
                                 ${order.product_category_id === 3 ? '' : `
                                 <tr>
                                     <td class="text-muted">Quantity:</td>
@@ -1570,7 +1769,6 @@
                                     <td class="text-muted">Total Amount:</td>
                                     <td class="fw-medium">₹${order.overall_amount.toLocaleString()}</td>
                                 </tr>
-                                
                             </table>
                         </div>
                         <div class="col-md-6">
