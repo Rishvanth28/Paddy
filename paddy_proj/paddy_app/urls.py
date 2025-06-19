@@ -31,7 +31,7 @@ urlpatterns = [
     path('superadmin/subscription-review/', superadmin_subscription, name='superadmin_subscription'),
     path('superadmin/review-subscription/', superadmin_subscription_review, name='superadmin_subscription_review'),
 
-    path('demo/', demo, name='demo'),
+    path('profile/', profile, name='profile'),
     path("delete-admin/<int:admin_id>/", delete_admin, name="delete_admin"),
     path("delete-customer/<str:customer_id>/", delete_customer, name="delete_customer"),
     path('upgrade-success/',upgrade_success, name='upgrade_success'),
@@ -47,8 +47,8 @@ urlpatterns = [
     path('ajax/create_admin_user_increase_order/', create_admin_user_increase_order, name='create_admin_user_increase_order'),
     path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),    path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
     path('upgrade-to-customer/',upgrade_to_customer, name='upgrade_to_customer'),
-    # path("customer-signup/", customer_signup, name="customer_signup"),
-    # path("admin-signup/", admin_signup, name="admin_signup"),    # Notification URLs
+    path("create-customer-signup/", create_customer_signup, name="create_customer_signup"),
+    path("create-admin-signup/", create_admin_signup, name="create_admin_signup"),    # Notification URLs
     path('customer/notifications/', customer_notifications, name='customer_notifications'),
     path('admin-notifications/', admin_notifications, name='admin_notifications'),
     path('superadmin/notifications/', superadmin_notifications, name='superadmin_notifications'),

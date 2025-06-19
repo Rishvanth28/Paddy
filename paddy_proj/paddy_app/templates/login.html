@@ -56,7 +56,7 @@
 
                         <!-- Admin Signup Form -->
                         <div id="admin-form" class="form-card" style="display: none;">
-                            <form method="POST" action="{% url 'create_admin' %}">
+                            <form method="POST" action="{% url 'create_admin_signup' %}">
                                 {% csrf_token %}
                                 <div class="form-row">
                                     <div class="form-group" style="margin-top: 10px;">
@@ -88,7 +88,7 @@
 
                         <!-- Customer Signup Form -->
                         <div id="customer-form" class="form-card" style="display: none;">
-                            <form method="POST" action="{% url 'create_customer' %}">
+                            <form method="POST" action="{% url 'create_customer_signup' %}">
                                 {% csrf_token %}
                                 <!-- First Row: Name Fields -->
                                 <div class="form-row">
