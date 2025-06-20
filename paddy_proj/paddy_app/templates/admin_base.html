@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title class="i18n" data-i18n="admin">Admin</title>
+  <title>Admin</title>
   <link rel="stylesheet" href="{% static 'css/admin_base.css' %}" />
 </head>
 
@@ -20,13 +20,6 @@
   </div>
   {% endif %}
 
-  <div class="language-selector">
-    <select id="language-select" onchange="changeLanguage(this.value)">
-      <option value="en">English</option>
-      <option value="ta">தமிழ் (Tamil)</option>
-    </select>
-  </div>
-
   <button class="hamburger" id="hamburger" aria-label="Toggle menu">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
@@ -38,7 +31,7 @@
       <a href="{% url 'admin_dashboard' %}" class="logo-link">
         <img src="{% static 'media/IconSet.png' %}" alt="Logo" class="sidebar-logo">
       </a>
-      <h1 class="sidebar-title i18n" data-i18n="admin">Admin</h1>
+      <h1 class="sidebar-title">Admin</h1>
     </div>
 
     <nav class="sidebar-nav">
@@ -47,26 +40,26 @@
         <li class="nav-item">
           <a href="{% url 'admin_dashboard' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Dashboard">
-            <span class="nav-text i18n" data-i18n="dashboard">Dashboard</span>
+            <span class="nav-text">Dashboard</span>
           </a>
         </li>
 
         <li class="nav-item">
           <a href="{% url 'customer_onboard' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding">
-            <span class="nav-text i18n" data-i18n="customerOnboarding">Customer Onboarding</span>
+            <span class="nav-text i18n" >Customer Onboarding</span>
           </a>
         </li>
 
         <li class="nav-item">
           <a href="{% url 'admin_customer_list' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
-            <span class="nav-text i18n" data-i18n="customers">Customers</span>
+            <span class="nav-text i18n" >Customers</span>
           </a>
         </li>        <li class="nav-item">
           <a href="{% url 'admin_place_order' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
-            <span class="nav-text i18n" data-i18n="placeOrder">Place Order</span>
+            <span class="nav-text i18n" >Place Order</span>
           </a>
         </li>
 
@@ -81,7 +74,7 @@
         <li class="nav-item">
           <a href="{% url 'upgrade_to_customer' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Become Customer">
-            <span class="nav-text i18n" data-i18n="becomeCustomer">Become Customer</span>
+            <span class="nav-text i18n" >Become Customer</span>
           </a>
         </li>
         {% endif %}
@@ -89,7 +82,7 @@
         <li class="nav-item">
           <a href="{% url 'admin_add_subscription' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Subscription">
-            <span class="nav-text i18n" data-i18n="subscription">Subscription</span>
+            <span class="nav-text i18n" >Subscription</span>
           </a>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'unified_report' %}">
@@ -102,8 +95,8 @@
             <label class="switch">
               <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'"
                 {% if request.session.role == 'customer' %}checked{% endif %}>
-              <span class="i18n" data-i18n="admin">Admin</span>
-              <span class="i18n" data-i18n="customer">Customer</span>
+              <span >Admin</span>
+              <span >Customer</span>
             </label>
           </div>
         </li>
@@ -113,10 +106,10 @@
     </nav>
 
     <footer class="sidebar-footer">
-      <div class="footer-logo i18n" data-i18n="logoHere">Logo Here</div>
+      <div class="footer-logo i18n" >Logo Here</div>
       <form action="{% url 'logout' %}" method="post" class="logout-form">
         {% csrf_token %}
-        <button type="submit" class="logout-button i18n" data-i18n="logout">Logout</button>
+        <button type="submit" class="logout-button i18n" >Logout</button>
       </form>
     </footer>
   </aside>

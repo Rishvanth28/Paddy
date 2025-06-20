@@ -76,23 +76,10 @@ document.addEventListener('DOMContentLoaded', function() {
           const parentMenu = submenuItem.closest('.has-submenu');
           if (parentMenu) {
             parentMenu.classList.add('open');
-            const menuKey = parentMenu.querySelector('.nav-text').textContent.trim();
-            localStorage.setItem(`submenu_${menuKey}`, 'open');
+            const menuKey = parentMenu.querySelector('.nav-text').textContent.trim();            localStorage.setItem(`submenu_${menuKey}`, 'open');
           }
         }
       }
-    });
-  }
-
-  function initLanguageSelector() {
-    const languageSelect = document.getElementById('language-select');
-    const savedLanguage = localStorage.getItem('preferred_language') || 'en';
-    languageSelect.value = savedLanguage;
-
-    languageSelect.addEventListener('change', function() {
-      localStorage.setItem('preferred_language', this.value);
-      console.log('Language changed to:', this.value);
-      // Add logic to reload or update content language if needed
     });
   }
 
@@ -108,10 +95,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Init
-  initSidebar();
+  // Init  initSidebar();
   initSubmenus();
   setActiveMenu();
-  initLanguageSelector();
   initMessages();
 });

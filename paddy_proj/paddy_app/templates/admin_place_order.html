@@ -30,18 +30,18 @@
 
 <body>
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-        <h1 class="page-title mb-0 me-3 i18n" data-i18n="placeNewOrder">Place New Order</h1>
+        <h1 class="page-title mb-0 me-3 i18n" >Place New Order</h1>
     </div>
     <!-- Tab Buttons -->
     <div class="tab-header">
-        <button class="tab-button active i18n" data-i18n="rice" type="button" onclick="showForm('Rice')">Rice</button>
-        <button class="tab-button i18n" data-i18n="paddy" type="button" onclick="showForm('Paddy')">Paddy</button>
-        <button class="tab-button i18n" data-i18n="pesticide" type="button" onclick="showForm('Pesticide')">Pesticide</button>
+        <button class="tab-button active i18n"  type="button" onclick="showForm('Rice')">Rice</button>
+        <button class="tab-button i18n"  type="button" onclick="showForm('Paddy')">Paddy</button>
+        <button class="tab-button i18n"  type="button" onclick="showForm('Pesticide')">Pesticide</button>
     </div>
     <div class="form-container">
         <!-- RICE FORM -->
         <div id="rice-form" class="form-card">
-            <h3 class="i18n" data-i18n="customerDetails">Customer Details <span title="Fill customer information">ⓘ</span></h3>
+            <h3 >Customer Details <span title="Fill customer information">ⓘ</span></h3>
             <hr>
             <form method="POST" id="rice-order-form" class="order-form">
                 {% csrf_token %}
@@ -102,7 +102,7 @@
         </div>
         <!-- PADDY FORM -->
         <div style="display: none;" id="paddy-form" class="form-card">
-            <h3 class="i18n" data-i18n="customerDetails">Customer Details <span title="Fill customer information">ⓘ</span></h3>
+            <h3 >Customer Details <span title="Fill customer information">ⓘ</span></h3>
             <hr>
             <form method="POST" id="paddy-order-form" class="order-form">
                 {% csrf_token %}
@@ -159,7 +159,7 @@
         </div>
         <!-- PESTICIDE FORM -->
         <div style="display: none;" id="pesticide-form" class="form-card">
-            <h3 class="i18n" data-i18n="customerDetails">Customer Details <span title="Fill customer information">ⓘ</span></h3>
+            <h3 >Customer Details <span title="Fill customer information">ⓘ</span></h3>
             <hr>
             <form method="POST" id="pesticide-order-form" class="order-form">
                 {% csrf_token %}

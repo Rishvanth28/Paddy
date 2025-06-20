@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-
   function setActiveMenu() {
     const currentPath = window.location.pathname.replace(/\/$/, '');
     const navLinks = document.querySelectorAll('.nav-link, .submenu-link');
@@ -84,18 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function initLanguageSelector() {
-    const languageSelect = document.getElementById('language-select');
-    const savedLanguage = localStorage.getItem('preferred_language') || 'en';
-    languageSelect.value = savedLanguage;
-
-    languageSelect.addEventListener('change', function() {
-      localStorage.setItem('preferred_language', this.value);
-      console.log('Language changed to:', this.value);
-      // Add logic to reload or update content language if needed
-    });
-  }
-
   function initMessages() {
     const messages = document.querySelectorAll('.messages li');
     if (messages.length > 0) {
@@ -108,11 +95,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Init
-  initSidebar();
+  // Init  initSidebar();
   initSubmenus();
   setActiveMenu();
-  initLanguageSelector();
   initMessages();
 });
   function toggleSidebar() {
