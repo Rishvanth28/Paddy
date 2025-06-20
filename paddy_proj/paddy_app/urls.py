@@ -54,12 +54,9 @@ urlpatterns = [
     path('superadmin/notifications/', superadmin_notifications, name='superadmin_notifications'),
     path('mark_notification_read/', mark_notification_read, name='mark_notification_read'),
     path('mark_all_notifications_read/', mark_all_notifications_read, name='mark_all_notifications_read'),
+    path('delete_notifications/', delete_notifications, name='delete_notifications'),
     # Reports URLs
     path('unified-report/', unified_report, name='unified_report'),
     path('download-report-excel/', download_report_excel, name='download_report_excel'),
     path("download-invoice-pdf/", download_invoice_pdf, name="download_invoice_pdf"),
 ]
-
-
-
-

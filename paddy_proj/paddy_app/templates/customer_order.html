@@ -1235,53 +1235,53 @@
         box-shadow: 0 8px 25px rgba(102, 119, 234, 0.4);
     }
 
-    /* Header Bar Styling */
+   /* Header Bar */
     .header-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-left: 0.5rem;
-        margin-top: -1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-left: 0.5rem;
+      margin-top: -1rem;
     }
 
     .page-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin: 0;
-        letter-spacing: 1px;
-        color: #ffffff;
-        position: relative;
-        text-transform: uppercase;
-        padding-bottom: 0.6rem;
-        text-align: left;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 1px;
+      color: #000000;
+      position: relative;
+      text-transform: uppercase;
+      padding-bottom: 0.6rem;
+      text-align: left;
+      /* <-- Ensure left alignment */
     }
 
+
     .page-title::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 60px;
-        height: 4px;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        border-radius: 2px;
-        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      /* initial width */
+      height: 4px;
+      background-color: #000000;
+      border-radius: 2px;
+      transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+      /* added transition for both properties */
     }
 
     .page-title:hover::after {
-        width: 120px;
+      width: 110%;
+      /* makes the underline grow */
+      transform: translateX(-50%);
+      /* keep it centered */
     }
 
-    .h-100 {
-        height: 100%;
-    }
 </style>
 {% endblock %}
 
