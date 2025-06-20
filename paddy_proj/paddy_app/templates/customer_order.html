@@ -752,7 +752,7 @@
     .badge {
         display: inline-block;
         padding: 0.35em 0.65em;
-        font-size: 0.75em;
+        /* font-size: 0.75em; */
         font-weight: 500;
         line-height: 1;
         color: #fff;
@@ -1649,6 +1649,7 @@
                 const isActive = order.order_id === selectedOrderId;
                 const statusClass = order.delivery_status === 1 ? 'status-completed' : 'status-pending';
                 const paymentStatus = order.payment_status === 1 ? 'Paid' : 'Pending';
+                const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
 
                 html += `
                     <div class="list-group-item order-item ${isActive ? 'active' : ''}" 
@@ -1658,7 +1659,7 @@
                                 <span class="fw-medium">Order #${order.order_id}</span>
                                 <span class="order-status ms-2">
                                     <span class="order-status-icon ${statusClass}"></span>
-                                    <small>${paymentStatus}</small>
+                                    <large>${paymentStatusBadge}</large>
                                 </span>
                             </div>
                             <small class="text-muted">${formatDate(order.order_date)}</small>
@@ -1707,6 +1708,15 @@
             }
         }
 
+        function getPaymentStatusBadge(status) {
+            switch(parseInt(status)) {
+                case 0: return '<span style="color: red;" class="bg-danger">Unpaid</span>';
+                case 1: return '<span style="color: orange;" class="orange-status text-dark">Partially Paid</span>';
+                case 2: return '<span style="color: green;" class="bg-success">Fully Paid</span>';
+                default: return '<span style="color: white;" class="bg-secondary">Unknown</span>';
+            }
+        }
+
         function renderOrderDetails() {
             if (!selectedOrderId) {
                 orderDetails.innerHTML = `
@@ -1731,6 +1741,7 @@
 
             const statusClass = order.delivery_status === 1 ? 'status-completed' : 'status-pending';
             const paymentStatusClass = order.payment_status === 1 ? 'text-success' : 'text-danger';
+            const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
 
             orderDetails.innerHTML = `
                 <div class="detail-header">
@@ -1771,12 +1782,13 @@
                                 </tr>
                             </table>
                         </div>
+                        
                         <div class="col-md-6">
                             <h6>Payment Information</h6>
                             <table class="table table-sm">
                                 <tr>
                                     <td class="text-muted">Status:</td>
-                                    <td><span class="${paymentStatusClass}">${order.payment_status === 1 ? 'Paid' : 'Pending'}</span></td>
+                                    <td><span class="${paymentStatusClass}">${paymentStatusBadge}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">Paid Amount:</td>
