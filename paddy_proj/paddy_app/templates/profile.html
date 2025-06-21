@@ -1,73 +1,223 @@
-{% extends 'superadmin_base.html' %}
+{% extends base_template %}
 {% load static %}
 
-{% block head %}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-{% endblock %}
-
 {% block content %}
-<div class="main-content">
-    <div class="profile-card">
-        <div class="profile-header">
-            <div class="profile-image">
-                <img src="{% static 'images/default-profile.jpg' %}" alt="Profile Picture">
-            </div>
-            <h1 class="profile-name">John Doe</h1>
-            <p class="profile-title">Senior Manager</p>
-            <div class="social-links">
-                <a href="#" class="social-link"><i class="fa fa-linkedin"></i></a>
-                <a href="#" class="social-link"><i class="fa fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fa fa-facebook"></i></a>
-                <a href="#" class="social-link"><i class="fa fa-envelope"></i></a>
-            </div>
+<style>
+/* html, body,
+input, textarea, select, button,
+h1, h2, h3, h4, h5, h6, p, span, div, label {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+} */
+*, *::before, *::after { box-sizing: border-box; }
+.upgrade-container {
+    margin: 0 auto;
+    padding: 2rem;
+}
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 3rem;
+    margin-top: 3rem;
+}
+.title-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 1px;
+    color: #000000;
+    position: relative;
+    text-transform: uppercase;
+    padding-bottom: 0.6rem;
+    text-align: left;
+}
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: #000000;
+    border-radius: 2px;
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+.page-title:hover::after {
+    width: 110%;
+    transform: translateX(-50%);
+}
+.upgrade-subtitle {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+.upgrade-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+.card-header {
+    background: linear-gradient(135deg, #000000, #25282b);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+.card-header h2 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+.card-body {
+    padding: 2rem;
+}
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #000000;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+.info-item {
+    margin-bottom: 0.5rem;
+}
+.info-label {
+    font-weight: 500;
+    color: #7f8c8d;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+.info-value {
+    font-weight: 500;
+    color: #000000;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+.profile-actions {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 1rem;
+}
+.submit-btn {
+    display: block;
+    margin: 10px auto 0;
+    padding: 12px 30px;
+    font-size: 16px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-20deg);
+    transition: left 0.5s ease;
+    z-index: 0;
+}
+.submit-btn:hover {
+    background-color: #222;
+}
+.submit-btn:hover::before {
+    left: 130%;
+}
+@media (max-width: 768px) {
+    .header-bar { margin-left: 0; margin-top: 1.5rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .upgrade-container { padding: 1rem; }
+    .card-body { padding: 1rem; }
+}
+</style>
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <div class="title-group">
+        <h1 class="page-title mb-0 me-3">Profile</h1>
+        <p class="upgrade-subtitle">Your account and business information</p>
+    </div>
+</div>
+<div class="upgrade-container">
+    <!-- Main Card -->
+    <div class="upgrade-card">
+        <!-- Card Header -->
+        <div class="card-header">
+            <h2>Profile Details</h2>
         </div>
 
-        <div class="profile-content">
-            <div class="info-section">
-                <h2 class="section-title">Personal Information</h2>
-                <div class="info-row">
-                    <div class="info-label">Full Name</div>
-                    <div class="info-value">John Doe</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Email</div>
-                    <div class="info-value">john.doe@company.com</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Phone</div>
-                    <div class="info-value">+1 (555) 123-4567</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Location</div>
-                    <div class="info-value">New York, USA</div>
-                </div>
-            </div>
-
-            <div class="info-section">
-                <h2 class="section-title">Work Information</h2>
-                <div class="info-row">
-                    <div class="info-label">Department</div>
-                    <div class="info-value">Management</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Position</div>
-                    <div class="info-value">Senior Manager</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Employee ID</div>
-                    <div class="info-value">EMP123456</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Join Date</div>
-                    <div class="info-value">January 15, 2023</div>
+        <!-- Card Body -->
+        <div class="card-body">
+            <!-- User Information Section -->
+            <div class="current-info-section">
+                <h3 class="section-title">Account Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">First Name</div>
+                        <div class="info-value">Alex</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Name</div>
+                        <div class="info-value">Johnson</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">alex.johnson@email.com</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value">+91 9876543210</div>
+                    </div>
                 </div>
             </div>
 
-            <button class="contact-button">
-                <i class="fa fa-envelope"></i> Send Message
-            </button>
+            <!-- Business Information Section -->
+            <div class="current-info-section" style="margin-top: 2rem;">
+                <h3 class="section-title">Business Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Company Name</div>
+                        <div class="info-value">Acme Pvt Ltd</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">GST Number</div>
+                        <div class="info-value">22AAAAA0000A1Z5</div>
+                    </div>
+                    <div class="info-item" style="grid-column: 1 / -1;">
+                        <div class="info-label">Address</div>
+                        <div class="info-value">123, Main Street, Mumbai, 400001</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Actions -->
+            <div class="profile-actions">
+                <a href="#" class="submit-btn">Edit Profile</a>
+                <a href="#" class="submit-btn" style="background:#eaf1fb; color:#2d6cdf;">Change Password</a>
+            </div>
         </div>
     </div>
 </div>

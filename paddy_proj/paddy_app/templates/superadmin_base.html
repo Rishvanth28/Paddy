@@ -78,6 +78,13 @@
       <ul class="nav-menu">
         <!-- Onboarding -->
         <li class="nav-item">
+          <a href="{% url 'profile' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
+            <span class="nav-text">Profile</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
           <a href="{% url 'onboard' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding">
             <span class="nav-text">Onboarding</span>

@@ -1608,7 +1608,19 @@ def admin_login_submit(request):
     return render(request, 'login.html', {'error': 'Invalid credentials'})
 
 def profile(request):
-    return render(request, 'profile.html')
+    role = request.session.get('role', 'superadmin')
+    if role == 'superadmin':
+        base_template = 'superadmin_base.html'
+    elif role == 'admin':
+        base_template = 'admin_base.html'
+    elif role == 'customer':
+        base_template = 'customer_base.html'
+    else:
+        base_template = 'superadmin_base.html'
+    context = {
+        'base_template': base_template,
+    }
+    return render(request, 'profile.html', context)
 
 def admin_subscription_payment(request):
     if request.method == "POST":

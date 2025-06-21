@@ -36,6 +36,12 @@
 
     <nav class="sidebar-nav">
       <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="{% url 'profile' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Place Order">
+            <span class="nav-text i18n" >Profile</span>
+          </a>
+        </li>
 
         <li class="nav-item">
           <a href="{% url 'admin_dashboard' %}" class="nav-link">
@@ -56,7 +62,8 @@
             <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
             <span class="nav-text i18n" >Customers</span>
           </a>
-        </li>        <li class="nav-item">
+        </li>        
+        <li class="nav-item">
           <a href="{% url 'admin_place_order' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
             <span class="nav-text i18n" >Place Order</span>
