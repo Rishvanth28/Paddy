@@ -34,6 +34,8 @@ from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+from reportlab.platypus.flowables import HRFlowable  
+
 
 load_dotenv()
 
@@ -2084,53 +2086,164 @@ def delete_notifications(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': f'Server error: {str(e)}'})
 
-
-@role_required(["superadmin", "admin"])
-def unified_report(request):
+@role_required(["admin"])
+def unified_report_admin(request):
     admin_id = request.session.get("user_id")
-    role = request.session.get("role")
+    
+    # Initialize filters from request parameters
+    customer_filter = request.GET.get('customer', '')
+    date_from = request.GET.get('date_from', '')
+    date_to = request.GET.get('date_to', '')
+    payment_status = request.GET.get('payment_status', '')
+    category_filter = request.GET.get('category', '')
+    
+    # Base queryset
+    orders = Orders.objects.select_related('customer', 'admin').prefetch_related('items') \
+        .filter(admin__admin_id=admin_id)
+    
+    # Apply filters
+    if customer_filter:
+        orders = orders.filter(
+            Q(customer__first_name__icontains=customer_filter) |
+            Q(customer__last_name__icontains=customer_filter) |
+            Q(customer__company_name__icontains=customer_filter)
+        )
+    
+    if date_from and date_to:
+        try:
+            date_from = datetime.strptime(date_from, '%Y-%m-%d').date()
+            date_to = datetime.strptime(date_to, '%Y-%m-%d').date()
+            orders = orders.filter(order_date__range=[date_from, date_to])
+        except ValueError:
+            pass
+    
+    if payment_status:
+        if payment_status == 'paid':
+            orders = orders.filter(payment_status=1)
+        elif payment_status == 'unpaid':
+            orders = orders.filter(payment_status=0)
+        elif payment_status == 'partial':
+            orders = orders.annotate(
+                paid_amount=Coalesce(
+                    Sum('payments__amount'),
+                    0
+                )
+            ).filter(paid_amount__gt=0, paid_amount__lt=F('overall_amount'))
+    
+    if category_filter:
+        orders = orders.filter(category=category_filter)
+    
+    # Final ordering
+    orders = orders.order_by('-order_date')
+    
+    # Get payments for filtered orders
+    payments = Payments.objects.select_related("order", "order__customer") \
+        .filter(order__in=orders).order_by("-date")
+    
+    # Calculate statistics
+    total_orders = orders.count()
+    total_payments = payments.aggregate(total=Sum('amount'))['total'] or 0
+    total_order_amount = orders.aggregate(total=Sum('overall_amount'))['total'] or 0
+    pending_amount = total_order_amount - total_payments
+    
+    paid_orders = orders.filter(payment_status=1).count()
+    unpaid_orders = orders.filter(payment_status=0).count()
+    
+    # Category statistics
+    category_stats = orders.values('category').annotate(
+        count=Count('order_id'),
+        total_amount=Sum('overall_amount'),
+        paid_amount=Sum(
+            Case(When(payment_status=1, then='overall_amount'), default=0, output_field=models.DecimalField())
+        )
+    ).order_by('-count')
+    
+    # Top products
+    top_products = OrderItems.objects.filter(order__in=orders).values('product_name').annotate(
+        total_quantity=Sum('quantity'),
+        total_amount=Sum('total_amount')
+    ).order_by('-total_amount')[:10]
+    
+    # Monthly trends
+    monthly_trends = orders.annotate(
+        month=ExtractMonth('order_date'),
+        year=ExtractYear('order_date')
+    ).values('month', 'year').annotate(
+        order_count=Count('order_id'),
+        total_amount=Sum('overall_amount')
+    ).order_by('year', 'month')
+    
+    # Payment methods
+    payment_methods = payments.values('payment_method').annotate(
+        count=Count('payment_id'),
+        total_amount=Sum('amount')
+    ).order_by('-total_amount')
+    
+    # Get unique customers and categories for filter dropdowns
+    customers = CustomerTable.objects.filter(
+        orders__admin__admin_id=admin_id
+    ).distinct().order_by('first_name')
+    
+    categories = orders.exclude(category__isnull=True).exclude(category__exact='') \
+        .values_list('category', flat=True).distinct().order_by('category')
+    
+    context = {
+        "orders": orders,
+        "payments": payments,
+        "statistics": {
+            "total_orders": total_orders,
+            "total_payments": total_payments,
+            "total_order_amount": total_order_amount,
+            "pending_amount": pending_amount,
+            "paid_orders": paid_orders,
+            "unpaid_orders": unpaid_orders,
+        },
+        "category_stats": category_stats,
+        "top_products": top_products,
+        "monthly_trends": monthly_trends,
+        "payment_methods": payment_methods,
+        "customers": customers,
+        "categories": categories,
+        "filters": {
+            "customer": customer_filter,
+            "date_from": date_from,
+            "date_to": date_to,
+            "payment_status": payment_status,
+            "category": category_filter,
+        }
+    }
+    
+    return render(request, "unified_report_admin.html", context)
 
-    # Get orders with order items and customer details
-    order_query = Orders.objects.select_related('customer', 'admin').prefetch_related('items')
-    payment_query = Payments.objects.select_related("order", "order__customer")
+@role_required(["superadmin"])
+def unified_report_superadmin(request):
+    orders = Orders.objects.select_related('customer', 'admin').prefetch_related('items') \
+        .all().order_by('-order_date')
 
-    if role == "superadmin":
-        orders = order_query.all().order_by('-order_date')
-        payments = payment_query.all().order_by("-date")
-    else:
-        orders = order_query.filter(admin__admin_id=admin_id).order_by('-order_date')
-        payments = payment_query.filter(order__admin__admin_id=admin_id).order_by("-date")
+    payments = Payments.objects.select_related("order", "order__customer", "order__admin") \
+        .all().order_by("-date")
 
-    # Calculate overall statistics
     total_orders = orders.count()
     total_payments = payments.aggregate(total=models.Sum('amount'))['total'] or 0
     total_order_amount = orders.aggregate(total=models.Sum('overall_amount'))['total'] or 0
     pending_amount = total_order_amount - total_payments
 
-    # Get payment status counts
     paid_orders = orders.filter(payment_status=1).count()
     unpaid_orders = orders.filter(payment_status=0).count()
 
-    # Group orders by category
     category_stats = orders.values('category').annotate(
         count=models.Count('order_id'),
         total_amount=models.Sum('overall_amount'),
-        paid_amount=models.Sum(Case(
-            When(payment_status=1, then='overall_amount'),
-            default=0,
-            output_field=models.DecimalField(),
-        ))
+        paid_amount=models.Sum(
+            Case(When(payment_status=1, then='overall_amount'), default=0, output_field=models.DecimalField())
+        )
     ).order_by('-count')
 
-    # Get top products from OrderItems
-    top_products = OrderItems.objects.filter(
-        order__in=orders
-    ).values('product_name').annotate(
+    top_products = OrderItems.objects.filter(order__in=orders).values('product_name').annotate(
         total_quantity=models.Sum('quantity'),
         total_amount=models.Sum('total_amount')
     ).order_by('-total_amount')[:10]
 
-    # Get monthly order trends
     monthly_trends = orders.annotate(
         month=ExtractMonth('order_date'),
         year=ExtractYear('order_date')
@@ -2139,7 +2252,6 @@ def unified_report(request):
         total_amount=models.Sum('overall_amount')
     ).order_by('year', 'month')
 
-    # Get payment methods distribution
     payment_methods = payments.values('payment_method').annotate(
         count=models.Count('payment_id'),
         total_amount=models.Sum('amount')
@@ -2161,8 +2273,8 @@ def unified_report(request):
         "monthly_trends": monthly_trends,
         "payment_methods": payment_methods,
     }
-    
-    return render(request, "unified_report.html", context)
+
+    return render(request, "unified_report_superadmin.html", context)
 
 @role_required(["superadmin", "admin"])
 def download_report_excel(request):
@@ -2414,71 +2526,108 @@ def download_report_excel(request):
 from .models import Orders  # Assuming Orders and OrderItems are in the same app
 from paddy_app.decorators import role_required  # Adjust based on your project structure
 import inflect
-
-@role_required(["superadmin", "admin"])
+@role_required(["admin"])
 def download_invoice_pdf(request):
     admin_id = request.session.get("user_id")
     role = request.session.get("role")
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="detailed_report_{timezone.now().strftime("%Y%m%d")}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="business_report_{timezone.now().strftime("%Y%m%d_%H%M")}.pdf"'
 
-    # Create the PDF document with landscape orientation and adjusted margins
+    # Document setup with professional margins
     doc = SimpleDocTemplate(
-        response, 
+        response,
         pagesize=landscape(A4),
-        leftMargin=15, 
-        rightMargin=15, 
-        topMargin=25, 
-        bottomMargin=20
+        leftMargin=20,
+        rightMargin=20,
+        topMargin=30,
+        bottomMargin=30
     )
 
     styles = getSampleStyleSheet()
     elements = []
 
-    # Title and Header
+    # Custom styles
     title_style = ParagraphStyle(
-        'CustomTitle',
+        'Title',
         parent=styles['Heading1'],
-        fontSize=16,
+        fontSize=18,
         alignment=TA_CENTER,
-        spaceAfter=20
+        spaceAfter=15,
+        textColor=colors.HexColor('#2c3e50'),
+        fontName='Helvetica-Bold'
     )
-    elements.append(Paragraph("Detailed Order & Payment Report", title_style))
+    
+    subtitle_style = ParagraphStyle(
+        'Subtitle',
+        parent=styles['Normal'],
+        fontSize=10,
+        alignment=TA_CENTER,
+        spaceAfter=20,
+        textColor=colors.HexColor('#7f8c8d'),
+        fontName='Helvetica'
+    )
+    
+    header_style = ParagraphStyle(
+        'Header',
+        parent=styles['Normal'],
+        fontSize=8,
+        alignment=TA_CENTER,
+        textColor=colors.white,
+        fontName='Helvetica-Bold'
+    )
+    
+    cell_style = ParagraphStyle(
+        'Cell',
+        parent=styles['Normal'],
+        fontSize=7,
+        alignment=TA_LEFT,
+        textColor=colors.HexColor('#2c3e50'),
+        fontName='Helvetica',
+        leading=9
+    )
+    
+    summary_style = ParagraphStyle(
+        'Summary',
+        parent=styles['Normal'],
+        fontSize=9,
+        alignment=TA_LEFT,
+        textColor=colors.HexColor('#2c3e50'),
+        fontName='Helvetica-Bold',
+        spaceAfter=5
+    )
 
-    # Add company info if available for admin
+    # Header with title and admin info
+    elements.append(Paragraph("Business Order Report", title_style))
+    
+    # Add admin information if available
     if role == "admin":
         admin = AdminTable.objects.get(admin_id=admin_id)
-        header_info = [
-            f"Generated by: {admin.first_name} {admin.last_name}",
-            f"Email: {admin.email}",
-            f"Phone: {admin.phone_number}",
-            f"Date: {timezone.now().strftime('%d %B %Y, %I:%M %p')}"
-        ]
-        for info in header_info:
-            elements.append(Paragraph(info, ParagraphStyle(
-                'HeaderInfo',
-                parent=styles['Normal'],
-                fontSize=8,
-                alignment=TA_RIGHT,
-                textColor=colors.grey
-            )))
+        admin_info = f"Generated by: {admin.first_name} {admin.last_name} | {admin.email} | {timezone.now().strftime('%d %B %Y at %I:%M %p')}"
+        elements.append(Paragraph(admin_info, subtitle_style))
+    
+    # Add a horizontal line
+    elements.append(HRFlowable(
+        width="100%",
+        thickness=1,
+        lineCap='round',
+        color=colors.HexColor('#bdc3c7'),
+        spaceAfter=15
+    ))
 
-    elements.append(Spacer(1, 20))
-
-    # Table headers with comprehensive information
+    # Table data setup
     table_data = [[
-        "Order\nID", 
-        "Customer\nDetails",
-        "Order\nDate",
-        "Delivery\nDate",
-        "Product\nDetails",
-        "Batch &\nExpiry",
-        "Quantity &\nUnit",
-        "Price/Unit\n(₹)",
-        "Total\n(₹)",
-        "Payment\nDetails",
-        "Delivery\nStatus"
+        Paragraph("Order ID", header_style),
+        Paragraph("Customer", header_style),
+        Paragraph("Order Date", header_style),
+        Paragraph("Delivery", header_style),
+        Paragraph("Product", header_style),
+        Paragraph("Batch/Expiry", header_style),
+        Paragraph("Qty/Unit", header_style),
+        Paragraph("Price", header_style),
+        Paragraph("Total", header_style),
+        Paragraph("Payment", header_style),
+        Paragraph("Status", header_style)
     ]]
 
     # Query data based on role
@@ -2491,139 +2640,667 @@ def download_invoice_pdf(request):
             "items", "payments_set"
         ).filter(admin__admin_id=admin_id).order_by('-order_date')
 
-    # Build the table rows with comprehensive information
     for order in orders:
         customer = order.customer
         order_items = order.items.all()
         payments = order.payments_set.all()
 
-        # Get total paid amount for this order
         total_paid = sum(payment.amount for payment in payments)
-        payment_status = "Fully Paid" if total_paid >= order.overall_amount else f"Partially Paid ({(total_paid/order.overall_amount)*100:.1f}%)"
-        if total_paid == 0:
-            payment_status = "Unpaid"
+        payment_status = "Unpaid" if total_paid == 0 else \
+                        "Fully Paid" if total_paid >= order.overall_amount else \
+                        f"Paid: {total_paid/order.overall_amount:.0%}"
 
-        # Format delivery status
         delivery_status = "Delivered" if order.delivery_status == 1 else "Pending"
-        
-        # Customer details formatting
-        customer_details = f"""
-        {customer.first_name} {customer.last_name}
-        {customer.company_name}
-        GST: {customer.GST or 'N/A'}
-        Ph: {customer.phone_number}
-        """
+
+        customer_details = Paragraph(
+            f"<b>{customer.first_name} {customer.last_name}</b><br/>"
+            f"{customer.company_name or ''}<br/>"
+            f"GST: {customer.GST or 'N/A'}<br/>"
+            f"Ph: {customer.phone_number}",
+            cell_style
+        )
 
         for idx, item in enumerate(order_items):
-            # Payment details for this order
             payment_details = []
-            if idx == 0:  # Show payments only in first row of each order
+            if idx == 0:
                 for payment in payments:
                     payment_details.append(
-                        f"₹{payment.amount:,.2f}\n"
-                        f"{payment.date.strftime('%d-%m-%Y')}\n"
-                        f"{payment.payment_method}\n"
+                        f"<b>₹{payment.amount:,.2f}</b> "
+                        f"({payment.date.strftime('%d-%m-%Y')})<br/>"
+                        f"{payment.payment_method} "
                         f"Ref: {payment.reference}"
                     )
-            payment_info = "\n".join(payment_details) if payment_details else f"Due: ₹{order.overall_amount - total_paid:,.2f}"
+            payment_info = "\n".join(payment_details) if payment_details else f"<b>Due:</b> ₹{order.overall_amount - total_paid:,.2f}"
 
-            # Product details with batch and expiry
-            product_details = f"{item.product_name}\n{order.category or 'N/A'}"
-            batch_expiry = f"Batch: {item.batch_number}\nExp: {item.expiry_date.strftime('%d-%m-%Y')}"
-
-            # Quantity and pricing details
-            qty_unit = f"{item.quantity:,.2f} {item.unit}"
+            product_details = Paragraph(
+                f"<b>{item.product_name}</b><br/>"
+                f"{order.category or 'N/A'}",
+                cell_style
+            )
             
+            batch_expiry = Paragraph(
+                f"<b>Batch:</b> {item.batch_number}<br/>"
+                f"<b>Exp:</b> {item.expiry_date.strftime('%d-%m-%Y')}",
+                cell_style
+            )
+            
+            qty_unit = Paragraph(
+                f"{item.quantity:,.2f} {item.unit}",
+                cell_style
+            )
+
             row = [
-                str(order.order_id) if idx == 0 else "",  # Order ID
-                customer_details if idx == 0 else "",  # Customer Details
-                order.order_date.strftime("%d-%m-%Y") if idx == 0 else "",  # Order Date
-                order.delivery_date.strftime("%d-%m-%Y") if order.delivery_date and idx == 0 else "Not Set",  # Delivery Date
-                product_details,  # Product Details
-                batch_expiry,  # Batch & Expiry
-                qty_unit,  # Quantity & Unit
-                f"₹{item.price_per_unit:,.2f}",  # Price per Unit
-                f"₹{item.total_amount:,.2f}",  # Total Amount
-                payment_info if idx == 0 else "",  # Payment Details
-                f"{delivery_status}\n{order.lorry_number}\n{order.driver_name}\nPh: {order.driver_ph_no}" if idx == 0 else ""  # Delivery Status
+                Paragraph(str(order.order_id) if idx == 0 else "", cell_style),
+                customer_details if idx == 0 else Paragraph("", cell_style),
+                Paragraph(order.order_date.strftime("%d-%m-%Y") if idx == 0 else "", cell_style),
+                Paragraph(order.delivery_date.strftime("%d-%m-%Y") if order.delivery_date and idx == 0 else "Not Set", cell_style),
+                product_details,
+                batch_expiry,
+                qty_unit,
+                Paragraph(f"₹{item.price_per_unit:,.2f}", cell_style),
+                Paragraph(f"<b>₹{item.total_amount:,.2f}</b>", cell_style),
+                Paragraph(payment_info if idx == 0 else "", cell_style),
+                Paragraph(
+                    f"<b>{delivery_status}</b><br/>"
+                    f"{order.lorry_number or ''}<br/>"
+                    f"{order.driver_name or ''}<br/>"
+                    f"Ph: {order.driver_ph_no or ''}" if idx == 0 else "",
+                    cell_style
+                )
             ]
             table_data.append(row)
-        
-        # Add a separator row between orders
-        if orders.last() != order:
-            separator_row = ["" for _ in range(11)]
-            table_data.append(separator_row)
 
-    # Column widths (adjusted for landscape mode and better spacing)
+        # Add subtle separator between orders
+        if orders.last() != order:
+            table_data.append([Paragraph("—"*5, cell_style) for _ in range(11)])
+
+    # Column widths adjusted for better readability
     col_widths = [40, 80, 50, 50, 80, 70, 50, 50, 50, 80, 80]
-    
-    # Create table with adjusted styling
+
     table = Table(table_data, colWidths=col_widths, repeatRows=1)
-    
-    # Apply comprehensive table styling
     table.setStyle(TableStyle([
-        # Header styling
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#E8E8E8')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#333333')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3498db')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 8),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
-        
-        # Content styling
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 7),
-        ('ALIGN', (0, 0), (0, -1), 'CENTER'),  # Order ID
-        ('ALIGN', (7, 1), (8, -1), 'RIGHT'),   # Price columns
-        ('ALIGN', (1, 1), (1, -1), 'LEFT'),    # Customer details
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F9F9F9')]),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
-        ('TOPPADDING', (0, 1), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8f9fa')),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e0e0e0')),
+        ('ALIGN', (7, 1), (8, -1), 'RIGHT'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
     ]))
 
     elements.append(table)
-
-    # Add summary section
     elements.append(Spacer(1, 20))
+
+    # Professional summary section
+    total_orders = orders.count()
+    total_order_amount = sum(order.overall_amount for order in orders)
+    total_paid = sum(payment.amount for order in orders for payment in order.payments_set.all())
+    delivered_orders = orders.filter(delivery_status=1).count()
+    pending_orders = total_orders - delivered_orders
+
+    summary_elements = []
     
-    # Summary styling
+    # Summary title
+    summary_elements.append(Paragraph("Business Performance Summary", summary_style))
+    summary_elements.append(HRFlowable(
+        width="100%",
+        thickness=0.5,
+        lineCap='round',
+        color=colors.HexColor('#bdc3c7'),
+        spaceAfter=10
+    ))
+    
+    # Key metrics in a table
+    summary_table_data = [
+        [
+            Paragraph("<b>Metric</b>", summary_style),
+            Paragraph("<b>Value</b>", summary_style),
+            Paragraph("<b>Metric</b>", summary_style),
+            Paragraph("<b>Value</b>", summary_style)
+        ],
+        [
+            Paragraph("Total Orders", cell_style),
+            Paragraph(f"{total_orders}", cell_style),
+            Paragraph("Delivered Orders", cell_style),
+            Paragraph(f"{delivered_orders} ({delivered_orders/total_orders:.0%})", cell_style)
+        ],
+        [
+            Paragraph("Total Order Value", cell_style),
+            Paragraph(f"₹{total_order_amount:,.2f}", cell_style),
+            Paragraph("Pending Deliveries", cell_style),
+            Paragraph(f"{pending_orders} ({pending_orders/total_orders:.0%})", cell_style)
+        ],
+        [
+            Paragraph("Total Payments Received", cell_style),
+            Paragraph(f"₹{total_paid:,.2f}", cell_style),
+            Paragraph("Outstanding Balance", cell_style),
+            Paragraph(f"₹{(total_order_amount - total_paid):,.2f}", cell_style)
+        ],
+        [
+            Paragraph("Payment Completion", cell_style),
+            Paragraph(f"{(total_paid/total_order_amount):.0%}", cell_style),
+            Paragraph("Average Order Value", cell_style),
+            Paragraph(f"₹{total_order_amount/total_orders:,.2f}", cell_style)
+        ]
+    ]
+    
+    summary_table = Table(summary_table_data, colWidths=[100, 80, 100, 80])
+    summary_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('ALIGN', (3, 0), (3, -1), 'RIGHT'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e0e0e0')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f1f1f1')),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+        ('TOPPADDING', (0, 0), (-1, 0), 6),
+    ]))
+    
+    summary_elements.append(summary_table)
+    summary_elements.append(Spacer(1, 15))
+    
+    # Footer note
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=styles['Normal'],
+        fontSize=7,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor('#7f8c8d'),
+        fontName='Helvetica-Oblique'
+    )
+    summary_elements.append(Paragraph("This report contains confidential business information. Unauthorized use is prohibited.", footer_style))
+    
+    elements.extend(summary_elements)
+
+    doc.build(elements)
+    return response
+@role_required(["superadmin"])
+def download_invoice_pdf1(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="superadmin_report_{timezone.now().strftime("%Y%m%d_%H%M")}.pdf"'
+
+    # Document setup with professional margins
+    doc = SimpleDocTemplate(
+        response,
+        pagesize=landscape(A4),
+        leftMargin=20,
+        rightMargin=20,
+        topMargin=30,
+        bottomMargin=30
+    )
+
+    styles = getSampleStyleSheet()
+    elements = []
+
+    # Custom styles
+    title_style = ParagraphStyle(
+        'Title',
+        parent=styles['Heading1'],
+        fontSize=18,
+        alignment=TA_CENTER,
+        spaceAfter=15,
+        textColor=colors.HexColor('#2c3e50'),
+        fontName='Helvetica-Bold'
+    )
+    
+    subtitle_style = ParagraphStyle(
+        'Subtitle',
+        parent=styles['Normal'],
+        fontSize=10,
+        alignment=TA_CENTER,
+        spaceAfter=20,
+        textColor=colors.HexColor('#7f8c8d'),
+        fontName='Helvetica'
+    )
+    
+    header_style = ParagraphStyle(
+        'Header',
+        parent=styles['Normal'],
+        fontSize=8,
+        alignment=TA_CENTER,
+        textColor=colors.white,
+        fontName='Helvetica-Bold'
+    )
+    
+    cell_style = ParagraphStyle(
+        'Cell',
+        parent=styles['Normal'],
+        fontSize=7,
+        alignment=TA_LEFT,
+        textColor=colors.HexColor('#2c3e50'),
+        fontName='Helvetica',
+        leading=9
+    )
+    
     summary_style = ParagraphStyle(
         'Summary',
         parent=styles['Normal'],
         fontSize=9,
         alignment=TA_LEFT,
-        textColor=colors.HexColor('#333333')
+        textColor=colors.HexColor('#2c3e50'),
+        fontName='Helvetica-Bold',
+        spaceAfter=5
     )
+
+    # Header with logo and title
+    elements.append(Paragraph("Superadmin Business Report", title_style))
+    elements.append(Paragraph(f"Orders & Payments Analysis | Generated on {timezone.now().strftime('%d %B %Y at %I:%M %p')}", subtitle_style))
     
-    # Calculate comprehensive summary
+    # Add a horizontal line
+    elements.append(HRFlowable(
+        width="100%",
+        thickness=1,
+        lineCap='round',
+        color=colors.HexColor('#bdc3c7'),
+        spaceAfter=15
+    ))
+
+    # Table data setup
+    table_data = [[
+        Paragraph("Order ID", header_style),
+        Paragraph("Admin", header_style),
+        Paragraph("Customer", header_style),
+        Paragraph("Order Date", header_style),
+        Paragraph("Delivery", header_style),
+        Paragraph("Product", header_style),
+        Paragraph("Batch/Expiry", header_style),
+        Paragraph("Qty/Unit", header_style),
+        Paragraph("Price", header_style),
+        Paragraph("Total", header_style),
+        Paragraph("Payment", header_style),
+        Paragraph("Status", header_style)
+    ]]
+
+    # Query optimization
+    orders = Orders.objects.select_related("customer", "admin")\
+                          .prefetch_related("items", "payments_set")\
+                          .all().order_by('-order_date')
+
+    for order in orders:
+        customer = order.customer
+        admin = order.admin
+        order_items = order.items.all()
+        payments = order.payments_set.all()
+
+        total_paid = sum(payment.amount for payment in payments)
+        payment_status = "Unpaid" if total_paid == 0 else \
+                        "Fully Paid" if total_paid >= order.overall_amount else \
+                        f"Paid: {total_paid/order.overall_amount:.0%}"
+
+        delivery_status = "Delivered" if order.delivery_status == 1 else "Pending"
+
+        customer_details = Paragraph(
+            f"<b>{customer.first_name} {customer.last_name}</b><br/>"
+            f"{customer.company_name or ''}<br/>"
+            f"GST: {customer.GST or 'N/A'}<br/>"
+            f"Ph: {customer.phone_number}",
+            cell_style
+        )
+
+        admin_details = Paragraph(
+            f"<b>{admin.first_name} {admin.last_name}</b><br/>"
+            f"Email: {admin.email}<br/>"
+            f"Ph: {admin.phone_number}",
+            cell_style
+        )
+
+        for idx, item in enumerate(order_items):
+            payment_details = []
+            if idx == 0:
+                for payment in payments:
+                    payment_details.append(
+                        f"<b>₹{payment.amount:,.2f}</b> "
+                        f"({payment.date.strftime('%d-%m-%Y')})<br/>"
+                        f"{payment.payment_method} "
+                        f"Ref: {payment.reference}"
+                    )
+            payment_info = "\n".join(payment_details) if payment_details else f"<b>Due:</b> ₹{order.overall_amount - total_paid:,.2f}"
+
+            product_details = Paragraph(
+                f"<b>{item.product_name}</b><br/>"
+                f"{order.category or 'N/A'}",
+                cell_style
+            )
+            
+            batch_expiry = Paragraph(
+                f"<b>Batch:</b> {item.batch_number}<br/>"
+                f"<b>Exp:</b> {item.expiry_date.strftime('%d-%m-%Y')}",
+                cell_style
+            )
+            
+            qty_unit = Paragraph(
+                f"{item.quantity:,.2f} {item.unit}",
+                cell_style
+            )
+
+            row = [
+                Paragraph(str(order.order_id) if idx == 0 else "", cell_style),
+                admin_details if idx == 0 else Paragraph("", cell_style),
+                customer_details if idx == 0 else Paragraph("", cell_style),
+                Paragraph(order.order_date.strftime("%d-%m-%Y") if idx == 0 else "", cell_style),
+                Paragraph(order.delivery_date.strftime("%d-%m-%Y") if order.delivery_date and idx == 0 else "Not Set", cell_style),
+                product_details,
+                batch_expiry,
+                qty_unit,
+                Paragraph(f"₹{item.price_per_unit:,.2f}", cell_style),
+                Paragraph(f"<b>₹{item.total_amount:,.2f}</b>", cell_style),
+                Paragraph(payment_info if idx == 0 else "", cell_style),
+                Paragraph(
+                    f"<b>{delivery_status}</b><br/>"
+                    f"{order.lorry_number or ''}<br/>"
+                    f"{order.driver_name or ''}<br/>"
+                    f"Ph: {order.driver_ph_no or ''}" if idx == 0 else "",
+                    cell_style
+                )
+            ]
+            table_data.append(row)
+
+        # Add subtle separator between orders
+        if orders.last() != order:
+            table_data.append([Paragraph("—"*5, cell_style) for _ in range(12)])
+
+    # Column widths adjusted for better readability
+    col_widths = [35, 75, 75, 45, 45, 75, 60, 40, 45, 45, 75, 70]
+
+    table = Table(table_data, colWidths=col_widths, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3498db')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8f9fa')),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e0e0e0')),
+        ('ALIGN', (7, 1), (9, -1), 'RIGHT'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+
+    elements.append(table)
+    elements.append(Spacer(1, 20))
+
+    # Professional summary section
     total_orders = orders.count()
     total_order_amount = sum(order.overall_amount for order in orders)
-    total_paid = sum(
-        payment.amount 
-        for order in orders 
-        for payment in order.payments_set.all()
-    )
+    total_paid = sum(payment.amount for order in orders for payment in order.payments_set.all())
     delivered_orders = orders.filter(delivery_status=1).count()
     pending_orders = total_orders - delivered_orders
+
+    summary_elements = []
     
-    # Add summary information
-    summary_data = [
-        f"Report Summary:",
-        f"Total Orders: {total_orders}",
-        f"Total Order Value: ₹{total_order_amount:,.2f}",
-        f"Total Paid Amount: ₹{total_paid:,.2f}",
-        f"Balance Due: ₹{(total_order_amount - total_paid):,.2f}",
-        f"Delivered Orders: {delivered_orders}",
-        f"Pending Deliveries: {pending_orders}",
-        f"\nReport generated on: {timezone.now().strftime('%d %B %Y at %I:%M %p')}"
+    # Summary title
+    summary_elements.append(Paragraph("Business Performance Summary", summary_style))
+    summary_elements.append(HRFlowable(
+        width="100%",
+        thickness=0.5,
+        lineCap='round',
+        color=colors.HexColor('#bdc3c7'),
+        spaceAfter=10
+    ))
+    
+    # Key metrics in a table
+    summary_table_data = [
+        [
+            Paragraph("<b>Metric</b>", summary_style),
+            Paragraph("<b>Value</b>", summary_style),
+            Paragraph("<b>Metric</b>", summary_style),
+            Paragraph("<b>Value</b>", summary_style)
+        ],
+        [
+            Paragraph("Total Orders", cell_style),
+            Paragraph(f"{total_orders}", cell_style),
+            Paragraph("Delivered Orders", cell_style),
+            Paragraph(f"{delivered_orders} ({delivered_orders/total_orders:.0%})", cell_style)
+        ],
+        [
+            Paragraph("Total Order Value", cell_style),
+            Paragraph(f"₹{total_order_amount:,.2f}", cell_style),
+            Paragraph("Pending Deliveries", cell_style),
+            Paragraph(f"{pending_orders} ({pending_orders/total_orders:.0%})", cell_style)
+        ],
+        [
+            Paragraph("Total Payments Received", cell_style),
+            Paragraph(f"₹{total_paid:,.2f}", cell_style),
+            Paragraph("Outstanding Balance", cell_style),
+            Paragraph(f"₹{(total_order_amount - total_paid):,.2f}", cell_style)
+        ],
+        [
+            Paragraph("Payment Completion", cell_style),
+            Paragraph(f"{(total_paid/total_order_amount):.0%}", cell_style),
+            Paragraph("Average Order Value", cell_style),
+            Paragraph(f"₹{total_order_amount/total_orders:,.2f}", cell_style)
+        ]
     ]
     
-    for line in summary_data:
-        elements.append(Paragraph(line, summary_style))
+    summary_table = Table(summary_table_data, colWidths=[100, 80, 100, 80])
+    summary_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('ALIGN', (3, 0), (3, -1), 'RIGHT'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e0e0e0')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f1f1f1')),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+        ('TOPPADDING', (0, 0), (-1, 0), 6),
+    ]))
+    
+    summary_elements.append(summary_table)
+    summary_elements.append(Spacer(1, 15))
+    
+    # Footer note
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=styles['Normal'],
+        fontSize=7,
+        alignment=TA_CENTER,
+        textColor=colors.HexColor('#7f8c8d'),
+        fontName='Helvetica-Oblique'
+    )
+    summary_elements.append(Paragraph("This report contains confidential business information. Unauthorized use is prohibited.", footer_style))
+    
+    elements.extend(summary_elements)
 
-    # Build the PDF
     doc.build(elements)
     return response
+
+
+
+@role_required(["superadmin", "admin"])
+def download_invoice_excel1(request):
+    try:
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output)
+
+        admin_id = request.session.get("user_id")
+        role = request.session.get("role")
+
+        # Formatting styles
+        header_format = workbook.add_format({
+            'bold': True, 'bg_color': '#D9E1F2', 'border': 1,
+            'align': 'center', 'valign': 'vcenter', 'text_wrap': True, 'font_size': 11
+        })
+        cell_format = workbook.add_format({
+            'border': 1, 'align': 'left', 'valign': 'top', 'text_wrap': True, 'font_size': 10
+        })
+        number_format = workbook.add_format({
+            'border': 1, 'align': 'right', 'valign': 'top', 'num_format': '#,##0.00', 'font_size': 10
+        })
+        date_format = workbook.add_format({
+            'border': 1, 'align': 'center', 'valign': 'top', 'num_format': 'dd-mm-yyyy', 'font_size': 10
+        })
+
+        # Orders Sheet
+        orders_sheet = workbook.add_worksheet('Orders Detail')
+        orders_sheet.freeze_panes(1, 0)
+
+        # Column widths
+        orders_sheet.set_column('A:A', 12)
+        orders_sheet.set_column('B:B', 30)
+        orders_sheet.set_column('C:C', 30)  # Admin Details
+        orders_sheet.set_column('D:D', 15)
+        orders_sheet.set_column('E:E', 15)
+        orders_sheet.set_column('F:F', 25)
+        orders_sheet.set_column('G:G', 20)
+        orders_sheet.set_column('H:H', 15)
+        orders_sheet.set_column('I:I', 10)
+        orders_sheet.set_column('J:J', 15)
+        orders_sheet.set_column('K:K', 15)
+        orders_sheet.set_column('L:L', 20)
+        orders_sheet.set_column('M:M', 20)
+        orders_sheet.set_column('N:N', 20)
+        orders_sheet.set_column('O:O', 20)
+        orders_sheet.set_column('P:P', 15)
+        orders_sheet.set_column('Q:Q', 20)
+        orders_sheet.set_column('R:R', 15)
+
+        headers = [
+            'Order ID', 'Customer Details', 'Admin Details', 'Order Date', 'Delivery Date',
+            'Product Details', 'Batch Number', 'Expiry Date', 'Quantity', 'Unit', 'Price/Unit',
+            'Total Amount', 'GST', 'Payment Status', 'Paid Amount', 'Balance Due',
+            'Vehicle No', 'Driver Details', 'Delivery Status'
+        ]
+        for col, header in enumerate(headers):
+            orders_sheet.write(0, col, header, header_format)
+
+        # Fetch Orders
+        if role == "superadmin":
+            orders = Orders.objects.select_related('customer', 'admin').prefetch_related('items', 'payments_set').all().order_by('-order_date')
+        else:
+            orders = Orders.objects.select_related('customer', 'admin').prefetch_related('items', 'payments_set').filter(admin__admin_id=admin_id).order_by('-order_date')
+
+        # Write Order Data
+        row = 1
+        for order in orders:
+            items = order.items.all()
+            payments = order.payments_set.all()
+            total_paid = sum(p.amount for p in payments)
+            balance = order.overall_amount - total_paid
+
+            payment_status = "Fully Paid" if total_paid >= order.overall_amount else \
+                             f"Partially Paid ({(total_paid/order.overall_amount)*100:.1f}%)" if total_paid > 0 else "Unpaid"
+            delivery_status = "Delivered" if order.delivery_status == 1 else "Pending"
+
+            customer_details = f"{order.customer.first_name} {order.customer.last_name}\nCompany: {order.customer.company_name}\nPhone: {order.customer.phone_number}\nEmail: {order.customer.email}"
+            driver_details = f"Name: {order.driver_name}\nPhone: {order.driver_ph_no}"
+            admin_details = f"{order.admin.first_name} {order.admin.last_name}\nPhone: {order.admin.phone_number}\nEmail: {order.admin.email}" if role == "superadmin" else "N/A"
+
+            for item in items:
+                col = 0
+                orders_sheet.write(row, col, str(order.order_id), cell_format); col += 1
+                orders_sheet.write(row, col, customer_details, cell_format); col += 1
+                orders_sheet.write(row, col, admin_details, cell_format); col += 1
+                orders_sheet.write_datetime(row, col, order.order_date, date_format); col += 1
+                if order.delivery_date:
+                    orders_sheet.write_datetime(row, col, order.delivery_date, date_format); col += 1
+                else:
+                    orders_sheet.write(row, col, "Not Set", cell_format); col += 1
+                orders_sheet.write(row, col, f"{item.product_name}\n{order.category or 'N/A'}", cell_format); col += 1
+                orders_sheet.write(row, col, item.batch_number, cell_format); col += 1
+                orders_sheet.write_datetime(row, col, item.expiry_date, date_format); col += 1
+                orders_sheet.write_number(row, col, item.quantity, number_format); col += 1
+                orders_sheet.write(row, col, item.unit, cell_format); col += 1
+                orders_sheet.write_number(row, col, item.price_per_unit, number_format); col += 1
+                orders_sheet.write_number(row, col, item.total_amount, number_format); col += 1
+                orders_sheet.write(row, col, order.GST or 'N/A', cell_format); col += 1
+                orders_sheet.write(row, col, payment_status, cell_format); col += 1
+                orders_sheet.write_number(row, col, total_paid, number_format); col += 1
+                orders_sheet.write_number(row, col, balance, number_format); col += 1
+                orders_sheet.write(row, col, order.lorry_number, cell_format); col += 1
+                orders_sheet.write(row, col, driver_details, cell_format); col += 1
+                orders_sheet.write(row, col, delivery_status, cell_format)
+                row += 1
+
+        # Payments Sheet
+        payments_sheet = workbook.add_worksheet('Payments Detail')
+        payments_sheet.freeze_panes(1, 0)
+        payments_sheet.set_column('A:H', 20)
+
+        payment_headers = [
+            'Payment ID', 'Order ID', 'Customer', 'Amount', 'Date',
+            'Method', 'Reference', 'Proof Link'
+        ]
+        for col, header in enumerate(payment_headers):
+            payments_sheet.write(0, col, header, header_format)
+
+        if role == "superadmin":
+            payments = Payments.objects.select_related('order__customer').all().order_by('-date')
+        else:
+            payments = Payments.objects.select_related('order__customer').filter(order__admin__admin_id=admin_id).order_by('-date')
+
+        for row, payment in enumerate(payments, 1):
+            customer_name = f"{payment.order.customer.first_name} {payment.order.customer.last_name}" if payment.order and payment.order.customer else "N/A"
+            col = 0
+            payments_sheet.write(row, col, str(payment.payment_id), cell_format); col += 1
+            payments_sheet.write(row, col, str(payment.order.order_id) if payment.order else 'N/A', cell_format); col += 1
+            payments_sheet.write(row, col, customer_name, cell_format); col += 1
+            payments_sheet.write_number(row, col, payment.amount, number_format); col += 1
+            payments_sheet.write_datetime(row, col, payment.date, date_format); col += 1
+            payments_sheet.write(row, col, payment.payment_method, cell_format); col += 1
+            payments_sheet.write(row, col, payment.reference, cell_format); col += 1
+            payments_sheet.write(row, col, payment.proof_link, cell_format)
+
+        # Summary Sheet
+        summary_sheet = workbook.add_worksheet('Summary')
+        summary_sheet.set_column('A:B', 30)
+
+        summary_header_format = workbook.add_format({'bold': True, 'font_size': 12, 'align': 'left'})
+        summary_value_format = workbook.add_format({'font_size': 11, 'align': 'right', 'num_format': '#,##0.00'})
+
+        total_orders = orders.count()
+        total_order_amount = sum(order.overall_amount for order in orders)
+        total_paid = sum(payment.amount for payment in payments)
+        delivered_orders = orders.filter(delivery_status=1).count()
+        pending_orders = total_orders - delivered_orders
+
+        summary_data = [
+            ('Total Orders:', total_orders),
+            ('Total Order Value:', total_order_amount),
+            ('Total Paid Amount:', total_paid),
+            ('Balance Due:', total_order_amount - total_paid),
+            ('Delivered Orders:', delivered_orders),
+            ('Pending Deliveries:', pending_orders)
+        ]
+        for row, (label, value) in enumerate(summary_data):
+            summary_sheet.write(row, 0, label, summary_header_format)
+            summary_sheet.write(row, 1, value, summary_value_format)
+
+        # Per Admin Orders (for superadmin only)
+        if role == "superadmin":
+            from collections import Counter
+            admin_counts = Counter(order.admin for order in orders)
+            offset = len(summary_data) + 2
+            summary_sheet.write(offset - 1, 0, "Orders Per Admin:", summary_header_format)
+            for i, (admin, count) in enumerate(admin_counts.items()):
+                summary_sheet.write(offset + i, 0, f"{admin.first_name} {admin.last_name}", summary_header_format)
+                summary_sheet.write(offset + i, 1, count, summary_value_format)
+
+        # Timestamp
+        summary_sheet.write(
+            len(summary_data) + 10,
+            0,
+            f"Report generated on: {timezone.now().strftime('%d %B %Y at %I:%M %p')}",
+            workbook.add_format({'font_size': 10, 'italic': True})
+        )
+
+        workbook.close()
+        output.seek(0)
+
+        response = HttpResponse(
+            output.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = f'attachment; filename="detailed_report_{timezone.now().strftime("%Y%m%d")}.xlsx"'
+        return response
+
+    except Exception as e:
+        messages.error(request, f"Error generating Excel report: {str(e)}")
+        return redirect('unified_report')

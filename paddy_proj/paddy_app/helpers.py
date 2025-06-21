@@ -129,3 +129,6 @@ def get_unread_notification_count(user_type, user_id):
         user_id=str(user_id),
         is_read=False
     ).count()
+
+
+
