@@ -46,13 +46,13 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th class="i18n" data-i18n="customerID">Customer ID</th>
-                            <th class="i18n" data-i18n="name">Name</th>
-                            <th class="i18n" data-i18n="email">Email</th>
-                            <th class="i18n" data-i18n="phone">Phone</th>
-                            <th class="i18n" data-i18n="company">Company</th>
-                            <th class="i18n" data-i18n="gst">GST</th>
-                            <th class="i18n" data-i18n="actions">Action</th>
+                            <th >Customer ID</th>
+                            <th >Name</th>
+                            <th >Email</th>
+                            <th >Phone</th>
+                            <th >Company</th>
+                            <th >GST</th>
+                            <th >Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,7 +76,7 @@
                         </tr>
                         {% empty %}
                         <tr class="no-customers">
-                            <td colspan="7" class="i18n" data-i18n="noCustomersFound">No customers found for this admin.</td>
+                            <td colspan="7" >No customers found for this admin.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -85,7 +85,7 @@
 
         </div>
         <div class="btn-back-wrapper">
-            <a href="/view-admins" class="btn-back i18n" data-i18n="backToAdminList">
+            <a href="/view-admins" class="btn-back i18n" >
                 <i class="fas fa-arrow-left me-2"></i> Back to Admin List
             </a>
         </div>

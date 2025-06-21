@@ -2,6 +2,12 @@
 {% load static %}
 
 {% block content %}
+<style>
+body {
+    background-color: #f5f5f5;
+    color: #333333;
+}
+</style>
 {% if messages %}
 <style>
     /* Alert Messages - Moved to Top Right */
@@ -64,7 +70,415 @@
     });
 </script>
 {% endif %}
-<div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
-    <img src="https://static.vecteezy.com/system/resources/thumbnails/007/229/427/small/welcome-calligraphic-inscription-with-smooth-lines-vector.jpg" alt="Welcome Image">
+
+<style>
+:root {
+    --primary: #555555;
+    --primary-dark: #333333;
+    --accent: #777777;
+    --bg: #f5f5f5;
+    --glass: rgba(255, 255, 255, 0.9);
+    --glass-dark: rgba(250, 250, 250, 0.95);
+    --shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.1);
+    --border: 1.5px solid rgba(0, 0, 0, 0.1);
+    --radius: 12px;
+    --text-main: #333333;
+    --text-secondary: #666666;
+    --text-muted: #888888;
+    --accent-color: #444444;
+}
+.admin-dashboard-hero {
+    background: linear-gradient(120deg, #333333 0%, #555555 100%);
+    color: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem 2rem 2rem 2rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+.admin-dashboard-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    color: #ffffff;
+}
+.admin-dashboard-hero p {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+.admin-dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto 2.5rem auto;
+    padding: 0 1.5rem 2rem 1.5rem;
+    /* background-color: #f5f5f5; */
+}
+.stats-row, .stats-row-2, .stats-row-3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    justify-content: space-between;
+}
+.stats-row-2 {
+    margin-top: -1.5rem;
+    margin-bottom: 2.5rem;
+    gap: 1.5rem;
+}
+.stats-row-3 {
+    margin-top: -1.5rem;
+    margin-bottom: 2.5rem;
+    gap: 1.5rem;
+}
+.stat-card {
+    flex: 1 1 180px;
+    background: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.1rem 1.1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 170px;
+    min-height: 110px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s, border 0.2s, transform 0.15s;
+    position: relative;
+    background-clip: padding-box;
+}
+.stat-card .stat-icon {
+    font-size: 2.1rem;
+    margin-bottom: 0.4rem;
+    color: #444444;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+.stat-card .stat-label {
+    font-size: 1.01rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.1rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+.stat-card .stat-value {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.1rem;
+    letter-spacing: 0.5px;
+}
+.stat-card .stat-extra {
+    font-size: 0.93rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+.stat-card.stat-green .stat-icon { color: #4a4a4a; }
+.stat-card.stat-red .stat-icon { color: #555555; }
+.stat-card.stat-yellow .stat-icon { color: #333333; }
+.stat-card.stat-blue .stat-icon { color: #262626; }
+.stat-card.stat-grey .stat-icon { color: #777777; }
+.stat-card:hover {
+    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px) scale(1.03);
+}
+.admin-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.2rem;
+    margin-top: 1.5rem;
+}
+.admin-dashboard-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 2.3rem 1.7rem 1.5rem 1.7rem;
+    font-size: 1.18rem;
+    font-weight: 700;
+    border-radius: var(--radius);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--text-main);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.13s, border 0.2s;
+    min-height: 120px;
+    cursor: pointer;
+    position: relative;
+    background-clip: padding-box;
+}
+.admin-dashboard-btn .icon {
+    font-size: 2.3rem;
+    margin-bottom: 0.7rem;
+    color: #444444;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+.admin-dashboard-btn:hover, .admin-dashboard-btn:focus {
+    background: #f9f9f9;
+    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px) scale(1.04);
+    outline: none;
+}
+.admin-dashboard-btn .btn-label {
+    font-size: 1.13rem;
+    color: var(--text-main);
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.2px;
+}
+.admin-dashboard-btn .btn-desc {
+    font-size: 0.99rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+.recent-activity-section {
+    margin-top: 2.5rem;
+    background: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.recent-activity-list {
+    flex: 2 1 350px;
+    min-width: 300px;
+}
+.recent-activity-list h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+}
+.recent-activity-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.recent-activity-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 1.01rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+.recent-activity-list li:last-child {
+    border-bottom: none;
+}
+.dashboard-chart-placeholder {
+    flex: 1 1 300px;
+    min-width: 250px;
+    min-height: 220px;
+    background: #f9f9f9;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+@media (max-width: 900px) {
+    .stats-row, .stats-row-2, .stats-row-3 {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+    .admin-dashboard-container {
+        padding: 1rem 0.2rem 2rem 0.2rem;
+    }
+    .recent-activity-section {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+}
+@media (max-width: 600px) {
+    .admin-dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+    .stat-card {
+        min-width: 120px;
+        min-height: 90px;
+        padding: 1rem 0.7rem;
+    }
+    .admin-dashboard-btn {
+        font-size: 1rem;
+        padding: 1.2rem 0.7rem 1rem 0.7rem;
+    }
+    .admin-dashboard-hero {
+        padding: 1.2rem 0.7rem 1rem 0.7rem;
+    }
+}
+</style>
+
+<div class="admin-dashboard-container">
+    <div class="admin-dashboard-hero">
+        <h1>Welcome, Admin</h1>
+        <p>Monitor your business at a glance. All key stats and quick actions in one place.</p>
+    </div>
+    <div class="stats-row">
+        <div class="stat-card stat-blue">
+            <span class="stat-icon">📦</span>
+            <span class="stat-label">Total Orders</span>
+            <span class="stat-value">{{ total_orders|default:'0' }}</span>
+            <span class="stat-extra">All orders placed</span>
+        </div>
+        <div class="stat-card stat-green">
+            <span class="stat-icon">✅</span>
+            <span class="stat-label">Completed Orders</span>
+            <span class="stat-value">{{ completed_orders|default:'0' }}</span>
+            <span class="stat-extra">Delivered to customers</span>
+        </div>
+        <div class="stat-card stat-yellow">
+            <span class="stat-icon">⏳</span>
+            <span class="stat-label">Pending Orders</span>
+            <span class="stat-value">{{ pending_orders|default:'0' }}</span>
+            <span class="stat-extra">Awaiting delivery</span>
+        </div>
+        <div class="stat-card stat-red">
+            <span class="stat-icon">❌</span>
+            <span class="stat-label">Cancelled Orders</span>
+            <span class="stat-value">{{ cancelled_orders|default:'0' }}</span>
+            <span class="stat-extra">Orders cancelled</span>
+        </div>
+        <div class="stat-card stat-blue">
+            <span class="stat-icon">🆕</span>
+            <span class="stat-label">New Orders (7d)</span>
+            <span class="stat-value">{{ new_orders|default:'0' }}</span>
+            <span class="stat-extra">Last 7 days</span>
+        </div>
+        <div class="stat-card stat-grey">
+            <span class="stat-icon">👥</span>
+            <span class="stat-label">Customers</span>
+            <span class="stat-value">{{ total_customers|default:'0' }}</span>
+            <span class="stat-extra">Registered users</span>
+        </div>
+    </div>
+    <div class="stats-row-2">
+        <div class="stat-card stat-green">
+            <span class="stat-icon">💰</span>
+            <span class="stat-label">Total Payments</span>
+            <span class="stat-value">₹{{ total_payments|default:'0' }}</span>
+            <span class="stat-extra">Received payments</span>
+        </div>
+        <div class="stat-card stat-blue">
+            <span class="stat-icon">✔️</span>
+            <span class="stat-label">Successful Payments</span>
+            <span class="stat-value">{{ successful_payments|default:'0' }}</span>
+            <span class="stat-extra">Completed transactions</span>
+        </div>
+        <div class="stat-card stat-red">
+            <span class="stat-icon">❗</span>
+            <span class="stat-label">Failed Payments</span>
+            <span class="stat-value">{{ failed_payments|default:'0' }}</span>
+            <span class="stat-extra">Payment errors</span>
+        </div>        <div class="stat-card stat-yellow">
+            <span class="stat-icon">🔔</span>
+            <span class="stat-label">Active Subscriptions</span>
+            <span class="stat-value">{{ active_subscriptions|default:'0' }}</span>
+            <span class="stat-extra">Ongoing plans</span>
+        </div>
+        <div class="stat-card stat-red">
+            <span class="stat-icon">⚠️</span>
+            <span class="stat-label">Expiring Subscriptions</span>
+            <span class="stat-value">{{ expiring_subscriptions|default:'0' }}</span>
+            <span class="stat-extra">Expiring soon</span>
+        </div>
+    </div>
+    <div class="stats-row-3">
+        <div class="stat-card stat-green">
+            <span class="stat-icon">💹</span>
+            <span class="stat-label">Total Revenue</span>
+            <span class="stat-value">₹{{ total_revenue|default:'0' }}</span>
+            <span class="stat-extra">Gross revenue</span>
+        </div>
+        <div class="stat-card stat-blue">
+            <span class="stat-icon">📈</span>
+            <span class="stat-label">Avg. Order Value</span>
+            <span class="stat-value">₹{{ avg_order_value|default:'0' }}</span>
+            <span class="stat-extra">Per order</span>
+        </div>
+        <div class="stat-card stat-yellow">
+            <span class="stat-icon">🏆</span>
+            <span class="stat-label">Top Product</span>
+            <span class="stat-value">{{ top_product|default:'N/A' }}</span>
+            <span class="stat-extra">Most sold</span>
+        </div>
+        <div class="stat-card stat-green">
+            <span class="stat-icon">📊</span>
+            <span class="stat-label">Customer Growth</span>
+            <span class="stat-value">{{ customer_growth|default:'0%' }}</span>
+            <span class="stat-extra">This month</span>
+        </div>
+    </div>
+    <div class="recent-activity-section">
+        <div class="recent-activity-list">
+            <h3>Recent Activity</h3>
+            <ul>                {% for activity in recent_activity %}
+                <li>
+                    <span>{{ activity.icon }}</span>
+                    <span>{{ activity.text }}</span>
+                    <span style="color:#888888; font-size:0.95em; margin-left:auto;">{{ activity.time }}</span>
+                </li>
+                {% empty %}
+                <li>No recent activity.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="dashboard-chart-placeholder">
+            <span>Chart/Analytics (Coming Soon)</span>
+        </div>
+    </div>
+    <div class="admin-dashboard-grid">
+        <a href="{% url 'admin_orders' %}" class="admin-dashboard-btn">
+            <span class="icon">📦</span>
+            <span class="btn-label">Orders</span>
+            <span class="btn-desc">View and manage all orders</span>
+        </a>
+        <a href="{% url 'admin_add_subscription' %}" class="admin-dashboard-btn">
+            <span class="icon">🔔</span>
+            <span class="btn-label">Subscriptions</span>
+            <span class="btn-desc">Manage active subscriptions</span>
+        </a>
+        <a href="{% url 'admin_customer_list' %}" class="admin-dashboard-btn">
+            <span class="icon">👥</span>
+            <span class="btn-label">Customers</span>
+            <span class="btn-desc">View all customers</span>
+        </a>
+        <a href="{% url 'unified_report' %}" class="admin-dashboard-btn">
+            <span class="icon">📊</span>
+            <span class="btn-label">Reports</span>
+            <span class="btn-desc">Download and view reports</span>
+        </a>
+        <a href="{% url 'admin_notifications' %}" class="admin-dashboard-btn">
+            <span class="icon">🔔</span>
+            <span class="btn-label">Notifications</span>
+            <span class="btn-desc">All system alerts</span>
+        </a>
+        <a href="{% url 'customer_onboard' %}" class="admin-dashboard-btn">
+            <span class="icon">📝</span>
+            <span class="btn-label">Onboarding</span>
+            <span class="btn-desc">Add new customers</span>
+        </a>
+        <a href="{% url 'admin_place_order' %}" class="admin-dashboard-btn">
+            <span class="icon">➕</span>
+            <span class="btn-label">Place Order</span>
+            <span class="btn-desc">Create a new order</span>
+        </a>
+    </div>
 </div>
 {% endblock %}
