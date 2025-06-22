@@ -1,6 +1,6 @@
 /* ========== Base Styles ========== */
 body {
-    background: linear-gradient(to right, #0f0f0f, #1f1f1f);
+    /* background: linear-gradient(to right, #0f0f0f, #1f1f1f); */
     font-family: 'Inter', sans-serif;
     color: #f1f1f1;
     overflow: hidden;

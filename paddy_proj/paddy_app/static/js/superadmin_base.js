@@ -6,24 +6,40 @@ document.addEventListener('DOMContentLoaded', function() {
   function toggleSidebar() {
     sidebar.classList.toggle('open');
     hamburger.classList.toggle('active');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar.classList.contains('open')) {
+      overlay.style.display = 'block';
+    } else {
+      overlay.style.display = 'none';
+    }
     localStorage.setItem('sidebarOpen', sidebar.classList.contains('open'));
   }
 
   function initSidebar() {
     const isOpen = localStorage.getItem('sidebarOpen') === 'true';
+    const overlay = document.getElementById('sidebar-overlay');
     if (isOpen) {
       sidebar.classList.add('open');
       hamburger.classList.add('active');
+      overlay.style.display = 'block';
+    } else {
+      overlay.style.display = 'none';
     }
 
     hamburger.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', function() {
+      if (sidebar.classList.contains('open')) {
+        toggleSidebar();
+      }
+    });
 
     document.addEventListener('click', function(e) {
       if (
         window.innerWidth <= 992 &&
         sidebar.classList.contains('open') &&
         !sidebar.contains(e.target) &&
-        e.target !== hamburger
+        e.target !== hamburger &&
+        e.target !== overlay
       ) {
         toggleSidebar();
       }
@@ -95,7 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Init  initSidebar();
+  // Init
+  initSidebar();
   initSubmenus();
   setActiveMenu();
   initMessages();
