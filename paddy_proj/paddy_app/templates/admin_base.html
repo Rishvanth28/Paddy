@@ -53,20 +53,20 @@
         <li class="nav-item">
           <a href="{% url 'customer_onboard' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding">
-            <span class="nav-text i18n" >Customer Onboarding</span>
+            <span class="nav-text " >Customer Onboarding</span>
           </a>
         </li>
 
         <li class="nav-item">
           <a href="{% url 'admin_customer_list' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
-            <span class="nav-text i18n" >Customers</span>
+            <span class="nav-text " >Customers</span>
           </a>
         </li>        
         <li class="nav-item">
           <a href="{% url 'admin_place_order' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
-            <span class="nav-text i18n" >Place Order</span>
+            <span class="nav-text " >Place Order</span>
           </a>
         </li>
 
@@ -81,7 +81,7 @@
         <li class="nav-item">
           <a href="{% url 'upgrade_to_customer' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Become Customer">
-            <span class="nav-text i18n" >Become Customer</span>
+            <span class="nav-text " >Become Customer</span>
           </a>
         </li>
         {% endif %}
@@ -89,7 +89,7 @@
         <li class="nav-item">
           <a href="{% url 'admin_add_subscription' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Subscription">
-            <span class="nav-text i18n" >Subscription</span>
+            <span class="nav-text " >Subscription</span>
           </a>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'unified_report_admin' %}">
@@ -113,10 +113,10 @@
     </nav>
 
     <footer class="sidebar-footer">
-      <div class="footer-logo i18n" >Logo Here</div>
+      <div class="footer-logo " >Logo Here</div>
       <form action="{% url 'logout' %}" method="post" class="logout-form">
         {% csrf_token %}
-        <button type="submit" class="logout-button i18n" >Logout</button>
+        <button type="submit" class="logout-button " >Logout</button>
       </form>
     </footer>
   </aside>
@@ -126,45 +126,7 @@
     {% block content %}
     {% endblock %}
   </main>
- <!-- Translation Script -->
-  <script>
-    let translations = {};
-    let currentLanguage = 'en';
-
-    document.addEventListener('DOMContentLoaded', async function () {
-      const savedLanguage = localStorage.getItem('preferred_language') || 'en';
-      await loadTranslations(savedLanguage);
-      document.getElementById('language-select').value = savedLanguage;
-    });
-
-    async function changeLanguage(lang) {
-      currentLanguage = lang;
-      localStorage.setItem('preferred_language', lang);
-      await loadTranslations(lang);
-    }
-
-    async function loadTranslations(lang) {
-      try {
-        const response = await fetch(`{% static 'js/i18n/' %}${lang}.json`);
-        if (!response.ok) return;
-        translations = await response.json();
-        updatePageText();
-      } catch (error) {
-        console.error('Translation error:', error);
-      }
-    }
-
-    function updatePageText() {
-      const elements = document.querySelectorAll('.i18n');
-      elements.forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[key]) {
-          el.textContent = translations[key];
-        }
-      });
-    }
-  </script>
-
+ 
   <script src="{% static 'js/admin_base.js' %}"></script>
 </body>
 

@@ -6,7 +6,7 @@
 <div class="customer-list-container">
     <div class="customer-header">
         <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-            <h1 class="page-title mb-0 me-3 i18n" >Customer List</h1>
+            <h1 class="page-title mb-0 me-3 " >Customer List</h1>
         </div>
         <form class="search-form" method="GET" action="">
             <i class="fas fa-search search-icon"></i>
@@ -70,44 +70,7 @@
         }, 5000);
     });
 </script>
-<!-- Translation Script -->
-  <script>
-    let translations = {};
-    let currentLanguage = 'en';
 
-    document.addEventListener('DOMContentLoaded', async function () {
-      const savedLanguage = localStorage.getItem('preferred_language') || 'en';
-      await loadTranslations(savedLanguage);
-      document.getElementById('language-select').value = savedLanguage;
-    });
-
-    async function changeLanguage(lang) {
-      currentLanguage = lang;
-      localStorage.setItem('preferred_language', lang);
-      await loadTranslations(lang);
-    }
-
-    async function loadTranslations(lang) {
-      try {
-        const response = await fetch(`{% static 'js/i18n/' %}${lang}.json`);
-        if (!response.ok) return;
-        translations = await response.json();
-        updatePageText();
-      } catch (error) {
-        console.error('Translation error:', error);
-      }
-    }
-
-    function updatePageText() {
-      const elements = document.querySelectorAll('.i18n');
-      elements.forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[key]) {
-          el.textContent = translations[key];
-        }
-      });
-    }
-  </script>
 {% endif %}
 
 {% endblock %}
