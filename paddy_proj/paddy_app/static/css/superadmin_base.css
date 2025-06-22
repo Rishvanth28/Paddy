@@ -68,7 +68,7 @@ body {
   display: none;
   position: fixed;
   top: 20px;
-  left: 20px;
+  left: 10px;
   background: none;
   border: none;
   cursor: pointer;
@@ -206,8 +206,8 @@ body {
 }
 
 .nav-text {
-  /* font-size: 15px; */
-  /* font-weight: 500; */
+  font-size: 15px;
+  font-weight: 500;
   white-space: nowrap;
   transition: opacity var(--transition-speed) ease;
 }
@@ -260,6 +260,7 @@ body {
 
 .has-submenu.open .submenu {
   max-height: 500px;
+  padding: 8px 0;
 }
 
 .submenu-item {
@@ -354,7 +355,7 @@ body {
   }
 
   .main-content {
-    margin-left: 0;
+    margin-left: 50px;
   }
 
   .hamburger {
@@ -367,32 +368,6 @@ body {
     padding: 15px;
   }
 }
-
-/* Block site on mobile devices (<= 720px) */
-/* @media (max-width: 720px) {
-  body::before {
-    content: 'Mobile view is not supported. Please use a device with a larger screen.';
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    z-index: 99999;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: #23272f;
-    color: #fff;
-    font-size: 1.4rem;
-    text-align: center;
-    padding: 2rem;
-    box-sizing: border-box;
-  }
-  body > *:not(style):not(script) {
-    filter: blur(8px) grayscale(1) brightness(0.7);
-    pointer-events: none !important;
-    user-select: none !important;
-  }
-} */
 
 /* Scrollbar */
 ::-webkit-scrollbar {

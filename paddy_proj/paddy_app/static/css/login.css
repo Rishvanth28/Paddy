@@ -481,7 +481,7 @@ select {
 }
 
 /* Block site on mobile devices (<= 720px) */
-@media (max-width: 720px) {
+/* @media (max-width: 720px) {
 
     html,
     body {
@@ -555,7 +555,7 @@ select {
     html:not([data-mobile-block]) body {
         position: relative;
     }
-}
+} */
 
 /* Form Card */
 .form-card {
