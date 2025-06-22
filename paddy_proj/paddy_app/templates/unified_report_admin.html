@@ -15,6 +15,10 @@
                 <i class="fas fa-file-pdf"></i>
                 Export to PDF
             </a>
+            <a href="{% url 'customize_pdf_report' %}" class="download-btn customize">
+                <i class="fas fa-sliders-h"></i>
+                Customize PDF Report
+            </a>
         </div>
     </div>
 
@@ -332,6 +336,16 @@
 
 .download-btn.pdf:hover {
     background-color: #c82333;
+}
+
+.download-btn.customize {
+ background: #6A0DAD;
+    color: #fff;
+    border: none;}
+
+.download-btn.customize:hover {
+     background: #4B087A;
+    color: #fff;
 }
 
 /* Section Styles */

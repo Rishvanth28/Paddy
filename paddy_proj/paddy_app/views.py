@@ -35,6 +35,14 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
 from reportlab.platypus.flowables import HRFlowable  
+from .forms import CustomReportForm
+from .models import Orders
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.lib.colors import HexColor
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+import io
 
 
 load_dotenv()
@@ -3320,29 +3328,6 @@ def download_invoice_excel1(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-from .forms import CustomReportForm
-from .models import Orders
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
-from reportlab.lib.colors import HexColor
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.pagesizes import A4
-from reportlab.lib import colors
-import io
-
 @role_required(["admin", "superadmin"])
 def customize_pdf_report(request):
     if request.method == 'POST':
@@ -3354,12 +3339,6 @@ def customize_pdf_report(request):
         form = CustomReportForm()
 
     return render(request, 'customize_pdf_report.html', {'form': form})
-
-
-
-
-
-
 
 
 
