@@ -3337,6 +3337,7 @@ def download_invoice_excel1(request):
 from .forms import CustomReportForm
 from .models import Orders
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.lib.colors import HexColor
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
@@ -3354,6 +3355,15 @@ def customize_pdf_report(request):
 
     return render(request, 'customize_pdf_report.html', {'form': form})
 
+
+
+
+
+
+
+
+
+
 @role_required(["admin", "superadmin"])
 def download_custom_pdf(request):
     selected_fields = request.session.get('selected_fields')
@@ -3361,43 +3371,78 @@ def download_custom_pdf(request):
         return redirect('customize_pdf_report')
 
     buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4)
+    doc = SimpleDocTemplate(buffer, pagesize=A4, 
+                          rightMargin=20, leftMargin=20, 
+                          topMargin=30, bottomMargin=30)
+    
+    # Custom styles
     styles = getSampleStyleSheet()
+    accent_color = colors.HexColor("#6A0DAD")
+    light_accent = colors.HexColor("#F3E5FF")
+    border_color = colors.HexColor("#D9D9D9")
+    
     elements = []
-
-    elements.append(Paragraph("Customized Business Report", styles['Title']))
+    
+    # Header
+    elements.append(Paragraph("Custom Business Report", 
+                            style=ParagraphStyle(
+                                name='Title',
+                                fontSize=14,
+                                textColor=accent_color,
+                                alignment=TA_CENTER,
+                                spaceAfter=20
+                            )))
+    
+    # Prepare table data
     headers = []
-    if selected_fields.get('order_id'): headers.append("Order ID")
-    if selected_fields.get('admin'): headers.append("Admin")
-    if selected_fields.get('customer'): headers.append("Customer")
-    if selected_fields.get('order_date'): headers.append("Order Date")
-    if selected_fields.get('delivery_date'): headers.append("Delivery Date")
-    if selected_fields.get('product_details'): headers.append("Product")
-    if selected_fields.get('batch_expiry'): headers.append("Batch/Expiry")
-    if selected_fields.get('quantity'): headers.append("Qty/Unit")
-    if selected_fields.get('price'): headers.append("Price")
-    if selected_fields.get('total'): headers.append("Total")
-    if selected_fields.get('payment'): headers.append("Payment")
-    if selected_fields.get('delivery'): headers.append("Delivery Info")
-    if selected_fields.get('payment_deadline'): headers.append("Payment Deadline")
-    if selected_fields.get('lorry_details'): headers.append("Lorry Details")
-
+    field_mapping = {
+        'order_id': "Order ID",
+        'admin': "Admin",
+        'customer': "Customer",
+        'order_date': "Order Date",
+        'delivery_date': "Delivery Date",
+        'product_details': "Product",
+        'batch_expiry': "Batch/Expiry",
+        'quantity': "Qty/Unit",
+        'price': "Price",
+        'total': "Total",
+        'payment': "Payment",
+        'delivery': "Delivery Info",
+        'payment_deadline': "Payment Deadline",
+        'lorry_details': "Lorry Details"
+    }
+    
+    headers = [field_mapping[key] for key, selected in selected_fields.items() if selected]
+    
+    if not headers:  # If no fields selected
+        return redirect('customize_pdf_report')
+    
     data = [headers]
     orders = Orders.objects.select_related('admin', 'customer').prefetch_related('items', 'payments_set').all()
 
     for order in orders:
         for item in order.items.all():
             row = []
-            if selected_fields.get('order_id'): row.append(str(order.order_id))
-            if selected_fields.get('admin'): row.append(f"{order.admin.first_name} {order.admin.last_name}")
-            if selected_fields.get('customer'): row.append(f"{order.customer.first_name} {order.customer.last_name}")
-            if selected_fields.get('order_date'): row.append(order.order_date.strftime('%d-%m-%Y'))
-            if selected_fields.get('delivery_date'): row.append(order.delivery_date.strftime('%d-%m-%Y') if order.delivery_date else 'Not Set')
-            if selected_fields.get('product_details'): row.append(item.product_name)
-            if selected_fields.get('batch_expiry'): row.append(f"{item.batch_number}/{item.expiry_date.strftime('%d-%m-%Y')}")
-            if selected_fields.get('quantity'): row.append(f"{item.quantity} {item.unit}")
-            if selected_fields.get('price'): row.append(f"₹{item.price_per_unit:.2f}")
-            if selected_fields.get('total'): row.append(f"₹{item.total_amount:.2f}")
+            if selected_fields.get('order_id'): 
+                row.append(str(order.order_id))
+            if selected_fields.get('admin'): 
+                row.append(f"{order.admin.first_name} {order.admin.last_name}")
+            if selected_fields.get('customer'): 
+                row.append(f"{order.customer.first_name} {order.customer.last_name}")
+            if selected_fields.get('order_date'): 
+                row.append(order.order_date.strftime('%d-%m-%Y'))
+            if selected_fields.get('delivery_date'): 
+                row.append(order.delivery_date.strftime('%d-%m-%Y') if order.delivery_date else 'Not Set')
+            if selected_fields.get('product_details'): 
+                row.append(item.product_name)
+            if selected_fields.get('batch_expiry'): 
+                row.append(f"{item.batch_number}/{item.expiry_date.strftime('%d-%m-%Y')}")
+            if selected_fields.get('quantity'): 
+                row.append(f"{item.quantity} {item.unit}")
+            if selected_fields.get('price'): 
+                row.append(f"₹{item.price_per_unit:.2f}")
+            if selected_fields.get('total'): 
+                row.append(f"₹{item.total_amount:.2f}")
             if selected_fields.get('payment'):
                 total_paid = sum(p.amount for p in order.payments_set.all())
                 row.append(f"₹{total_paid}")
@@ -3409,19 +3454,41 @@ def download_custom_pdf(request):
                 row.append(f"{order.lorry_number} / {order.driver_name} / {order.driver_ph_no}")
 
             data.append(row)
-
-    table = Table(data, repeatRows=1)
+    
+    # Calculate column widths dynamically
+    num_cols = len(headers)
+    col_widths = [doc.width / num_cols] * num_cols  # Equal width columns
+    
+    # Create table with proper styling
+    table = Table(data, colWidths=col_widths, repeatRows=1)
+    
+    # Simplified table style without ROWBACKGROUNDS
     table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('BACKGROUND', (0, 0), (-1, 0), accent_color),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 8),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('GRID', (0, 0), (-1, -1), 0.5, border_color),
+        ('BOX', (0, 0), (-1, -1), 1, accent_color),
     ]))
-
+    
     elements.append(table)
+    elements.append(Spacer(1, 20))
+    
+    # Footer
+    elements.append(Paragraph("Generated on: " + datetime.now().strftime('%d-%m-%Y %H:%M'), 
+                            style=ParagraphStyle(
+                                name='Footer',
+                                fontSize=7,
+                                textColor=colors.grey,
+                                alignment=TA_CENTER
+                            )))
+    
     doc.build(elements)
     buffer.seek(0)
 
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="custom_report.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="business_report.pdf"'
     return response
