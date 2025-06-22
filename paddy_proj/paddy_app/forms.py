@@ -16,3 +16,8 @@ class CustomReportForm(forms.Form):
     delivery = forms.BooleanField(required=False, label="Delivery Status")
     payment_deadline = forms.BooleanField(required=False, label="Payment Deadline")
     lorry_details = forms.BooleanField(required=False, label="Lorry Details")
+    overall_amount = forms.BooleanField(required=False, label="Overall Amount")
+    paid_amount = forms.BooleanField(required=False, label="Paid Amount")
+    gst = forms.BooleanField(required=False, label="GST")
+    category = forms.BooleanField(required=False, label="Category")
+
