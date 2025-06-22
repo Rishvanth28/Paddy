@@ -3,7 +3,48 @@
 
 {% block content %}
 {% if messages %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<style>
+    /* Alert Messages - Moved to Top Right */
+.messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 350px;
+    max-width: 90vw;
+    pointer-events: none;
+    list-style: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    max-width: 300px;
+    background-color: #ff4d4d;
+    color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.messages li {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hide duplicate containers if any */
+.messages + .messages, #messages-wrapper + #messages-wrapper {
+    display: none !important;
+}
+</style>
 <ul class="messages">
     {% for message in messages %}
         <li class="{{ message.tags }}">{{ message }}</li>
@@ -21,7 +62,1257 @@
     });
 </script>
 {% endif %}
-<div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
-    <img src="https://static.vecteezy.com/system/resources/thumbnails/007/229/427/small/welcome-calligraphic-inscription-with-smooth-lines-vector.jpg" alt="Welcome Image">
+
+<style>
+:root {
+    --primary: #3D5A80;
+    --primary-dark: #2A3F5A;
+    --accent: #EE6C4D;
+    --bg: #f5f5f5;
+    --glass: rgba(255, 255, 255, 0.9);
+    --glass-dark: rgba(250, 250, 250, 0.95);
+    --shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.1);
+    --border: 1.5px solid rgba(0, 0, 0, 0.1);
+    --radius: 12px;
+    --text-main: #333333;
+    --text-secondary: #666666;
+    --text-muted: #888888;
+    --accent-color: #EE6C4D;
+}
+.superadmin-dashboard-hero {
+    background: linear-gradient(120deg, #2A3F5A 0%, #3D5A80 100%);
+    color: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem 2rem 2rem 2rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+.superadmin-dashboard-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    color: #ffffff;
+}
+.superadmin-dashboard-hero p {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+.superadmin-dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto 2.5rem auto;
+    padding: 0 1.5rem 2rem 1.5rem;
+}
+.stats-row, .stats-row-2, .stats-row-3 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    justify-content: space-between;
+}
+.stats-row-2 {
+    margin-top: -1.5rem;
+    margin-bottom: 2.5rem;
+    gap: 1.5rem;
+}
+.stats-row-3 {
+    margin-top: -1.5rem;
+    margin-bottom: 2.5rem;
+    gap: 1.5rem;
+}
+.stat-card {
+    flex: 1 1 180px;
+    background: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem 1.1rem 1.1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 170px;
+    min-height: 110px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s, border 0.2s, transform 0.15s;
+    position: relative;
+    background-clip: padding-box;
+}
+.stat-card .stat-icon {
+    font-size: 2.1rem;
+    margin-bottom: 0.4rem;
+    color: #3D5A80;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+.stat-card .stat-label {
+    font-size: 1.01rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.1rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+.stat-card .stat-value {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.1rem;
+    letter-spacing: 0.5px;
+}
+.stat-card .stat-extra {
+    font-size: 0.93rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+.stat-card.stat-green .stat-icon { color: #38A3A5; }
+.stat-card.stat-red .stat-icon { color: #EE6C4D; }
+.stat-card.stat-yellow .stat-icon { color: #F8C630; }
+.stat-card.stat-blue .stat-icon { color: #3D5A80; }
+.stat-card.stat-grey .stat-icon { color: #6B7280; }
+.stat-card:hover {
+    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px) scale(1.03);
+}
+.superadmin-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.2rem;
+    margin-top: 1.5rem;
+}
+.superadmin-dashboard-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 2.3rem 1.7rem 1.5rem 1.7rem;
+    font-size: 1.18rem;
+    font-weight: 700;
+    border-radius: var(--radius);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--text-main);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.13s, border 0.2s;
+    min-height: 120px;
+    cursor: pointer;
+    position: relative;
+    background-clip: padding-box;
+}
+.superadmin-dashboard-btn .icon {
+    font-size: 2.3rem;
+    margin-bottom: 0.7rem;
+    color: #3D5A80;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+.superadmin-dashboard-btn:hover, .superadmin-dashboard-btn:focus {
+    background: #f9f9f9;
+    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px) scale(1.04);
+    outline: none;
+}
+.superadmin-dashboard-btn .btn-label {
+    font-size: 1.13rem;
+    color: var(--text-main);
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.2px;
+}
+.superadmin-dashboard-btn .btn-desc {
+    font-size: 0.99rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+.recent-activity-section {
+    margin-top: 2.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    position: relative;
+}
+
+.recent-activity-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+.recent-activity-list {
+    flex: 1.2 1 400px;
+    min-width: 350px;
+}
+
+.recent-activity-list h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.recent-activity-list h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: var(--accent-color);
+}
+
+.recent-activity-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.recent-activity-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.recent-activity-list li:hover {
+    background: rgba(0, 0, 0, 0.02);
+    padding-left: 1rem;
+    transform: translateX(5px);
+}
+
+.recent-activity-list li:last-child {
+    border-bottom: none;
+}
+
+.recent-activity-list li span:first-child {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.dashboard-chart-placeholder {
+    flex: 1 1 320px;
+    min-width: 280px;
+    max-width: 400px;
+    min-height: 220px;
+    max-height: 250px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+}
+
+.analytics-section {
+    padding: 3rem 1rem 1rem 1rem;
+    margin-top: 1rem;
+}
+
+.analytics-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-main);
+    position: relative;
+    padding-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.analytics-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--accent-color);
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.chart-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card:hover::before {
+    opacity: 1;
+}
+
+.chart-card.wide {
+    grid-column: span 2;
+}
+
+.chart-header {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding-bottom: 1rem;
+}
+
+.chart-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 0.3rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-header p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: 500;
+}
+
+.chart-body {
+    height: 300px;
+    position: relative;
+    padding: 1rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-body canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Charts Container Specific Styling */
+.charts-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.chart-section {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.chart-section h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    letter-spacing: 0.2px;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.chart-section canvas {
+    max-width: 400px !important;
+    height: 200px !important;
+}
+
+/* Mobile-specific chart adjustments */
+@media (max-width: 768px) {
+    .dashboard-chart-placeholder {
+        flex: 1 1 280px;
+        min-width: 250px;
+        max-width: 100%;
+        min-height: 180px;
+        max-height: 200px;
+    }
+    
+    .charts-container {
+        padding: 0.5rem;
+    }
+    
+    .chart-section canvas {
+        max-width: 100% !important;
+        height: 160px !important;
+        max-height: 160px !important;
+    }
+    
+    .chart-section h4 {
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+    }
+}
+
+/* Enhanced stats card styling */
+.stats-row, .stats-row-2, .stats-row-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    align-items: stretch;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    min-width: 0;
+    min-height: 120px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .analytics-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .chart-card.wide {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-row, .stats-row-2, .stats-row-3 {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        min-width: 120px;
+        min-height: 90px;
+        padding: 1rem 0.7rem;
+    }
+    
+    .superadmin-dashboard-btn {
+        font-size: 1rem;
+        padding: 1.2rem 0.7rem 1rem 0.7rem;
+    }
+    
+    .superadmin-dashboard-hero {
+        padding: 1.2rem 0.7rem 1rem 0.7rem;
+    }
+    
+    .analytics-section {
+        padding: 1.5rem 0;
+        margin-top: 2rem;
+    }
+    
+    .analytics-grid {
+        padding: 0 0.5rem;
+    }
+    
+    .chart-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .chart-body {
+        height: 220px;
+        padding: 0.5rem;
+    }
+    
+    .recent-activity-section {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem 1rem;
+    }
+    
+    .recent-activity-list {
+        min-width: 100%;
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .analytics-section h2 {
+        font-size: 1.6rem;
+    }
+    
+    .chart-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .chart-body {
+        height: 200px;
+    }
+    
+    .recent-activity-list li {
+        font-size: 0.95rem;
+        padding: 0.8rem 0;
+    }
+}
+</style>
+
+<div class="superadmin-dashboard-container">
+    <div class="superadmin-dashboard-hero">
+        <h1>Platform Overview</h1>
+        <p>Comprehensive analytics and management for the entire platform.</p>
+    </div>
+    
+    <div class="stats-row">
+        <div class="stat-card stat-blue">
+            <span class="stat-icon">📦</span>
+            <span class="stat-label">Total Orders</span>
+            <span class="stat-value">{{ total_orders|default:'0' }}</span>
+            <span class="stat-extra">All orders placed</span>
+        </div>
+        <div class="stat-card stat-green">
+            <span class="stat-icon">✅</span>
+            <span class="stat-label">Completed Orders</span>
+            <span class="stat-value">{{ completed_orders|default:'0' }}</span>
+            <span class="stat-extra">Delivered to customers</span>
+        </div>
+        <div class="stat-card stat-yellow">
+            <span class="stat-icon">⏳</span>
+            <span class="stat-label">Pending Orders</span>
+            <span class="stat-value">{{ pending_orders|default:'0' }}</span>
+            <span class="stat-extra">Awaiting delivery</span>
+        </div>
+        <div class="stat-card stat-blue">
+            <span class="stat-icon">🆕</span>
+            <span class="stat-label">New Orders (7d)</span>
+            <span class="stat-value">{{ new_orders|default:'0' }}</span>
+            <span class="stat-extra">Last 7 days</span>
+        </div>
+    </div>
+    
+    <div class="stats-row-2">
+        <div class="stat-card stat-blue">
+            <span class="stat-icon">👨‍💼</span>
+            <span class="stat-label">Total Admins</span>
+            <span class="stat-value">{{ total_admins|default:'0' }}</span>
+            <span class="stat-extra">Platform admins</span>
+        </div>
+        <div class="stat-card stat-green">
+            <span class="stat-icon">👥</span>
+            <span class="stat-label">Total Customers</span>
+            <span class="stat-value">{{ total_customers|default:'0' }}</span>
+            <span class="stat-extra">All customers</span>
+        </div>
+        <div class="stat-card stat-yellow">
+            <span class="stat-icon">🔔</span>
+            <span class="stat-label">Active Subscriptions</span>
+            <span class="stat-value">{{ active_subscriptions|default:'0' }}</span>
+            <span class="stat-extra">Ongoing plans</span>
+        </div>
+        <div class="stat-card stat-red">
+            <span class="stat-icon">⚠️</span>
+            <span class="stat-label">Expiring Subscriptions</span>
+            <span class="stat-value">{{ expiring_subscriptions|default:'0' }}</span>
+            <span class="stat-extra">Expiring soon</span>
+        </div>
+    </div>
+    
+    <div class="stats-row-3">
+        <div class="stat-card stat-green">
+            <span class="stat-icon">💰</span>
+            <span class="stat-label">Total Revenue</span>
+            <span class="stat-value">₹{{ total_revenue|default:'0' }}</span>
+            <span class="stat-extra">Gross revenue</span>
+        </div>
+        <div class="stat-card stat-blue">
+            <span class="stat-icon">📈</span>
+            <span class="stat-label">Avg. Order Value</span>
+            <span class="stat-value">₹{{ avg_order_value|default:'0' }}</span>
+            <span class="stat-extra">Per order</span>
+        </div>
+        <div class="stat-card stat-yellow">
+            <span class="stat-icon">🏆</span>
+            <span class="stat-label">Top Product</span>
+            <span class="stat-value">{{ top_product|default:'N/A' }}</span>
+            <span class="stat-extra">Most sold</span>
+        </div>
+        <div class="stat-card stat-red">
+            <span class="stat-icon">🔔</span>
+            <span class="stat-label">Pending Requests</span>
+            <span class="stat-value">{{ pending_subscription_requests|default:'0' }}</span>
+            <span class="stat-extra">Waiting approval</span>
+        </div>
+    </div>
+
+    <div class="recent-activity-section">
+        <div class="recent-activity-list">
+            <h3>Recent Activity</h3>
+            <ul>
+                {% for activity in recent_activity %}
+                <li>
+                    <span>{{ activity.icon }}</span>
+                    <span>{{ activity.text }}</span>
+                    <span style="color:#888888; font-size:0.95em; margin-left:auto;">{{ activity.time }}</span>
+                </li>
+                {% empty %}
+                <li>No recent activity.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="dashboard-chart-placeholder">
+            <div class="charts-container">
+                <div class="chart-section">
+                    <h4>Platform Orders & Revenue</h4>
+                    <canvas id="platformOverviewChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- New Analytics Section -->
+    <div class="analytics-section">
+        <h2>📊 Platform Analytics</h2>
+        <div class="analytics-grid">
+            <!-- Admins Growth Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>👨‍💼 Admin Distribution</h3>
+                    <p>Customer distribution by admin</p>
+                </div>
+                <div class="chart-body">
+                    <canvas id="adminDistributionChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+            
+            <!-- Category Distribution Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>📈 Order Categories</h3>
+                    <p>Distribution by product type</p>
+                </div>
+                <div class="chart-body">
+                    <canvas id="categoryChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+            
+            <!-- Payment Status Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>💳 Payment Status</h3>
+                    <p>Order payment completion</p>
+                </div>
+                <div class="chart-body">
+                    <canvas id="paymentChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+            
+            <!-- Monthly Trend Chart -->
+            <div class="chart-card wide">
+                <div class="chart-header">
+                    <h3>📊 Monthly Trends</h3>
+                    <p>Orders and revenue over time</p>
+                </div>
+                <div class="chart-body">
+                    <canvas id="trendChart" width="600" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div class="superadmin-dashboard-grid">
+        <a href="{% url 'super_admin_orders' %}" class="superadmin-dashboard-btn">
+            <span class="icon">📦</span>
+            <span class="btn-label">Orders</span>
+            <span class="btn-desc">View and manage all orders</span>
+        </a>
+        <a href="{% url 'view_admins' %}" class="superadmin-dashboard-btn">
+            <span class="icon">👨‍💼</span>
+            <span class="btn-label">Admins</span>
+            <span class="btn-desc">Manage all admins</span>
+        </a>
+        <a href="{% url 'superadmin_subscription' %}" class="superadmin-dashboard-btn">
+            <span class="icon">🔔</span>
+            <span class="btn-label">Subscriptions</span>
+            <span class="btn-desc">Manage subscriptions</span>
+        </a>
+        <a href="{% url 'unified_report_superadmin' %}" class="superadmin-dashboard-btn">
+            <span class="icon">📊</span>
+            <span class="btn-label">Reports</span>
+            <span class="btn-desc">Download and view reports</span>
+        </a>
+        <a href="{% url 'superadmin_notifications' %}" class="superadmin-dashboard-btn">
+            <span class="icon">🔔</span>
+            <span class="btn-label">Notifications</span>
+            <span class="btn-desc">All system alerts</span>
+        </a>
+        <a href="{% url 'onboard' %}" class="superadmin-dashboard-btn">
+            <span class="icon">📝</span>
+            <span class="btn-label">Onboarding</span>
+            <span class="btn-desc">Add new admins/customers</span>
+        </a>
+        <a href="{% url 'place_order' %}" class="superadmin-dashboard-btn">
+            <span class="icon">➕</span>
+            <span class="btn-label">Place Order</span>
+            <span class="btn-desc">Create a new order</span>
+        </a>
+    </div>
 </div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up Chart.js with brand colors
+    const colors = {
+        primary: '#3D5A80',
+        secondary: '#6B7280',
+        success: '#38A3A5',
+        danger: '#DC2626',
+        warning: '#F8C630',
+        info: '#98C1D9',
+        light: '#F9FAFB',
+        dark: '#2A3F5A',
+        accent: '#EE6C4D'
+    };
+      // Parse data from Django context
+    const monthlyOrders = {{ monthly_orders|default:'[]'|safe }};
+    const monthlyRevenue = {{ monthly_revenue|default:'[]'|safe }};
+    const monthLabels = {{ month_labels|default:'[]'|safe }};
+    const orderCategories = {{ order_categories|default:'[]'|safe }};
+    const categoryCounts = {{ category_counts|default:'[]'|safe }};
+    const adminNames = {{ admin_names|default:'[]'|safe }};
+    const adminCustomerCounts = {{ admin_customer_counts|default:'[]'|safe }};
+    
+    // Platform Overview Chart
+    const platformOverviewCtx = document.getElementById('platformOverviewChart');
+    if (platformOverviewCtx && monthlyOrders.length > 0) {
+        new Chart(platformOverviewCtx, {
+            type: 'bar',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: 'Orders',
+                    data: monthlyOrders,
+                    backgroundColor: colors.primary + '80',
+                    borderColor: colors.primary,
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Revenue (₹)',
+                    data: monthlyRevenue,
+                    type: 'line',
+                    borderColor: colors.success,
+                    backgroundColor: colors.success + '20',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: colors.success,
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                aspectRatio: 2,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 12,
+                            font: {
+                                size: 10,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        cornerRadius: 6,
+                        titleFont: {
+                            size: 11
+                        },
+                        bodyFont: {
+                            size: 10
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.dataset.label === 'Revenue (₹)') {
+                                    label += '₹' + context.parsed.y.toLocaleString();
+                                } else {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Orders',
+                            font: {
+                                size: 9
+                            }
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            font: {
+                                size: 9
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Revenue (₹)',
+                            font: {
+                                size: 9
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 9
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            font: {
+                                size: 9
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1200,
+                    easing: 'easeInOutQuart'
+                }
+            }
+        });
+    } else if (platformOverviewCtx) {
+        platformOverviewCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 200px; color: #888; font-size: 1rem; font-weight: 500;">📊 No platform data available</div>';
+    }
+    
+    // Admin Distribution Chart
+    const adminDistributionCtx = document.getElementById('adminDistributionChart');
+    if (adminDistributionCtx && adminNames.length > 0) {
+        new Chart(adminDistributionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: adminNames,
+                datasets: [{
+                    data: adminCustomerCounts,
+                    backgroundColor: [
+                        colors.primary,
+                        colors.success,
+                        colors.warning,
+                        colors.info,
+                        colors.accent,
+                        colors.danger,
+                        '#8b5cf6',
+                        '#14b8a6',
+                        '#f97316'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverBorderWidth: 4,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return ' ' + context.label + ': ' + context.parsed + ' customers (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%',
+                animation: {
+                    animateRotate: true,
+                    duration: 1500
+                }
+            }
+        });
+    } else if (adminDistributionCtx) {
+        adminDistributionCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">👨‍💼 No admin data available</div>';
+    }
+    
+    // Category Distribution Pie Chart
+    const categoryCtx = document.getElementById('categoryChart');
+    if (categoryCtx && orderCategories.length > 0) {
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: orderCategories,
+                datasets: [{
+                    data: categoryCounts,
+                    backgroundColor: [
+                        colors.primary,
+                        colors.success,
+                        colors.warning,
+                        colors.info,
+                        colors.secondary,
+                        colors.danger,
+                        '#8b5cf6',
+                        '#14b8a6',
+                        '#f97316'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverBorderWidth: 4,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return ' ' + context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%',
+                animation: {
+                    animateRotate: true,
+                    duration: 1500
+                }
+            }
+        });
+    } else if (categoryCtx) {
+        categoryCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">📊 No category data available</div>';
+    }
+      // Payment Status Chart
+    const paymentCtx = document.getElementById('paymentChart');
+    if (paymentCtx) {
+        const paymentData = [
+            {{ payment_completed|default:'0' }}, 
+            {{ payment_partial|default:'0' }}, 
+            {{ payment_pending|default:'0' }}
+        ];
+        const hasPaymentData = paymentData.some(value => value > 0);
+        
+        if (hasPaymentData) {
+            new Chart(paymentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Partial', 'Pending'],
+                    datasets: [{
+                        data: paymentData,
+                        backgroundColor: [
+                            colors.success,
+                            colors.warning,
+                            colors.info
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverBorderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: colors.success,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                    return ' ' + context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%',
+                    animation: {
+                        animateRotate: true,
+                        duration: 1500
+                    }
+                }
+            });
+        } else {
+            paymentCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">💳 No payment data available</div>';
+        }
+    }
+    
+    // Monthly Trend Chart
+    const trendCtx = document.getElementById('trendChart');
+    if (trendCtx) {
+        const hasData = monthlyOrders.some(value => value > 0) || monthlyRevenue.some(value => value > 0);
+        
+        if (hasData) {
+            new Chart(trendCtx, {
+                type: 'bar',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'Orders',
+                        data: monthlyOrders,
+                        backgroundColor: colors.primary + '80',
+                        borderColor: colors.primary,
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Revenue (₹)',
+                        data: monthlyRevenue,
+                        type: 'line',
+                        borderColor: colors.success,
+                        backgroundColor: colors.success + '20',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: colors.success,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 20,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: colors.primary,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.dataset.label === 'Revenue (₹)') {
+                                        label += '₹' + context.parsed.y.toLocaleString();
+                                    } else {
+                                        label += context.parsed.y;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Orders',
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            },
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Revenue (₹)',
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            beginAtZero: true
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        } else {
+            trendCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">📈 No trend data available</div>';
+        }
+    }
+});
+</script>
 {% endblock %}

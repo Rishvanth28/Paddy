@@ -137,7 +137,9 @@ def login_view(request):
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
     from django.db.models import Sum, Count, Q, Avg
+    from django.db.models.functions import ExtractMonth, ExtractYear
     from datetime import datetime, timedelta
+    import json
     
     # Calculate date ranges
     today = datetime.now().date()
@@ -150,7 +152,8 @@ def superadmin_dashboard(request):
     all_customers = CustomerTable.objects.all()
     all_payments = Payments.objects.all()
     all_subscriptions = Subscription.objects.all()
-      # Platform-wide statistics
+    
+    # Platform-wide statistics
     total_orders = all_orders.count()
     completed_orders = all_orders.filter(delivery_status=1).count()
     pending_orders = all_orders.filter(delivery_status=0).count()
@@ -177,22 +180,29 @@ def superadmin_dashboard(request):
     ).count()
     
     # Revenue statistics
-    total_revenue = all_orders.filter(payment_status=1).aggregate(
+    total_revenue = all_orders.filter(payment_status__in=[1, 2]).aggregate(
         total=Sum('overall_amount')
     )['total'] or 0
     
     # Average order value
-    avg_order_value = all_orders.aggregate(avg=Avg('overall_amount'))['avg'] or 0
+    avg_order_value = all_orders.filter(payment_status__in=[1, 2]).aggregate(
+        avg=Avg('overall_amount')
+    )['avg'] or 0
     
     # Top product (most ordered category)
     top_product_data = all_orders.values('category').annotate(
         count=Count('category')
     ).order_by('-count').first()
-    top_product = top_product_data['category'] if top_product_data else 'N/A'
+    top_product = top_product_data['category'] if top_product_data and top_product_data['category'] else 'N/A'
     
-    # Platform growth metrics
-    new_admins_this_month = all_admins.count()  # We'd need created_at field for accurate count
-    new_customers_this_month = all_customers.count()  # We'd need created_at field for accurate count
+    # Platform growth metrics - use created_at field for accurate counts
+    new_admins_this_month = all_admins.filter(
+        created_at__gte=current_month_start
+    ).count() if hasattr(AdminTable, 'created_at') else 0
+    
+    new_customers_this_month = all_customers.filter(
+        created_at__gte=current_month_start
+    ).count() if hasattr(CustomerTable, 'created_at') else 0
     
     # Recent activity across platform
     recent_activity = []
@@ -215,12 +225,76 @@ def superadmin_dashboard(request):
             'time': payment.date.strftime('%d %b %Y')
         })
     
+    # Recent new admins
+    if hasattr(AdminTable, 'created_at'):
+        recent_admins = all_admins.order_by('-created_at')[:2]
+        for admin in recent_admins:
+            recent_activity.append({
+                'icon': '👨‍💼',
+                'text': f'New admin {admin.first_name} {admin.last_name} joined the platform',
+                'time': admin.created_at.strftime('%d %b %Y') if admin.created_at else 'N/A'
+            })
+    
     # Sort recent activity by time (simplified)
-    recent_activity = recent_activity[:5]  # Limit to 5 items
-      # Pending subscription requests
+    recent_activity = sorted(
+        recent_activity, 
+        key=lambda x: datetime.strptime(x['time'], '%d %b %Y') if x['time'] != 'N/A' else datetime.min,
+        reverse=True
+    )[:5]  # Limit to 5 items
+    
+    # Pending subscription requests
     pending_subscription_requests = UserIncreaseSubscription.objects.filter(
         subscription_status=0
     ).count()
+    
+    # Chart data for analytics - similar to admin dashboard
+    # Monthly orders data (last 6 months)
+    monthly_orders = []
+    monthly_revenue = []
+    month_labels = []
+    
+    # Get monthly data for last 6 months
+    for i in range(6):
+        month_start = (today.replace(day=1) - timedelta(days=i*30)).replace(day=1)
+        month_end = (month_start + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+        
+        month_orders = all_orders.filter(order_date__range=[month_start, month_end]).count()
+        month_revenue = all_orders.filter(
+            order_date__range=[month_start, month_end],
+            payment_status__in=[1, 2]
+        ).aggregate(total=Sum('overall_amount'))['total'] or 0
+        
+        monthly_orders.insert(0, month_orders)
+        monthly_revenue.insert(0, float(month_revenue))
+        
+        month_labels.insert(0, month_start.strftime('%b %Y'))
+    
+    # Category data for pie chart
+    order_categories = []
+    category_counts = []
+    
+    categories = all_orders.values('category').annotate(
+        count=Count('category')
+    ).order_by('-count')
+    
+    for cat in categories:
+        if cat['category']:
+            order_categories.append(cat['category'])
+            category_counts.append(cat['count'])
+    
+    # Payment status data
+    payment_completed = all_orders.filter(payment_status=2).count()
+    payment_partial = all_orders.filter(payment_status=1).count()
+    payment_pending = all_orders.filter(payment_status=0).count()
+    
+    # Admin distribution data
+    admin_names = []
+    admin_customer_counts = []
+    
+    for admin in all_admins:
+        admin_names.append(f"{admin.first_name} {admin.last_name}")
+        customer_count = CustomerTable.objects.filter(admin=admin).count()
+        admin_customer_counts.append(customer_count)
     
     context = {
         'total_orders': total_orders,
@@ -240,6 +314,17 @@ def superadmin_dashboard(request):
         'new_customers_this_month': new_customers_this_month,
         'recent_activity': recent_activity,
         'pending_subscription_requests': pending_subscription_requests,
+        # Chart data - JSON serialized for JavaScript
+        'monthly_orders': json.dumps(monthly_orders),
+        'monthly_revenue': json.dumps(monthly_revenue),
+        'month_labels': json.dumps(month_labels),
+        'order_categories': json.dumps(order_categories),
+        'category_counts': json.dumps(category_counts),
+        'admin_names': json.dumps(admin_names),
+        'admin_customer_counts': json.dumps(admin_customer_counts),
+        'payment_completed': payment_completed,
+        'payment_partial': payment_partial,
+        'payment_pending': payment_pending,
     }
     
     return render(request, "superadmin_dashboard.html", context)
