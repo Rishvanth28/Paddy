@@ -292,6 +292,442 @@ body {
     margin-top: 1.5rem;
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
+
+/* Analytics Section Styles */
+.analytics-section {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+.analytics-section h2 {
+    text-align: center;
+    color: var(--text-main);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.analytics-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    border-radius: 2px;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    transition: height 0.3s ease;
+}
+
+.chart-card:hover {
+    box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px) scale(1.02);
+}
+
+.chart-card:hover::before {
+    height: 6px;
+}
+
+.chart-card.wide {
+    grid-column: span 2;
+}
+
+.chart-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+.chart-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.3px;
+}
+
+.chart-header p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: 500;
+}
+
+.chart-body {
+    position: relative;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.chart-body canvas {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+}
+
+/* Charts Container Specific Styling */
+.charts-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.8rem;
+    background: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-section {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    width: 100%;
+}
+
+.chart-section canvas {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: 180px !important;
+    max-height: 180px !important;
+}
+
+/* Mobile-specific chart adjustments */
+@media (max-width: 768px) {
+    .dashboard-chart-placeholder {
+        flex: 1 1 280px;
+        min-width: 250px;
+        max-width: 100%;
+        min-height: 180px;
+        max-height: 200px;
+    }
+    
+    .charts-container {
+        padding: 0.5rem;
+    }
+    
+    .chart-section canvas {
+        max-width: 100% !important;
+        height: 160px !important;
+        max-height: 160px !important;
+    }
+    
+    .chart-section h4 {
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .recent-activity-section {
+        gap: 1.5rem;
+        padding: 1.5rem 1rem;
+    }
+    
+    .recent-activity-list {
+        min-width: 280px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-chart-placeholder {
+        min-width: 100%;
+        max-width: 100%;
+        min-height: 160px;
+        max-height: 180px;
+    }
+    
+    .chart-section canvas {
+        height: 140px !important;
+        max-height: 140px !important;
+    }
+    
+    .chart-section h4 {
+        font-size: 0.9rem;
+    }
+    
+    .recent-activity-list {
+        min-width: 100%;
+    }
+}
+/* Enhanced Recent Activity Section */
+.recent-activity-section {
+    margin-top: 2.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: flex-start;
+    justify-content: space-between;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    position: relative;
+}
+
+.recent-activity-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+.recent-activity-list {
+    flex: 1.2 1 400px;
+    min-width: 350px;
+}
+
+.recent-activity-list h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.recent-activity-list h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: var(--accent-color);
+}
+
+.recent-activity-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.recent-activity-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.recent-activity-list li:hover {
+    background: rgba(0, 0, 0, 0.02);
+    padding-left: 1rem;
+    transform: translateX(5px);
+}
+
+.recent-activity-list li:last-child {
+    border-bottom: none;
+}
+
+.recent-activity-list li span:first-child {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.dashboard-chart-placeholder {
+    flex: 1 1 320px;
+    min-width: 280px;
+    max-width: 400px;
+    min-height: 220px;
+    max-height: 250px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .analytics-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .chart-card.wide {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-section {
+        padding: 1.5rem 0;
+        margin-top: 2rem;
+    }
+    
+    .analytics-grid {
+        padding: 0 0.5rem;
+    }
+    
+    .chart-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .chart-body {
+        height: 220px;
+        padding: 0.5rem;
+    }
+    
+    .recent-activity-section {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem 1rem;
+    }
+    
+    .recent-activity-list {
+        min-width: 100%;
+        flex: 1;
+    }
+    
+    .dashboard-chart-placeholder {
+        flex: 1 1 280px;
+        min-width: 250px;
+        max-width: 100%;
+        min-height: 180px;
+        max-height: 200px;
+    }
+    
+    .charts-container {
+        padding: 0.5rem;
+    }
+    
+    .chart-section canvas {
+        max-width: 100% !important;
+        height: 160px !important;
+        max-height: 160px !important;
+    }
+    
+    .chart-section h4 {
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .analytics-section h2 {
+        font-size: 1.6rem;
+    }
+    
+    .chart-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .chart-body {
+        height: 200px;
+    }
+    
+    .recent-activity-list li {
+        font-size: 0.95rem;
+        padding: 0.8rem 0;
+    }
+}
+
+/* Enhanced stats card styling */
+.stats-row, .stats-row-2, .stats-row-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    align-items: stretch;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 120px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.stat-card:hover::before {
+    width: 8px;
+}
+
+.stat-card:hover {
+    box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px) scale(1.02);
+}
 @media (max-width: 900px) {
     .stats-row, .stats-row-2, .stats-row-3 {
         flex-direction: column;
@@ -346,14 +782,7 @@ body {
         <div class="stat-card stat-yellow">
             <span class="stat-icon">⏳</span>
             <span class="stat-label">Pending Orders</span>
-            <span class="stat-value">{{ pending_orders|default:'0' }}</span>
-            <span class="stat-extra">Awaiting delivery</span>
-        </div>
-        <div class="stat-card stat-red">
-            <span class="stat-icon">❌</span>
-            <span class="stat-label">Cancelled Orders</span>
-            <span class="stat-value">{{ cancelled_orders|default:'0' }}</span>
-            <span class="stat-extra">Orders cancelled</span>
+            <span class="stat-value">{{ pending_orders|default:'0' }}</span>            <span class="stat-extra">Awaiting delivery</span>
         </div>
         <div class="stat-card stat-blue">
             <span class="stat-icon">🆕</span>
@@ -374,19 +803,13 @@ body {
             <span class="stat-label">Total Payments</span>
             <span class="stat-value">₹{{ total_payments|default:'0' }}</span>
             <span class="stat-extra">Received payments</span>
-        </div>
-        <div class="stat-card stat-blue">
+        </div>        <div class="stat-card stat-blue">
             <span class="stat-icon">✔️</span>
             <span class="stat-label">Successful Payments</span>
             <span class="stat-value">{{ successful_payments|default:'0' }}</span>
             <span class="stat-extra">Completed transactions</span>
         </div>
-        <div class="stat-card stat-red">
-            <span class="stat-icon">❗</span>
-            <span class="stat-label">Failed Payments</span>
-            <span class="stat-value">{{ failed_payments|default:'0' }}</span>
-            <span class="stat-extra">Payment errors</span>
-        </div>        <div class="stat-card stat-yellow">
+        <div class="stat-card stat-yellow">
             <span class="stat-icon">🔔</span>
             <span class="stat-label">Active Subscriptions</span>
             <span class="stat-value">{{ active_subscriptions|default:'0' }}</span>
@@ -438,9 +861,50 @@ body {
                 <li>No recent activity.</li>
                 {% endfor %}
             </ul>
+        </div>        <div class="dashboard-chart-placeholder">
+            <div class="charts-container">
+                <div class="chart-section">
+                    <h4>Monthly Orders & Revenue</h4>
+                    <canvas id="ordersRevenueChart" width="400" height="200"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="dashboard-chart-placeholder">
-            <span>Chart/Analytics (Coming Soon)</span>
+    </div>    
+    <!-- New Analytics Section -->
+    <div class="analytics-section">
+        <h2>📊 Analytics & Insights</h2>
+        <div class="analytics-grid">
+            <!-- Category Distribution Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>📈 Order Categories</h3>
+                    <p>Distribution by product type</p>
+                </div>
+                <div class="chart-body">
+                    <canvas id="categoryChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+              <!-- Payment Status Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>💳 Payment Status</h3>
+                    <p>Order payment completion</p>
+                </div>
+                <div class="chart-body">
+                    <canvas id="paymentChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+            
+            <!-- Monthly Trend Chart -->
+            <div class="chart-card wide">
+                <div class="chart-header">
+                    <h3>📊 Monthly Trends</h3>
+                    <p>Orders and revenue over time</p>
+                </div>
+                <div class="chart-body">
+                    <canvas id="trendChart" width="600" height="300"></canvas>
+                </div>
+            </div>
         </div>
     </div>
     <div class="admin-dashboard-grid">
@@ -478,7 +942,446 @@ body {
             <span class="icon">➕</span>
             <span class="btn-label">Place Order</span>
             <span class="btn-desc">Create a new order</span>
-        </a>
-    </div>
+        </a>    </div>
 </div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Chart Scripts -->
+<script>
+// Chart.js configuration and data
+document.addEventListener('DOMContentLoaded', function() {
+    // Color scheme
+    const colors = {
+        primary: '#4f46e5',
+        secondary: '#06b6d4',
+        success: '#10b981',
+        warning: '#f59e0b',
+        danger: '#ef4444',
+        info: '#3b82f6'
+    };    // Data from Django template - properly JSON serialized
+    const monthLabels = {{ month_labels|safe }};
+    const monthlyOrders = {{ monthly_orders|safe }};
+    const monthlyRevenue = {{ monthly_revenue|safe }};
+    const orderCategories = {{ order_categories|safe }};
+    const categoryCounts = {{ category_counts|safe }};    // Monthly Orders & Revenue Chart (in recent activity section)
+    const ordersRevenueCtx = document.getElementById('ordersRevenueChart');
+    if (ordersRevenueCtx) {
+        const hasOrdersRevenueData = monthlyOrders.some(value => value > 0) || monthlyRevenue.some(value => value > 0);
+        
+        if (hasOrdersRevenueData) {
+            new Chart(ordersRevenueCtx, {
+                type: 'line',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'Orders',
+                        data: monthlyOrders,
+                        borderColor: colors.primary,
+                        backgroundColor: colors.primary + '20',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: colors.primary,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Revenue (₹)',
+                        data: monthlyRevenue,
+                        borderColor: colors.success,
+                        backgroundColor: colors.success + '20',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: colors.success,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        yAxisID: 'y1'
+                    }]
+                },                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    aspectRatio: 2,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 12,
+                                font: {
+                                    size: 10,
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: colors.primary,
+                            borderWidth: 1,
+                            cornerRadius: 6,
+                            titleFont: {
+                                size: 11
+                            },
+                            bodyFont: {
+                                size: 10
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.dataset.label === 'Revenue (₹)') {
+                                        label += '₹' + context.parsed.y.toLocaleString();
+                                    } else {
+                                        label += context.parsed.y;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Orders',
+                                font: {
+                                    size: 9
+                                }
+                            },
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Revenue (₹)',
+                                font: {
+                                    size: 9
+                                }
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1200,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        } else {
+            ordersRevenueCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 200px; color: #888; font-size: 1rem; font-weight: 500;">📊 No orders/revenue data</div>';
+        }
+    }// Category Distribution Pie Chart
+    const categoryCtx = document.getElementById('categoryChart');
+    if (categoryCtx && orderCategories.length > 0) {
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: orderCategories,
+                datasets: [{
+                    data: categoryCounts,
+                    backgroundColor: [
+                        colors.primary,
+                        colors.success,
+                        colors.warning,
+                        colors.info,
+                        colors.secondary,
+                        colors.danger,
+                        '#8b5cf6',
+                        '#14b8a6',
+                        '#f97316'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverBorderWidth: 4,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: colors.primary,
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return ' ' + context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%',
+                animation: {
+                    animateRotate: true,
+                    duration: 1500
+                }
+            }
+        });
+    } else if (categoryCtx) {
+        // Show no data message
+        categoryCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">📊 No category data available</div>';
+    }    // Payment Status Chart
+    const paymentCtx = document.getElementById('paymentChart');
+    if (paymentCtx) {
+        const paymentData = [{{ payment_completed }}, {{ payment_partial }}, {{ payment_pending }}];
+        const hasPaymentData = paymentData.some(value => value > 0);
+        
+        if (hasPaymentData) {
+            new Chart(paymentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Partial', 'Pending'],
+                    datasets: [{
+                        data: paymentData,
+                        backgroundColor: [
+                            colors.success,
+                            colors.warning,
+                            colors.info
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverBorderWidth: 4,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: colors.success,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                    return ' ' + context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%',
+                    animation: {
+                        animateRotate: true,
+                        duration: 1500
+                    }
+                }
+            });
+        } else {
+            paymentCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">💳 No payment data available</div>';
+        }
+    }    // Monthly Trend Chart
+    const trendCtx = document.getElementById('trendChart');
+    if (trendCtx) {
+        const hasData = monthlyOrders.some(value => value > 0) || monthlyRevenue.some(value => value > 0);
+        
+        if (hasData) {
+            new Chart(trendCtx, {
+                type: 'bar',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'Orders',
+                        data: monthlyOrders,
+                        backgroundColor: colors.primary + '80',
+                        borderColor: colors.primary,
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Revenue (₹)',
+                        data: monthlyRevenue,
+                        type: 'line',
+                        borderColor: colors.success,
+                        backgroundColor: colors.success + '20',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: colors.success,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 20,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: colors.primary,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.dataset.label === 'Revenue (₹)') {
+                                        label += '₹' + context.parsed.y.toLocaleString();
+                                    } else {
+                                        label += context.parsed.y;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Orders',
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            },
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Revenue (₹)',
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            beginAtZero: true
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        } else {
+            trendCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">📈 No trend data available</div>';
+        }
+    }
+});
+</script>
+
 {% endblock %}
