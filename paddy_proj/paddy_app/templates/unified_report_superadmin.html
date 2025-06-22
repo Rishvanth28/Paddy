@@ -8,6 +8,10 @@
             <p class="report-subtitle">Comprehensive overview of orders, payments, and product performance</p>
         </div>
         <div class="download-buttons">
+            <a href="{% url 'customize_pdf_report' %}" class="btn btn-customize-report" aria-label="Customize PDF Report">
+                <i class="fas fa-sliders-h" aria-hidden="true"></i>
+                <span>Customize Report</span>
+            </a>
             <a href="{% url 'download_invoice_excel1' %}" class="download-btn excel">
                 <i class="fas fa-file-excel"></i>
                 Export to Excel
@@ -83,7 +87,7 @@
                         <td>₹{{ category.paid_amount|floatformat:2 }}</td>
                         <td>
                             <div class="progress-container">
-                                <div class="progress-bar" style="width: {% widthratio category.paid_amount category.total_amount 100 %}"></div>
+                                <div class="progress-bar" style="width: {% widthratio category.paid_amount category.total_amount 100 %}%"></div>
                                 <span>{% widthratio category.paid_amount category.total_amount 100 %}%</span>
                             </div>
                         </td>
@@ -132,133 +136,119 @@
             <button class="tab-btn active" data-tab="orders-tab">Order Details</button>
             <button class="tab-btn" data-tab="payments-tab">Payment Details</button>
         </div>
-    <div id="orders-tab" class="tab-content active">
-    <div class="section-header">
-        <h2>Order Report</h2>
-        <div class="section-actions">
-            <input type="text" class="search-input" placeholder="Search orders...">
+        <div id="orders-tab" class="tab-content active">
+            <div class="section-header">
+                <h2>Order Report</h2>
+                <div class="section-actions">
+                    <input type="text" class="search-input" placeholder="Search orders...">
+                </div>
+            </div>
+            <div class="table-container">
+                {% if orders %}
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Admin</th>
+                            <th>Customer</th>
+                            <th>Order Date</th>
+                            <th>Delivery Date</th>
+                            <th>Category</th>
+                            <th>Qty</th>
+                            <th>Amount (₹)</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.order_id }}</td>
+                            <td>{{ order.admin.first_name }} {{ order.admin.last_name }} ({{ order.admin.admin_id }})</td>
+                            <td>{{ order.customer.first_name }} {{ order.customer.last_name }}</td>
+                            <td>{{ order.order_date|date:"M d, Y" }}</td>
+                            <td>{{ order.delivery_date|date:"M d, Y"|default:"--" }}</td>
+                            <td>{{ order.category }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>₹{{ order.overall_amount }}</td>
+                            <td>
+                                <span class="status-badge {% if order.payment_status == 1 %}paid{% else %}unpaid{% endif %}">
+                                    {% if order.payment_status == 1 %}
+                                        Paid
+                                    {% else %}
+                                        Unpaid
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="action-btn view-btn">View</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <div class="no-data">
+                        <i class="fas fa-box-open"></i>
+                        <p>No orders found</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="payments-tab" class="tab-content">
+            <div class="section-header">
+                <h2>Payment Report</h2>
+                <div class="section-actions">
+                    <input type="text" class="search-input" placeholder="Search payments...">
+                </div>
+            </div>
+            <div class="table-container">
+                {% if payments %}
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Order ID</th>
+                            <th>Admin</th>
+                            <th>Customer</th>
+                            <th>Amount (₹)</th>
+                            <th>Date</th>
+                            <th>Method</th>
+                            <th>Reference</th>
+                            <th>Proof</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td>#{{ payment.payment_id }}</td>
+                            <td>#{{ payment.order.order_id }}</td>
+                            <td>{{ payment.order.admin.first_name }} {{ payment.order.admin.last_name }} ({{ payment.order.admin.admin_id }})</td>
+                            <td>{{ payment.order.customer.first_name }} {{ payment.order.customer.last_name }}</td>
+                            <td>{{ payment.amount }}</td>
+                            <td>{{ payment.date|date:"M d, Y" }}</td>
+                            <td>{{ payment.payment_method }}</td>
+                            <td>{{ payment.reference|default:"--" }}</td>
+                            <td>
+                                <a href="{{ payment.proof_link }}" target="_blank" class="proof-link">
+                                    <i class="fas fa-file-invoice"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <div class="no-data">
+                        <i class="fas fa-receipt"></i>
+                        <p>No payments found</p>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
-    <div class="table-container">
-        {% if orders %}
-        <table class="report-table">
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Admin</th>
-                    <th>Customer</th>
-                    <th>Order Date</th>
-                    <th>Delivery Date</th>
-                    <th>Category</th>
-                    <th>Qty</th>
-                    <th>Amount (₹)</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                <tr>
-                    <td>#{{ order.order_id }}</td>
-                    <td>{{ order.admin.first_name }} {{ order.admin.last_name }} ({{ order.admin.admin_id }})</td>
-                    <td>{{ order.customer.first_name }} {{ order.customer.last_name }}</td>
-                    <td>{{ order.order_date|date:"M d, Y" }}</td>
-                    <td>{{ order.delivery_date|date:"M d, Y"|default:"--" }}</td>
-                    <td>{{ order.category }}</td>
-                    <td>{{ order.quantity }}</td>
-                    <td>₹{{ order.overall_amount }}</td>
-                    <td>
-                        <span class="status-badge {% if order.payment_status == 1 %}paid{% else %}unpaid{% endif %}">
-                            {% if order.payment_status == 1 %}
-                                Paid
-                            {% else %}
-                                Unpaid
-                            {% endif %}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="action-btn view-btn">View</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-            <div class="no-data">
-                <i class="fas fa-box-open"></i>
-                <p>No orders found</p>
-            </div>
-        {% endif %}
-    </div>
 </div>
-<!-- END Orders Tab -->
-
-<!-- BEGIN Payments Tab with Admin + Customer -->
-<div id="payments-tab" class="tab-content">
-    <div class="section-header">
-        <h2>Payment Report</h2>
-        <div class="section-actions">
-            <input type="text" class="search-input" placeholder="Search payments...">
-        </div>
-    </div>
-    <div class="table-container">
-        {% if payments %}
-        <table class="report-table">
-            <thead>
-                <tr>
-                    <th>Payment ID</th>
-                    <th>Order ID</th>
-                    <th>Admin</th>
-                    <th>Customer</th>
-                    <th>Amount (₹)</th>
-                    <th>Date</th>
-                    <th>Method</th>
-                    <th>Reference</th>
-                    <th>Proof</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for payment in payments %}
-                <tr>
-                    <td>#{{ payment.payment_id }}</td>
-                    <td>#{{ payment.order.order_id }}</td>
-                    <td>{{ payment.order.admin.first_name }} {{ payment.order.admin.last_name }} ({{ payment.order.admin.admin_id }})</td>
-                    <td>{{ payment.order.customer.first_name }} {{ payment.order.customer.last_name }}</td>
-                    <td>{{ payment.amount }}</td>
-                    <td>{{ payment.date|date:"M d, Y" }}</td>
-                    <td>{{ payment.payment_method }}</td>
-                    <td>{{ payment.reference|default:"--" }}</td>
-                    <td>
-                        <a href="{{ payment.proof_link }}" target="_blank" class="proof-link">
-                            <i class="fas fa-file-invoice"></i> View
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-            <div class="no-data">
-                <i class="fas fa-receipt"></i>
-                <p>No payments found</p>
-            </div>
-        {% endif %}
-    </div>
-</div>
-<!-- END Payments Tab -->
- <a href="{% url 'customize_pdf_report' %}" class="download-btn custom">
-    <i class="fas fa-sliders-h"></i>
-    Customize Report
-</a>
-
-<style>
-.download-btn.custom {
-    background-color: #6f42c1;
-}
-.download-btn.custom:hover {
-    background-color: #5936a4;
-}
-</style>
 
 <style>
 :root {
@@ -320,6 +310,41 @@
 .download-buttons {
     display: flex;
     gap: 10px;
+    align-items: center;
+}
+
+/* Button Styles */
+.btn-customize-report {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background-color: #6f42c1;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+.btn-customize-report:hover, 
+.btn-customize-report:focus {
+    background-color: #5936a4;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.btn-customize-report:active {
+    transform: translateY(0);
+}
+
+.btn-customize-report i {
+    font-size: 0.9rem;
 }
 
 .download-btn {
@@ -688,6 +713,12 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
+    }
+    
+    .download-buttons {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
     }
     
     .stats-grid {
