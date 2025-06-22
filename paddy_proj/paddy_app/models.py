@@ -19,6 +19,7 @@ class AdminTable(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     user_count = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         """Ensure new admins get an ID >= 1000000 and hash passwords."""
@@ -53,6 +54,7 @@ class CustomerTable(models.Model):
     company_name = models.CharField(max_length=255)
     GST = models.CharField(max_length=15, null=True, blank=True, validators=[validate_gst])  # GST Validation added
     address = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     
     def save(self, *args, **kwargs):
         """Ensure new customers get an ID >= C1000000 and hash passwords."""
@@ -97,6 +99,7 @@ class Orders(models.Model):
     driver_ph_no = models.BigIntegerField()
     order_date = models.DateField()
     payment_deadline = models.IntegerField(default=90)  # in days
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     def __str__(self):
         return f"Order {self.order_id} - Customer: {self.customer.first_name} {self.customer.last_name}"
 

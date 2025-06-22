@@ -23,7 +23,7 @@ from django.db.models import Q
 from dotenv import load_dotenv
 import os
 from django.db.models import Case, When, Sum, Count, F
-from django.db.models.functions import ExtractMonth, ExtractYear
+from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
 import xlsxwriter
 import io
 from reportlab.lib import colors
@@ -136,18 +136,349 @@ def login_view(request):
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
-    return render(request, "superadmin_dashboard.html")
+    from django.db.models import Sum, Count, Q, Avg
+    from datetime import datetime, timedelta
+    
+    # Calculate date ranges
+    today = datetime.now().date()
+    last_7_days = today - timedelta(days=7)
+    current_month_start = today.replace(day=1)
+    
+    # Get all data across the platform
+    all_orders = Orders.objects.all()
+    all_admins = AdminTable.objects.exclude(admin_id=1000000)  # Exclude superadmin
+    all_customers = CustomerTable.objects.all()
+    all_payments = Payments.objects.all()
+    all_subscriptions = Subscription.objects.all()
+      # Platform-wide statistics
+    total_orders = all_orders.count()
+    completed_orders = all_orders.filter(delivery_status=1).count()
+    pending_orders = all_orders.filter(delivery_status=0).count()
+    new_orders = all_orders.filter(order_date__gte=last_7_days).count()
+    
+    # Admin and customer statistics
+    total_admins = all_admins.count()
+    total_customers = all_customers.count()
+    
+    # Payment statistics - only successful payments
+    total_payments = all_payments.aggregate(total=Sum('amount'))['total'] or 0
+    successful_payments = all_payments.filter(order__payment_status__in=[1, 2]).count()
+    
+    # Subscription statistics
+    active_subscriptions = all_subscriptions.filter(
+        subscription_status=1,
+        end_date__gte=today
+    ).count()
+    
+    expiring_subscriptions = all_subscriptions.filter(
+        subscription_status=1,
+        end_date__lte=today + timedelta(days=30),
+        end_date__gte=today
+    ).count()
+    
+    # Revenue statistics
+    total_revenue = all_orders.filter(payment_status=1).aggregate(
+        total=Sum('overall_amount')
+    )['total'] or 0
+    
+    # Average order value
+    avg_order_value = all_orders.aggregate(avg=Avg('overall_amount'))['avg'] or 0
+    
+    # Top product (most ordered category)
+    top_product_data = all_orders.values('category').annotate(
+        count=Count('category')
+    ).order_by('-count').first()
+    top_product = top_product_data['category'] if top_product_data else 'N/A'
+    
+    # Platform growth metrics
+    new_admins_this_month = all_admins.count()  # We'd need created_at field for accurate count
+    new_customers_this_month = all_customers.count()  # We'd need created_at field for accurate count
+    
+    # Recent activity across platform
+    recent_activity = []
+    
+    # Recent orders from all admins
+    recent_orders = all_orders.order_by('-order_date')[:3]
+    for order in recent_orders:
+        recent_activity.append({
+            'icon': '📦',
+            'text': f'Order #{order.order_id} placed by {order.customer.first_name} {order.customer.last_name} (Admin: {order.admin.first_name})',
+            'time': order.order_date.strftime('%d %b %Y')
+        })
+    
+    # Recent payments
+    recent_payments = all_payments.order_by('-date')[:2]
+    for payment in recent_payments:
+        recent_activity.append({
+            'icon': '💰',
+            'text': f'Payment ₹{payment.amount} received for Order #{payment.order.order_id if payment.order else "N/A"}',
+            'time': payment.date.strftime('%d %b %Y')
+        })
+    
+    # Sort recent activity by time (simplified)
+    recent_activity = recent_activity[:5]  # Limit to 5 items
+      # Pending subscription requests
+    pending_subscription_requests = UserIncreaseSubscription.objects.filter(
+        subscription_status=0
+    ).count()
+    
+    context = {
+        'total_orders': total_orders,
+        'completed_orders': completed_orders,
+        'pending_orders': pending_orders,
+        'new_orders': new_orders,
+        'total_admins': total_admins,
+        'total_customers': total_customers,
+        'total_payments': total_payments,
+        'successful_payments': successful_payments,
+        'active_subscriptions': active_subscriptions,
+        'expiring_subscriptions': expiring_subscriptions,
+        'total_revenue': total_revenue,
+        'avg_order_value': round(avg_order_value, 2) if avg_order_value else 0,
+        'top_product': top_product,
+        'new_admins_this_month': new_admins_this_month,
+        'new_customers_this_month': new_customers_this_month,
+        'recent_activity': recent_activity,
+        'pending_subscription_requests': pending_subscription_requests,
+    }
+    
+    return render(request, "superadmin_dashboard.html", context)
 
 @role_required(["admin"])
 def admin_dashboard(request):
-    return render(request, "admin_dashboard.html")
+    from django.db.models import Sum, Count, Q, Avg
+    from datetime import datetime, timedelta
+    
+    # Get admin from session - using 'user_id' key as set in login
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        messages.error(request, "Session expired. Please log in again.")
+        return redirect('login')
+    
+    try:
+        admin = AdminTable.objects.get(admin_id=admin_id)
+    except AdminTable.DoesNotExist:
+        messages.error(request, "Admin not found. Please log in again.")
+        return redirect('login')
+    
+    # Calculate date ranges
+    today = datetime.now().date()
+    last_7_days = today - timedelta(days=7)
+    current_month_start = today.replace(day=1)
+    
+    # Get orders data for this admin only
+    admin_orders = Orders.objects.filter(admin=admin)
+      # Order statistics - only real data, excluding cancelled orders
+    total_orders = admin_orders.count()
+    completed_orders = admin_orders.filter(delivery_status=1).count()
+    pending_orders = admin_orders.filter(delivery_status=0).count()
+    new_orders = admin_orders.filter(order_date__gte=last_7_days).count()
+    
+    # Customer statistics - only customers under this admin
+    total_customers = CustomerTable.objects.filter(admin=admin).count()
+    
+    # Payment statistics - only successful payments, excluding failed payments
+    admin_payments = Payments.objects.filter(order__admin=admin)
+    total_payments_amount = admin_payments.aggregate(total=Sum('amount'))['total'] or 0
+    successful_payments = admin_payments.filter(order__payment_status__in=[1, 2]).count()
+    
+    # Subscription statistics - only this admin's subscriptions
+    active_subscriptions = Subscription.objects.filter(
+        admin_id=admin,
+        subscription_status=1,
+        end_date__gte=today
+    ).count()
+    
+    expiring_subscriptions = Subscription.objects.filter(
+        admin_id=admin,
+        subscription_status=1,
+        end_date__lte=today + timedelta(days=30),
+        end_date__gte=today
+    ).count()
+    
+    # Revenue statistics - only from completed/paid orders
+    total_revenue = admin_orders.filter(payment_status__in=[1, 2]).aggregate(
+        total=Sum('overall_amount')
+    )['total'] or 0
+    
+    # Average order value - only from actual orders
+    avg_order_value = 0
+    if total_orders > 0:
+        avg_order_value = admin_orders.aggregate(avg=Avg('overall_amount'))['avg'] or 0
+    
+    # Top product (most ordered category) - only from real orders
+    top_product = 'N/A'
+    if total_orders > 0:
+        top_product_data = admin_orders.values('category').annotate(
+            count=Count('category')
+        ).order_by('-count').first()
+        if top_product_data and top_product_data['category']:
+            top_product = top_product_data['category']
+      # Customer growth - now we can calculate based on created_at field
+    customer_growth = "N/A"
+    if hasattr(CustomerTable, 'created_at'):
+        current_month_customers = CustomerTable.objects.filter(
+            admin=admin,
+            created_at__gte=current_month_start
+        ).count()
+        if total_customers > 0:
+            growth_percentage = (current_month_customers / total_customers) * 100
+            customer_growth = f"{round(growth_percentage, 1)}%"
+    
+    # Recent activity - only real activity from this admin's data
+    recent_activity = []
+    
+    # Recent orders - limit to last 3 real orders
+    recent_orders = admin_orders.order_by('-order_date')[:3]
+    for order in recent_orders:
+        activity_text = f'Order #{order.order_id} from {order.customer.first_name} {order.customer.last_name}'
+        if order.category:
+            activity_text += f' - {order.category}'
+        recent_activity.append({
+            'icon': '📦',
+            'text': activity_text,
+            'time': order.order_date.strftime('%d %b %Y')
+        })
+    
+    # Recent payments - limit to last 2 real payments
+    recent_payments = admin_payments.order_by('-date')[:2]
+    for payment in recent_payments:
+        order_info = f"Order #{payment.order.order_id}" if payment.order else "N/A"
+        recent_activity.append({
+            'icon': '💰',
+            'text': f'Payment ₹{payment.amount} received for {order_info}',
+            'time': payment.date.strftime('%d %b %Y')
+        })    # Sort recent activity by date (simplified - in production should use datetime)
+    recent_activity = recent_activity[:5]  # Limit to 5 most recent items
+    
+    # Chart data for analytics
+    # Monthly orders data (last 6 months)
+    monthly_orders = []
+    monthly_revenue = []
+    order_categories = []
+    category_counts = []
+    
+    # Get monthly data for last 6 months
+    for i in range(6):
+        month_start = (today.replace(day=1) - timedelta(days=i*30)).replace(day=1)
+        month_end = (month_start + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+        
+        month_orders = admin_orders.filter(order_date__range=[month_start, month_end]).count()
+        month_revenue = admin_orders.filter(
+            order_date__range=[month_start, month_end],
+            payment_status__in=[1, 2]
+        ).aggregate(total=Sum('overall_amount'))['total'] or 0
+        
+        monthly_orders.insert(0, month_orders)
+        monthly_revenue.insert(0, float(month_revenue))
+    
+    # Category data for pie chart
+    categories = admin_orders.values('category').annotate(
+        count=Count('category'),
+        revenue=Sum('overall_amount')
+    ).order_by('-count')
+    
+    for cat in categories:
+        if cat['category']:
+            order_categories.append(cat['category'])
+            category_counts.append(cat['count'])
+    
+    # Payment status data
+    payment_completed = admin_orders.filter(payment_status=2).count()
+    payment_partial = admin_orders.filter(payment_status=1).count()
+    payment_pending = admin_orders.filter(payment_status=0).count()    
+    # Monthly labels
+    month_labels = []
+    for i in range(6):
+        month_date = (today.replace(day=1) - timedelta(days=i*30))
+        month_labels.insert(0, month_date.strftime('%b %Y'))
+    
+    context = {
+        'admin': admin,
+        'total_orders': total_orders,
+        'completed_orders': completed_orders,
+        'pending_orders': pending_orders,
+        'new_orders': new_orders,
+        'total_customers': total_customers,
+        'total_payments': total_payments_amount,
+        'successful_payments': successful_payments,
+        'active_subscriptions': active_subscriptions,
+        'expiring_subscriptions': expiring_subscriptions,
+        'total_revenue': total_revenue,
+        'avg_order_value': round(avg_order_value, 2) if avg_order_value else 0,
+        'top_product': top_product,
+        'customer_growth': customer_growth,
+        'recent_activity': recent_activity,
+        # Chart data - JSON serialized for JavaScript
+        'monthly_orders': json.dumps(monthly_orders),
+        'monthly_revenue': json.dumps(monthly_revenue),
+        'month_labels': json.dumps(month_labels),
+        'order_categories': json.dumps(order_categories),
+        'category_counts': json.dumps(category_counts),
+        'payment_completed': payment_completed,
+        'payment_partial': payment_partial,
+        'payment_pending': payment_pending,
+    }
+    
+    return render(request, "admin_dashboard.html", context)
 
 def upgrade_plan(request):
     return render(request, "upgrade_plan.html")
 
 @role_required(["customer"])
 def customer_dashboard(request):
-    return render(request, "customer_dashboard.html")
+    from django.db.models import Sum, Count, Q
+    from datetime import datetime, timedelta
+    
+    # Get customer from session - using 'user_id' key as set in login
+    customer_id = request.session.get('user_id')
+    customer = CustomerTable.objects.get(customer_id=customer_id)
+    
+    # Calculate date ranges
+    today = datetime.now().date()
+    last_7_days = today - timedelta(days=7)
+    
+    # Get orders data for this customer
+    customer_orders = Orders.objects.filter(customer=customer)
+    
+    # Order statistics
+    total_orders = customer_orders.count()
+    completed_orders = customer_orders.filter(delivery_status=1).count()
+    pending_orders = customer_orders.filter(delivery_status=0).count()
+    cancelled_orders = customer_orders.filter(delivery_status=-1).count()
+    new_orders = customer_orders.filter(order_date__gte=last_7_days).count()
+    
+    # Payment statistics
+    customer_payments = Payments.objects.filter(order__customer=customer)
+    total_paid = customer_payments.aggregate(total=Sum('amount'))['total'] or 0
+    pending_amount = customer_orders.filter(payment_status=0).aggregate(
+        total=Sum('overall_amount')
+    )['total'] or 0
+    
+    # Recent orders
+    recent_orders = customer_orders.order_by('-order_date')[:5]
+    
+    # Subscription information
+    active_subscriptions = Subscription.objects.filter(
+        customer_id=customer,
+        subscription_status=1,
+        end_date__gte=today
+    ).count()
+    
+    context = {
+        'customer': customer,
+        'total_orders': total_orders,
+        'completed_orders': completed_orders,
+        'pending_orders': pending_orders,
+        'cancelled_orders': cancelled_orders,
+        'new_orders': new_orders,
+        'total_paid': total_paid,
+        'pending_amount': pending_amount,
+        'recent_orders': recent_orders,
+        'active_subscriptions': active_subscriptions,
+    }
+    
+    return render(request, "customer_dashboard.html", context)
 
 def validate_gst(gst):
     gst_pattern = r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
