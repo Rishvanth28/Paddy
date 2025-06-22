@@ -193,3 +193,4 @@ class Notification(models.Model):
     
     def __str__(self):
         return f"{self.user_type} - {self.title} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+    

@@ -1,0 +1,18 @@
+# customize_pdf_report.html
+{% extends 'superadmin_base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Customize PDF Report</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            {% for field in form %}
+                <div class="col-md-4 mb-2">
+                    <label>{{ field }} {{ field.label }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Generate PDF</button>
+    </form>
+</div>
+{% endblock %}
