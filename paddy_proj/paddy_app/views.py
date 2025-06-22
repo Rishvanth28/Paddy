@@ -3316,3 +3316,112 @@ def download_invoice_excel1(request):
     except Exception as e:
         messages.error(request, f"Error generating Excel report: {str(e)}")
         return redirect('unified_report')
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from .forms import CustomReportForm
+from .models import Orders
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+import io
+
+@role_required(["admin", "superadmin"])
+def customize_pdf_report(request):
+    if request.method == 'POST':
+        form = CustomReportForm(request.POST)
+        if form.is_valid():
+            request.session['selected_fields'] = form.cleaned_data
+            return redirect('download_custom_pdf')
+    else:
+        form = CustomReportForm()
+
+    return render(request, 'customize_pdf_report.html', {'form': form})
+
+@role_required(["admin", "superadmin"])
+def download_custom_pdf(request):
+    selected_fields = request.session.get('selected_fields')
+    if not selected_fields:
+        return redirect('customize_pdf_report')
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    elements.append(Paragraph("Customized Business Report", styles['Title']))
+    headers = []
+    if selected_fields.get('order_id'): headers.append("Order ID")
+    if selected_fields.get('admin'): headers.append("Admin")
+    if selected_fields.get('customer'): headers.append("Customer")
+    if selected_fields.get('order_date'): headers.append("Order Date")
+    if selected_fields.get('delivery_date'): headers.append("Delivery Date")
+    if selected_fields.get('product_details'): headers.append("Product")
+    if selected_fields.get('batch_expiry'): headers.append("Batch/Expiry")
+    if selected_fields.get('quantity'): headers.append("Qty/Unit")
+    if selected_fields.get('price'): headers.append("Price")
+    if selected_fields.get('total'): headers.append("Total")
+    if selected_fields.get('payment'): headers.append("Payment")
+    if selected_fields.get('delivery'): headers.append("Delivery Info")
+    if selected_fields.get('payment_deadline'): headers.append("Payment Deadline")
+    if selected_fields.get('lorry_details'): headers.append("Lorry Details")
+
+    data = [headers]
+    orders = Orders.objects.select_related('admin', 'customer').prefetch_related('items', 'payments_set').all()
+
+    for order in orders:
+        for item in order.items.all():
+            row = []
+            if selected_fields.get('order_id'): row.append(str(order.order_id))
+            if selected_fields.get('admin'): row.append(f"{order.admin.first_name} {order.admin.last_name}")
+            if selected_fields.get('customer'): row.append(f"{order.customer.first_name} {order.customer.last_name}")
+            if selected_fields.get('order_date'): row.append(order.order_date.strftime('%d-%m-%Y'))
+            if selected_fields.get('delivery_date'): row.append(order.delivery_date.strftime('%d-%m-%Y') if order.delivery_date else 'Not Set')
+            if selected_fields.get('product_details'): row.append(item.product_name)
+            if selected_fields.get('batch_expiry'): row.append(f"{item.batch_number}/{item.expiry_date.strftime('%d-%m-%Y')}")
+            if selected_fields.get('quantity'): row.append(f"{item.quantity} {item.unit}")
+            if selected_fields.get('price'): row.append(f"₹{item.price_per_unit:.2f}")
+            if selected_fields.get('total'): row.append(f"₹{item.total_amount:.2f}")
+            if selected_fields.get('payment'):
+                total_paid = sum(p.amount for p in order.payments_set.all())
+                row.append(f"₹{total_paid}")
+            if selected_fields.get('delivery'):
+                row.append("Delivered" if order.delivery_status == 1 else "Pending")
+            if selected_fields.get('payment_deadline'):
+                row.append(f"{order.payment_deadline} days")
+            if selected_fields.get('lorry_details'):
+                row.append(f"{order.lorry_number} / {order.driver_name} / {order.driver_ph_no}")
+
+            data.append(row)
+
+    table = Table(data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ]))
+
+    elements.append(table)
+    doc.build(elements)
+    buffer.seek(0)
+
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="custom_report.pdf"'
+    return response
