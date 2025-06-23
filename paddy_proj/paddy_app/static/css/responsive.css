@@ -645,7 +645,7 @@ button, .btn {
   .hamburger {
     display: flex !important;
     position: fixed;
-    top: 15px;
+    top: 30px;
     left: 15px;
     z-index: 1003; /* Higher than sidebar to ensure it stays clickable */
     flex-direction: column;
@@ -834,11 +834,11 @@ button, .btn {
   }
   
   .card-header {
-    padding: 10px !important;
+    padding: 25px !important;
   }
   
   .card-body {
-    padding: 12px !important;
+    padding: 20px !important;
   }
   
   /* Spacing adjustments */
