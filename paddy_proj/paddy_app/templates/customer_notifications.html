@@ -690,15 +690,10 @@
             <div class="notification-message">
                 {{ notification.message }}
             </div>
-            {% if notification.related_order_id %}
-            <div class="notification-actions">
-                <form method="post" action="{% url 'payment' %}" class="d-inline">
-                    {% csrf_token %}
-                    <input type="hidden" name="order_id" value="{{ notification.related_order_id }}">
-                    <button type="submit" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-eye me-1"></i>View Order
-                    </button>
-                </form>
+            {% if notification.related_order_id %}            <div class="notification-actions">
+                <a href="{% url 'customer_orders' %}?order_id={{ notification.related_order_id }}" class="btn btn-sm btn-outline-primary" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem; transition: all 0.3s ease;">
+                    <i class="bi bi-eye me-1"></i>View Order
+                </a>
             </div>
             {% endif %}
         </div>
