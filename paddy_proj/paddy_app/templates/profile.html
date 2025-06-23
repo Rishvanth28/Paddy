@@ -15,17 +15,14 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
 }
 .header-bar {
     
-    width: 100%;
-    height: auto;
-    z-index: 1000;
+   
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding: 20px 65px;
-    background-color: #f9f9fc;
-    border-bottom: 1px solid #e0e0e0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    gap: 1rem;
+    margin-left: 3rem;
+    margin-top: 3rem;
 }
 
 /* Push page content below the fixed header */
@@ -221,7 +218,17 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
     .header-bar { width: 100%;
     position: fixed;
     top: 0;
-    left: 0; }
+    left: 0;
+     width: 100%;
+    height: auto;
+    z-index: 1000;
+    margin: 0;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px 65px;
+    border-bottom: 1px solid #e0e0e0;
+
+ }
     .upgrade-container {
     padding-top: 60px; /* adjust based on header height */
 }
