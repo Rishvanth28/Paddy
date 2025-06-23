@@ -37,7 +37,10 @@ body {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
+    margin-left: 3rem;
+    margin-top: 3rem;
 }
+
 
 /* ========== Page Title ========== */
 .page-title {
@@ -45,12 +48,12 @@ body {
     font-weight: 700;
     margin: 0;
     letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #000;
-    text-align: left;
+    color: #000000;
     position: relative;
+    text-transform: uppercase;
     padding-bottom: 0.6rem;
-}
+    text-align: left;
+}   
 
 .page-title::after {
     content: '';
@@ -294,6 +297,19 @@ body {
 
 /* ========== Responsive Layout ========== */
 @media (max-width: 768px) {
+    .header-bar { width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: auto;
+    z-index: 1000;
+    margin: 0;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px 65px;
+    border-bottom: 1px solid #e0e0e0;
+
+ }
     .search-container {
         width: 100%;
         margin-top: 1rem;
@@ -301,15 +317,26 @@ body {
         position: static;
         margin-bottom: 1rem;
     }
+    .search-wrapper {
+        width: 100%;
+        max-width: 100%;
+        justify-content: center;
+    }
 
     .page-title {
-        font-size: 1.5rem;
+        font-size: 1.2rem !important;
         text-align: center;
         width: 100%;
     }
 
     .card-header {
         padding: 1.5rem;
+    }
+    .card{
+        margin-top: 120px;
+    }
+    .main{
+        padding: 0 !important;
     }
 
     .customer-heading {
