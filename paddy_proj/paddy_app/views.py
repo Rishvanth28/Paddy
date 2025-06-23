@@ -1,53 +1,39 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse, HttpResponse
-from .models import *
 from django.db import IntegrityError
-from datetime import date
 from django.core.paginator import Paginator
 from django.utils import timezone
+from django.conf import settings
+from django.db.models import Q, Case, When, Sum, Count, F
+from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
+from datetime import date, timedelta, datetime
+import json
+import os
+import io
+import xlsxwriter
+import razorpay
+from dotenv import load_dotenv
+from .models import *
 from .decorators import role_required
 from .helpers import *
 from .helpers import create_notification
-import json
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.timezone import now
-import razorpay
-from django.conf import settings
-from datetime import timedelta
-from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
-from dotenv import load_dotenv
-import os
-from django.db.models import Case, When, Sum, Count, F
-from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
-import xlsxwriter
-import io
+from .forms import CustomReportForm
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, A4, landscape
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.platypus import (
+    SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, HRFlowable
+)
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
-from reportlab.platypus.flowables import HRFlowable  
-from .forms import CustomReportForm
-from .models import Orders, Payments, AdminTable
-from reportlab.lib.colors import HexColor
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.pagesizes import A4
-from reportlab.lib import colors
-import io
-from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
-)
 import inflect
-
-
+from django.db.models import Sum, Count, Q, Avg, Max, F
+from datetime import datetime, timedelta
+import json
 
 load_dotenv()
 
@@ -515,14 +501,7 @@ def upgrade_plan(request):
     return render(request, "upgrade_plan.html")
 
 @role_required(["customer"])
-@role_required(["customer"])
-@role_required(["customer"])
 def customer_dashboard(request):
-    from django.db.models import Sum, Count, Q, Avg, Max, F
-    from datetime import datetime, timedelta
-    import json
-    
-    # Get customer from session - using 'user_id' key as set in login
     customer_id = request.session.get('user_id')
     if not customer_id:
         messages.error(request, "Session expired. Please log in again.")
@@ -886,7 +865,6 @@ def create_customer_signup(request):
 
     return render(request, "login.html")
 
-
 @role_required(["superadmin", "admin"])
 def place_order(request):
     role = request.session.get("role")
@@ -1228,8 +1206,6 @@ def payment(request):
 @require_POST
 @csrf_exempt
 def create_partial_payment_order(request):
-    """API endpoint to create a Razorpay order for partial payment"""
-
     
     try:
 
@@ -1457,9 +1433,8 @@ def admin_add_subscription(request):
     }
     return render(request, "admin_add_subscription.html", context)
 
-@require_POST # Ensures this view only accepts POST requests
-@role_required(["admin"]) # Protect the endpoint
-# @csrf_exempt # Not needed if CSRF token is handled correctly with AJAX from same domain
+@require_POST
+@role_required(["admin"]) 
 def create_admin_user_increase_order(request):
     """
     Creates a Razorpay order for an admin's user count increase subscription.
@@ -1519,9 +1494,9 @@ def create_admin_user_increase_order(request):
         print(f"Error in create_admin_user_increase_order: {e}") # Log the error for debugging
         return JsonResponse({'success': False, 'message': f'An error occurred while creating payment order: {str(e)}'}, status=500)
 
-@require_POST # Ensures this view only accepts POST requests
-@csrf_exempt # Razorpay sends POST here without CSRF token from client-side handler
-@role_required(["admin"]) # Protect the endpoint
+@require_POST 
+@csrf_exempt 
+@role_required(["admin"]) 
 def verify_admin_user_increase_payment(request):
     """
     Verifies the Razorpay payment signature and updates the subscription
@@ -2015,7 +1990,7 @@ def upgrade_to_customer(request):
 def upgrade_success(request):
     return render(request, 'upgrade_success.html')
 
-@role_required(["customer"])
+
 @role_required(["superadmin"])
 def view_admins(request):
     query = request.GET.get('q')
@@ -2106,17 +2081,95 @@ def admin_login_submit(request):
     return render(request, 'login.html', {'error': 'Invalid credentials'})
 
 def profile(request):
-    role = request.session.get('role', 'superadmin')
+    role = request.session.get('role')
+    user_id = request.session.get('user_id')
+    
+    if not role or not user_id:
+        messages.error(request, "Please log in to view your profile.")
+        return redirect('login')
+    
+    # Determine base template and fetch user data based on role
     if role == 'superadmin':
         base_template = 'superadmin_base.html'
+        try:
+            user = AdminTable.objects.get(admin_id=user_id)
+            user_data = {
+                'user_type': 'Super Admin',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'admin_id': user.admin_id,
+                'user_count': user.user_count,
+                'created_at': user.created_at,
+                'is_superadmin': True,
+            }
+        except AdminTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
+            
     elif role == 'admin':
         base_template = 'admin_base.html'
+        try:
+            user = AdminTable.objects.get(admin_id=user_id)
+            # Get subscription info for admin
+            subscription = Subscription.objects.filter(
+                admin_id=user, 
+                subscription_type="admin"
+            ).order_by('-end_date').first()
+            
+            user_data = {
+                'user_type': 'Admin',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'admin_id': user.admin_id,
+                'user_count': user.user_count,
+                'created_at': user.created_at,
+                'subscription': subscription,
+                'is_admin': True,
+            }
+        except AdminTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
+            
     elif role == 'customer':
         base_template = 'customer_base.html'
+        try:
+            user = CustomerTable.objects.get(customer_id=user_id)
+            # Get subscription info for customer
+            subscription = Subscription.objects.filter(
+                customer_id=user, 
+                subscription_type="customer"
+            ).order_by('-end_date').first()
+            
+            user_data = {
+                'user_type': 'Customer',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'customer_id': user.customer_id,
+                'company_name': user.company_name,
+                'gst': user.GST,
+                'address': user.address,
+                'admin': user.admin,
+                'created_at': user.created_at,
+                'subscription': subscription,
+                'is_customer': True,
+            }
+        except CustomerTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
     else:
-        base_template = 'superadmin_base.html'
+        messages.error(request, "Invalid role.")
+        return redirect('login')
+    
     context = {
         'base_template': base_template,
+        'user_data': user_data,
+        'role': role,
     }
     return render(request, 'profile.html', context)
 
