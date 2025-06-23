@@ -3,18 +3,16 @@
 {% load static %}
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
 </head>
 
 <body>
-    <div class="container">
-        <h2 class="logo">LOGO HERE</h2>
-        
-        <!-- Right section moved to left -->
-        <div class="right-section">
+    <div class="auth-container">
+        <div class="auth-left">
+            
+
             <div class="login-section">
                 <h1><span class="highlight">Hey !</span> <br> Welcome Back</h1>
                 
@@ -176,34 +174,40 @@
             </div>
         </div>
 
-        <!-- Left section moved to right -->
-        <div class="left-section">
-            <div class="image-overlay"></div>
-        </div>
-    </div>
-        <!-- JS to toggle tab content and role-based form visibility -->
-    <script>
-        // Toggle tabs
-        document.querySelectorAll(".tab-btn").forEach(btn => {
-            btn.addEventListener("click", function () {
-                document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-                document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
+    <div class="auth-right">
+      <h2 class="logo">LOGO HERE</h2>
+            {% comment %} <div class="welcome-text">
+                <h1>Welcome <span>Back</span></h1>
+                <p>Sign in to access your dashboard or create an account</p>
+            </div> {% endcomment %}
+   </div>
+  </div>
 
-                this.classList.add("active");
-                document.getElementById(this.dataset.tab).classList.add("active");
-            });
-        });
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Handle initial visibility based on default selected role
+    const role = document.getElementById("signup-role").value;
+    document.getElementById("admin-form").style.display = role === "admin" ? "block" : "none";
+    document.getElementById("customer-form").style.display = role === "customer" ? "block" : "none";
 
-        // Toggle admin/customer signup forms
-        document.getElementById('signup-role').addEventListener('change', function () {
-            const role = this.value;
-            document.getElementById('admin-form').style.display = role === 'admin' ? 'block' : 'none';
-            document.getElementById('customer-form').style.display = role === 'customer' ? 'block' : 'none';
-        });
+    // Tab switching logic
+    document.querySelectorAll('.tab-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+      });
+    });
 
-        // Initial trigger
-        document.getElementById('signup-role').dispatchEvent(new Event('change'));
-    </script>
+    // Role-based form toggle
+    document.getElementById("signup-role").addEventListener("change", function () {
+      document.getElementById("admin-form").style.display = this.value === "admin" ? "block" : "none";
+      document.getElementById("customer-form").style.display = this.value === "customer" ? "block" : "none";
+    });
+  });
+</script>
+
     <script src="{% static 'js/login.js' %}" defer></script>
 </body>
 </html>
