@@ -517,8 +517,6 @@ def upgrade_plan(request):
     return render(request, "upgrade_plan.html")
 
 @role_required(["customer"])
-@role_required(["customer"])
-@role_required(["customer"])
 def customer_dashboard(request):
     from django.db.models import Sum, Count, Q, Avg, Max, F
     from datetime import datetime, timedelta
@@ -2023,7 +2021,7 @@ def upgrade_to_customer(request):
 def upgrade_success(request):
     return render(request, 'upgrade_success.html')
 
-@role_required(["customer"])
+
 @role_required(["superadmin"])
 def view_admins(request):
     query = request.GET.get('q')
@@ -2114,23 +2112,102 @@ def admin_login_submit(request):
     return render(request, 'login.html', {'error': 'Invalid credentials'})
 
 def profile(request):
-    role = request.session.get('role', 'superadmin')
+    role = request.session.get('role')
+    user_id = request.session.get('user_id')
+    
+    if not role or not user_id:
+        messages.error(request, "Please log in to view your profile.")
+        return redirect('login')
+    
+    # Determine base template and fetch user data based on role
     if role == 'superadmin':
         base_template = 'superadmin_base.html'
+        try:
+            user = AdminTable.objects.get(admin_id=user_id)
+            user_data = {
+                'user_type': 'Super Admin',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'admin_id': user.admin_id,
+                'user_count': user.user_count,
+                'created_at': user.created_at,
+                'is_superadmin': True,
+            }
+        except AdminTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
+            
     elif role == 'admin':
         base_template = 'admin_base.html'
+        try:
+            user = AdminTable.objects.get(admin_id=user_id)
+            # Get subscription info for admin
+            subscription = Subscription.objects.filter(
+                admin_id=user, 
+                subscription_type="admin"
+            ).order_by('-end_date').first()
+            
+            user_data = {
+                'user_type': 'Admin',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'admin_id': user.admin_id,
+                'user_count': user.user_count,
+                'created_at': user.created_at,
+                'subscription': subscription,
+                'is_admin': True,
+            }
+        except AdminTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
+            
     elif role == 'customer':
         base_template = 'customer_base.html'
+        try:
+            user = CustomerTable.objects.get(customer_id=user_id)
+            # Get subscription info for customer
+            subscription = Subscription.objects.filter(
+                customer_id=user, 
+                subscription_type="customer"
+            ).order_by('-end_date').first()
+            
+            user_data = {
+                'user_type': 'Customer',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'customer_id': user.customer_id,
+                'company_name': user.company_name,
+                'gst': user.GST,
+                'address': user.address,
+                'admin': user.admin,
+                'created_at': user.created_at,
+                'subscription': subscription,
+                'is_customer': True,
+            }
+        except CustomerTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
     else:
-        base_template = 'superadmin_base.html'
+        messages.error(request, "Invalid role.")
+        return redirect('login')
+    
     context = {
         'base_template': base_template,
+        'user_data': user_data,
+        'role': role,
     }
     return render(request, 'profile.html', context)
 
 def admin_subscription_payment(request):
     if request.method == "POST":
         plan = request.POST.get("plan")
+        
         admin_id = request.session.get("user_id")
 
         if not admin_id:
