@@ -1934,9 +1934,11 @@ def upgrade_to_admin(request):
     customer = CustomerTable.objects.get(customer_id=customer_id)
 
     # Check if already admin
-    if AdminTable.objects.filter(email=customer.email).exists():
+    is_admin = AdminTable.objects.filter(email=customer.email).exists()
+    
+    if is_admin:
         messages.info(request, "You are already an admin! Access denied.")
-        return render(request, 'upgrade_to_admin.html', {'customer': customer})
+        return render(request, 'upgrade_to_admin.html', {'customer': customer, 'is_admin': True})
 
     if request.method == 'POST':
         # Create new admin
@@ -1949,11 +1951,15 @@ def upgrade_to_admin(request):
             user_count=0,
         )
         new_admin.save()
-
+        
+        # Set session role to admin after successful upgrade
+        request.session['role'] = 'admin'
+        request.session['user_id'] = new_admin.admin_id
+        
         messages.success(request, "You have been upgraded to admin successfully!")
-        return render(request, 'upgrade_to_admin.html', {'customer': customer})
+        return render(request, 'upgrade_to_admin.html', {'customer': customer, 'is_admin': True})
 
-    return render(request, 'upgrade_to_admin.html', {'customer': customer})
+    return render(request, 'upgrade_to_admin.html', {'customer': customer, 'is_admin': is_admin})
 
 @role_required(["admin"])
 def upgrade_to_customer(request):
