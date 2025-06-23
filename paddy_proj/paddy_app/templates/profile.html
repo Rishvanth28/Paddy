@@ -67,93 +67,131 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
     font-size: 0.9rem;
     margin-top: 0.5rem;
 }
+/* Card Component */
 .upgrade-card {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    margin-bottom: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 2rem;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.05);
 }
+
 .card-header {
-    background: linear-gradient(135deg, #000000, #25282b);
-    color: white;
-    padding: 1.5rem 2rem;
+  background: linear-gradient(to right, #000, #2d2d2d);
+  padding: 1.5rem 2rem;
+  color: #fff;
 }
+
 .card-header h2 {
-    margin: 0;
-    font-weight: 600;
-    font-size: 1.5rem;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
+
 .card-body {
-    padding: 2rem;
+  padding: 2rem;
 }
+
+/* Sections */
 .section-title {
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: #000000;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #eee;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
 }
+
+/* Info Grid */
 .info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
 }
+
 .info-item {
-    margin-bottom: 0.5rem;
+  background-color: #fafafa;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px #ececec;
 }
+
 .info-label {
-    font-weight: 500;
-    color: #7f8c8d;
-    margin-bottom: 0.25rem;
-    font-size: 0.9rem;
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
 }
+
 .info-value {
-    font-weight: 500;
-    color: #000000;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
 }
-.profile-actions {
-    margin-top: 2.5rem;
-    display: flex;
-    gap: 1rem;
+
+/* Subscription Status */
+.subscription-status {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
 }
+
+.status-active {
+  background-color: #e1f7e7;
+  color: #218838;
+}
+
+.status-inactive {
+  background-color: #fdecea;
+  color: #c82333;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+/* Button */
 .submit-btn {
-    display: block;
-    margin: 10px auto 0;
-    padding: 12px 30px;
-    font-size: 16px;
-    background-color: #000;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
+  display: inline-block;
+  background-color: #000;
+  color: #fff;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 20px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease;
 }
-.submit-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -75%;
-    height: 100%;
-    width: 50%;
-    background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
-    transform: skewX(-20deg);
-    transition: left 0.5s ease;
-    z-index: 0;
-}
+
 .submit-btn:hover {
-    background-color: #222;
+  background-color: #222;
 }
+
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+  z-index: 0;
+}
+
 .submit-btn:hover::before {
-    left: 130%;
+  left: 130%;
 }
 .subscription-status {
     display: inline-block;
@@ -185,7 +223,7 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
     top: 0;
     left: 0; }
     .upgrade-container {
-    padding-top: 100px; /* adjust based on header height */
+    padding-top: 60px; /* adjust based on header height */
 }
     .form-grid { grid-template-columns: 1fr; }
     .card-body { padding: 1rem; }
