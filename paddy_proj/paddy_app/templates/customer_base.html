@@ -1164,17 +1164,10 @@
   <script>
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
       const body = document.body;
       
       sidebar.classList.toggle('open');
       body.classList.toggle('sidebar-open');
-      
-      // Add click event to overlay to close sidebar on mobile
-      overlay.addEventListener('click', function() {
-        sidebar.classList.remove('open');
-        body.classList.remove('sidebar-open');
-      });
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -1186,6 +1179,20 @@
         if (link && link.getAttribute('href') === currentPath) {
           item.classList.add('active');
         }
+      });
+      
+      // Auto-close sidebar when navigation link is clicked on mobile
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          const sidebar = document.getElementById('sidebar');
+          // Close sidebar on mobile when navigating
+          if (window.innerWidth <= 992 && sidebar.classList.contains('open')) {
+            setTimeout(() => {
+              toggleSidebar();
+            }, 150);
+          }
+        });
       });
       
       // Ensure sidebar height is calculated correctly on load and resize
