@@ -324,7 +324,7 @@ body {
     }
 
     .page-title {
-        font-size: 1.2rem !important;
+        /* font-size: 1.2rem !important; */
         text-align: center;
         width: 100%;
     }
@@ -334,6 +334,7 @@ body {
     }
     .card{
         margin-top: 120px;
+        padding: 0 !important;
     }
     .main{
         padding: 0 !important;

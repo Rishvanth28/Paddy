@@ -30,15 +30,15 @@
 </head>
 
 <body>
-    <div class="py-5" style="padding: 40px 30px;">
+    {% comment %} <div class="main py-5" style="padding: 40px 30px;"> {% endcomment %}
         <!-- Header Row with Title and Search -->
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-5">
+        <div class="header-bar mb-5">
             <h1 class="page-title mb-0 me-3">Customer List</h1>
 
-            <div class="search-wrapper flex-grow-1 d-flex  mt-2 mt-md-0">
+            <div class="search-wrapper mt-2 mt-md-0">
                 <form class="w-100 position-relative" style="max-width: 500px;" role="search" method="GET" action="">
                     <i class="fas fa-search position-absolute"
-                        style="top: 50%; left: 16px; transform: translateY(-50%); color: #888;"></i>
+                        style="top: 41%; left: 16px; transform: translateY(-50%); color: #888;"></i>
                     <input type="search" name="q" class="form-control ps-5" placeholder="Search customers..."
                         aria-label="Search">
                 </form>
@@ -102,7 +102,7 @@
                 {% endif %}
             </div>
         </div>
-    </div>
+    {% comment %} </div> {% endcomment %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/customers_list.js' %}" defer></script>

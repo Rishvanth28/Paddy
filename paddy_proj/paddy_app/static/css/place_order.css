@@ -25,6 +25,8 @@ body {
 }
 
 .header-bar {
+
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -101,7 +103,11 @@ body {
 }
 
 .form-card h3 {
-    font-weight: lighter;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: left;
 }
 
 /* Space between fields */
@@ -278,7 +284,6 @@ body {
 @media (max-width: 1024px) {
     .form-card {
         width: 100%;
-        max-width: 500px;
     }
 }
 
@@ -287,10 +292,12 @@ body {
     font-size: 16px;
     text-transform: capitalize;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
-    margin: 40px 0 30px 40px;
-
+    margin-top: 40px;
+    padding: 10px 0;
+    border-radius: 8px;
 }
 
 /* Style tab buttons */
@@ -370,16 +377,41 @@ button[type="submit"]:hover {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .header-bar {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: auto;
+        z-index: 1000;
+        margin: 0;
+        background-color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        padding: 20px 65px;
+        border-bottom: 1px solid #e0e0e0;
+
+    }
+    .page-title {
+        font-size: 1.3rem !important;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
     .form-row {
         flex-direction: column;
     }
-
+    .mob{
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
     .form-container {
         padding: 10px;
     }
 
     .tab-header {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         margin-left: 10px;
     }
@@ -415,18 +447,10 @@ input[readonly] {
     font-weight: lighter;
     color: #1a202c;
 }
-
-.tab-header {
-    display: flex;
-    gap: 10px;
-    margin: 20px 0;
-    justify-content: center;
-    border-radius: 8px;
-}
-
+/* 
 .form-container {
     padding: 1rem 2rem;
-}
+} */
 
 /* Order Items Table */
 .items-section {

@@ -1,6 +1,10 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/place_order.css ' %}">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
 {% if messages %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 <ul class="messages">
@@ -20,15 +24,13 @@
     });
 </script>
 {% endif %}
-<head>
-    <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-</head>
+
 
 <body>
-    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-        <h1 class="page-title mb-0 me-3 " >Place New Order</h1>
+    <div class="header-bar mb-3">
+        <h1 class="page-title mb-0 me-3">Place New Order</h1>
     </div>
+    
     <!-- Tab Buttons -->
     <div class="tab-header">
         <button class="tab-button active "  type="button" onclick="showForm('Rice')">Rice</button>
@@ -231,7 +233,7 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <div class="form-row" style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
+                    <div class="form-row mob" style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
                         <button type="button" id="pesticide-add-item-btn" class="add-item-btn" onclick="addPesticideRow()">+ Add Item</button>
                         <button type="button" id="pesticide-save-btn" class="submit-btn" style="background:#2196F3;" onclick="savePesticideOrderDraft()" disabled>Save Order</button>
                         <button type="submit" id="pesticide-submit-btn" class="submit-btn">Place Pesticide Order</button>

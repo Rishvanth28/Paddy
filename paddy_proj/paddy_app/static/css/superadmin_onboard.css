@@ -101,7 +101,7 @@ body {
     align-items: flex-start;
     min-height: calc(100vh - 150px);
     /* Adjust based on header/footer */
-    padding: 20px;
+    /* padding: 20px; */
     box-sizing: border-box;
     animation: fadeInUp 0.8s ease;
 }
@@ -112,7 +112,7 @@ body {
     max-width: 2500px;
     background: #ffffff;
     padding: 30px;
-    /* border-radius: 16px; */
+    border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
     background-color: #fff;
