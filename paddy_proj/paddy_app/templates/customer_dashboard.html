@@ -19,6 +19,51 @@
     --danger: #ef4444;
     --info: #38bdf8;
 }
+
+/* Responsive Dashboard Layout */
+@media (max-width: 1280px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px !important;
+    }
+    
+    .chart-container {
+        grid-column: span 2 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .chart-container {
+        grid-column: 1 !important;
+    }
+    
+    .stat-card {
+        padding: 15px !important;
+    }
+    
+    .stat-card .title {
+        font-size: 0.9rem !important;
+    }
+    
+    .stat-card .value {
+        font-size: 1.5rem !important;
+    }
+    
+    .greeting-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
+    }
+    
+    .date-display {
+        width: 100% !important;
+    }
+}
+}
 body { background: var(--bg); color: var(--text-main); }
 
 .customer-dashboard-hero {

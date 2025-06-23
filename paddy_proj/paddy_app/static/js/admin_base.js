@@ -2,28 +2,47 @@ document.addEventListener('DOMContentLoaded', function() {
   const sidebar = document.getElementById('sidebar');
   const hamburger = document.getElementById('hamburger');
   const mainContent = document.getElementById('main-content');
-
+  const body = document.body;
+  
+  // Enhanced sidebar toggle functionality
   function toggleSidebar() {
     sidebar.classList.toggle('open');
     hamburger.classList.toggle('active');
+    body.classList.toggle('sidebar-open');
+    
     const overlay = document.getElementById('sidebar-overlay');
     if (sidebar.classList.contains('open')) {
       overlay.style.display = 'block';
+      // Prevent scrolling when sidebar is open on mobile
+      if (window.innerWidth <= 1024) {
+        body.style.overflow = 'hidden';
+      }
     } else {
       overlay.style.display = 'none';
+      body.style.overflow = '';
     }
     localStorage.setItem('sidebarOpen', sidebar.classList.contains('open'));
   }
 
   function initSidebar() {
-    const isOpen = localStorage.getItem('sidebarOpen') === 'true';
+    const isMobile = window.innerWidth <= 1024;
+    const isOpen = !isMobile && localStorage.getItem('sidebarOpen') === 'true';
     const overlay = document.getElementById('sidebar-overlay');
-    if (isOpen) {
+    
+    // Only auto-open sidebar on desktop
+    if (isOpen && !isMobile) {
       sidebar.classList.add('open');
       hamburger.classList.add('active');
+      body.classList.add('sidebar-open');
       overlay.style.display = 'block';
     } else {
       overlay.style.display = 'none';
+      // Always close sidebar on mobile by default
+      if (isMobile) {
+        sidebar.classList.remove('open');
+        hamburger.classList.remove('active');
+        body.classList.remove('sidebar-open');
+      }
     }
 
     hamburger.addEventListener('click', toggleSidebar);
