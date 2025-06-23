@@ -618,10 +618,9 @@ button, .btn {
   body {
     overflow-x: hidden;
   }
-
   .main-content {
     margin-left: 0 !important;
-    padding: 20px 15px;
+    padding: 70px 15px 20px 15px; /* Top padding to account for hamburger button */
     transition: margin-left 0.3s ease;
     width: 100% !important;
   }
@@ -1283,163 +1282,264 @@ button, .btn {
     }
 }
 
-/* Extra small devices (phones in portrait) */
-@media (max-width: 480px) {
+/* Superadmin Business Report Specific Responsive Styles */
+@media (max-width: 768px) {
+    /* Ensure superadmin report containers are properly responsive */
     .report-container.responsive-container {
-        padding: 0.25rem;
+        padding: 15px !important;
     }
     
-    .responsive-card {
-        margin-bottom: 0.75rem;
-        border-radius: 6px;
+    .report-header.responsive-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
+        padding: 15px !important;
     }
     
-    .report-header.responsive-card {
-        padding: 0.75rem;
+    .header-content h1 {
+        font-size: 20px !important;
+        line-height: 1.3 !important;
     }
     
-    .report-title {
-        font-size: 1.25rem !important;
+    .download-buttons.responsive-button-group {
+        width: 100% !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
     }
     
-    .responsive-btn {
-        padding: 0.5rem 0.25rem;
-        font-size: 0.75rem;
+    .download-btn.responsive-btn,
+    .btn-customize-report.responsive-btn {
+        flex: 1 1 calc(50% - 5px) !important;
+        min-width: 140px !important;
+        justify-content: center !important;
+        text-align: center !important;
     }
     
-    .responsive-btn i {
-        font-size: 0.875rem;
+    /* Responsive tab buttons for mobile */
+    .tabs-header.responsive-tabs-header {
+        overflow-x: auto !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
     }
     
-    .responsive-stat-card {
-        padding: 0.75rem;
-    }
-    
-    .stat-icon {
-        width: 35px !important;
-        height: 35px !important;
-        font-size: 0.875rem !important;
-        margin-right: 0.5rem !important;
-    }
-    
-    .stat-value {
-        font-size: 1.125rem !important;
-    }
-    
-    .mobile-table td {
-        padding-left: 110px;
-        font-size: 0.8125rem;
-    }
-    
-    .mobile-table td:before {
-        width: 100px;
-        font-size: 0.6875rem;
-    }
-    
-    .responsive-input {
-        max-width: 150px;
-        font-size: 0.8125rem;
-    }
-    
-    .section-header h2 {
-        font-size: 1.125rem !important;
-    }
-}
-
-/* Landscape orientation adjustments */
-@media (max-width: 768px) and (orientation: landscape) {
-    .responsive-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .responsive-button-group {
-        justify-content: center;
-    }
-    
-    .responsive-btn {
-        flex: 0 1 auto;
-        min-width: 120px;
-    }
-    
-    .responsive-btn .btn-text {
-        display: inline;
-        font-size: 0.75rem;
-    }
-    
-    .responsive-btn i {
-        margin-right: 0.25rem;
-    }
-}
-
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
-    .responsive-btn {
-        min-height: 44px;
-        min-width: 44px;
-    }
-    
-    .action-btn {
-        min-height: 40px;
-        min-width: 60px;
-        padding: 0.5rem 0.75rem;
-    }
-    
-    .responsive-tab {
-        min-height: 48px;
-        padding: 0.75rem 1rem;
-    }
-    
-    .responsive-input {
-        min-height: 44px;
-        padding: 0.75rem;
-    }
-}
-
-/* Print styles for reports */
-@media print {
-    .report-container.responsive-container {
-        padding: 0;
-        max-width: none;
-    }
-    
-    .download-buttons,
-    .section-actions {
+    .tabs-header.responsive-tabs-header::-webkit-scrollbar {
         display: none !important;
     }
     
-    .responsive-card {
-        box-shadow: none;
-        border: 1px solid #ddd;
-        page-break-inside: avoid;
+    .tab-btn.responsive-tab-btn {
+        flex-shrink: 0 !important;
+        min-width: 150px !important;
+        padding: 12px 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
     }
     
-    .mobile-table thead {
-        display: table-header-group;
-        position: static;
-        clip: auto;
-        height: auto;
-        margin: 0;
-        overflow: visible;
-        padding: 0;
-        width: auto;
+    .tab-icon {
+        font-size: 16px !important;
     }
     
-    .mobile-table tr {
-        display: table-row;
-        border: none;
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
+    .tab-text {
+        font-size: 14px !important;
     }
     
-    .mobile-table td {
-        display: table-cell;
-        padding: 0.5rem;
-        border-bottom: 1px solid #ddd;
-        position: static;
+    /* Enhanced search container responsiveness */
+    .search-container {
+        width: 100% !important;
     }
     
-    .mobile-table td:before {
-        display: none;
+    .search-input.responsive-search {
+        width: 100% !important;
+        padding: 10px 40px 10px 12px !important;
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        border-radius: 8px !important;
     }
+    
+    .search-icon {
+        right: 15px !important;
+        font-size: 16px !important;
+    }
+    
+    /* Action buttons with better touch targets */
+    .action-btn.responsive-action-btn {
+        min-height: 44px !important;
+        min-width: 44px !important;
+        padding: 8px 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+    }
+    
+    /* No data state improvements */
+    .no-data.responsive-no-data {
+        padding: 60px 20px !important;
+    }
+    
+    .no-data.responsive-no-data i {
+        font-size: 48px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .no-data.responsive-no-data p {
+        font-size: 16px !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Links with better touch targets */
+    .proof-link.responsive-link {
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        padding: 8px !important;
+        border-radius: 4px !important;
+        background-color: rgba(52, 152, 219, 0.1) !important;
+        text-decoration: none !important;
+    }
+    
+    .proof-link.responsive-link:hover {
+        background-color: rgba(52, 152, 219, 0.2) !important;
+        text-decoration: none !important;
+    }
+    
+    .link-text {
+        font-size: 14px !important;
+    }
+}
+
+/* Page title and header protection from hamburger overlap */
+  .main-content h1,
+  .main-content h2,
+  .main-content .page-title,
+  .main-content .customer-dashboard-hero h1,
+  .main-content .profile-header h1,
+  .main-content .upgrade-header h1 {
+    margin-top: 10px !important;
+    padding-left: 0 !important;
+    text-align: left !important;
+    position: relative !important;
+    clear: both !important;
+  }
+  
+  /* Ensure underlines for page titles are always left-aligned */
+  .main-content h1::after,
+  .main-content h2::after,
+  .main-content .page-title::after,
+  .page-title-underline,
+  .title-underline {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: var(--primary-color, #007bff);
+    margin: 8px 0 0 0 !important;
+    border-radius: 2px;
+  }
+  
+  /* Header sections spacing */
+  .customer-dashboard-hero,
+  .profile-header,
+  .upgrade-header,
+  .notification-header,
+  .page-header {
+    margin-top: 10px !important;
+    margin-bottom: 25px !important;
+  }
+  
+  /* Container adjustments for mobile */
+  .container-fluid {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    padding-top: 10px !important;
+  }
+
+/* Enhanced hamburger positioning and mobile content adjustments */
+@media (max-width: 1024px) {
+  /* Ensure hamburger is properly positioned */
+  .hamburger {
+    display: flex !important;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1002;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Ensure main content doesn't overlap hamburger */
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 70px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    width: 100% !important;
+  }
+  
+  /* Page titles and headers proper spacing */
+  .page-title,
+  .customer-dashboard-hero h1,
+  .header-bar h1,
+  h1:first-child,
+  h2:first-child {
+    margin-top: 5px !important;
+    padding-left: 0 !important;
+    text-align: left !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    top: 12px;
+    left: 12px;
+    padding: 6px;
+  }
+  
+  .main-content {
+    padding-top: 60px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hamburger {
+    top: 10px;
+    left: 10px;
+    padding: 5px;
+  }
+  
+  .main-content {
+    padding-top: 55px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+
+/* Ensure all customer page containers have proper spacing */
+.container-fluid {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Fix any potential z-index issues */
+.sidebar {
+  z-index: 1000;
+}
+
+.hamburger {
+  z-index: 1002;
+}
+
+.sidebar-overlay {
+  z-index: 1001;
 }
