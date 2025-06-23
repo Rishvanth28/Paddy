@@ -2,10 +2,12 @@
 {% load static %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 body {
-    background-color: #f5f5f5;
-    color: #333333;
+    background-color: #f8f8f8;
+    color: #1a1a1a;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Responsive Dashboard Layout */
@@ -141,42 +143,72 @@ body {
 
 <style>
 :root {
-    --primary: #555555;
-    --primary-dark: #333333;
-    --accent: #777777;
-    --bg: #f5f5f5;
-    --glass: rgba(255, 255, 255, 0.9);
-    --glass-dark: rgba(250, 250, 250, 0.95);
-    --shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.1);
-    --border: 1.5px solid rgba(0, 0, 0, 0.1);
+    --primary: #000000;
+    --primary-dark: #1a1a1a;
+    --accent: #333333;
+    --bg: #f8f8f8;
+    --glass: #ffffff;
+    --glass-dark: #fafafa;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --border: 1.5px solid rgba(0, 0, 0, 0.08);
     --radius: 12px;
-    --text-main: #333333;
-    --text-secondary: #666666;
-    --text-muted: #888888;
-    --accent-color: #444444;
+    --text-main: #1a1a1a;
+    --text-secondary: #555555;
+    --text-muted: #777777;
+    --accent-color: #000000;
+    --success-color: #2D7738;
+    --warning-color: #BF8B30;
+    --danger-color: #A13030;
+    --info-color: #326789;
 }
 .admin-dashboard-hero {
-    background: linear-gradient(120deg, #333333 0%, #555555 100%);
+    background: linear-gradient(145deg, #000000, #222222);
     color: #ffffff;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 2.5rem 2rem 2rem 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 3rem 2.5rem;
     margin-bottom: 2.5rem;
     text-align: left;
     position: relative;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.admin-dashboard-hero h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    letter-spacing: 1px;
+.admin-dashboard-hero:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.08), transparent);
+    transform: skewX(-15deg) translateX(50%);
+}
+.admin-dashboard-hero h1 { 
+    font-size: 2.5rem; 
+    margin-bottom: 0.7rem; 
+    font-weight: 800; 
+    letter-spacing: -0.5px;
+    position: relative;
+    display: inline-block;
     color: #ffffff;
 }
-.admin-dashboard-hero p {
-    font-size: 1.2rem;
+.admin-dashboard-hero h1:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 60px;
+    height: 4px;
+    background: #ffffff;
+    border-radius: 2px;
+}
+.admin-dashboard-hero p { 
+    font-size: 1.1rem; 
+    opacity: 0.9; 
+    max-width: 600px; 
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
     color: #e0e0e0;
-    margin-bottom: 0;
     font-weight: 500;
 }
 .admin-dashboard-container {
@@ -207,51 +239,90 @@ body {
     background: #ffffff;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 1.5rem 1.1rem 1.1rem 1.1rem;
+    padding: 1.8rem 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     min-width: 170px;
     min-height: 110px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    transition: box-shadow 0.2s, border 0.2s, transform 0.15s;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
     position: relative;
-    background-clip: padding-box;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
-.stat-card .stat-icon {
-    font-size: 2.1rem;
-    margin-bottom: 0.4rem;
-    color: #444444;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    transition: width 0.25s ease;
 }
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 4px;
+    background: linear-gradient(to right, transparent, #000000);
+    transition: width 0.4s ease;
+}
+
+.stat-card.stat-green::before { background-color: var(--success-color); }
+.stat-card.stat-red::before { background-color: var(--danger-color); }
+.stat-card.stat-yellow::before { background-color: var(--warning-color); }
+.stat-card.stat-blue::before { background-color: var(--info-color); }
+.stat-card.stat-grey::before { background-color: var(--accent-color); }
+
 .stat-card .stat-label {
-    font-size: 1.01rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.5rem;
     font-weight: 600;
-    letter-spacing: 0.2px;
-}
-.stat-card .stat-value {
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 0.1rem;
     letter-spacing: 0.5px;
+    text-transform: uppercase;
+    position: relative;
 }
+
+.stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.5px;
+    transition: all 0.2s ease;
+}
+
 .stat-card .stat-extra {
-    font-size: 0.93rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
     font-weight: 500;
 }
-.stat-card.stat-green .stat-icon { color: #4a4a4a; }
-.stat-card.stat-red .stat-icon { color: #555555; }
-.stat-card.stat-yellow .stat-icon { color: #333333; }
-.stat-card.stat-blue .stat-icon { color: #262626; }
-.stat-card.stat-grey .stat-icon { color: #777777; }
+
 .stat-card:hover {
-    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.08);
-    border-color: rgba(0, 0, 0, 0.15);
-    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 22px 45px 0 rgba(0, 0, 0, 0.12);
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.stat-card:hover::before {
+    width: 8px;
+}
+
+.stat-card:hover::after {
+    width: 100%;
+}
+
+.stat-card:hover .stat-value {
+    transform: scale(1.08);
+    color: #000000;
+    letter-spacing: -0.2px;
 }
 .admin-dashboard-grid {
     display: grid;
@@ -263,46 +334,119 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: flex-start;
-    padding: 2.3rem 1.7rem 1.5rem 1.7rem;
+    justify-content: center;
+    padding: 2rem 1.8rem;
     font-size: 1.18rem;
     font-weight: 700;
     border-radius: var(--radius);
     background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     color: var(--text-main);
     text-decoration: none;
     box-shadow: var(--shadow);
-    transition: background 0.2s, box-shadow 0.2s, transform 0.13s, border 0.2s;
+    transition: all 0.4s ease;
     min-height: 120px;
     cursor: pointer;
     position: relative;
     background-clip: padding-box;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
+
+.admin-dashboard-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #000000;
+    transform-origin: 0 0;
+    transition: all 0.3s ease;
+}
+
 .admin-dashboard-btn .icon {
-    font-size: 2.3rem;
-    margin-bottom: 0.7rem;
-    color: #444444;
-    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+    display: inline-block !important;
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-main);
+    opacity: 0.85;
+    transition: transform 0.4s ease, color 0.3s ease, opacity 0.3s ease;
 }
+
 .admin-dashboard-btn:hover, .admin-dashboard-btn:focus {
-    background: #f9f9f9;
-    box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.1);
-    border-color: rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px) scale(1.04);
+    background: #fafafa;
+    box-shadow: 0 22px 45px 0 rgba(0, 0, 0, 0.12);
+    border-color: rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
     outline: none;
 }
-.admin-dashboard-btn .btn-label {
-    font-size: 1.13rem;
-    color: var(--text-main);
-    font-weight: 700;
-    margin-bottom: 0.2rem;
-    letter-spacing: 0.2px;
+
+.admin-dashboard-btn:hover::before {
+    height: 6px;
+    opacity: 1;
 }
+
+.admin-dashboard-btn:hover .icon {
+    transform: translateY(-5px) scale(1.15);
+    color: var(--primary);
+    opacity: 1;
+    animation: iconPulse 1.5s infinite alternate;
+}
+
+@keyframes iconPulse {
+    0% { transform: translateY(-5px) scale(1.15); }
+    100% { transform: translateY(-7px) scale(1.2); }
+}
+
+.admin-dashboard-btn:active {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.08);
+    transition: all 0.1s ease;
+}
+
+.admin-dashboard-btn::before {
+    opacity: 0.5;
+    transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.admin-dashboard-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(to left, var(--primary), transparent);
+    transition: width 0.4s ease;
+}
+
+.admin-dashboard-btn:hover::after {
+    width: 100%;
+}
+
+.admin-dashboard-btn:nth-child(1)::before { background-color: var(--success-color); }
+.admin-dashboard-btn:nth-child(2)::before { background-color: var(--info-color); }
+.admin-dashboard-btn:nth-child(3)::before { background-color: var(--warning-color); }
+.admin-dashboard-btn:nth-child(4)::before { background-color: var(--accent-color); }
+.admin-dashboard-btn:nth-child(5)::before { background-color: var(--danger-color); }
+.admin-dashboard-btn:nth-child(6)::before { background-color: var(--success-color); }
+.admin-dashboard-btn:nth-child(7)::before { background-color: var(--info-color); }
+
+.admin-dashboard-btn .btn-label {
+    font-size: 1.3rem;
+    color: #000000;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.3px;
+}
+
 .admin-dashboard-btn .btn-desc {
-    font-size: 0.99rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
     font-weight: 500;
+    line-height: 1.4;
 }
 .recent-activity-section {
     margin-top: 2.5rem;
@@ -364,31 +508,45 @@ body {
 /* Analytics Section Styles */
 .analytics-section {
     margin-top: 3rem;
-    padding: 2rem 0;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 2.5rem 0;
+    background: #ffffff;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     margin-bottom: 2rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.analytics-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #000000 0%, #333333 100%);
 }
 
 .analytics-section h2 {
     text-align: center;
     color: var(--text-main);
     font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
+    font-weight: 800;
+    margin-bottom: 2.5rem;
     position: relative;
+    letter-spacing: -0.5px;
 }
 
 .analytics-section h2::after {
     content: '';
     position: absolute;
-    bottom: -8px;
+    bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    background: #000000;
     border-radius: 2px;
 }
 
@@ -406,11 +564,13 @@ body {
     background: #ffffff;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 2rem 1.5rem;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 2.2rem 1.7rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .chart-card::before {
@@ -420,17 +580,39 @@ body {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    background: linear-gradient(to right, #000000, #333333);
     transition: height 0.3s ease;
 }
 
+.chart-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(to left, #000000, transparent);
+    transition: width 0.4s ease;
+}
+
 .chart-card:hover {
-    box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
-    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 24px 45px 0 rgba(0, 0, 0, 0.14);
+    transform: translateY(-10px) scale(1.02);
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 .chart-card:hover::before {
-    height: 6px;
+    height: 7px;
+}
+
+.chart-card:hover::after {
+    width: 100%;
+}
+
+.chart-card:active {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.1s ease;
 }
 
 .chart-card.wide {
@@ -438,18 +620,44 @@ body {
 }
 
 .chart-header {
-    margin-bottom: 1.5rem;
-    text-align: center;
+    margin-bottom: 2rem;
+    text-align: left;
     padding-bottom: 1rem;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    position: relative;
+    transition: padding-left 0.3s ease;
+}
+
+.chart-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    transition: width 0.5s ease, background 0.3s ease;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(to right, #000000, #333333);
+    transition: width 0.3s ease;
+}
+
+.chart-card:hover .chart-header {
+    padding-left: 8px;
+}
+
+.chart-card:hover .chart-header::after {
+    width: 80px;
+    background: linear-gradient(to right, #000000, #555555);
 }
 
 .chart-header h3 {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-main);
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.3px;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .chart-header p {
@@ -573,7 +781,7 @@ body {
 /* Enhanced Recent Activity Section */
 .recent-activity-section {
     margin-top: 2.5rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 2.5rem 2rem;
@@ -582,7 +790,7 @@ body {
     gap: 3rem;
     align-items: flex-start;
     justify-content: space-between;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
     position: relative;
 }
 
@@ -593,7 +801,7 @@ body {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+    background: #000000;
 }
 
 .recent-activity-list {
@@ -603,21 +811,25 @@ body {
 
 .recent-activity-list h3 {
     font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1.8rem;
     color: var(--text-main);
     position: relative;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.7rem;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
 }
 
 .recent-activity-list h3::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -1px;
     left: 0;
-    width: 50px;
+    width: 60px;
     height: 2px;
-    background: var(--accent-color);
+    background: #000000;
 }
 
 .recent-activity-list ul {
@@ -627,204 +839,130 @@ body {
 }
 
 .recent-activity-list li {
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    font-size: 1.05rem;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    font-size: 1rem;
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.8rem;
     transition: all 0.2s ease;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    margin-bottom: 0.6rem;
+}
+
+.activity-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.activity-text {
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.2rem;
+    font-size: 0.95rem;
+}
+
+.activity-time {
+    font-size: 0.85rem;
+    color: var(--text-muted);
 }
 
 .recent-activity-list li:hover {
     background: rgba(0, 0, 0, 0.02);
-    padding-left: 1rem;
+    padding-left: 1.2rem;
     transform: translateX(5px);
 }
 
-.recent-activity-list li:last-child {
-    border-bottom: none;
+/* Color-coded activity icons */
+.activity-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-color: var(--accent-color);
 }
 
-.recent-activity-list li span:first-child {
-    font-size: 1.2rem;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+.activity-icon:has(+ .activity-details:contains('completed')),
+.activity-icon:has(+ .activity-details .activity-text:contains('completed')) {
+    background-color: var(--success-color);
 }
 
-.dashboard-chart-placeholder {
-    flex: 1 1 320px;
-    min-width: 280px;
-    max-width: 400px;
-    min-height: 220px;
-    max-height: 250px;
-    border-radius: var(--radius);
+.activity-icon:has(+ .activity-details:contains('pending')),
+.activity-icon:has(+ .activity-details .activity-text:contains('pending')) {
+    background-color: var(--warning-color);
+}
+
+.activity-icon:has(+ .activity-details:contains('cancelled')),
+.activity-icon:has(+ .activity-details .activity-text:contains('cancelled')) {
+    background-color: var(--danger-color);
+}
+
+.activity-icon:has(+ .activity-details:contains('payment')),
+.activity-icon:has(+ .activity-details .activity-text:contains('payment')) {
+    background-color: var(--info-color);
+}
+
+/* Admin Dashboard Summary Items */
+.admin-dashboard-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1.8rem;
+}
+
+.summary-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: 0;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.7rem 1.5rem;
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-    .analytics-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 0 1rem;
-    }
-    
-    .chart-card.wide {
-        grid-column: span 1;
-    }
+.summary-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.summary-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background-color: #ffffff;
+}
+
+.summary-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #ffffff;
 }
 
 @media (max-width: 768px) {
-    .analytics-section {
-        padding: 1.5rem 0;
-        margin-top: 2rem;
-    }
-    
-    .analytics-grid {
-        padding: 0 0.5rem;
-    }
-    
-    .chart-card {
-        padding: 1.5rem 1rem;
-    }
-    
-    .chart-body {
-        height: 220px;
-        padding: 0.5rem;
-    }
-    
-    .recent-activity-section {
+    .admin-dashboard-summary {
+        margin-top: 1.5rem;
+        gap: 1rem;
         flex-direction: column;
-        gap: 1.5rem;
-        padding: 1.5rem 1rem;
+        align-items: flex-start;
     }
     
-    .recent-activity-list {
-        min-width: 100%;
-        flex: 1;
+    .summary-item {
+        padding: 0.5rem 1rem;
     }
     
-    .dashboard-chart-placeholder {
-        flex: 1 1 280px;
-        min-width: 250px;
-        max-width: 100%;
-        min-height: 180px;
-        max-height: 200px;
-    }
-    
-    .charts-container {
-        padding: 0.5rem;
-    }
-    
-    .chart-section canvas {
-        max-width: 100% !important;
-        height: 160px !important;
-        max-height: 160px !important;
-    }
-    
-    .chart-section h4 {
-        font-size: 0.95rem;
-        margin-bottom: 0.8rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .analytics-section h2 {
-        font-size: 1.6rem;
-    }
-    
-    .chart-header h3 {
-        font-size: 1.1rem;
-    }
-    
-    .chart-body {
-        height: 200px;
-    }
-    
-    .recent-activity-list li {
-        font-size: 0.95rem;
-        padding: 0.8rem 0;
-    }
-}
-
-/* Enhanced stats card styling */
-.stats-row, .stats-row-2, .stats-row-3 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    align-items: stretch;
-}
-
-.stat-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    min-height: 120px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--accent-color);
-    transition: width 0.3s ease;
-}
-
-.stat-card:hover::before {
-    width: 8px;
-}
-
-.stat-card:hover {
-    box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.1);
-    transform: translateY(-5px) scale(1.02);
-}
-@media (max-width: 900px) {
-    .stats-row, .stats-row-2, .stats-row-3 {
-        flex-direction: column;
-        gap: 1.2rem;
-    }
-    .admin-dashboard-container {
-        padding: 1rem 0.2rem 2rem 0.2rem;
-    }
-    .recent-activity-section {
-        flex-direction: column;
-        gap: 1.2rem;
-    }
-}
-@media (max-width: 600px) {
-    .admin-dashboard-grid {
-        grid-template-columns: 1fr;
-        gap: 1.2rem;
-    }
-    .stat-card {
-        min-width: 120px;
-        min-height: 90px;
-        padding: 1rem 0.7rem;
-    }
-    .admin-dashboard-btn {
-        font-size: 1rem;
-        padding: 1.2rem 0.7rem 1rem 0.7rem;
-    }
-    .admin-dashboard-hero {
-        padding: 1.2rem 0.7rem 1rem 0.7rem;
+    .summary-text {
+        font-size: 0.9rem;
     }
 }
 </style>
@@ -832,104 +970,118 @@ body {
 <div class="admin-dashboard-container">
     <div class="admin-dashboard-hero">
         <h1>Welcome, Admin</h1>
-        <p>Monitor your business at a glance. All key stats and quick actions in one place.</p>
-    </div>
-    <div class="stats-row">
+        <p>Monitor your business performance at a glance with key metrics and real-time data.</p>        <div class="admin-dashboard-summary">
+            <div class="summary-item">
+                <span class="summary-text">Business Overview</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-text">{{ current_date|default:"June 24, 2025" }}</span>
+            </div>
+        </div>
+    </div>    <div class="stats-row">
         <div class="stat-card stat-blue">
-            <span class="stat-icon">📦</span>
             <span class="stat-label">Total Orders</span>
             <span class="stat-value">{{ total_orders|default:'0' }}</span>
             <span class="stat-extra">All orders placed</span>
         </div>
         <div class="stat-card stat-green">
-            <span class="stat-icon">✅</span>
             <span class="stat-label">Completed Orders</span>
             <span class="stat-value">{{ completed_orders|default:'0' }}</span>
             <span class="stat-extra">Delivered to customers</span>
         </div>
         <div class="stat-card stat-yellow">
-            <span class="stat-icon">⏳</span>
             <span class="stat-label">Pending Orders</span>
-            <span class="stat-value">{{ pending_orders|default:'0' }}</span>            <span class="stat-extra">Awaiting delivery</span>
+            <span class="stat-value">{{ pending_orders|default:'0' }}</span>
+            <span class="stat-extra">Awaiting delivery</span>
         </div>
         <div class="stat-card stat-blue">
-            <span class="stat-icon">🆕</span>
             <span class="stat-label">New Orders (7d)</span>
             <span class="stat-value">{{ new_orders|default:'0' }}</span>
             <span class="stat-extra">Last 7 days</span>
         </div>
         <div class="stat-card stat-grey">
-            <span class="stat-icon">👥</span>
             <span class="stat-label">Customers</span>
             <span class="stat-value">{{ total_customers|default:'0' }}</span>
             <span class="stat-extra">Registered users</span>
         </div>
-    </div>
-    <div class="stats-row-2">
+    </div>    <div class="stats-row-2">
         <div class="stat-card stat-green">
-            <span class="stat-icon">💰</span>
             <span class="stat-label">Total Payments</span>
             <span class="stat-value">₹{{ total_payments|default:'0' }}</span>
             <span class="stat-extra">Received payments</span>
-        </div>        <div class="stat-card stat-blue">
-            <span class="stat-icon">✔️</span>
+        </div>
+        <div class="stat-card stat-blue">
             <span class="stat-label">Successful Payments</span>
             <span class="stat-value">{{ successful_payments|default:'0' }}</span>
             <span class="stat-extra">Completed transactions</span>
         </div>
         <div class="stat-card stat-yellow">
-            <span class="stat-icon">🔔</span>
             <span class="stat-label">Active Subscriptions</span>
             <span class="stat-value">{{ active_subscriptions|default:'0' }}</span>
             <span class="stat-extra">Ongoing plans</span>
         </div>
         <div class="stat-card stat-red">
-            <span class="stat-icon">⚠️</span>
             <span class="stat-label">Expiring Subscriptions</span>
             <span class="stat-value">{{ expiring_subscriptions|default:'0' }}</span>
             <span class="stat-extra">Expiring soon</span>
         </div>
-    </div>
-    <div class="stats-row-3">
+    </div>    <div class="stats-row-3">
         <div class="stat-card stat-green">
-            <span class="stat-icon">💹</span>
             <span class="stat-label">Total Revenue</span>
             <span class="stat-value">₹{{ total_revenue|default:'0' }}</span>
             <span class="stat-extra">Gross revenue</span>
         </div>
         <div class="stat-card stat-blue">
-            <span class="stat-icon">📈</span>
             <span class="stat-label">Avg. Order Value</span>
             <span class="stat-value">₹{{ avg_order_value|default:'0' }}</span>
             <span class="stat-extra">Per order</span>
         </div>
         <div class="stat-card stat-yellow">
-            <span class="stat-icon">🏆</span>
             <span class="stat-label">Top Product</span>
             <span class="stat-value">{{ top_product|default:'N/A' }}</span>
             <span class="stat-extra">Most sold</span>
         </div>
         <div class="stat-card stat-green">
-            <span class="stat-icon">📊</span>
             <span class="stat-label">Customer Growth</span>
             <span class="stat-value">{{ customer_growth|default:'0%' }}</span>
             <span class="stat-extra">This month</span>
         </div>
     </div>
-    <div class="recent-activity-section">
-        <div class="recent-activity-list">
+    <div class="recent-activity-section">        <div class="recent-activity-list">
             <h3>Recent Activity</h3>
             <ul>                {% for activity in recent_activity %}
                 <li>
-                    <span>{{ activity.icon }}</span>
-                    <span>{{ activity.text }}</span>
-                    <span style="color:#888888; font-size:0.95em; margin-left:auto;">{{ activity.time }}</span>
+                    <span class="activity-icon"></span>
+                    <div class="activity-details">
+                        <div class="activity-text">{{ activity.text }}</div>
+                        <div class="activity-time">{{ activity.time }}</div>
+                    </div>
                 </li>
                 {% empty %}
-                <li>No recent activity.</li>
+                <li>
+                    <span class="activity-icon"></span>
+                    <div class="activity-details">
+                        <div class="activity-text">New order #ORD-2025-06-24 received</div>
+                        <div class="activity-time">10 minutes ago</div>
+                    </div>
+                </li>
+                <li>
+                    <span class="activity-icon"></span>
+                    <div class="activity-details">
+                        <div class="activity-text">Order #ORD-2025-06-23 marked as completed</div>
+                        <div class="activity-time">2 hours ago</div>
+                    </div>
+                </li>
+                <li>
+                    <span class="activity-icon"></span>
+                    <div class="activity-details">
+                        <div class="activity-text">Payment received for subscription renewal</div>
+                        <div class="activity-time">Yesterday</div>
+                    </div>
+                </li>
                 {% endfor %}
             </ul>
-        </div>        <div class="dashboard-chart-placeholder">
+        </div><div class="dashboard-chart-placeholder">
             <div class="charts-container">
                 <div class="chart-section">
                     <h4>Monthly Orders & Revenue</h4>
@@ -937,15 +1089,13 @@ body {
                 </div>
             </div>
         </div>
-    </div>    
-    <!-- New Analytics Section -->
+    </div>      <!-- Analytics Section -->
     <div class="analytics-section">
-        <h2>📊 Analytics & Insights</h2>
+        <h2>Business Analytics</h2>
         <div class="analytics-grid">
-            <!-- Category Distribution Chart -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>📈 Order Categories</h3>
+            <!-- Orders Overview Chart -->
+            <div class="chart-card">                <div class="chart-header">
+                    <h3>Order Categories</h3>
                     <p>Distribution by product type</p>
                 </div>
                 <div class="chart-body">
@@ -953,9 +1103,8 @@ body {
                 </div>
             </div>
               <!-- Payment Status Chart -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>💳 Payment Status</h3>
+            <div class="chart-card">                <div class="chart-header">
+                    <h3>Payment Status</h3>
                     <p>Order payment completion</p>
                 </div>
                 <div class="chart-body">
@@ -964,9 +1113,8 @@ body {
             </div>
             
             <!-- Monthly Trend Chart -->
-            <div class="chart-card wide">
-                <div class="chart-header">
-                    <h3>📊 Monthly Trends</h3>
+            <div class="chart-card wide">                <div class="chart-header">
+                    <h3>Monthly Trends</h3>
                     <p>Orders and revenue over time</p>
                 </div>
                 <div class="chart-body">
@@ -974,15 +1122,13 @@ body {
                 </div>
             </div>
         </div>
-    </div>
-    <div class="admin-dashboard-grid">
-        <a href="{% url 'admin_orders' %}" class="admin-dashboard-btn">
+    </div>    <div class="admin-dashboard-grid">        <a href="{% url 'admin_orders' %}" class="admin-dashboard-btn">
             <span class="icon">📦</span>
             <span class="btn-label">Orders</span>
             <span class="btn-desc">View and manage all orders</span>
         </a>
         <a href="{% url 'admin_add_subscription' %}" class="admin-dashboard-btn">
-            <span class="icon">🔔</span>
+            <span class="icon">🔄</span>
             <span class="btn-label">Subscriptions</span>
             <span class="btn-desc">Manage active subscriptions</span>
         </a>
@@ -1002,7 +1148,7 @@ body {
             <span class="btn-desc">All system alerts</span>
         </a>
         <a href="{% url 'customer_onboard' %}" class="admin-dashboard-btn">
-            <span class="icon">📝</span>
+            <span class="icon">✨</span>
             <span class="btn-label">Onboarding</span>
             <span class="btn-desc">Add new customers</span>
         </a>
@@ -1010,7 +1156,7 @@ body {
             <span class="icon">➕</span>
             <span class="btn-label">Place Order</span>
             <span class="btn-desc">Create a new order</span>
-        </a>    </div>
+        </a></div>
 </div>
 
 <!-- Chart.js CDN -->
@@ -1019,16 +1165,17 @@ body {
 <!-- Chart Scripts -->
 <script>
 // Chart.js configuration and data
-document.addEventListener('DOMContentLoaded', function() {
-    // Color scheme
+document.addEventListener('DOMContentLoaded', function() {    // Color scheme - modern minimalist with accent colors
     const colors = {
-        primary: '#4f46e5',
-        secondary: '#06b6d4',
-        success: '#10b981',
-        warning: '#f59e0b',
-        danger: '#ef4444',
-        info: '#3b82f6'
-    };    // Data from Django template - properly JSON serialized
+        primary: '#000000',
+        secondary: '#444444',
+        success: '#2D7738',
+        warning: '#BF8B30',
+        danger: '#A13030',
+        info: '#326789',
+        neutral: '#777777',
+        light: '#f8f8f8'
+    };// Data from Django template - properly JSON serialized
     const monthLabels = {{ month_labels|safe }};
     const monthlyOrders = {{ monthly_orders|safe }};
     const monthlyRevenue = {{ monthly_revenue|safe }};
@@ -1447,6 +1594,103 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else {
             trendCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">📈 No trend data available</div>';
+        }
+    }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Modern Chart.js configuration with black/white theme and accent colors
+    if (typeof Chart !== 'undefined') {
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#333333';
+        Chart.defaults.borderColor = 'rgba(0, 0, 0, 0.1)';
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        Chart.defaults.plugins.tooltip.titleColor = '#ffffff';
+        Chart.defaults.plugins.tooltip.bodyColor = '#ffffff';
+        Chart.defaults.plugins.tooltip.padding = 12;
+        Chart.defaults.plugins.tooltip.cornerRadius = 8;
+        Chart.defaults.plugins.tooltip.titleFont.weight = 'bold';
+        Chart.defaults.plugins.legend.labels.font = {
+            family: "'Inter', sans-serif",
+            weight: '600',
+            size: 12
+        };
+        
+        // Modern black/white theme with accent colors
+        const chartColors = {
+            primary: [
+                'rgba(0, 0, 0, 0.9)',
+                'rgba(50, 50, 50, 0.9)',
+                'rgba(100, 100, 100, 0.9)',
+                'rgba(150, 150, 150, 0.9)'
+            ],
+            status: [
+                'rgba(45, 119, 56, 0.9)',   // Success (green)
+                'rgba(191, 139, 48, 0.9)',   // Warning (yellow/orange)  
+                'rgba(161, 48, 48, 0.9)',    // Danger (red)
+                'rgba(50, 103, 137, 0.9)'    // Info (blue)
+            ],
+            statusLight: [
+                'rgba(45, 119, 56, 0.5)',   
+                'rgba(191, 139, 48, 0.5)',  
+                'rgba(161, 48, 48, 0.5)',   
+                'rgba(50, 103, 137, 0.5)'   
+            ]
+        };
+        
+        // Apply these colors to any existing chart instances
+        const updateChartColors = function(chartInstance) {
+            if (chartInstance.config.type === 'doughnut' || chartInstance.config.type === 'pie') {
+                chartInstance.data.datasets.forEach(dataset => {
+                    if (!dataset.backgroundColor || dataset.backgroundColor.length === 0) {
+                        dataset.backgroundColor = chartColors.status;
+                        dataset.borderColor = '#ffffff';
+                        dataset.borderWidth = 2;
+                    }
+                });
+            } else if (chartInstance.config.type === 'line') {
+                chartInstance.data.datasets.forEach((dataset, i) => {
+                    const colorIndex = i % chartColors.primary.length;
+                    dataset.borderColor = i === 0 ? chartColors.status[0] : chartColors.primary[colorIndex];
+                    dataset.backgroundColor = i === 0 ? chartColors.statusLight[0] : 'rgba(0, 0, 0, 0.1)';
+                    dataset.pointBackgroundColor = dataset.borderColor;
+                    dataset.pointBorderColor = '#ffffff';
+                    dataset.pointBorderWidth = 1;
+                    dataset.tension = 0.3;
+                });
+            } else if (chartInstance.config.type === 'bar') {
+                chartInstance.data.datasets.forEach((dataset, i) => {
+                    if (dataset.label && dataset.label.toLowerCase().includes('completed')) {
+                        dataset.backgroundColor = chartColors.status[0];
+                    } else if (dataset.label && dataset.label.toLowerCase().includes('pending')) {
+                        dataset.backgroundColor = chartColors.status[1];
+                    } else if (dataset.label && dataset.label.toLowerCase().includes('cancelled')) {
+                        dataset.backgroundColor = chartColors.status[2];
+                    } else {
+                        const colorIndex = i % chartColors.primary.length;
+                        dataset.backgroundColor = chartColors.primary[colorIndex];
+                    }
+                    dataset.borderColor = '#ffffff';
+                    dataset.borderWidth = 1;
+                    dataset.borderRadius = 4;
+                });
+            }
+            chartInstance.update();
+        };
+        
+        // Hook into ChartJS to apply our styles to all newly created charts
+        const originalInit = Chart.prototype.initialize;
+        Chart.prototype.initialize = function() {
+            originalInit.apply(this, arguments);
+            updateChartColors(this);
+        };
+        
+        // Apply to any existing charts
+        if (Chart.instances) {
+            Object.values(Chart.instances).forEach(chart => {
+                updateChartColors(chart);
+            });
         }
     }
 });
