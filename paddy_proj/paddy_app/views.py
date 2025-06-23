@@ -3340,12 +3340,7 @@ def download_invoice_pdf1(request):
 
     doc.build(elements)
     return response
-from django.http import HttpResponse
-from django.utils import timezone
-import io
-import xlsxwriter
-from .models import Orders, AdminTable
-from .decorators import role_required
+
 
 @role_required(["superadmin"])
 def download_invoice_excel1(request):

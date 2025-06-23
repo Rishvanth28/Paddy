@@ -973,3 +973,473 @@ button, .btn {
     page-break-inside: avoid;
   }
 }
+
+/* Report container improvements */
+.report-container.responsive-container {
+    padding: 1rem;
+    max-width: 100%;
+}
+
+/* Responsive cards */
+.responsive-card {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive button groups */
+.responsive-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.responsive-btn {
+    white-space: nowrap;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
+}
+
+/* Responsive grid improvements */
+.responsive-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Responsive stat cards */
+.responsive-stat-card {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    min-height: 120px;
+}
+
+.responsive-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive section headers */
+.responsive-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Responsive tables */
+.responsive-table {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+/* Responsive tabs */
+.responsive-tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+
+.responsive-tab {
+    flex: 1;
+    padding: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.responsive-tab.active {
+    color: #1abc9c;
+    background: white;
+}
+
+.responsive-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #1abc9c;
+}
+
+/* Responsive inputs */
+.responsive-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+/* Mobile-specific styles for report page */
+@media (max-width: 768px) {
+    .report-container.responsive-container {
+        padding: 0.5rem;
+    }
+    
+    /* Mobile header adjustments */
+    .report-header.responsive-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .header-content {
+        text-align: center;
+    }
+    
+    .report-title {
+        font-size: 1.375rem !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .report-subtitle {
+        font-size: 0.875rem !important;
+    }
+    
+    /* Mobile button group */
+    .responsive-button-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .responsive-btn {
+        flex: 1;
+        min-width: 0;
+        padding: 0.75rem 0.5rem;
+        text-align: center;
+        font-size: 0.75rem;
+    }
+    
+    .responsive-btn .btn-text {
+        display: none;
+    }
+    
+    .responsive-btn i {
+        margin-right: 0;
+        font-size: 1rem;
+    }
+    
+    /* Mobile grid adjustments */
+    .responsive-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    /* Mobile stat cards */
+    .responsive-stat-card {
+        padding: 1rem;
+        min-height: auto;
+    }
+    
+    .stat-icon {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1rem !important;
+        margin-right: 0.75rem !important;
+    }
+    
+    .stat-value {
+        font-size: 1.25rem !important;
+    }
+    
+    .stat-breakdown {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    /* Mobile section headers */
+    .responsive-section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .section-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    /* Mobile input adjustments */
+    .responsive-input {
+        max-width: 200px;
+        font-size: 0.875rem;
+    }
+    
+    /* Mobile tabs */
+    .responsive-tabs {
+        flex-direction: column;
+        border-radius: 8px;
+    }
+    
+    .responsive-tab {
+        border-bottom: 1px solid #e9ecef;
+        text-align: center;
+    }
+    
+    .responsive-tab:last-child {
+        border-bottom: none;
+    }
+    
+    .responsive-tab.active::after {
+        height: 3px;
+        left: 0;
+        width: 100%;
+    }
+    
+    /* Mobile table improvements */
+    .mobile-table {
+        border: 0;
+        font-size: 0.875rem;
+    }
+    
+    .mobile-table thead {
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+    
+    .mobile-table tr {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        display: block;
+        margin-bottom: 0.75rem;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .mobile-table td {
+        border: none !important;
+        display: block;
+        padding: 0.5rem 0;
+        text-align: left !important;
+        position: relative;
+        padding-left: 130px;
+        min-height: 2rem;
+    }
+    
+    .mobile-table td:before {
+        content: attr(data-label) ": ";
+        font-weight: 600;
+        color: #495057;
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        width: 120px;
+        white-space: nowrap;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .mobile-table td:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .mobile-table tr:hover {
+        background: rgba(26, 188, 156, 0.05);
+        transform: none;
+    }
+    
+    /* Progress bar mobile adjustments */
+    .progress-container {
+        margin-top: 0.25rem;
+    }
+    
+    /* Status badge mobile */
+    .status-badge {
+        display: inline-block;
+        margin-top: 0.25rem;
+    }
+    
+    /* Action button mobile */
+    .action-btn {
+        margin-top: 0.25rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Extra small devices (phones in portrait) */
+@media (max-width: 480px) {
+    .report-container.responsive-container {
+        padding: 0.25rem;
+    }
+    
+    .responsive-card {
+        margin-bottom: 0.75rem;
+        border-radius: 6px;
+    }
+    
+    .report-header.responsive-card {
+        padding: 0.75rem;
+    }
+    
+    .report-title {
+        font-size: 1.25rem !important;
+    }
+    
+    .responsive-btn {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .responsive-btn i {
+        font-size: 0.875rem;
+    }
+    
+    .responsive-stat-card {
+        padding: 0.75rem;
+    }
+    
+    .stat-icon {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 0.875rem !important;
+        margin-right: 0.5rem !important;
+    }
+    
+    .stat-value {
+        font-size: 1.125rem !important;
+    }
+    
+    .mobile-table td {
+        padding-left: 110px;
+        font-size: 0.8125rem;
+    }
+    
+    .mobile-table td:before {
+        width: 100px;
+        font-size: 0.6875rem;
+    }
+    
+    .responsive-input {
+        max-width: 150px;
+        font-size: 0.8125rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.125rem !important;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+    .responsive-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .responsive-button-group {
+        justify-content: center;
+    }
+    
+    .responsive-btn {
+        flex: 0 1 auto;
+        min-width: 120px;
+    }
+    
+    .responsive-btn .btn-text {
+        display: inline;
+        font-size: 0.75rem;
+    }
+    
+    .responsive-btn i {
+        margin-right: 0.25rem;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .responsive-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .action-btn {
+        min-height: 40px;
+        min-width: 60px;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .responsive-tab {
+        min-height: 48px;
+        padding: 0.75rem 1rem;
+    }
+    
+    .responsive-input {
+        min-height: 44px;
+        padding: 0.75rem;
+    }
+}
+
+/* Print styles for reports */
+@media print {
+    .report-container.responsive-container {
+        padding: 0;
+        max-width: none;
+    }
+    
+    .download-buttons,
+    .section-actions {
+        display: none !important;
+    }
+    
+    .responsive-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+    
+    .mobile-table thead {
+        display: table-header-group;
+        position: static;
+        clip: auto;
+        height: auto;
+        margin: 0;
+        overflow: visible;
+        padding: 0;
+        width: auto;
+    }
+    
+    .mobile-table tr {
+        display: table-row;
+        border: none;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+    }
+    
+    .mobile-table td {
+        display: table-cell;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ddd;
+        position: static;
+    }
+    
+    .mobile-table td:before {
+        display: none;
+    }
+}
