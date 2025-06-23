@@ -1,37 +1,39 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
+{% load custom_filters %}
 {% block content %}
-<div class="report-container">
-    <div class="report-header">        
+<link rel="stylesheet" href="{% static 'css/responsive.css' %}"?v=1.1>
+<div class="report-container responsive-container">
+    <div class="report-header responsive-header">        
         <div class="header-content">
             <h1 class="report-title">Unified Business Report</h1>
             <p class="report-subtitle">Comprehensive overview of orders, payments, and product performance</p>
         </div>
-        <div class="download-buttons">
-            <a href="{% url 'customize_pdf_report' %}" class="btn btn-customize-report" aria-label="Customize PDF Report">
+        <div class="download-buttons responsive-button-group">
+            <a href="{% url 'customize_pdf_report' %}" class="btn btn-customize-report responsive-btn" aria-label="Customize PDF Report">
                 <i class="fas fa-sliders-h" aria-hidden="true"></i>
-                <span>Customize Report</span>
+                <span class="btn-text">Customize Report</span>
             </a>
-            <a href="{% url 'download_invoice_excel1' %}" class="download-btn excel">
+            <a href="{% url 'download_invoice_excel1' %}" class="download-btn excel responsive-btn">
                 <i class="fas fa-file-excel"></i>
-                Export to Excel
+                <span class="btn-text">Export to Excel</span>
             </a>
-            <a href="{% url 'download_invoice_pdf1' %}" class="download-btn pdf">
+            <a href="{% url 'download_invoice_pdf1' %}" class="download-btn pdf responsive-btn">
                 <i class="fas fa-file-pdf"></i>
-                Export to PDF
+                <span class="btn-text">Export to PDF</span>
             </a>
         </div>
     </div>
 
-    <div class="statistics-section">
-        <div class="section-header">
+    <div class="statistics-section responsive-section">
+        <div class="section-header responsive-section-header">
             <h2>Key Performance Indicators</h2>
             <div class="section-actions">
                 <span class="last-updated">Last updated: {% now "F j, Y, g:i a" %}</span>
             </div>
         </div>
-        <div class="stats-grid">
-            <div class="stat-card">
+        <div class="stats-grid responsive-grid">
+            <div class="stat-card responsive-card">
                 <div class="stat-icon">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
@@ -44,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card responsive-card">
                 <div class="stat-icon">
                     <i class="fas fa-rupee-sign"></i>
                 </div>
@@ -60,15 +62,15 @@
         </div>
     </div>
 
-    <div class="report-section">
-        <div class="section-header">
+    <div class="report-section responsive-section">
+        <div class="section-header responsive-section-header">
             <h2>Category Performance</h2>
             <div class="section-actions">
-                <button class="filter-btn">Filter</button>
+                <button class="filter-btn responsive-btn-sm">Filter</button>
             </div>
         </div>
-        <div class="table-container">
-            <table class="report-table">
+        <div class="table-container responsive-table-container">
+            <table class="report-table responsive-table">
                 <thead>
                     <tr>
                         <th>Category</th>
@@ -81,11 +83,11 @@
                 <tbody>
                     {% for category in category_stats %}
                     <tr>
-                        <td><strong>{{ category.category|default:"Uncategorized" }}</strong></td>
-                        <td>{{ category.count }}</td>
-                        <td>₹{{ category.total_amount|floatformat:2 }}</td>
-                        <td>₹{{ category.paid_amount|floatformat:2 }}</td>
-                        <td>
+                        <td data-label="Category"><strong>{{ category.category|default:"Uncategorized" }}</strong></td>
+                        <td data-label="Orders">{{ category.count }}</td>
+                        <td data-label="Total Amount">₹{{ category.total_amount|floatformat:2 }}</td>
+                        <td data-label="Paid Amount">₹{{ category.paid_amount|floatformat:2 }}</td>
+                        <td data-label="% Paid">
                             <div class="progress-container">
                                 <div class="progress-bar" style="width: {% widthratio category.paid_amount category.total_amount 100 %}%"></div>
                                 <span>{% widthratio category.paid_amount category.total_amount 100 %}%</span>
@@ -98,15 +100,15 @@
         </div>
     </div>
 
-    <div class="report-section">
-        <div class="section-header">
+    <div class="report-section responsive-section">
+        <div class="section-header responsive-section-header">
             <h2>Top Performing Products</h2>
             <div class="section-actions">
-                <button class="view-all-btn">View All</button>
+                <button class="view-all-btn responsive-btn-sm">View All</button>
             </div>
         </div>
-        <div class="table-container">
-            <table class="report-table">
+        <div class="table-container responsive-table-container">
+            <table class="report-table responsive-table">
                 <thead>
                     <tr>
                         <th>Rank</th>
@@ -119,11 +121,11 @@
                 <tbody>
                     {% for product in top_products %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td><strong>{{ product.product_name }}</strong></td>
-                        <td>{{ product.total_quantity }}</td>
-                        <td>₹{{ product.total_amount|floatformat:2 }}</td>
-                        <td>{% widthratio product.total_amount statistics.total_order_amount 100 %}%</td>
+                        <td data-label="Rank">{{ forloop.counter }}</td>
+                        <td data-label="Product"><strong>{{ product.product_name }}</strong></td>
+                        <td data-label="Quantity Sold">{{ product.total_quantity }}</td>
+                        <td data-label="Revenue">₹{{ product.total_amount|floatformat:2 }}</td>
+                        <td data-label="% of Total">{% widthratio product.total_amount statistics.total_order_amount 100 %}%</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -131,21 +133,30 @@
         </div>
     </div>
 
-    <div class="report-tabs">
-        <div class="tabs-header">
-            <button class="tab-btn active" data-tab="orders-tab">Order Details</button>
-            <button class="tab-btn" data-tab="payments-tab">Payment Details</button>
+    <div class="report-tabs responsive-tabs">
+        <div class="tabs-header responsive-tabs-header">
+            <button class="tab-btn active responsive-tab-btn" data-tab="orders-tab">
+                <i class="fas fa-shopping-cart tab-icon"></i>
+                <span class="tab-text">Order Details</span>
+            </button>
+            <button class="tab-btn responsive-tab-btn" data-tab="payments-tab">
+                <i class="fas fa-money-bill-wave tab-icon"></i>
+                <span class="tab-text">Payment Details</span>
+            </button>
         </div>
-        <div id="orders-tab" class="tab-content active">
-            <div class="section-header">
+        <div id="orders-tab" class="tab-content active responsive-tab-content">
+            <div class="section-header responsive-section-header">
                 <h2>Order Report</h2>
                 <div class="section-actions">
-                    <input type="text" class="search-input" placeholder="Search orders...">
+                    <div class="search-container">
+                        <input type="text" class="search-input responsive-search" placeholder="Search orders..." id="orderSearch">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
                 </div>
             </div>
-            <div class="table-container">
+            <div class="table-container responsive-table-container">
                 {% if orders %}
-                <table class="report-table">
+                <table class="report-table responsive-table" id="ordersTable">
                     <thead>
                         <tr>
                             <th>Order ID</th>
@@ -162,16 +173,16 @@
                     </thead>
                     <tbody>
                         {% for order in orders %}
-                        <tr>
-                            <td>#{{ order.order_id }}</td>
-                            <td>{{ order.admin.first_name }} {{ order.admin.last_name }} ({{ order.admin.admin_id }})</td>
-                            <td>{{ order.customer.first_name }} {{ order.customer.last_name }}</td>
-                            <td>{{ order.order_date|date:"M d, Y" }}</td>
-                            <td>{{ order.delivery_date|date:"M d, Y"|default:"--" }}</td>
-                            <td>{{ order.category }}</td>
-                            <td>{{ order.quantity }}</td>
-                            <td>₹{{ order.overall_amount }}</td>
-                            <td>
+                        <tr class="table-row searchable-row">
+                            <td data-label="Order ID">#{{ order.order_id }}</td>
+                            <td data-label="Admin">{{ order.admin.first_name }} {{ order.admin.last_name }} ({{ order.admin.admin_id }})</td>
+                            <td data-label="Customer">{{ order.customer.first_name }} {{ order.customer.last_name }}</td>
+                            <td data-label="Order Date">{{ order.order_date|date:"M d, Y" }}</td>
+                            <td data-label="Delivery Date">{{ order.delivery_date|date:"M d, Y"|default:"--" }}</td>
+                            <td data-label="Category">{{ order.category }}</td>
+                            <td data-label="Qty">{{ order.quantity }}</td>
+                            <td data-label="Amount">₹{{ order.overall_amount }}</td>
+                            <td data-label="Status">
                                 <span class="status-badge {% if order.payment_status == 1 %}paid{% else %}unpaid{% endif %}">
                                     {% if order.payment_status == 1 %}
                                         Paid
@@ -180,15 +191,18 @@
                                     {% endif %}
                                 </span>
                             </td>
-                            <td>
-                                <button class="action-btn view-btn">View</button>
+                            <td data-label="Actions">
+                                <button class="action-btn view-btn responsive-action-btn" onclick="viewOrder('{{ order.order_id }}')">
+                                    <i class="fas fa-eye"></i>
+                                    <span class="btn-text">View</span>
+                                </button>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 {% else %}
-                    <div class="no-data">
+                    <div class="no-data responsive-no-data">
                         <i class="fas fa-box-open"></i>
                         <p>No orders found</p>
                     </div>
@@ -196,16 +210,19 @@
             </div>
         </div>
 
-        <div id="payments-tab" class="tab-content">
-            <div class="section-header">
+        <div id="payments-tab" class="tab-content responsive-tab-content">
+            <div class="section-header responsive-section-header">
                 <h2>Payment Report</h2>
                 <div class="section-actions">
-                    <input type="text" class="search-input" placeholder="Search payments...">
+                    <div class="search-container">
+                        <input type="text" class="search-input responsive-search" placeholder="Search payments..." id="paymentSearch">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
                 </div>
             </div>
-            <div class="table-container">
+            <div class="table-container responsive-table-container">
                 {% if payments %}
-                <table class="report-table">
+                <table class="report-table responsive-table" id="paymentsTable">
                     <thead>
                         <tr>
                             <th>Payment ID</th>
@@ -221,18 +238,19 @@
                     </thead>
                     <tbody>
                         {% for payment in payments %}
-                        <tr>
-                            <td>#{{ payment.payment_id }}</td>
-                            <td>#{{ payment.order.order_id }}</td>
-                            <td>{{ payment.order.admin.first_name }} {{ payment.order.admin.last_name }} ({{ payment.order.admin.admin_id }})</td>
-                            <td>{{ payment.order.customer.first_name }} {{ payment.order.customer.last_name }}</td>
-                            <td>{{ payment.amount }}</td>
-                            <td>{{ payment.date|date:"M d, Y" }}</td>
-                            <td>{{ payment.payment_method }}</td>
-                            <td>{{ payment.reference|default:"--" }}</td>
-                            <td>
-                                <a href="{{ payment.proof_link }}" target="_blank" class="proof-link">
-                                    <i class="fas fa-file-invoice"></i> View
+                        <tr class="table-row searchable-row">
+                            <td data-label="Payment ID">#{{ payment.payment_id }}</td>
+                            <td data-label="Order ID">#{{ payment.order.order_id }}</td>
+                            <td data-label="Admin">{{ payment.order.admin.first_name }} {{ payment.order.admin.last_name }} ({{ payment.order.admin.admin_id }})</td>
+                            <td data-label="Customer">{{ payment.order.customer.first_name }} {{ payment.order.customer.last_name }}</td>
+                            <td data-label="Amount">₹{{ payment.amount }}</td>
+                            <td data-label="Date">{{ payment.date|date:"M d, Y" }}</td>
+                            <td data-label="Method">{{ payment.payment_method }}</td>
+                            <td data-label="Reference">{{ payment.reference|default:"--" }}</td>
+                            <td data-label="Proof">
+                                <a href="{{ payment.proof_link }}" target="_blank" class="proof-link responsive-link">
+                                    <i class="fas fa-file-invoice"></i> 
+                                    <span class="link-text">View</span>
                                 </a>
                             </td>
                         </tr>
@@ -240,7 +258,7 @@
                     </tbody>
                 </table>
                 {% else %}
-                    <div class="no-data">
+                    <div class="no-data responsive-no-data">
                         <i class="fas fa-receipt"></i>
                         <p>No payments found</p>
                     </div>
@@ -251,116 +269,72 @@
 </div>
 
 <style>
-:root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #1abc9c;
-    --light-gray: #f8f9fa;
-    --medium-gray: #e9ecef;
-    --dark-gray: #495057;
-    --text-color: #333;
-    --text-light: #6c757d;
-    --success-color: #28a745;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --border-radius: 6px;
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --transition: all 0.3s ease;
-}
-
-/* Base Styles */
+/* Business Report - Superadmin Specific Styles */
 .report-container {
-    padding: 30px;
-    max-width: 1400px;
+    padding: 20px;
+    max-width: 100%;
     margin: 0 auto;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-color);
 }
 
-/* Header Styles */
 .report-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
     background: white;
-    padding: 25px 30px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    border-left: 4px solid var(--accent-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border-left: 4px solid #1abc9c;
 }
 
-.header-content {
-    flex: 1;
-}
-
-.report-title {
-    margin: 0;
-    color: var(--primary-color);
-    font-size: 28px;
+.header-content h1 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-size: 24px;
     font-weight: 600;
 }
 
-.report-subtitle {
-    margin: 5px 0 0 0;
-    color: var(--text-light);
+.header-content p {
+    margin: 0;
+    color: #6c757d;
     font-size: 14px;
 }
 
 .download-buttons {
     display: flex;
     gap: 10px;
-    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 15px;
 }
 
-/* Button Styles */
 .btn-customize-report {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.25rem;
     background-color: #6f42c1;
     color: white;
-    border: none;
+    padding: 10px 16px;
     border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
     text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
 }
 
-.btn-customize-report:hover, 
-.btn-customize-report:focus {
+.btn-customize-report:hover {
     background-color: #5936a4;
-    color: white;
-    text-decoration: none;
     transform: translateY(-1px);
 }
 
-.btn-customize-report:active {
-    transform: translateY(0);
-}
-
-.btn-customize-report i {
-    font-size: 0.9rem;
-}
-
 .download-btn {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
+    padding: 10px 16px;
     border-radius: 4px;
     text-decoration: none;
     font-weight: 500;
-    transition: background-color 0.2s;
     color: white;
-}
-
-.download-btn i {
-    margin-right: 8px;
-    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
 }
 
 .download-btn.excel {
@@ -379,15 +353,14 @@
     background-color: #c82333;
 }
 
-/* Section Styles */
 .statistics-section,
 .report-section,
 .report-tabs {
-    margin-bottom: 30px;
     background: white;
-    padding: 25px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
 .section-header {
@@ -395,73 +368,35 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--medium-gray);
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .section-header h2 {
     margin: 0;
-    color: var(--primary-color);
-    font-size: 20px;
+    color: #2c3e50;
+    font-size: 18px;
     font-weight: 600;
 }
 
-.section-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.last-updated {
-    font-size: 12px;
-    color: var(--text-light);
-}
-
-.filter-btn,
-.view-all-btn {
-    background: white;
-    border: 1px solid var(--medium-gray);
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 12px;
-    color: var(--text-color);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.filter-btn:hover,
-.view-all-btn:hover {
-    background: var(--light-gray);
-}
-
-.search-input {
-    padding: 6px 12px;
-    border: 1px solid var(--medium-gray);
-    border-radius: 4px;
-    font-size: 12px;
-    width: 200px;
-}
-
-/* Stat Cards */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
-    margin-top: 20px;
 }
 
 .stat-card {
     display: flex;
-    background: white;
+    align-items: center;
     padding: 20px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--medium-gray);
-    transition: var(--transition);
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .stat-icon {
@@ -472,90 +407,64 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 20px;
-    color: var(--accent-color);
+    margin-right: 15px;
+    color: #1abc9c;
     font-size: 20px;
 }
 
-.stat-content {
-    flex: 1;
-}
-
-.stat-card h3 {
+.stat-content h3 {
     margin: 0 0 5px 0;
-    color: var(--dark-gray);
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 14px;
+    color: #6c757d;
 }
 
 .stat-value {
     font-size: 24px;
     font-weight: 600;
-    color: var(--primary-color);
+    color: #2c3e50;
     margin: 5px 0;
 }
 
 .stat-breakdown {
     display: flex;
     gap: 15px;
-    margin-top: 8px;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .positive {
-    color: var(--success-color);
-    display: flex;
-    align-items: center;
-}
-
-.positive::before {
-    content: "▲";
-    margin-right: 4px;
-    font-size: 10px;
+    color: #28a745;
 }
 
 .negative {
-    color: var(--danger-color);
-    display: flex;
-    align-items: center;
+    color: #dc3545;
 }
 
-.negative::before {
-    content: "▼";
-    margin-right: 4px;
-    font-size: 10px;
-}
-
-/* Table Styles */
 .table-container {
     overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
 }
 
 .report-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
     font-size: 14px;
 }
 
 .report-table th {
-    background-color: var(--light-gray);
-    font-weight: 600;
-    color: var(--dark-gray);
-    padding: 12px 15px;
+    background-color: #f8f9fa;
+    padding: 12px;
     text-align: left;
-    border-bottom: 2px solid var(--medium-gray);
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
     white-space: nowrap;
 }
 
 .report-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--medium-gray);
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
     vertical-align: middle;
-}
-
-.report-table tr:last-child td {
-    border-bottom: none;
 }
 
 .report-table tr:hover {
@@ -572,48 +481,35 @@
 
 .status-badge.paid {
     background-color: rgba(40, 167, 69, 0.1);
-    color: var(--success-color);
+    color: #28a745;
 }
 
 .status-badge.unpaid {
     background-color: rgba(220, 53, 69, 0.1);
-    color: var(--danger-color);
+    color: #dc3545;
 }
 
 .action-btn {
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 4px;
-    font-size: 12px;
     border: none;
     cursor: pointer;
-    transition: var(--transition);
+    font-size: 12px;
+    transition: all 0.2s ease;
 }
 
 .view-btn {
     background-color: rgba(52, 152, 219, 0.1);
-    color: var(--secondary-color);
+    color: #3498db;
 }
 
 .view-btn:hover {
     background-color: rgba(52, 152, 219, 0.2);
 }
 
-.proof-link {
-    color: var(--secondary-color);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.proof-link:hover {
-    text-decoration: underline;
-}
-
-/* Progress Bar */
 .progress-container {
     width: 100%;
-    background-color: var(--light-gray);
+    background-color: #f8f9fa;
     border-radius: 10px;
     height: 20px;
     position: relative;
@@ -622,10 +518,7 @@
 .progress-bar {
     height: 100%;
     border-radius: 10px;
-    background-color: var(--accent-color);
-    position: absolute;
-    top: 0;
-    left: 0;
+    background-color: #1abc9c;
 }
 
 .progress-container span {
@@ -639,17 +532,10 @@
     z-index: 1;
 }
 
-/* Tabs */
-.report-tabs {
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    overflow: hidden;
-}
-
 .tabs-header {
     display: flex;
-    border-bottom: 1px solid var(--medium-gray);
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 20px;
 }
 
 .tab-btn {
@@ -658,13 +544,13 @@
     border: none;
     cursor: pointer;
     font-weight: 500;
-    color: var(--text-light);
+    color: #6c757d;
+    transition: all 0.2s ease;
     position: relative;
-    transition: var(--transition);
 }
 
 .tab-btn.active {
-    color: var(--accent-color);
+    color: #1abc9c;
 }
 
 .tab-btn.active::after {
@@ -674,55 +560,113 @@
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: var(--accent-color);
+    background-color: #1abc9c;
 }
 
 .tab-content {
     display: none;
-    padding: 20px;
 }
 
 .tab-content.active {
     display: block;
 }
 
-/* No Data State */
+.search-container {
+    position: relative;
+}
+
+.search-input {
+    padding: 8px 35px 8px 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 250px;
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+}
+
 .no-data {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    text-align: center;
     padding: 40px 20px;
-    color: var(--text-light);
+    color: #6c757d;
 }
 
 .no-data i {
     font-size: 40px;
     margin-bottom: 15px;
-    color: var(--medium-gray);
+    color: #e9ecef;
 }
 
-.no-data p {
-    margin: 0;
-    font-size: 16px;
+.filter-btn,
+.view-all-btn {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-/* Responsive */
+.filter-btn:hover,
+.view-all-btn:hover {
+    background: #f8f9fa;
+}
+
+.last-updated {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.proof-link {
+    color: #3498db;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.proof-link:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Responsive Styles */
 @media (max-width: 768px) {
+    .report-container {
+        padding: 15px;
+    }
+    
     .report-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+        padding: 15px;
+    }
+    
+    .header-content h1 {
+        font-size: 20px;
     }
     
     .download-buttons {
-        width: 100%;
-        flex-wrap: wrap;
-        justify-content: flex-start;
+        justify-content: center;
     }
     
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .stat-icon {
+        margin: 0 0 10px 0;
     }
     
     .section-header {
@@ -733,34 +677,90 @@
     
     .section-actions {
         width: 100%;
-        justify-content: flex-end;
+    }
+    
+    .search-input {
+        width: 100%;
+    }
+    
+    .tabs-header {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .tab-btn {
+        flex-shrink: 0;
     }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Tab functionality
+    // Tab functionality with touch support
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     
     tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const tabId = button.getAttribute('data-tab');
+        button.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
             
-            // Remove active class from all buttons and contents
+            // Remove active class from all tabs
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
             
-            // Add active class to clicked button and corresponding content
-            button.classList.add('active');
+            // Add active class to current tab
+            this.classList.add('active');
             document.getElementById(tabId).classList.add('active');
         });
     });
     
-    // You can add more interactive functionality here
-    // For example, sorting tables, filtering data, etc.
+    // Enhanced search functionality with debouncing
+    function setupSearch(inputId, tableId) {
+        const searchInput = document.getElementById(inputId);
+        const table = document.getElementById(tableId);
+        
+        if (searchInput && table) {
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    const rows = table.querySelectorAll('tbody .searchable-row');
+                    
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                }, 300);
+            });
+        }
+    }
+    
+    // Initialize search for both tables
+    setupSearch('orderSearch', 'ordersTable');
+    setupSearch('paymentSearch', 'paymentsTable');
+    
+    // Touch-friendly enhancements
+    const actionButtons = document.querySelectorAll('.action-btn, .tab-btn');
+    actionButtons.forEach(button => {
+        button.style.minHeight = '44px';
+        button.style.minWidth = '44px';
+    });
+    
+    // Smooth scrolling for mobile table navigation
+    const tables = document.querySelectorAll('.table-container');
+    tables.forEach(container => {
+        container.style.scrollBehavior = 'smooth';
+    });
 });
+
+// View order function
+function viewOrder(orderId) {
+    // Implement view order functionality
+    console.log('Viewing order:', orderId);
+    // You can add modal or navigation logic here
+}
 </script>
 
 <!-- Include Font Awesome for icons -->
