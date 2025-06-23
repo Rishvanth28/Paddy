@@ -1,34 +1,38 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse, HttpResponse
+from .models import *
 from django.db import IntegrityError
+from datetime import date
 from django.core.paginator import Paginator
 from django.utils import timezone
-from django.conf import settings
-from django.db.models import Q, Case, When, Sum, Count, F
-from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
-from datetime import date, timedelta, datetime
-import json
-import os
-import io
-import xlsxwriter
-import razorpay
-from dotenv import load_dotenv
-from .models import *
 from .decorators import role_required
 from .helpers import *
 from .helpers import create_notification
-from .forms import CustomReportForm
+import json
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.timezone import now
+import razorpay
+from django.conf import settings
+from datetime import timedelta
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
+from dotenv import load_dotenv
+import os
+from django.db.models import Case, When, Sum, Count, F
+from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
+import xlsxwriter
+import io
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, A4, landscape
-from reportlab.platypus import (
-    SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, HRFlowable
-)
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
 from reportlab.platypus.flowables import HRFlowable  
 from .forms import CustomReportForm
@@ -513,7 +517,14 @@ def upgrade_plan(request):
     return render(request, "upgrade_plan.html")
 
 @role_required(["customer"])
+@role_required(["customer"])
+@role_required(["customer"])
 def customer_dashboard(request):
+    from django.db.models import Sum, Count, Q, Avg, Max, F
+    from datetime import datetime, timedelta
+    import json
+    
+    # Get customer from session - using 'user_id' key as set in login
     customer_id = request.session.get('user_id')
     if not customer_id:
         messages.error(request, "Session expired. Please log in again.")
@@ -877,6 +888,7 @@ def create_customer_signup(request):
 
     return render(request, "login.html")
 
+
 @role_required(["superadmin", "admin"])
 def place_order(request):
     role = request.session.get("role")
@@ -1218,6 +1230,8 @@ def payment(request):
 @require_POST
 @csrf_exempt
 def create_partial_payment_order(request):
+    """API endpoint to create a Razorpay order for partial payment"""
+
     
     try:
 
@@ -1445,8 +1459,9 @@ def admin_add_subscription(request):
     }
     return render(request, "admin_add_subscription.html", context)
 
-@require_POST
-@role_required(["admin"]) 
+@require_POST # Ensures this view only accepts POST requests
+@role_required(["admin"]) # Protect the endpoint
+# @csrf_exempt # Not needed if CSRF token is handled correctly with AJAX from same domain
 def create_admin_user_increase_order(request):
     """
     Creates a Razorpay order for an admin's user count increase subscription.
@@ -1506,9 +1521,9 @@ def create_admin_user_increase_order(request):
         print(f"Error in create_admin_user_increase_order: {e}") # Log the error for debugging
         return JsonResponse({'success': False, 'message': f'An error occurred while creating payment order: {str(e)}'}, status=500)
 
-@require_POST 
-@csrf_exempt 
-@role_required(["admin"]) 
+@require_POST # Ensures this view only accepts POST requests
+@csrf_exempt # Razorpay sends POST here without CSRF token from client-side handler
+@role_required(["admin"]) # Protect the endpoint
 def verify_admin_user_increase_payment(request):
     """
     Verifies the Razorpay payment signature and updates the subscription
@@ -2093,95 +2108,17 @@ def admin_login_submit(request):
     return render(request, 'login.html', {'error': 'Invalid credentials'})
 
 def profile(request):
-    role = request.session.get('role')
-    user_id = request.session.get('user_id')
-    
-    if not role or not user_id:
-        messages.error(request, "Please log in to view your profile.")
-        return redirect('login')
-    
-    # Determine base template and fetch user data based on role
+    role = request.session.get('role', 'superadmin')
     if role == 'superadmin':
         base_template = 'superadmin_base.html'
-        try:
-            user = AdminTable.objects.get(admin_id=user_id)
-            user_data = {
-                'user_type': 'Super Admin',
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                'phone_number': user.phone_number,
-                'admin_id': user.admin_id,
-                'user_count': user.user_count,
-                'created_at': user.created_at,
-                'is_superadmin': True,
-            }
-        except AdminTable.DoesNotExist:
-            messages.error(request, "User profile not found.")
-            return redirect('login')
-            
     elif role == 'admin':
         base_template = 'admin_base.html'
-        try:
-            user = AdminTable.objects.get(admin_id=user_id)
-            # Get subscription info for admin
-            subscription = Subscription.objects.filter(
-                admin_id=user, 
-                subscription_type="admin"
-            ).order_by('-end_date').first()
-            
-            user_data = {
-                'user_type': 'Admin',
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                'phone_number': user.phone_number,
-                'admin_id': user.admin_id,
-                'user_count': user.user_count,
-                'created_at': user.created_at,
-                'subscription': subscription,
-                'is_admin': True,
-            }
-        except AdminTable.DoesNotExist:
-            messages.error(request, "User profile not found.")
-            return redirect('login')
-            
     elif role == 'customer':
         base_template = 'customer_base.html'
-        try:
-            user = CustomerTable.objects.get(customer_id=user_id)
-            # Get subscription info for customer
-            subscription = Subscription.objects.filter(
-                customer_id=user, 
-                subscription_type="customer"
-            ).order_by('-end_date').first()
-            
-            user_data = {
-                'user_type': 'Customer',
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'email': user.email,
-                'phone_number': user.phone_number,
-                'customer_id': user.customer_id,
-                'company_name': user.company_name,
-                'gst': user.GST,
-                'address': user.address,
-                'admin': user.admin,
-                'created_at': user.created_at,
-                'subscription': subscription,
-                'is_customer': True,
-            }
-        except CustomerTable.DoesNotExist:
-            messages.error(request, "User profile not found.")
-            return redirect('login')
     else:
-        messages.error(request, "Invalid role.")
-        return redirect('login')
-    
+        base_template = 'superadmin_base.html'
     context = {
         'base_template': base_template,
-        'user_data': user_data,
-        'role': role,
     }
     return render(request, 'profile.html', context)
 
@@ -2963,7 +2900,7 @@ def download_report_excel_admin(request):
             output.getvalue(),
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        response['Content-Disposition'] = f'attachment; filename="detailed_report_{timezone.now().strftime("%Y%m%d")}.xlsx"'
+        response['Content-Disposition'] = f'attachment; filename="detailed_report_{timezone.now().strftime('%Y%m%d')}.xlsx"'
         return response
 
     except Exception as e:
@@ -3030,155 +2967,11 @@ def download_invoice_pdf_admin(request):
         Paragraph("Lorry/Driver Info", header_style)
     ]]
 
-<<<<<<< HEAD
     # ✅ Only fetch orders belonging to the current admin
     orders = Orders.objects.select_related("customer", "admin") \
         .prefetch_related("items") \
         .filter(admin__admin_id=admin_id) \
         .order_by('-order_date')
-=======
-    orders = Orders.objects.select_related("customer", "admin").prefetch_related("items", "payments_set") \
-        .filter(admin__admin_id=admin_id).order_by('-order_date')
-
-    for order in orders:
-        customer = order.customer
-        order_items = order.items.all()
-        payments = order.payments_set.all()
-
-        total_paid = sum(payment.amount for payment in payments)
-        payment_status = "Unpaid" if total_paid == 0 else \
-                         "Fully Paid" if total_paid >= order.overall_amount else \
-                         f"Paid: {total_paid/order.overall_amount:.0%}"
-
-        delivery_status = "Delivered" if order.delivery_status == 1 else "Pending"
-
-        payment_info = ""
-        for payment in payments:
-            payment_info += (
-                f"<b>₹{payment.amount:,.2f}</b> ({payment.date.strftime('%d-%m-%Y')})<br/>"
-                f"{payment.payment_method} | Ref: {payment.reference}<br/><br/>"
-            )
-        if not payments:
-            payment_info = f"<b>Due:</b> ₹{order.overall_amount - total_paid:,.2f}"
-
-        customer_details = Paragraph(
-            f"<b>{customer.first_name} {customer.last_name}</b><br/>{customer.company_name or ''}<br/>"
-            f"GST: {customer.GST or 'N/A'}<br/>Ph: {customer.phone_number}", cell_style
-        )
-
-        if not order_items:
-            table_data.append([
-                Paragraph(str(order.order_id), cell_style),
-                customer_details,
-                Paragraph(order.order_date.strftime("%d-%m-%Y"), cell_style),
-                Paragraph(order.delivery_date.strftime("%d-%m-%Y") if order.delivery_date else "Not Set", cell_style),
-                Paragraph("No Items", cell_style),
-                Paragraph(order.category or 'N/A', cell_style),
-                Paragraph("-", cell_style),
-                Paragraph("-", cell_style),
-                Paragraph("-", cell_style),
-                Paragraph("-", cell_style),
-                Paragraph(order.GST or 'N/A', cell_style),
-                Paragraph(payment_info, cell_style),
-                Paragraph(f"<b>{delivery_status}</b><br/>{order.lorry_number or ''}<br/>{order.driver_name or ''}<br/>Ph: {order.driver_ph_no or ''}", cell_style)
-            ])
-        else:
-            for idx, item in enumerate(order_items):
-                row = [
-                    Paragraph(str(order.order_id) if idx == 0 else "", cell_style),
-                    customer_details if idx == 0 else Paragraph("", cell_style),
-                    Paragraph(order.order_date.strftime("%d-%m-%Y") if idx == 0 else "", cell_style),
-                    Paragraph(order.delivery_date.strftime("%d-%m-%Y") if order.delivery_date and idx == 0 else "", cell_style),
-                    Paragraph(f"<b>{item.product_name}</b>", cell_style),
-                    Paragraph(order.category or 'N/A', cell_style),
-                    Paragraph(f"<b>Batch:</b> {item.batch_number}<br/><b>Exp:</b> {item.expiry_date.strftime('%d-%m-%Y')}", cell_style),
-                    Paragraph(f"{item.quantity:,.2f} {item.unit}", cell_style),
-                    Paragraph(f"₹{item.price_per_unit:,.2f}", cell_style),
-                    Paragraph(f"₹{item.total_amount:,.2f}", cell_style),
-                    Paragraph(order.GST or 'N/A', cell_style),
-                    Paragraph(payment_info if idx == 0 else "", cell_style),
-                    Paragraph(f"<b>{delivery_status}</b><br/>{order.lorry_number or ''}<br/>{order.driver_name or ''}<br/>Ph: {order.driver_ph_no or ''}" if idx == 0 else "", cell_style)
-                ]
-                table_data.append(row)
-
-        table_data.append([Paragraph("—" * 5, cell_style) for _ in range(13)])
-
-    col_widths = [40, 70, 50, 50, 70, 60, 70, 50, 50, 50, 40, 90, 80]
-    table = Table(table_data, colWidths=col_widths, repeatRows=1)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3498db')),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('GRID', (0, 0), (-1, -1), 0.4, colors.HexColor('#cccccc')),
-        ('FONTSIZE', (0, 0), (-1, -1), 7),
-        ('LEFTPADDING', (0, 0), (-1, -1), 4),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-    ]))
-
-    elements.append(table)
-    elements.append(Spacer(1, 20))
-
-    doc.build(elements)
-    return response
-
-
-@role_required(["superadmin"])
-def download_invoice_pdf1(request):
-    import io
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="superadmin_business_report_{timezone.now().strftime("%Y%m%d_%H%M")}.pdf"'
-
-    doc = SimpleDocTemplate(
-        response,
-        pagesize=landscape(A4),
-        leftMargin=20,
-        rightMargin=20,
-        topMargin=30,
-        bottomMargin=30
-    )
-
-    styles = getSampleStyleSheet()
-    elements = []
-
-    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=18, alignment=TA_CENTER,
-                                 spaceAfter=15, textColor=colors.HexColor('#2c3e50'), fontName='Helvetica-Bold')
-    subtitle_style = ParagraphStyle('Subtitle', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER,
-                                    spaceAfter=20, textColor=colors.HexColor('#7f8c8d'))
-    header_style = ParagraphStyle('Header', parent=styles['Normal'], fontSize=8, alignment=TA_CENTER,
-                                  textColor=colors.white, fontName='Helvetica-Bold')
-    cell_style = ParagraphStyle('Cell', parent=styles['Normal'], fontSize=7, alignment=TA_LEFT,
-                                textColor=colors.HexColor('#2c3e50'), leading=9)
-    summary_style = ParagraphStyle('Summary', parent=styles['Normal'], fontSize=9, alignment=TA_LEFT,
-                                   textColor=colors.HexColor('#2c3e50'), fontName='Helvetica-Bold', spaceAfter=5)
-    footer_style = ParagraphStyle('Footer', parent=styles['Normal'], fontSize=7, alignment=TA_CENTER,
-                                  textColor=colors.HexColor('#7f8c8d'), fontName='Helvetica-Oblique')
-
-    elements.append(Paragraph("Superadmin Business Report", title_style))
-    elements.append(Paragraph(f"All Orders and Payments Overview | Generated on {timezone.now().strftime('%d %B %Y at %I:%M %p')}", subtitle_style))
-    elements.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor('#bdc3c7'), spaceAfter=15))
-
-    table_data = [[
-        Paragraph("Order ID", header_style),
-        Paragraph("Customer", header_style),
-        Paragraph("Admin", header_style),
-        Paragraph("Order Date", header_style),
-        Paragraph("Delivery", header_style),
-        Paragraph("Product", header_style),
-        Paragraph("Category", header_style),
-        Paragraph("Batch/Expiry", header_style),
-        Paragraph("Qty/Unit", header_style),
-        Paragraph("Price", header_style),
-        Paragraph("Total", header_style),
-        Paragraph("GST", header_style),
-        Paragraph("Payment", header_style),
-        Paragraph("Status", header_style)
-    ]]
-
-    orders = Orders.objects.select_related("customer", "admin").prefetch_related("items", "payments_set").all().order_by('-order_date')
->>>>>>> 38bdbe5e36c78fc68b6be5b34bf326103dd95dc6
 
     total_orders = 0
     total_amount = 0
@@ -3528,12 +3321,6 @@ def download_invoice_excel_superadmin(request):
 
     workbook.close()
     output.seek(0)
-<<<<<<< HEAD
-=======
-    response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = f'attachment; filename="superadmin_invoice_report_{timezone.now().strftime("%Y%m%d")}.xlsx"'
-    return response
->>>>>>> 38bdbe5e36c78fc68b6be5b34bf326103dd95dc6
 
     response = HttpResponse(
         output.read(),
