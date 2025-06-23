@@ -174,17 +174,19 @@ body {
 }
 
 /* Modal Styling */
+/* Modal overlay and dialog styled like upgrade_to_admin.html */
 .modal-overlay {
-    display: none;
     position: fixed;
-    z-index: 1000;
-    left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(30, 34, 90, 0.45);
+    z-index: 1000;
+    display: none;
     align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
 }
 
 .modal-overlay.show {
@@ -192,62 +194,160 @@ body {
 }
 
 .modal-dialog {
-    background-color: #fff;
-    color: #000;
-    padding: 1.5rem;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 40px rgba(30, 34, 90, 0.18), 0 1.5px 0 #0d6efd22;
+    max-width: 400px;
+    width: 95vw;
+    padding: 0;
+    overflow: hidden;
+    animation: modalPopIn 0.18s cubic-bezier(.4, 1.6, .6, 1) 1;
+    border: 1.5px solid #0d6efd33;
 }
 
-.modal-header,
-.modal-footer {
+@keyframes modalPopIn {
+    0% {
+        transform: scale(0.92) translateY(30px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    background: #000;
+    color: #fff;
+    padding: 1.1rem 1.5rem 1rem 1.5rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e0e0e0;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    gap: 0.5rem;
 }
 
 .modal-title {
     font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    flex: 1 1 auto;
+    text-align: left;
+    line-height: 1.2;
 }
 
 .modal-close {
-    background: transparent;
+    background: none;
     border: none;
+    color: #fff;
     font-size: 1.5rem;
-    color: #000;
     cursor: pointer;
+    padding: 0 0 0 1rem;
+    transition: color 0.2s;
+    align-self: flex-start;
 }
 
-.form-group {
-    margin-top: 1rem;
+.modal-close:hover {
+    color: #ff4d4f;
 }
 
-.form-label {
-    display: block;
+.modal-body {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.3rem;
+    box-sizing: border-box;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    box-shadow: 0 2px 8px #0d6efd11 inset;
+}
+
+.modal-body .request-details {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1.5px 8px #0d6efd11;
+    padding: 1.1rem 1rem 0.8rem 1rem;
     margin-bottom: 0.5rem;
-    color: #000;
+    border: 1px solid #e0e0e0;
 }
 
-.form-control {
-    width: 100%;
-    padding: 0.6rem;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    color: #000;
-    border-radius: 6px;
+.modal-body .request-details h6 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    /* color: #0d6efd; */
+    letter-spacing: 0.2px;
 }
 
-.form-control:focus {
+.modal-body .request-details p {
+    margin: 0.2rem 0 0.2rem 0;
+    font-size: 0.98rem;
+    color: #222;
+}
+
+.modal-body .form-group {
+    margin-top: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.modal-body .form-label {
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 0.1rem;
+}
+
+.modal-body .form-control {
+    border-radius: 7px;
+    border: 1.5px solid #bbb;
+    padding: 0.5rem 0.8rem;
+    font-size: 1rem;
+    background: #f7f7fa;
+    color: #222;
+    transition: border 0.2s;
+}
+
+.modal-body .form-control:focus {
+    border-color: #0d6efd;
     outline: none;
-    border-color: #000;
+    background: #fff;
 }
 
-.form-text {
-    font-size: 0.75rem;
-    color: #666;
+.modal-body .form-text {
+    color: #888;
+    font-size: 0.92rem;
+    margin-top: 0.1rem;
+    margin-bottom: 0;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem 1.2rem 1.5rem;
+    background: #f4f6fb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.7rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+@media (max-width: 600px) {
+    .modal-dialog {
+        max-width: 98vw;
+        border-radius: 10px;
+        padding: 0;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 0.7rem;
+        padding-right: 0.7rem;
+    }
 }
 
 /* Alert Messages */
