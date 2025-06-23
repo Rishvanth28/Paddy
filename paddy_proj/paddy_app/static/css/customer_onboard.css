@@ -44,7 +44,6 @@ body {
     text-align: left;
     position: relative;
     padding-bottom: 0.6rem;
-    left: -1rem;
 }
 
 .page-title::after {

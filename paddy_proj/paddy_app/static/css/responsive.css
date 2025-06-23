@@ -645,7 +645,7 @@ button, .btn {
   .hamburger {
     display: flex !important;
     position: fixed;
-    top: 30px;
+    top: 25px;
     left: 15px;
     z-index: 1003; /* Higher than sidebar to ensure it stays clickable */
     flex-direction: column;
@@ -1475,7 +1475,7 @@ button, .btn {
   .hamburger {
     display: flex !important;
     position: fixed;
-    top: 35px;
+    top: 25px;
     left: 15px;
     z-index: 1002;
     background: rgba(255, 255, 255, 0.9);

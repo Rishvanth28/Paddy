@@ -613,6 +613,35 @@
             .notification-header {
                 flex-wrap: wrap !important;
             }
+
+            /* Make delete-controls stack vertically on mobile */
+            .delete-controls {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+            }
+
+            .delete-controls > div {
+                width: 100% !important;
+                justify-content: flex-start !important;
+            }
+
+            .delete-controls .selection-info {
+                justify-content: flex-start !important;
+            }
+
+            .delete-controls .btn-cancel-selection,
+            .delete-controls .btn-delete-selected {
+                width: 100% !important;
+                margin-right: 0 !important;
+                margin-bottom: 8px !important;
+            }
+
+            .delete-controls .btn-delete-selected {
+                margin-bottom: 0 !important;
+                padding: 8px 16px !important;
+                font-size: 0.775rem !important;
+            }
         }
     </style>
 </head>
@@ -644,11 +673,11 @@
             <span class="selection-count" id="selectionCount">0</span>
             <span>notifications selected</span>
         </div>
-        <div>
+        <div style="display: flex;">
             <button class="btn btn-cancel-selection" onclick="cancelSelection()">
                 <i class="bi bi-x-circle me-1"></i>Cancel
             </button>
-            <button class="btn btn-delete-selected" onclick="deleteSelectedNotifications()">
+            <button class="btn btn-delete-selected" style="height: 5.5vh;" onclick="deleteSelectedNotifications()">
                 <i class="bi bi-trash3 me-1"></i>Delete Selected
             </button>
         </div>

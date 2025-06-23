@@ -113,6 +113,12 @@
         padding: 0.75rem;
     }
 
+    @media screen and (max-width: 768px) {
+        .for-mobile{
+            flex-direction: column;
+        }
+    }
+
     /* Header Bar */
     .header-bar {
         display: flex;
@@ -1372,7 +1378,7 @@
                 <div class="detail-header">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <h6 class="fw-bold">Order #${order.order_id}</h6>
+                            <span class="fw-medium">Order #${order.order_id}</span>
                             <p class="text-muted mb-0">Placed on ${formatDate(order.order_date)}</p>
                         </div>
                         <div class="order-status">
@@ -1456,7 +1462,7 @@
                     </table>
                 </div>
                 
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 for-mobile">
                     ${order.paid_amount < order.overall_amount ? `
                         <form method="post" action="payment/" class="flex-grow-1">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
