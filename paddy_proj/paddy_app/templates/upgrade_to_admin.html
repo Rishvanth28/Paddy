@@ -247,7 +247,7 @@
     padding: 1rem 0;
     font-size: 1rem;
     font-weight: 600;
-    background-color: #000000;
+    background: linear-gradient(90deg, #10B981 0%, #059669 100%);
     color: #ffffff;
     border: none;
     border-radius: 8px;
@@ -255,7 +255,7 @@
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    border: 1px solid #000000;
+    border: 1px solid #10B981;
     position: relative;
     overflow: hidden;
     z-index: 1;
@@ -263,6 +263,7 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
   }
 
   .upgrade-btn::before,
@@ -273,7 +274,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: white;
+    background: #000000;
     transform: translateX(-100%);
     transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
     z-index: -1;
@@ -281,9 +282,9 @@
 
   .upgrade-btn:hover,
   .admin-btn:hover {
-    color: #000000;
+    color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
     border-color: #000000;
     text-decoration: none;
   }
@@ -537,14 +538,25 @@
       <p class="form-text">As an existing administrator, you already have access to all administrative features including product management, order tracking, and system configuration.</p>
       
     </div>
-    {% else %}
-    <!-- Upgrade Form -->
-    <form method="post">
-      {% csrf_token %}
-      <p class="form-text">Are you sure you want to upgrade your account to Admin? This will allow you to manage
-        products, view all orders, and access administrative features.</p>
-      <button type="submit" class="upgrade-btn">
-        <span>Upgrade Now</span>
+    {% else %}    <!-- Upgrade Form -->
+    <form action="{% url 'admin_subscription' %}" method="get">      <p class="form-text">Upgrade your account to Admin Subscription for enhanced privileges. This will allow you to manage products, view all orders, and access advanced administrative features.</p>
+      
+      <div class="admin-info-box" style="margin-bottom: 1.5rem;">
+        <p><strong>Admin subscription benefits:</strong></p>
+        <ul style="padding-left: 20px; margin-top: 10px; text-align: left;">
+          <li>Complete order management system</li>
+          <li>Product catalog administration</li>
+          <li>Customer data insights</li>
+          <li>Advanced reporting tools</li>
+        </ul>
+      </div><button type="submit" class="upgrade-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>Upgrade to Admin Subscription</span>
       </button>
     </form>
     {% endif %}
