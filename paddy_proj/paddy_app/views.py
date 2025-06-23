@@ -3054,10 +3054,6 @@ def download_invoice_pdf_admin(request):
     response.write(buffer.getvalue())
     buffer.close()
     return response
-<<<<<<< HEAD
-
-=======
->>>>>>> 9dffeca96bf48d843475d2d2fa55277bd06469e2
 
 @role_required(["superadmin"])
 def download_invoice_pdf_superadmin(request):
