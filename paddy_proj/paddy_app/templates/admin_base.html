@@ -4,9 +4,33 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Admin</title>
   <link rel="stylesheet" href="{% static 'css/admin_base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+  <style>
+    /* Admin-specific style overrides that can't be centralized */
+    .messages-container {
+      top: 60px;
+    }
+    
+    /* Improved focus state for accessibility */
+    .hamburger:focus {
+      outline: 2px solid var(--primary-color);
+    }
+    
+    /* Ensure logout button is consistent on small screens */
+    @media (max-width: 480px) {
+      .sidebar-footer {
+        padding: 15px 10px;
+      }
+      
+      .logout-button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 
 <body>

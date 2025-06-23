@@ -4,43 +4,39 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Superadmin</title>
   <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
   <style>
-    /* Sidebar Footer */
-.sidebar-footer-cng {
-  padding: 20px;
-  text-align: center;
-  border-top: 1px solid var(--sidebar-border);
-  margin-top: auto;
-}
-
-.footer-logo-cng {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.logout-form-cng {
-  width: 100%;
-}
-
-.logout-button-cng {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color var(--transition-speed) ease;
-}
-
-.logout-button-cng:hover {
-  background-color: #d32f2f;
-}
+    /* Superadmin-specific style overrides */
+    /* Improved focus state for accessibility */
+    .hamburger:focus {
+      outline: 2px solid var(--primary-color);
+    }
+    
+    /* Superadmin submenu specific styles */
+    @media (max-width: 768px) {
+      .submenu-item {
+        margin: 2px 0;
+      }
+      
+      .submenu-link {
+        padding: 8px 12px 8px 30px;
+      }
+    }
+    
+    /* Ensure logout button is consistent on small screens */
+    @media (max-width: 480px) {
+      .sidebar-footer {
+        padding: 15px 10px;
+      }
+      
+      .logout-button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 
@@ -160,11 +156,11 @@
     </nav>
 
     <!-- Footer -->
-    <footer class="sidebar-footer-cng">
-      <div class="footer-logo-cng">Logo Here</div>
+    <footer class="sidebar-footer">
+      <div class="footer-logo">Logo Here</div>
       <form action="{% url 'logout' %}" method="post" class="logout-form">
         {% csrf_token %}
-        <button type="submit" class="logout-button-cng">Logout</button>
+        <button type="submit" class="logout-button">Logout</button>
       </form>
     </footer>
   </aside>

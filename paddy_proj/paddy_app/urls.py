@@ -59,10 +59,10 @@ urlpatterns = [
 path("unified-report-admin/", unified_report_admin, name="unified_report_admin"),
     path("unified-report-superadmin/", unified_report_superadmin, name="unified_report_superadmin"),
 
-    path('download-report-excel/', download_report_excel, name='download_report_excel'),
-    path("download-invoice-pdf/", download_invoice_pdf, name="download_invoice_pdf"),
-path('download-invoice-pdf1/', download_invoice_pdf1, name='download_invoice_pdf1'),
-path('download-invoice-excel1/', download_invoice_excel1, name='download_invoice_excel1'),
+    path('download-report-excel/', download_report_excel_admin, name='download_report_excel'),
+    path("download-invoice-pdf/", download_invoice_pdf_admin, name="download_invoice_pdf"),
+path('download-invoice-pdf1/', download_invoice_pdf_superadmin, name='download_invoice_pdf1'),
+path('download-invoice-excel1/', download_invoice_excel_superadmin, name='download_invoice_excel1'),
  path('report/customize/',customize_pdf_report, name='customize_pdf_report'),
     path('report/download/custom/',download_custom_pdf, name='download_custom_pdf'),
 

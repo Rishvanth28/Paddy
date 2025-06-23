@@ -5,11 +5,11 @@
 <head>
     <link rel="stylesheet" href="{% static 'css/notifications.css' %}">
     <style>
-        /* Professional Black & Grey Theme for Notifications */
+        /* Black & White Theme with White Predominance */
         .container-fluid {
-            /* background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important; */
             min-height: 100vh !important;
-            color: #e8e8e8 !important;
+            color: #262626 !important;
+            background-color: #ffffff !important;
         }
 
         /* Header Bar */
@@ -33,8 +33,6 @@
             text-transform: uppercase;
             padding-bottom: 0.6rem;
             text-align: left;
-
-
             /* <-- Ensure left alignment */
         }
 
@@ -61,32 +59,21 @@
             /* keep it centered */
         }
 
-
-        .badge {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
-            font-weight: 600 !important;
-            font-size: 0.75rem !important;
-            padding: 4px 8px !important;
-            border-radius: 12px !important;
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3) !important;
-        }
-
         .btn-outline-primary {
-            color: #ffffff !important;
-            border-color: #404040 !important;
-            background: rgb(0, 0, 0) !important;
-            backdrop-filter: blur(5px) !important;
+            color: #000000 !important;
+            border-color: #000000 !important;
+            background: #ffffff !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
         }
 
         .btn-outline-primary:hover {
-            background: rgb(0, 0, 0) !important;
-            border-color: #606060 !important;
+            background: #000000 !important;
+            border-color: #000000 !important;
             color: #ffffff !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
         }
 
         .notifications-container {
@@ -95,15 +82,15 @@
         }
 
         .notification-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background: #ffffff !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
             border-radius: 16px !important;
             padding: 20px !important;
             margin-bottom: 16px !important;
-            backdrop-filter: blur(10px) !important;
             transition: all 0.3s ease !important;
             position: relative !important;
             overflow: hidden !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
         }
 
         .notification-card::before {
@@ -113,23 +100,23 @@
             left: 0 !important;
             right: 0 !important;
             height: 3px !important;
-            background: linear-gradient(90deg, #404040, #606060, #404040) !important;
+            background: #e0e0e0 !important;
         }
 
         .notification-card:hover {
             transform: translateY(-4px) !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
-            border-color: rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+            border-color: rgba(0, 0, 0, 0.2) !important;
         }
 
         .notification-card.unread {
-            background: rgb(0, 0, 0) !important;
-            border-color: rgba(255, 215, 0, 0.3) !important;
+            background: #f8f8f8 !important;
+            border-color: rgba(0, 0, 0, 0.15) !important;
         }
 
         .notification-card.unread::before {
-            background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700) !important;
-            box-shadow: 0 0 12px rgba(255, 215, 0, 0.5) !important;
+            background: #000000 !important;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2) !important;
         }
 
         .notification-header {
@@ -137,15 +124,17 @@
             align-items: center !important;
             gap: 12px !important;
             margin-bottom: 12px !important;
-        }        .notification-icon {
-            background: rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .notification-icon {
+            background: rgba(0, 0, 0, 0.05) !important;
             border-radius: 50% !important;
             width: 40px !important;
             height: 40px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
             position: relative !important;
@@ -153,9 +142,9 @@
 
         .notification-icon:hover {
             transform: scale(1.1) !important;
-            background: rgba(0, 0, 0, 0.5) !important;
-            border-color: rgba(255, 255, 255, 0.3) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            background: rgba(0, 0, 0, 0.1) !important;
+            border-color: rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
         }
 
         .notification-icon.animate-pulse {
@@ -163,9 +152,18 @@
         }
 
         @keyframes iconPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); box-shadow: 0 0 20px currentColor; }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .notification-icon::after {
@@ -174,7 +172,7 @@
             inset: -2px !important;
             border-radius: 50% !important;
             padding: 2px !important;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+            background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.1), transparent) !important;
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
             mask-composite: exclude !important;
             opacity: 0 !important;
@@ -190,14 +188,15 @@
             position: fixed !important;
             top: 20px !important;
             right: 20px !important;
-            background: rgba(0, 0, 0, 0.9) !important;
-            color: #ffffff !important;
+            background: #ffffff !important;
+            color: #000000 !important;
             padding: 12px 20px !important;
             border-radius: 8px !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
             z-index: 1000 !important;
             transform: translateX(400px) !important;
             transition: transform 0.3s ease !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
         }
 
         .action-feedback.show {
@@ -205,16 +204,18 @@
         }
 
         .action-feedback.success {
-            border-color: rgba(40, 167, 69, 0.5) !important;
-            background: rgba(40, 167, 69, 0.2) !important;
-        }        .action-feedback.info {
-            border-color: rgba(23, 162, 184, 0.5) !important;
-            background: rgba(23, 162, 184, 0.2) !important;
+            border-color: #000000 !important;
+            background: #f8f8f8 !important;
+        }
+
+        .action-feedback.info {
+            border-color: #000000 !important;
+            background: #ffffff !important;
         }
 
         .action-feedback.error {
-            border-color: rgba(220, 53, 69, 0.5) !important;
-            background: rgba(220, 53, 69, 0.2) !important;
+            border-color: #000000 !important;
+            background: #f0f0f0 !important;
         }
 
         /* Loading state for delete button */
@@ -229,202 +230,121 @@
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Enhanced confirmation dialog styles */
         .swal2-popup {
-            background: #2d2d2d !important;
-            color: #ffffff !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
         }
 
         .swal2-title {
-            color: #ffffff !important;
+            color: #000000 !important;
         }
 
         .swal2-content {
-            color: #d0d0d0 !important;
+            color: #333333 !important;
         }
 
         .notification-icon i {
             font-size: 1.2rem !important;
-            filter: drop-shadow(0 0 4px currentColor) !important;
+            color: #000000 !important;
         }
 
         .notification-title {
             flex: 1 !important;
             font-weight: 600 !important;
             font-size: 1.1rem !important;
-            color: #ffffff !important;
+            color: #000000 !important;
         }
 
         .notification-time {
-            color: #b0b0b0 !important;
+            color: #666666 !important;
             font-size: 0.875rem !important;
             font-weight: 500 !important;
         }
 
         .unread-indicator {
+            top: 2px;
             width: 12px !important;
             height: 12px !important;
-            background: #ffd700 !important;
+            background: #000000 !important;
             border-radius: 50% !important;
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6) !important;
-            animation: pulse-gold 2s infinite !important;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
+            animation: pulse-black 2s infinite !important;
         }
 
-        @keyframes pulse-gold {
+        @keyframes pulse-black {
             0% {
-                box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
             }
 
             50% {
-                box-shadow: 0 0 16px rgba(255, 215, 0, 0.8);
+                box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
             }
 
             100% {
-                box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
             }
         }
 
         .notification-message {
-            color: #d0d0d0 !important;
+            color: #333333 !important;
             line-height: 1.5 !important;
             font-size: 0.95rem !important;
             margin-bottom: 16px !important;
         }
 
         .notification-actions .btn {
-            background: rgba(0, 0, 0, 0.4) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            color: #ffffff !important;
+            background: #ffffff !important;
+            border: 1px solid #000000 !important;
+            color: #000000 !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
         }
 
         .notification-actions .btn:hover {
-            background: rgba(0, 0, 0, 0.6) !important;
-            border-color: rgba(255, 255, 255, 0.3) !important;
+            background: #000000 !important;
+            border-color: #000000 !important;
+            color: #ffffff !important;
             transform: translateY(-1px) !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
         }
 
         .empty-state {
             text-align: center !important;
             padding: 60px 20px !important;
-            background: rgba(40, 40, 40, 0.6) !important;
+            background: #f9f9f9 !important;
             border-radius: 20px !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
         }
 
         .empty-icon {
             font-size: 4rem !important;
-            color: #606060 !important;
+            color: #888888 !important;
             margin-bottom: 20px !important;
         }
 
         .empty-state h3 {
-            color: #ffffff !important;
+            color: #000000 !important;
             font-weight: 600 !important;
             margin-bottom: 12px !important;
         }
 
         .empty-state p {
-            color: #b0b0b0 !important;
+            color: #333333 !important;
             max-width: 400px !important;
             margin: 0 auto !important;
             line-height: 1.6 !important;
-        }
-
-        /* Professional Delete Button Styles */
-        .delete-controls {
-            background: rgb(0, 0, 0) !important;
-            backdrop-filter: blur(10px) !important;
-            border-radius: 12px !important;
-            padding: 16px 20px !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            margin-bottom: 20px !important;
-            display: none !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            transition: all 0.3s ease !important;
-        }
-
-        .delete-controls.show { 
-            display: flex !important;
-            animation: slideDown 0.3s ease !important;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .selection-info {
-            color: #ffffff !important;
-            font-weight: 500 !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 8px !important;
-        }
-
-        .selection-count {
-            background: #dc3545 !important;
-            color: #ffffff !important;
-            padding: 4px 8px !important;
-            border-radius: 12px !important;
-            font-size: 0.75rem !important;
-            font-weight: 600 !important;
-            min-width: 20px !important;
-            text-align: center !important;
-        }
-
-        .btn-delete-selected {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
-            border: none !important;
-            color: #ffffff !important;
-            padding: 8px 16px !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-            font-size: 0.875rem !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 8px !important;
-            transition: all 0.3s ease !important;
-            cursor: pointer !important;
-        }
-
-        .btn-delete-selected:hover {
-            background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
-        }
-
-        .btn-delete-selected:active {
-            transform: translateY(0) !important;
-            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4) !important;
-        }
-
-        .btn-cancel-selection {
-            background: rgba(108, 117, 125, 0.2) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            color: #ffffff !important;
-            padding: 8px 16px !important;
-            border-radius: 8px !important;
-            font-weight: 500 !important;
-            font-size: 0.875rem !important;
-            transition: all 0.3s ease !important;
-            cursor: pointer !important;
-            margin-right: 8px !important;
-        }
-
-        .btn-cancel-selection:hover {
-            background: rgba(108, 117, 125, 0.4) !important;
-            border-color: rgba(255, 255, 255, 0.3) !important;
         }
 
         /* Notification Selection Checkbox */
@@ -445,16 +365,16 @@
         }
 
         .notification-card.selected {
-            border-color: linear-gradient(135deg, #dc3545, #c82333) !important;
-            background: rgb(0, 0, 0) !important;
+            border-color: #000000 !important;
+            background: #f8f8f8 !important;
         }
 
         .custom-checkbox {
             width: 20px !important;
             height: 20px !important;
             appearance: none !important;
-            background: rgb(0, 0, 0) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            background: #ffffff !important;
+            border: 2px solid #000000 !important;
             border-radius: 4px !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
@@ -462,8 +382,8 @@
         }
 
         .custom-checkbox:checked {
-            background: linear-gradient(135deg, #dc3545, #c82333) !important;
-            border-color: #dc3545 !important;
+            background: #000000 !important;
+            border-color: #000000 !important;
         }
 
         .custom-checkbox:checked::after {
@@ -478,15 +398,15 @@
         }
 
         .custom-checkbox:hover {
-            border-color: rgba(255, 255, 255, 0.5) !important;
-            box-shadow: 0 0 8px rgba(220, 53, 69, 0.3) !important;
+            border-color: #000000 !important;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2) !important;
         }
 
         /* Select All Button */
         .btn-select-all {
-            background: rgb(0, 0, 0) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            color: #ffffff !important;
+            background: #ffffff !important;
+            border: 1px solid #000000 !important;
+            color: #000000 !important;
             padding: 6px 12px !important;
             border-radius: 6px !important;
             font-size: 0.75rem !important;
@@ -496,30 +416,166 @@
         }
 
         .btn-select-all:hover {
-            background: linear-gradient(135deg, #dc3545, #c82333) !important;
-            border-color: rgba(255, 255, 255, 0.3) !important;
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.18) !important;
+            background: #000000 !important;
+            color: #ffffff !important;
+            border-color: #000000 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Professional Delete Button Styles */
+        .delete-controls {
+            background: #ffffff !important;
+            border-radius: 12px !important;
+            padding: 16px 20px !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            margin-bottom: 20px !important;
+            display: none !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .delete-controls.show {
+            display: flex !important;
+            animation: slideDown 0.3s ease !important;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .selection-info {
+            color: #000000 !important;
+            font-weight: 500 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        .selection-count {
+            background: #000000 !important;
+            color: #ffffff !important;
+            padding: 4px 8px !important;
+            border-radius: 12px !important;
+            font-size: 0.75rem !important;
+            font-weight: 600 !important;
+            min-width: 20px !important;
+            text-align: center !important;
+        }
+
+        .btn-delete-selected {
+            background: #000000 !important;
+            border: none !important;
+            color: #ffffff !important;
+            padding: 8px 16px !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            font-size: 0.875rem !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+        }
+
+        .btn-delete-selected:hover {
+            background: #333333 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .btn-delete-selected:active {
+            transform: translateY(0) !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .btn-cancel-selection {
+            background: #ffffff !important;
+            border: 1px solid #000000 !important;
+            color: #000000 !important;
+            padding: 8px 16px !important;
+            border-radius: 8px !important;
+            font-weight: 500 !important;
+            font-size: 0.875rem !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            margin-right: 8px !important;
+        }
+
+        .btn-cancel-selection:hover {
+            background: #f0f0f0 !important;
+            border-color: #000000 !important;
+        }
+
+        /* Notification Badge Styles */
+        .badge {
+            background: #000000 !important;
+            font-weight: 700 !important;
+            font-size: 0.8rem !important;
+            padding: 6px 10px !important;
+            border-radius: 20px !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2) !important;
+            color: #ffffff !important;
+            margin-left: 8px !important;
+            position: relative !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 24px !important;
+            animation: pulse-badge 2s infinite !important;
+            transform: translateY(-5px) !important;
+        }
+
+        .page-title .badge {
+            vertical-align: middle !important;
+            margin-top: -5px !important;
+        }
+
+        @keyframes pulse-badge {
+            0% {
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                transform: translateY(-5px) scale(1);
+            }
+
+            50% {
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                transform: translateY(-5px) scale(1.1);
+            }
+
+            100% {
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                transform: translateY(-5px) scale(1);
+            }
         }
 
         /* Icon color customizations */
         .text-success {
-            color: #28a745 !important;
+            color: #000000 !important;
         }
 
         .text-primary {
-            color: #007bff !important;
+            color: #000000 !important;
         }
 
         .text-info {
-            color: #17a2b8 !important;
+            color: #000000 !important;
         }
 
         .text-warning {
-            color: #ffc107 !important;
+            color: #000000 !important;
         }
 
         .text-secondary {
-            color: #6c757d !important;
+            color: #000000 !important;
         }
 
         /* Scrollbar styling */
@@ -528,16 +584,16 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2) !important;
+            background: rgba(0, 0, 0, 0.05) !important;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3) !important;
+            background: rgba(0, 0, 0, 0.2) !important;
             border-radius: 4px !important;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5) !important;
+            background: rgba(0, 0, 0, 0.4) !important;
         }
 
         /* Responsive adjustments */
@@ -563,10 +619,10 @@
 
 <div class="container-fluid my-4">
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-        <h1 class="page-title mb-0 me-3">Notifications</h1>
-        {% if unread_count > 0 %}
-        <span class="badge bg-danger ms-2">{{ unread_count }}</span>
-        {% endif %}
+        <h1 class="page-title mb-0 me-3">Notifications
+            {% if unread_count > 0 %}
+            <span class="badge ms-2">{{ unread_count }}</span>
+            {% endif %}
         </h1>
 
         <div class="d-flex align-items-center gap-2">
@@ -600,15 +656,16 @@
 
     <div class="notifications-container">
         {% if notifications %}
-        {% for notification in notifications %}        <div class="notification-card {% if not notification.is_read %}unread{% endif %}"
+        {% for notification in notifications %} <div
+            class="notification-card {% if not notification.is_read %}unread{% endif %}"
             data-notification-id="{{ notification.notification_id }}">
-            
+
             <!-- Selection Checkbox -->
             <div class="notification-checkbox">
-                <input type="checkbox" class="custom-checkbox notification-select" 
-                       value="{{ notification.notification_id }}" 
-                       onchange="updateSelection()">
-            </div><div class="notification-header">
+                <input type="checkbox" class="custom-checkbox notification-select"
+                    value="{{ notification.notification_id }}" onchange="updateSelection()">
+            </div>
+            <div class="notification-header">
                 <div>
                     {% if notification.notification_type == 'order_placed' %}
                     <i class="bi bi-cart-plus text-success" title="View Order Details"></i>
@@ -709,7 +766,7 @@
         if (unreadCards.length === 0 && badge) {
             badge.remove();
         }
-    }    function getCookie(name) {
+    } function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
@@ -755,23 +812,23 @@
                     form.method = 'POST';
                     form.action = '{% url "payment" %}';
                     form.target = '_blank';
-                    
+
                     const csrfInput = document.createElement('input');
                     csrfInput.type = 'hidden';
                     csrfInput.name = 'csrfmiddlewaretoken';
                     csrfInput.value = getCookie('csrftoken');
-                    
+
                     const orderInput = document.createElement('input');
                     orderInput.type = 'hidden';
                     orderInput.name = 'order_id';
                     orderInput.value = orderId;
-                    
+
                     form.appendChild(csrfInput);
                     form.appendChild(orderInput);
                     document.body.appendChild(form);
                     form.submit();
                     document.body.removeChild(form);
-                    
+
                     message = 'Opening payment receipt...';
                     actionType = 'success';
                 } else {
@@ -895,17 +952,17 @@
         const checked = document.querySelectorAll('.notification-select:checked');
         const deleteControls = document.getElementById('deleteControls');
         const selectionCount = document.getElementById('selectionCount');
-        
+
         // Update selection count
         selectionCount.textContent = checked.length;
-        
+
         // Show/hide delete controls
         if (checked.length > 0) {
             deleteControls.classList.add('show');
         } else {
             deleteControls.classList.remove('show');
         }
-        
+
         // Update card styles
         checkboxes.forEach(checkbox => {
             const card = checkbox.closest('.notification-card');
@@ -921,35 +978,35 @@
         const checkboxes = document.querySelectorAll('.notification-select');
         const selectAllBtn = document.querySelector('.btn-select-all');
         const allChecked = document.querySelectorAll('.notification-select:checked').length === checkboxes.length;
-        
+
         checkboxes.forEach(checkbox => {
             checkbox.checked = !allChecked;
         });
-        
+
         // Update button text
-        selectAllBtn.innerHTML = allChecked ? 
-            '<i class="bi bi-check-square me-1"></i>Select All' : 
+        selectAllBtn.innerHTML = allChecked ?
+            '<i class="bi bi-check-square me-1"></i>Select All' :
             '<i class="bi bi-square me-1"></i>Deselect All';
-        
+
         updateSelection();
     }
 
     function cancelSelection() {
         const checkboxes = document.querySelectorAll('.notification-select');
         const selectAllBtn = document.querySelector('.btn-select-all');
-        
+
         checkboxes.forEach(checkbox => {
             checkbox.checked = false;
         });
-        
+
         selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1"></i>Select All';
         updateSelection();
     }
 
     function deleteSelectedNotifications() {
         const selectedIds = Array.from(document.querySelectorAll('.notification-select:checked'))
-                                .map(cb => cb.value);
-        
+            .map(cb => cb.value);
+
         if (selectedIds.length === 0) {
             showActionFeedback('No notifications selected', 'info');
             return;
@@ -977,47 +1034,47 @@
                 notification_ids: selectedIds
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Remove notifications from DOM with fade effect
-                selectedIds.forEach(id => {
-                    const card = document.querySelector(`[data-notification-id="${id}"]`);
-                    if (card) {
-                        card.style.transition = 'all 0.3s ease';
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateX(-100%)';
-                        setTimeout(() => card.remove(), 300);
-                    }
-                });
-
-                showActionFeedback(`${selectedIds.length} notification(s) deleted successfully`, 'success');
-                
-                // Reset selection
-                setTimeout(() => {
-                    cancelSelection();
-                    
-                    // Check if no notifications left
-                    setTimeout(() => {
-                        const remainingCards = document.querySelectorAll('.notification-card');
-                        if (remainingCards.length === 0) {
-                            location.reload();
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove notifications from DOM with fade effect
+                    selectedIds.forEach(id => {
+                        const card = document.querySelector(`[data-notification-id="${id}"]`);
+                        if (card) {
+                            card.style.transition = 'all 0.3s ease';
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateX(-100%)';
+                            setTimeout(() => card.remove(), 300);
                         }
-                    }, 400);
-                }, 300);
-            } else {
-                showActionFeedback(data.error || 'Failed to delete notifications', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showActionFeedback('Failed to delete notifications', 'error');
-        })
-        .finally(() => {
-            // Restore button state
-            deleteBtn.innerHTML = originalContent;
-            deleteBtn.disabled = false;
-        });
+                    });
+
+                    showActionFeedback(`${selectedIds.length} notification(s) deleted successfully`, 'success');
+
+                    // Reset selection
+                    setTimeout(() => {
+                        cancelSelection();
+
+                        // Check if no notifications left
+                        setTimeout(() => {
+                            const remainingCards = document.querySelectorAll('.notification-card');
+                            if (remainingCards.length === 0) {
+                                location.reload();
+                            }
+                        }, 400);
+                    }, 300);
+                } else {
+                    showActionFeedback(data.error || 'Failed to delete notifications', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showActionFeedback('Failed to delete notifications', 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                deleteBtn.innerHTML = originalContent;
+                deleteBtn.disabled = false;
+            });
     }
 
     // Auto-mark as read when notification is clicked
