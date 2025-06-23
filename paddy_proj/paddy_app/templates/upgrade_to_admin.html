@@ -1,68 +1,144 @@
 {% extends "customer_base.html" %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
+  /* Black & White Theme with White Predominance */
+  .container-fluid {
+    min-height: 100vh !important;
+    color: #262626 !important;
+    background-color: #ffffff !important;
   }
 
-  .messages-container {
-    margin-bottom: 2rem;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .message {
-    padding: 1rem 1.5rem;
-    margin-bottom: 1rem;
-    border-radius: 8px;
-    border: 1px solid;
+  /* Toast Notifications Styling */
+  .toast-container {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+    max-width: 350px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 16px 40px 16px 24px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #000000;
+    font-weight: 500;
     position: relative;
-    font-size: 1rem;
+    animation: slideInRight 0.5s forwards;
+    pointer-events: auto;
+    font-family: 'Inter', sans-serif;
+    color: #000000;
+    font-size: 0.95rem;
     line-height: 1.5;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
   }
 
-  .message-success {
-    background-color: #2a2a2a;
-    border-color: #666;
-    color: #4caf50;
+  .toast::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #000000;
+    flex-shrink: 0;
   }
 
-  .message-info {
-    background-color: #2a2a2a;
-    border-color: #666;
-    color: #64b5f6;
+  .toast.success {
+    border-left-color: #000000;
   }
 
-  .message-warning {
-    background-color: #2a2a2a;
-    border-color: #666;
-    color: #ffb74d;
+  .toast.info {
+    border-left-color: #000000;
   }
 
-  .message-error {
-    background-color: #2a2a2a;
-    border-color: #666;
-    color: #e57373;
+  .toast.warning {
+    border-left-color: #000000;
   }
 
-  .close-btn {
+  .toast.error {
+    border-left-color: #000000;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .toast-close {
     position: absolute;
-    top: 0.5rem;
-    right: 1rem;
+    top: 12px;
+    right: 12px;
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
-    color: #ccc;
+    color: #000000;
     opacity: 0.7;
+    transition: all 0.3s ease;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
   }
 
-  .close-btn:hover {
+  .toast-close:hover {
     opacity: 1;
-    color: #fff;
+    transform: rotate(90deg);
+    background-color: rgba(0, 0, 0, 0.05);
   }
 
+  .toast.hide {
+    animation: slideOutRight 0.5s forwards;
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+  }
+
+  /* Header Bar */
   .header-bar {
     display: flex;
     align-items: center;
@@ -109,80 +185,353 @@
     /* keep it centered */
   }
 
-
   .upgrade-form {
     max-width: 500px;
     margin: 2rem auto;
     padding: 2.5rem;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+    background-color: #ffffff !important;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    border: 1px solid #444;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .upgrade-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #000000, rgba(0, 0, 0, 0.7), #000000);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .upgrade-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   }
 
   .form-text {
     margin-bottom: 2rem;
     font-size: 1.1rem;
-    color: #666;
+    color: #333333;
     text-align: center;
     line-height: 1.6;
+    font-weight: 400;
+    letter-spacing: 0.01em;
   }
 
-  .upgrade-btn {
+  .upgrade-btn,
+  .admin-btn {
     width: 100%;
     padding: 1rem 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
-    background: linear-gradient(135deg, #333, #555);
-    color: #e0e0e0;
+    background-color: #000000;
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border: 1px solid #666;
+    letter-spacing: 0.8px;
+    border: 1px solid #000000;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
   }
 
-  .upgrade-btn:hover {
-    background: linear-gradient(135deg, #555, #777);
+  .upgrade-btn::before,
+  .admin-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    transform: translateX(-100%);
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: -1;
+  }
+
+  .upgrade-btn:hover,
+  .admin-btn:hover {
+    color: #000000;
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-    border-color: #888;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-color: #000000;
+    text-decoration: none;
   }
 
-  .upgrade-btn:active {
+  .upgrade-btn:hover::before,
+  .admin-btn:hover::before {
+    transform: translateX(0);
+  }
+
+  .upgrade-btn:active,
+  .admin-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  /* Admin status styling */
+  .admin-status {
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .admin-status::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+  }
+
+  .admin-icon {
+    margin: 0 auto 1.5rem;
+    width: 80px;
+    height: 80px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    animation: fadeIn 0.8s ease-in-out, pulse 2s infinite ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .admin-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #000000;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+  }
+    .admin-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #000000;
+  }
+  
+  .admin-info-box {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-left: 3px solid #000;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    text-align: left;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    animation: fadeIn 0.5s ease-in-out;
+    font-size: 1.05rem;
+    color: #000000;
+  }
+
+  /* Enhance the form with more elegant styling */
+  .upgrade-form {
+    transition: all 0.3s ease;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .upgrade-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Add a decorative element */
+  .upgrade-form::after {
+    content: '';
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    background-image: radial-gradient(#f0f0f0 20%, transparent 20%);
+    background-size: 8px 8px;
+    opacity: 0.8;
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  /* Professional button ripple effect */
+  .upgrade-btn,
+  .admin-btn {
+    transition: all 0.4s ease;
+  }
+
+  .upgrade-btn::after,
+  .admin-btn::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, #000 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform .5s, opacity 1s;
+  }
+
+  .upgrade-btn:active::after,
+  .admin-btn:active::after {
+    transform: scale(0, 0);
+    opacity: .2;
+    transition: 0s;
   }
 </style>
 
-<div class="container">
-  {% if messages %}
-  <div class="col-md-12">
+<script>  document.addEventListener('DOMContentLoaded', function () {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.classList.add('toast-container');
+      document.body.appendChild(toastContainer);
+    }
+
+    // Convert Django messages to toasts
+    const messages = document.querySelectorAll('.alert');
+    messages.forEach(message => {
+      const toastType = message.classList.contains('alert-success') ? 'success' :
+        message.classList.contains('alert-info') ? 'info' :
+          message.classList.contains('alert-warning') ? 'warning' : 'error';
+
+      createToast(message.textContent.trim(), toastType);
+      message.remove();
+    });
+
+    // Initialize close functionality for existing toasts
+    initializeToastCloseButtons();
+
+    function initializeToastCloseButtons() {
+      // Handle close button for all toasts
+      const allToasts = document.querySelectorAll('.toast');
+      allToasts.forEach(toast => {
+        const closeBtn = toast.querySelector('.toast-close');
+        if (closeBtn) {
+          // Remove any existing event listeners
+          closeBtn.removeEventListener('click', closeToastHandler);
+          // Add new event listener
+          closeBtn.addEventListener('click', closeToastHandler);
+        }
+      });
+    }
+
+    function closeToastHandler(e) {
+      const toast = this.closest('.toast');
+      if (toast) {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }
+    }
+
+    function createToast(message, type) {
+      const toast = document.createElement('div');
+      toast.classList.add('toast', type);
+      toast.innerHTML = `
+        ${message}
+        <button type="button" class="toast-close" aria-label="Close">&times;</button>
+      `;
+
+      toastContainer.appendChild(toast);
+
+      // Auto dismiss after 5 seconds
+      setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }, 5000);
+
+      // Add close button functionality
+      const closeBtn = toast.querySelector('.toast-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeToastHandler);
+      }
+    }
+  });
+</script>
+
+<div class="container-fluid my-4">  <!-- Toast container for messages -->
+  <div class="toast-container">
+    {% if messages %}
     {% for message in messages %}
-    <div class="alert 
-            {% if message.tags == 'success' %}alert-success
-            {% elif message.tags == 'info' %}alert-info
-            {% elif message.tags == 'warning' %}alert-warning
-            {% elif message.tags == 'error' %}alert-danger
-            {% endif %}
-            alert-dismissible fade show" role="alert">
+    <div class="toast 
+              {% if message.tags == 'success' %}success
+              {% elif message.tags == 'info' %}info
+              {% elif message.tags == 'warning' %}warning
+              {% elif message.tags == 'error' %}error
+              {% endif %}">
       {{ message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <button type="button" class="toast-close" aria-label="Close">&times;</button>
     </div>
     {% endfor %}
+    {% endif %}
   </div>
-  {% endif %}
 
   <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-    <h1 class="page-title mb-0 me-3 " >Upgrade To Admin</h1>
+    <h1 class="page-title mb-0 me-3">Upgrade To Admin</h1>
+  </div>  <div class="upgrade-form">
+    {% if request.session.role == 'admin' or is_admin %}
+    <!-- Already Admin Message -->    <div class="admin-status">
+      <div class="admin-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M8 12l2 2 6-6"></path>
+        </svg>
+      </div>      <h2 class="admin-title">You are already an Admin</h2>      <div class="admin-info-box">
+        <p><strong>You are already an admin!</strong> Your account doesn't need to be upgraded.</p>
+      </div>
+      <p class="form-text">As an existing administrator, you already have access to all administrative features including product management, order tracking, and system configuration.</p>
+      
+    </div>
+    {% else %}
+    <!-- Upgrade Form -->
+    <form method="post">
+      {% csrf_token %}
+      <p class="form-text">Are you sure you want to upgrade your account to Admin? This will allow you to manage
+        products, view all orders, and access administrative features.</p>
+      <button type="submit" class="upgrade-btn">
+        <span>Upgrade Now</span>
+      </button>
+    </form>
+    {% endif %}
   </div>
-  <form method="post" class="upgrade-form">
-    {% csrf_token %}
-    <p class="form-text">Are you sure you want to upgrade your account to Admin?</p>
-    <button type="submit" class="upgrade-btn">Upgrade Now</button>
-  </form>
 
 </div>
 

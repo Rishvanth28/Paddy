@@ -540,6 +540,30 @@
         justify-content: center;
     }
 }
+
+.dropdown-select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--medium-gray);
+    font-size: 15px;
+    color: var(--dark-gray);
+    background-color: white;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    appearance: none;
+
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%236f42c1' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
+
+.dropdown-select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.15);
+}
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
