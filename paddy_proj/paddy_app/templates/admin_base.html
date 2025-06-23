@@ -93,7 +93,12 @@
             <span class="nav-text " >Place Order</span>
           </a>
         </li>
-
+        <li class="nav-item">
+          <a href="{% url 'admin_orders' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
+            <span class="nav-text " >Orders</span>
+          </a>
+        </li>
         <li class="nav-item">
           <a href="{% url 'admin_notifications' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Notifications">
