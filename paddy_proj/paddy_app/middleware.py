@@ -3,6 +3,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.utils.timezone import now
 from django.shortcuts import redirect
 from .models import Subscription
+from .helpers import get_unread_notification_count
 
 class SubscriptionMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -44,3 +45,27 @@ class SubscriptionMiddleware(MiddlewareMixin):
                 return redirect("customer_subscription_payment")
 
         return None
+
+class NotificationMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        role = request.session.get("role")
+        user_id = request.session.get("user_id")
+        
+        # Set default value
+        request.unread_count = 0
+        
+        # Only calculate unread notifications if user is logged in
+        if user_id and role:
+            if role == "customer":
+                request.unread_count = get_unread_notification_count('customer', user_id)
+            elif role == "admin":
+                request.unread_count = get_unread_notification_count('admin', user_id)
+            elif role == "super_admin":
+                request.unread_count = get_unread_notification_count('super_admin', user_id)
+        
+        return None
+    
+    def process_template_response(self, request, response):
+        if hasattr(response, 'context_data'):
+            response.context_data['unread_count'] = getattr(request, 'unread_count', 0)
+        return response

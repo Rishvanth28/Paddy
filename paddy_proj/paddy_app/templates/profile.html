@@ -148,6 +148,30 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
 .submit-btn:hover::before {
     left: 130%;
 }
+.subscription-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.status-active {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.status-inactive {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
 @media (max-width: 768px) {
     .header-bar { margin-left: 0; margin-top: 1.5rem; }
     .form-grid { grid-template-columns: 1fr; }
@@ -166,58 +190,111 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
     <div class="upgrade-card">
         <!-- Card Header -->
         <div class="card-header">
-            <h2>Profile Details</h2>
+            <h2>{{ user_data.user_type }} Profile Details</h2>
         </div>
 
         <!-- Card Body -->
         <div class="card-body">
-            <!-- User Information Section -->
+            <!-- Account Information Section -->
             <div class="current-info-section">
                 <h3 class="section-title">Account Information</h3>
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">First Name</div>
-                        <div class="info-value">Alex</div>
+                        <div class="info-value">{{ user_data.first_name }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Last Name</div>
-                        <div class="info-value">Johnson</div>
+                        <div class="info-value">{{ user_data.last_name }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Email</div>
-                        <div class="info-value">alex.johnson@email.com</div>
+                        <div class="info-value">{{ user_data.email }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Phone</div>
-                        <div class="info-value">+91 9876543210</div>
+                        <div class="info-value">{{ user_data.phone_number }}</div>
                     </div>
+                    {% if user_data.is_superadmin or user_data.is_admin %}
+                    <div class="info-item">
+                        <div class="info-label">Admin ID</div>
+                        <div class="info-value">{{ user_data.admin_id }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">User Count</div>
+                        <div class="info-value">{{ user_data.user_count }}</div>
+                    </div>
+                    {% endif %}
+                    {% if user_data.is_customer %}
+                    <div class="info-item">
+                        <div class="info-label">Customer ID</div>
+                        <div class="info-value">{{ user_data.customer_id }}</div>
+                    </div>
+                    {% endif %}
+                    {% if user_data.created_at %}
+                    <div class="info-item">
+                        <div class="info-label">Member Since</div>
+                        <div class="info-value">{{ user_data.created_at|date:"F d, Y" }}</div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 
-            <!-- Business Information Section -->
+            {% if user_data.is_customer %}
+            <!-- Business Information Section (Customer Only) -->
             <div class="current-info-section" style="margin-top: 2rem;">
                 <h3 class="section-title">Business Information</h3>
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Company Name</div>
-                        <div class="info-value">Acme Pvt Ltd</div>
+                        <div class="info-value">{{ user_data.company_name|default:"Not specified" }}</div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">GST Number</div>
-                        <div class="info-value">22AAAAA0000A1Z5</div>
+                        <div class="info-value">{{ user_data.gst|default:"Not specified" }}</div>
                     </div>
                     <div class="info-item" style="grid-column: 1 / -1;">
                         <div class="info-label">Address</div>
-                        <div class="info-value">123, Main Street, Mumbai, 400001</div>
+                        <div class="info-value">{{ user_data.address|default:"Not specified" }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Admin</div>
+                        <div class="info-value">{{ user_data.admin.first_name }} {{ user_data.admin.last_name }}</div>
                     </div>
                 </div>
             </div>
+            {% endif %}
 
-            <!-- Profile Actions -->
-            <div class="profile-actions">
-                <a href="#" class="submit-btn">Edit Profile</a>
-                <a href="#" class="submit-btn" style="background:#eaf1fb; color:#2d6cdf;">Change Password</a>
-            </div>
+            {% if user_data.subscription and not user_data.is_superadmin %}
+            <!-- Subscription Information Section -->
+            <div class="current-info-section" style="margin-top: 2rem;">
+                <h3 class="section-title">Subscription Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value">
+                            {% if user_data.subscription.subscription_status == 1 %}
+                                <span class="subscription-status status-active">Active</span>
+                            {% else %}
+                                <span class="subscription-status status-inactive">Inactive</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Start Date</div>
+                        <div class="info-value">{{ user_data.subscription.start_date|date:"F d, Y" }}</div>
+                    </div>                    <div class="info-item">
+                        <div class="info-label">End Date</div>
+                        <div class="info-value">
+                            {% if user_data.subscription.end_date %}
+                                {{ user_data.subscription.end_date|date:"F d, Y" }}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>            {% endif %}
         </div>
     </div>
 </div>
