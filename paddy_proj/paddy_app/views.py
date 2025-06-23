@@ -2207,7 +2207,7 @@ def admin_subscription_payment(request):
             messages.error(request, "Session expired. Please log in again.")
             return redirect("login")
 
-        amount = 200 if plan == "1month" else 350
+        amount = 100 if plan == "1month" else 200
         duration = 30 if plan == "1month" else 60
 
         order_data = {
@@ -2232,7 +2232,7 @@ def admin_subscription_payment(request):
             "key_id": RAZORPAY_KEY_ID
         })
 
-    return render(request, "admin_select_subscription_plan.html")
+    return render(request, "admin_subscription_payment.html")
 
 def customer_subscription_payment(request):
     if request.method == "POST":
@@ -2243,7 +2243,7 @@ def customer_subscription_payment(request):
             messages.error(request, "Session expired. Please log in again.")
             return redirect("login")
 
-        amount = 100 if plan == "1month" else 180
+        amount = 100 if plan == "1month" else 200
         duration = 30 if plan == "1month" else 60
 
         order_data = {
@@ -2268,7 +2268,7 @@ def customer_subscription_payment(request):
             "key_id": RAZORPAY_KEY_ID
         })
 
-    return render(request, "customer_select_subscription_plan.html")
+    return render(request, "customer_subscription_payment.html")
 
 @csrf_exempt
 def customer_payment_success(request):
