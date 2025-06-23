@@ -145,7 +145,12 @@
   padding: 20px;
   text-align: center;
   border-top: 1px solid var(--sidebar-border);
-  margin-top: auto;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: inherit;
+  z-index: 10;
 }
 
 .footer-logo {
@@ -245,6 +250,10 @@
   }
   .sidebar.open {
     transform: translateX(0);
+  }
+  .sidebar-nav {
+    padding-top: 20px;
+    padding-bottom: 100px; /* Extra padding to ensure all items visible on small screens */
   }
   .main-content {
     margin-left: 50px;

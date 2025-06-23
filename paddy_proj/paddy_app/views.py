@@ -30,10 +30,20 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+from reportlab.platypus.flowables import HRFlowable  
+from .forms import CustomReportForm
+from .models import Orders, Payments, AdminTable
+from reportlab.lib.colors import HexColor
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+import io
+from reportlab.platypus import (
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+)
 import inflect
-from django.db.models import Sum, Count, Q, Avg, Max, F
-from datetime import datetime, timedelta
-import json
+
+
 
 load_dotenv()
 
@@ -1990,7 +2000,7 @@ def upgrade_to_customer(request):
 def upgrade_success(request):
     return render(request, 'upgrade_success.html')
 
-
+@role_required(["customer"])
 @role_required(["superadmin"])
 def view_admins(request):
     query = request.GET.get('q')
@@ -2999,7 +3009,7 @@ def download_report_excel(request):
             output.getvalue(),
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        response['Content-Disposition'] = f'attachment; filename="detailed_report_{timezone.now().strftime('%Y%m%d')}.xlsx"'
+        response['Content-Disposition'] = f'attachment; filename="detailed_report_{timezone.now().strftime("%Y%m%d")}.xlsx"'
         return response
 
     except Exception as e:
@@ -3152,37 +3162,6 @@ def download_invoice_pdf(request):
     doc.build(elements)
     return response
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-from django.http import HttpResponse
-from django.utils import timezone
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4, landscape
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
-from .models import Orders, AdminTable
-from .decorators import role_required
 
 @role_required(["superadmin"])
 def download_invoice_pdf1(request):
@@ -3431,7 +3410,7 @@ def download_invoice_excel1(request):
     workbook.close()
     output.seek(0)
     response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = f'attachment; filename="superadmin_invoice_report_{timezone.now().strftime('%Y%m%d')}.xlsx"'
+    response['Content-Disposition'] = f'attachment; filename="superadmin_invoice_report_{timezone.now().strftime("%Y%m%d")}.xlsx"'
     return response
 
 
