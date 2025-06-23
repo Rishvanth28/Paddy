@@ -2983,7 +2983,7 @@ def download_report_excel_admin(request):
             output.getvalue(),
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        response['Content-Disposition'] = f'attachment; filename="detailed_report_{timezone.now().strftime('%Y%m%d')}.xlsx"'
+        response['Content-Disposition'] = f'attachment; filename="detailed_report_{timezone.now().strftime("%Y%m%d")}.xlsx"'
         return response
 
     except Exception as e:
@@ -3259,7 +3259,7 @@ def download_invoice_pdf_superadmin(request):
     doc.build(elements)
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="superadmin_business_report_{timezone.now().strftime('%Y%m%d_%H%M')}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="superadmin_business_report_{timezone.now().strftime("%Y%m%d_%H%M")}.pdf"'
     response.write(buffer.getvalue())
     buffer.close()
     return response
