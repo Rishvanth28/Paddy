@@ -8,12 +8,52 @@
   <title>Admin</title>
   <link rel="stylesheet" href="{% static 'css/admin_base.css' %}" />
   <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
-  <style>
-    /* Admin-specific style overrides that can't be centralized */
+  <style>    /* Admin-specific style overrides that can't be centralized */
     .messages-container {
       top: 60px;
     }
     
+    /* Notification Badge for Sidebar */
+    .notification-badge {
+      position: absolute;
+      right: 15px;
+      top: 40%;
+      transform: translateY(-50%);
+      background-color: #000000;
+      color: white;
+      border-radius: 50%;
+      min-width: 18px;
+      height: 18px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+      animation: pulse-badge 2s infinite;
+    }
+    
+    @keyframes pulse-badge {
+      0% {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        transform: translateY(-50%) scale(1);
+      }
+      50% {
+        box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+        transform: translateY(-50%) scale(1.1);
+      }
+      100% {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        transform: translateY(-50%) scale(1);
+      }
+    }
+    
+    /* Add 'has-notifications' class styling */
+    .nav-item.has-notifications .nav-link {
+      position: relative;
+    }
+
     /* Improved focus state for accessibility */
     .hamburger:focus {
       outline: 2px solid var(--primary-color);
@@ -98,11 +138,13 @@
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
             <span class="nav-text " >Orders</span>
           </a>
-        </li>
-        <li class="nav-item">
+        </li>        <li class="nav-item" id="notifications-menu-item">
           <a href="{% url 'admin_notifications' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Notifications">
             <span class="nav-text">Notifications</span>
+            {% if unread_count > 0 %}
+            <span class="notification-badge">{{ unread_count }}</span>
+            {% endif %}
           </a>
         </li>
 
@@ -158,8 +200,20 @@
     {% block content %}
     {% endblock %}
   </main>
- 
-  <script src="{% static 'js/admin_base.js' %}"></script>
+   <script src="{% static 'js/admin_base.js' %}"></script>
+  
+  <script>
+    // Handle notifications indicator
+    document.addEventListener('DOMContentLoaded', function() {
+      {% if unread_count > 0 %}
+      // Add the has-notifications class to the notifications menu item
+      const notificationMenuItem = document.getElementById('notifications-menu-item');
+      if (notificationMenuItem) {
+        notificationMenuItem.classList.add('has-notifications');
+      }
+      {% endif %}
+    });
+  </script>
 </body>
 
 </html>
