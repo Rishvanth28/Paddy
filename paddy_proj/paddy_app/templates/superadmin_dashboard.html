@@ -43,97 +43,110 @@
         <p class="upgrade-subtitle">Comprehensive analytics and management for the entire platform.</p>
     </div>
 </div>
-    
-    <div class="stats-row">
+      <div class="stats-row">
         <div class="stat-card stat-blue">
-            <span class="stat-icon">📦</span>
             <span class="stat-label">Total Orders</span>
             <span class="stat-value">{{ total_orders|default:'0' }}</span>
             <span class="stat-extra">All orders placed</span>
         </div>
         <div class="stat-card stat-green">
-            <span class="stat-icon">✅</span>
             <span class="stat-label">Completed Orders</span>
             <span class="stat-value">{{ completed_orders|default:'0' }}</span>
             <span class="stat-extra">Delivered to customers</span>
         </div>
         <div class="stat-card stat-yellow">
-            <span class="stat-icon">⏳</span>
             <span class="stat-label">Pending Orders</span>
             <span class="stat-value">{{ pending_orders|default:'0' }}</span>
             <span class="stat-extra">Awaiting delivery</span>
         </div>
         <div class="stat-card stat-blue">
-            <span class="stat-icon">🆕</span>
             <span class="stat-label">New Orders (7d)</span>
             <span class="stat-value">{{ new_orders|default:'0' }}</span>
             <span class="stat-extra">Last 7 days</span>
         </div>
         <div class="stat-card stat-blue">
-            <span class="stat-icon">👨‍💼</span>
             <span class="stat-label">Total Admins</span>
             <span class="stat-value">{{ total_admins|default:'0' }}</span>
             <span class="stat-extra">Platform admins</span>
         </div>
         <div class="stat-card stat-green">
-            <span class="stat-icon">👥</span>
             <span class="stat-label">Total Customers</span>
             <span class="stat-value">{{ total_customers|default:'0' }}</span>
             <span class="stat-extra">All customers</span>
         </div>
         <div class="stat-card stat-yellow">
-            <span class="stat-icon">🔔</span>
             <span class="stat-label">Active Subscriptions</span>
             <span class="stat-value">{{ active_subscriptions|default:'0' }}</span>
             <span class="stat-extra">Ongoing plans</span>
         </div>
         <div class="stat-card stat-red">
-            <span class="stat-icon">⚠️</span>
             <span class="stat-label">Expiring Subscriptions</span>
             <span class="stat-value">{{ expiring_subscriptions|default:'0' }}</span>
             <span class="stat-extra">Expiring soon</span>
         </div>
         <div class="stat-card stat-green">
-            <span class="stat-icon">💰</span>
             <span class="stat-label">Total Revenue</span>
             <span class="stat-value">₹{{ total_revenue|default:'0' }}</span>
             <span class="stat-extra">Gross revenue</span>
         </div>
         <div class="stat-card stat-blue">
-            <span class="stat-icon">📈</span>
             <span class="stat-label">Avg. Order Value</span>
             <span class="stat-value">₹{{ avg_order_value|default:'0' }}</span>
             <span class="stat-extra">Per order</span>
         </div>
         <div class="stat-card stat-yellow">
-            <span class="stat-icon">🏆</span>
             <span class="stat-label">Top Product</span>
             <span class="stat-value">{{ top_product|default:'N/A' }}</span>
             <span class="stat-extra">Most sold</span>
         </div>
         <div class="stat-card stat-red">
-            <span class="stat-icon">🔔</span>
             <span class="stat-label">Pending Requests</span>
             <span class="stat-value">{{ pending_subscription_requests|default:'0' }}</span>
             <span class="stat-extra">Waiting approval</span>
+        </div>    </div>
+    
+    <!-- Dashboard Navigation Grid - Moved to top -->
+    <div class="dashboard-navigation-section">
+        <h2>Quick Actions</h2>
+        <div class="superadmin-dashboard-grid">
+            <a href="{% url 'super_admin_orders' %}" class="superadmin-dashboard-btn">
+                <span class="icon">📦</span>
+                <span class="btn-label">Orders</span>
+                <span class="btn-desc">View and manage all orders</span>
+            </a>
+            <a href="{% url 'view_admins' %}" class="superadmin-dashboard-btn">
+                <span class="icon">👨‍💼</span>
+                <span class="btn-label">Admins</span>
+                <span class="btn-desc">Manage all admins</span>
+            </a>
+            <a href="{% url 'superadmin_subscription' %}" class="superadmin-dashboard-btn">
+                <span class="icon">🔔</span>
+                <span class="btn-label">Subscriptions</span>
+                <span class="btn-desc">Manage subscriptions</span>
+            </a>
+            <a href="{% url 'superadmin_notifications' %}" class="superadmin-dashboard-btn">
+                <span class="icon">🔔</span>
+                <span class="btn-label">Notifications</span>
+                <span class="btn-desc">All system alerts</span>
+            </a>
+            <a href="{% url 'onboard' %}" class="superadmin-dashboard-btn">
+                <span class="icon">📝</span>
+                <span class="btn-label">Onboarding</span>
+                <span class="btn-desc">Add new admins/customers</span>
+            </a>
+            <a href="{% url 'place_order' %}" class="superadmin-dashboard-btn">
+                <span class="icon">➕</span>
+                <span class="btn-label">Place Order</span>
+                <span class="btn-desc">Create a new order</span>
+            </a>
         </div>
     </div>
-    
-    {% comment %} <div class="stats-row-2">
-        
-    </div>
-    
-    <div class="stats-row-3">
-        
-    </div> {% endcomment %}
 
     <div class="recent-activity-section">
         <div class="recent-activity-list">
-            <h3>Recent Activity</h3>
-            <ul>
+            <h3>Recent Activity</h3>            <ul>
                 {% for activity in recent_activity %}
                 <li>
-                    <span>{{ activity.icon }}</span>
                     <span>{{ activity.text }}</span>
                     <span style="color:#888888; font-size:0.95em; margin-left:auto;">{{ activity.time }}</span>
                 </li>
@@ -151,16 +164,14 @@
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- New Analytics Section -->
+    </div>      <!-- New Analytics Section -->
     <div class="analytics-section">
-        <h2>📊 Platform Analytics</h2>
+        <h2>Platform Analytics</h2>
         <div class="analytics-grid">
-            <!-- Admins Growth Chart -->
+            <!-- Three charts in one row -->
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3>👨‍💼 Admin Distribution</h3>
+                    <h3>Admin Distribution</h3>
                     <p>Customer distribution by admin</p>
                 </div>
                 <div class="chart-body">
@@ -168,10 +179,9 @@
                 </div>
             </div>
             
-            <!-- Category Distribution Chart -->
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3>📈 Order Categories</h3>
+                    <h3>Order Categories</h3>
                     <p>Distribution by product type</p>
                 </div>
                 <div class="chart-body">
@@ -179,10 +189,9 @@
                 </div>
             </div>
             
-            <!-- Payment Status Chart -->
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3>💳 Payment Status</h3>
+                    <h3>Payment Status</h3>
                     <p>Order payment completion</p>
                 </div>
                 <div class="chart-body">
@@ -190,49 +199,16 @@
                 </div>
             </div>
             
-            <!-- Monthly Trend Chart -->
+            <!-- Monthly Trend Chart - Full width row -->
             <div class="chart-card wide">
                 <div class="chart-header">
-                    <h3>📊 Monthly Trends</h3>
+                    <h3>Monthly Trends</h3>
                     <p>Orders and revenue over time</p>
                 </div>
                 <div class="chart-body">
                     <canvas id="trendChart" width="600" height="300"></canvas>
                 </div>
-            </div>
-        </div>
-    </div>
-      <div class="superadmin-dashboard-grid">
-        <a href="{% url 'super_admin_orders' %}" class="superadmin-dashboard-btn">
-            <span class="icon">📦</span>
-            <span class="btn-label">Orders</span>
-            <span class="btn-desc">View and manage all orders</span>
-        </a>
-        <a href="{% url 'view_admins' %}" class="superadmin-dashboard-btn">
-            <span class="icon">👨‍💼</span>
-            <span class="btn-label">Admins</span>
-            <span class="btn-desc">Manage all admins</span>
-        </a>
-        <a href="{% url 'superadmin_subscription' %}" class="superadmin-dashboard-btn">
-            <span class="icon">🔔</span>
-            <span class="btn-label">Subscriptions</span>
-            <span class="btn-desc">Manage subscriptions</span>
-        </a>
-        <a href="{% url 'superadmin_notifications' %}" class="superadmin-dashboard-btn">
-            <span class="icon">🔔</span>
-            <span class="btn-label">Notifications</span>
-            <span class="btn-desc">All system alerts</span>
-        </a>
-        <a href="{% url 'onboard' %}" class="superadmin-dashboard-btn">
-            <span class="icon">📝</span>
-            <span class="btn-label">Onboarding</span>
-            <span class="btn-desc">Add new admins/customers</span>
-        </a>
-        <a href="{% url 'place_order' %}" class="superadmin-dashboard-btn">
-            <span class="icon">➕</span>
-            <span class="btn-label">Place Order</span>
-            <span class="btn-desc">Create a new order</span>
-        </a>
+            </div>        </div>
     </div>
 </div>
 
@@ -240,18 +216,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Set up Chart.js with brand colors
+document.addEventListener('DOMContentLoaded', function() {    // Set up Chart.js with enhanced color palette
     const colors = {
-        primary: '#3D5A80',
-        secondary: '#6B7280',
-        success: '#38A3A5',
-        danger: '#DC2626',
-        warning: '#F8C630',
-        info: '#98C1D9',
-        light: '#F9FAFB',
-        dark: '#2A3F5A',
-        accent: '#EE6C4D'
+        primary: '#000000',
+        secondary: '#333333',
+        success: '#28a745',
+        danger: '#dc3545',
+        warning: '#ffc107',
+        info: '#17a2b8',
+        light: '#ffffff',
+        dark: '#000000',
+        accent: '#6f42c1'
     };
       // Parse data from Django context
     const monthlyOrders = {{ monthly_orders|default:'[]'|safe }};
@@ -406,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     } else if (platformOverviewCtx) {
-        platformOverviewCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 200px; color: #888; font-size: 1rem; font-weight: 500;">📊 No platform data available</div>';
+        platformOverviewCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 200px; color: #888; font-size: 1rem; font-weight: 500;">No platform data available</div>';
     }
     
     // Admin Distribution Chart
@@ -415,19 +390,18 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(adminDistributionCtx, {
             type: 'doughnut',
             data: {
-                labels: adminNames,
-                datasets: [{
+                labels: adminNames,                datasets: [{
                     data: adminCustomerCounts,
                     backgroundColor: [
-                        colors.primary,
-                        colors.success,
-                        colors.warning,
-                        colors.info,
-                        colors.accent,
-                        colors.danger,
-                        '#8b5cf6',
-                        '#14b8a6',
-                        '#f97316'
+                        '#000000',
+                        '#28a745',
+                        '#dc3545',
+                        '#ffc107',
+                        '#17a2b8',
+                        '#6f42c1',
+                        '#fd7e14',
+                        '#20c997',
+                        '#6c757d'
                     ],
                     borderWidth: 3,
                     borderColor: '#ffffff',
@@ -475,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     } else if (adminDistributionCtx) {
-        adminDistributionCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">👨‍💼 No admin data available</div>';
+        adminDistributionCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">No admin data available</div>';
     }
     
     // Category Distribution Pie Chart
@@ -484,19 +458,18 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(categoryCtx, {
             type: 'doughnut',
             data: {
-                labels: orderCategories,
-                datasets: [{
+                labels: orderCategories,                datasets: [{
                     data: categoryCounts,
                     backgroundColor: [
-                        colors.primary,
-                        colors.success,
-                        colors.warning,
-                        colors.info,
-                        colors.secondary,
-                        colors.danger,
-                        '#8b5cf6',
-                        '#14b8a6',
-                        '#f97316'
+                        '#000000',
+                        '#28a745',
+                        '#dc3545',
+                        '#ffc107',
+                        '#17a2b8',
+                        '#6f42c1',
+                        '#fd7e14',
+                        '#20c997',
+                        '#6c757d'
                     ],
                     borderWidth: 3,
                     borderColor: '#ffffff',
@@ -544,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     } else if (categoryCtx) {
-        categoryCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">📊 No category data available</div>';
+        categoryCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">No category data available</div>';
     }
       // Payment Status Chart
     const paymentCtx = document.getElementById('paymentChart');
@@ -562,12 +535,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 data: {
                     labels: ['Completed', 'Partial', 'Pending'],
                     datasets: [{
-                        data: paymentData,
-                        backgroundColor: [
-                            colors.success,
-                            colors.warning,
-                            colors.info
-                        ],
+                        data: paymentData,                    backgroundColor: [
+                        '#28a745',
+                        '#ffc107',
+                        '#dc3545'
+                    ],
                         borderWidth: 3,
                         borderColor: '#ffffff',
                         hoverBorderWidth: 4,
@@ -614,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         } else {
-            paymentCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">💳 No payment data available</div>';
+            paymentCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">No payment data available</div>';
         }
     }
     
@@ -745,7 +717,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         } else {
-            trendCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">📈 No trend data available</div>';
+            trendCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">No trend data available</div>';
         }
     }
 });

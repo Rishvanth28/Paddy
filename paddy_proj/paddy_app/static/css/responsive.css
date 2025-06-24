@@ -935,7 +935,7 @@ button, .btn {
   
   .clickable, 
   a[href]:not(.btn) {
-    padding: 5px;
+    padding: 20px;
   }
 }
 
@@ -1448,7 +1448,7 @@ button, .btn {
     display: block;
     width: 60px;
     height: 3px;
-    background-color: var(--primary-color, #007bff);
+    background-color: var(--primary-color, #333);
     margin: 8px 0 0 0 !important;
     border-radius: 2px;
   }
@@ -1493,6 +1493,7 @@ button, .btn {
     padding-left: 15px !important;
     padding-right: 15px !important;
     width: 100% !important;
+    margin-top: -5rem;
   }
   
   /* Page titles and headers proper spacing */
@@ -1501,7 +1502,7 @@ button, .btn {
   .header-bar h1,
   h1:first-child,
   h2:first-child {
-    margin-top: 5px !important;
+    margin-top: 4rem !important;
     padding-left: 0 !important;
     text-align: left !important;
   }

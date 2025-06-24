@@ -365,6 +365,109 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
         }
 
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: white;
+            border-left: 4px solid #007bff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 10px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast-success {
+            border-left-color: #28a745;
+        }
+
+        .toast-warning {
+            border-left-color: #ffc107;
+        }
+
+        .toast-error {
+            border-left-color: #dc3545;
+        }
+
+        .toast-info {
+            border-left-color: #17a2b8;
+        }
+
+        .toast-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .toast-icon {
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .toast-success .toast-icon {
+            color: #28a745;
+        }
+
+        .toast-warning .toast-icon {
+            color: #ffc107;
+        }
+
+        .toast-error .toast-icon {
+            color: #dc3545;
+        }
+
+        .toast-info .toast-icon {
+            color: #17a2b8;
+        }
+
+        .toast-message {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #999;
+            margin-left: 10px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-close:hover {
+            color: #666;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 900px) {
             .main-content {
                 max-width: 90vw;
@@ -420,7 +523,9 @@
 
             .plan-price {
                 font-size: 2rem;
-            }            .header-bar {
+            }
+
+            .header-bar {
                 flex-direction: column;
                 align-items: flex-start;
             }
@@ -429,7 +534,7 @@
                 padding: 0.4rem 0.8rem;
                 font-size: 0.8rem;
             }
-            
+
             .mb-4[style*="text-align: right;"] {
                 text-align: center !important;
                 margin-bottom: 1.5rem !important;
@@ -439,6 +544,30 @@
 </head>
 
 <body>
+    {# Toast Notification Container #}
+    <div class="toast-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="toast toast-{{ message.tags }}">
+                    <div class="toast-content">
+                        <span class="toast-icon">
+                            {% if message.tags == 'success' %}
+                                ✓
+                            {% elif message.tags == 'warning' %}
+                                ⚠
+                            {% elif message.tags == 'error' %}
+                                ✗
+                            {% else %}
+                                ℹ
+                            {% endif %}
+                        </span>
+                        <span class="toast-message">{{ message }}</span>
+                    </div>
+                    <button type="button" class="toast-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
     <div class="container">
         <div class="main-content">            <div class="mb-4" style="text-align: right;">
                 <form action="{% url 'logout' %}" method="POST" style="display: inline-block;">
@@ -610,6 +739,63 @@
         <script id="razorpay-script-data"
             type="application/json">{"order_id": "{{ order_id }}", "amount": "{{ amount }}", "key_id": "{{ key_id }}"}</script>
         {% endif %}
+    </div>
+    <div class="toast-container" aria-live="polite" aria-atomic="true">
+        <!-- Toasts will be injected here by JavaScript -->
+    </div>
+    <script>
+        // Function to show toast notifications
+        function showToast(message, type = 'info') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.role = 'alert';
+            toast.ariaLive = 'assertive';
+            toast.ariaAtomic = 'true';
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <span class="toast-icon">&nbsp;</span>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button type="button" class="toast-close" data-bs-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            `;
+            toastContainer.appendChild(toast);
+            // Auto-remove toast after 5 seconds
+            setTimeout(() => {
+                toast.classList.add('fade');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 5000);
+            // Manual close button functionality
+            const closeButton = toast.querySelector('.toast-close');
+            closeButton.addEventListener('click', () => {
+                toast.classList.add('fade');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            });
+        }
+
+        // Example usage:
+        // showToast('Payment successful!', 'success');
+        // showToast('Payment failed. Please try again.', 'error');
+        
+        // Toast notification auto-dismiss
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(function(toast) {
+                setTimeout(function() {
+                    toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                    setTimeout(function() {
+                        toast.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+    </script>
 </body>
 
 </html>

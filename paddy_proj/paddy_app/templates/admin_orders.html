@@ -120,7 +120,7 @@
         }
     }
 
-    /* Header Bar */
+     /* Header Bar */
     .header-bar {
         display: flex;
         align-items: center;
@@ -914,10 +914,36 @@
 
     .list-group-flush .list-group-item:last-child {
         border-bottom-width: 0;
+    }    .h-100 {
+        height: 100% !important;
     }
 
-    .h-100 {
-        height: 100% !important;
+    /* Search input styling */
+    .search-container {
+        position: relative;
+    }
+
+    .search-container .bi-search {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-tertiary);
+        z-index: 1;
+    }
+
+    .search-input {
+        padding-left: 3rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid var(--border-medium);
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition-fast);
+    }
+
+    .search-input:focus {
+        background: white;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
 </style>
 {% endblock %}
@@ -1121,19 +1147,16 @@
       }, 5000);
 
       // Add close button functionality
-      const closeBtn = toast.querySelector('.toast-close');
-      if (closeBtn) {
+      const closeBtn = toast.querySelector('.toast-close');      if (closeBtn) {
         closeBtn.addEventListener('click', closeToastHandler);
-      }
-    }
+      }    }
   });
 </script>
-{% endif %}
 
 <div class="container-fluid my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
-        <div class="text-muted" id="order-count-text">0 orders found</div>
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+        <h2 class="page-title mb-0 me-3">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
+        <div class="text-muted" style="color : rgb(0, 0, 0)  !important;" id="order-count-text">0 orders found</div>
     </div>
     
     <!-- Filters section -->
@@ -1183,16 +1206,6 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
-                <label for="category-filter" class="form-label">Category</label>
-                <select id="category-filter" class="form-select form-select-sm" style="cursor: pointer;">
-                    <option value="all">All Categories</option>
-                    <option value="1">Rice</option>
-                    <option value="2">Paddy</option>
-                    <option value="3">Pesticide</option>
-                </select>
-            </div>
-
             <!-- Sorting options -->
             <div class="col-md-2">
                 <label for="sort" class="form-label">Sort By</label>
@@ -1204,8 +1217,18 @@
                 </select>
             </div>
 
+             <div class="col-md-2">
+                <label for="category-filter" class="form-label">Category</label>
+                <select id="category-filter" class="form-select form-select-sm" style="cursor: pointer;">
+                    <option value="all">All Categories</option>
+                    <option value="1">Rice</option>
+                    <option value="2">Paddy</option>
+                    <option value="3">Pesticide</option>
+                </select>            </div>
+            
             <!-- Search box -->
-            <div class="col-md-2">
+            <div class="col-12">
+                <label class="form-label">Search Orders</label>
                 <div class="search-container">
                     <i class="bi bi-search"></i>
                     <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
@@ -1998,6 +2021,6 @@
     });
 </script>
 
-
 {% endblock %}
+
 {% endblock %}
