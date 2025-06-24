@@ -95,17 +95,212 @@
   </style>
 </head>
 
-<body>
-  {% if messages %}
-  <div class="messages-container">
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <ul class="messages">
-      {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
+<body><style>
+  /* Toast Notifications Styling */
+  .toast-container {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+    max-width: 350px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 16px 40px 16px 24px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #000000;
+    font-weight: 500;
+    position: relative;
+    animation: slideInRight 0.5s forwards;
+    pointer-events: auto;
+    font-family: 'Inter', sans-serif;
+    color: #000000;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+  }
+
+  .toast::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #000000;
+    flex-shrink: 0;
+  }
+
+  .toast.success {
+    border-left-color: #000000;
+  }
+
+  .toast.info {
+    border-left-color: #000000;
+  }
+
+  .toast.warning {
+    border-left-color: #000000;
+  }
+
+  .toast.error {
+    border-left-color: #000000;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .toast-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #000000;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+  }
+
+  .toast-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .toast.hide {
+    animation: slideOutRight 0.5s forwards;
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+  }
+</style>
+<div class="toast-container">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="toast 
+              {% if message.tags == 'success' %}success
+              {% elif message.tags == 'info' %}info
+              {% elif message.tags == 'warning' %}warning
+              {% elif message.tags == 'error' %}error
+              {% endif %}">
+      {{ message }}
+      <button type="button" class="toast-close" aria-label="Close">&times;</button>
+    </div>
+    {% endfor %}
+    {% endif %}
   </div>
-  {% endif %}
+
+
+<script>  document.addEventListener('DOMContentLoaded', function () {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.classList.add('toast-container');
+      document.body.appendChild(toastContainer);
+    }
+
+    // Convert Django messages to toasts
+    const messages = document.querySelectorAll('.alert');
+    messages.forEach(message => {
+      const toastType = message.classList.contains('alert-success') ? 'success' :
+        message.classList.contains('alert-info') ? 'info' :
+          message.classList.contains('alert-warning') ? 'warning' : 'error';
+
+      createToast(message.textContent.trim(), toastType);
+      message.remove();
+    });
+
+    // Initialize close functionality for existing toasts
+    initializeToastCloseButtons();
+
+    function initializeToastCloseButtons() {
+      // Handle close button for all toasts
+      const allToasts = document.querySelectorAll('.toast');
+      allToasts.forEach(toast => {
+        const closeBtn = toast.querySelector('.toast-close');
+        if (closeBtn) {
+          // Remove any existing event listeners
+          closeBtn.removeEventListener('click', closeToastHandler);
+          // Add new event listener
+          closeBtn.addEventListener('click', closeToastHandler);
+        }
+      });
+    }
+
+    function closeToastHandler(e) {
+      const toast = this.closest('.toast');
+      if (toast) {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }
+    }
+
+    function createToast(message, type) {
+      const toast = document.createElement('div');
+      toast.classList.add('toast', type);
+      toast.innerHTML = `
+        ${message}
+        <button type="button" class="toast-close" aria-label="Close">&times;</button>
+      `;
+
+      toastContainer.appendChild(toast);
+
+      // Auto dismiss after 5 seconds
+      setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }, 5000);
+
+      // Add close button functionality
+      const closeBtn = toast.querySelector('.toast-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeToastHandler);
+      }
+    }
+  });
+</script>
 
   <!-- Hamburger Button -->
   <button class="hamburger" id="hamburger" aria-label="Toggle menu">

@@ -149,27 +149,142 @@
                             </form>
                         </div>
                     </div>
+                </div>                <!-- Toast Notification System -->
+                <style>
+                  .toast-container {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 9999;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    max-width: 350px;
+                  }
+                  
+                  .toast {
+                    padding: 15px 40px 15px 15px;
+                    border-radius: 6px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    font-size: 14px;
+                    color: #333;
+                    background-color: #fff;
+                    position: relative;
+                    overflow: hidden;
+                    margin-bottom: 10px;
+                    animation: slideIn 0.3s ease-out forwards;
+                    border-left: 4px solid #ccc;
+                    word-wrap: break-word;
+                  }
+                  
+                  .toast.success {
+                    border-left-color: #4caf50;
+                    background-color: #f1f8e9;
+                  }
+                  
+                  .toast.info {
+                    border-left-color: #2196f3;
+                    background-color: #e3f2fd;
+                  }
+                  
+                  .toast.warning {
+                    border-left-color: #ff9800;
+                    background-color: #fff3e0;
+                  }
+                  
+                  .toast.error {
+                    border-left-color: #f44336;
+                    background-color: #ffebee;
+                  }
+                  
+                  .toast-close {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background: transparent;
+                    border: none;
+                    color: #888;
+                    font-size: 18px;
+                    cursor: pointer;
+                    transition: color 0.2s;
+                    padding: 0;
+                    width: 20px;
+                    height: 20px;
+                    line-height: 20px;
+                    text-align: center;
+                  }
+                  
+                  .toast-close:hover {
+                    color: #333;
+                  }
+                  
+                  @keyframes slideIn {
+                    from {
+                      transform: translateX(100%);
+                      opacity: 0;
+                    }
+                    to {
+                      transform: translateX(0);
+                      opacity: 1;
+                    }
+                  }
+                  
+                  @keyframes fadeOut {
+                    from {
+                      transform: translateX(0);
+                      opacity: 1;
+                    }
+                    to {
+                      transform: translateX(100%);
+                      opacity: 0;
+                    }
+                  }
+                </style>
+                
+                <div class="toast-container">
+                  {% if messages %}
+                    {% for message in messages %}
+                      <div class="toast 
+                                {% if message.tags == 'success' %}success
+                                {% elif message.tags == 'info' %}info
+                                {% elif message.tags == 'warning' %}warning
+                                {% elif message.tags == 'error' %}error
+                                {% endif %}">
+                        {{ message }}
+                        <button type="button" class="toast-close" aria-label="Close">&times;</button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
                 </div>
-
-                <!-- Show error messages -->
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li class="{{ message.tags }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            setTimeout(function () {
-                                let messages = document.querySelectorAll('.messages');
-                                messages.forEach((message) => {
-                                    message.style.opacity = '0';
-                                    setTimeout(() => message.remove(), 100); 
-                                });
-                            }, 5000);
-                        });
-                    </script>
-                {% endif %}
+                
+                <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    // Add click event to close buttons
+                    document.querySelectorAll('.toast-close').forEach(button => {
+                      button.addEventListener('click', function() {
+                        const toast = this.parentElement;
+                        toast.style.animation = 'fadeOut 0.3s forwards';
+                        setTimeout(() => {
+                          toast.remove();
+                        }, 300);
+                      });
+                    });
+                    
+                    // Auto-dismiss toasts after 5 seconds
+                    document.querySelectorAll('.toast').forEach(toast => {
+                      setTimeout(() => {
+                        if (toast && toast.parentElement) {
+                          toast.style.animation = 'fadeOut 0.3s forwards';
+                          setTimeout(() => {
+                            if (toast && toast.parentElement) {
+                              toast.remove();
+                            }
+                          }, 300);
+                        }
+                      }, 5000);
+                    });
+                  });
+                </script>
             </div>
         </div>
 
