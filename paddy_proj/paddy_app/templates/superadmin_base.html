@@ -187,17 +187,18 @@
             <span>Orders</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'unified_report_superadmin' %}">
-            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Reports">
-            <span>Reports</span>
-          </a>
-        </li>
         <!-- Subscription -->
         <li class="nav-item">
           <a href="{% url 'superadmin_subscription' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Subscription">
             <span class="nav-text">Subscription</span>
+          </a>
+        </li>
+          <!-- Reports -->
+        <li class="nav-item">
+          <a href="{% url 'superadmin_reports' %}" class="nav-link">
+            <img class="nav-icon" src="{% static 'media/reports-icon.svg' %}" alt="Reports">
+            <span class="nav-text">Reports</span>
           </a>
         </li>
       </ul>

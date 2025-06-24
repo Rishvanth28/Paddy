@@ -77,13 +77,15 @@
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">
-                    </div>
-                    <div class="form-group">
                         <label for="category-rice">Category</label>
                         <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">
+                    </div>
+
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
                         <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01">
@@ -137,6 +139,10 @@
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
+                    <div class="form-group">
+                        <label for="category-rice">Category</label>
+                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required>
+                    </div>
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
                         <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">

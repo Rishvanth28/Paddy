@@ -3,232 +3,920 @@
 {% block content %}
 {% block head %}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
     :root {
-        --primary: #0d6efd;
-        --primary-hover: #0b5ed7;
-        --success: #198754;
-        --warning: #ffc107;
-        --danger: #dc3545;
-        --light: #f8f9fa;
-        --dark: #212529;
-        --gray: #6c757d;
-        --border: #e9ecef;
+        /* Primary Colors - Black & White Theme */
+        --primary: #000000;
+        --primary-hover: #1a1a1a;
+        --secondary: #333333;
+        --accent: #666666;
+
+        /* Status Colors */
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+
+        /* Neutral Colors */
+        --white: #ffffff;
+        --black: #000000;
+        --gray-50: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e5e5e5;
+        --gray-300: #d4d4d4;
+        --gray-400: #a3a3a3;
+        --gray-500: #737373;
+        --gray-600: #525252;
+        --gray-700: #404040;
+        --gray-800: #262626;
+        --gray-900: #171717;
+
+        /* Surface Colors */
+        --surface-primary: #ffffff;
+        --surface-secondary: #fafafa;
+        --surface-elevated: #ffffff;
+        --surface-hover: #f5f5f5;
+
+        /* Border & Shadow */
+        --border-light: #e5e5e5;
+        --border-medium: #d4d4d4;
+        --border-dark: #a3a3a3;
+
+        --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+        /* Text Colors */
+        --text-primary: #000000;
+        --text-secondary: #404040;
+        --text-tertiary: #737373;
+        --text-muted: #a3a3a3;
+        --text-inverse: #ffffff;
+
+        /* Transitions & Effects */
+        --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+        --border-radius-sm: 6px;
+        --border-radius: 8px;
+        --border-radius-lg: 12px;
+        --border-radius-xl: 16px;
     }
-    
+
+    * {
+        box-sizing: border-box;
+    }
+
     body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: #f8f9fa;
-        color: #212529;
+        background-color: var(--gray-50);
+        color: var(--text-primary);
         line-height: 1.6;
     }
-    
-    .dashboard-card {
-        background-color: white;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+
+    .container-fluid {
+        min-height: 100vh !important;
+        color: #262626 !important;
+        background-color: #ffffff !important;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -0.75rem;
+    }
+
+    .col-md-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+        padding: 0.75rem;
+    }
+
+    .col-md-8 {
+        flex: 0 0 66.666667%;
+        max-width: 66.666667%;
+        padding: 0.75rem;
+    }
+
+    .col-md-2 {
+        flex: 0 0 16.666667%;
+        max-width: 16.666667%;
+        padding: 0.75rem;
+    }
+
+    .col-md-5 {
+        flex: 0 0 41.666667%;
+        max-width: 41.666667%;
+        padding: 0.75rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .for-mobile{
+            flex-direction: column;
+        }
+    }
+
+    /* Header Bar */
+    .header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-left: 0.5rem;
+        margin-top: -1rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 1px;
+        color: #000000;
+        position: relative;
+        text-transform: uppercase;
+        padding-bottom: 0.6rem;
+        text-align: left;
+        /* <-- Ensure left alignment */
+    }
+
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        /* initial width */
+        height: 4px;
+        background-color: #000000;
+        border-radius: 2px;
+        transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+        /* added transition for both properties */
+    }
+
+    .page-title:hover::after {
+        width: 110%;
+        /* makes the underline grow */
+        transform: translateX(-50%);
+        /* keep it centered */
+    }
+
+
+    #order-count-text {
+        color: var(--text-tertiary) !important;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    /* Cards */
+    .dashboard-card,
+    .customer-card {
+        background: var(--surface-primary);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-light);
+        box-shadow: var(--shadow-sm);
         overflow: hidden;
+        color: var(--text-primary);
+        transition: var(--transition-normal);
+        position: relative;
     }
-    
+
+    .dashboard-card::before,
+    .customer-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        opacity: 0;
+        transition: var(--transition-normal);
+    }
+
+    .dashboard-card:hover,
+    .customer-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--border-medium);
+    }
+
+    .dashboard-card:hover::before,
+    .customer-card:hover::before {
+        opacity: 1;
+    }
+
     .card-header {
-        background-color: white;
-        border-bottom: 1px solid var(--border);
-        padding: 1rem 1.5rem;
+        background: var(--surface-secondary);
+        border-bottom: 1px solid var(--border-light);
+        padding: 1.25rem 1.5rem;
+        position: relative;
     }
-    
+
     .card-header h5 {
         font-weight: 600;
-        margin-bottom: 0;
-        color: var(--dark);
+        margin: 0;
+        color: var(--text-primary);
+        font-size: 1.125rem;
+        letter-spacing: -0.015em;
     }
-    
-    .list-group-item {
-        padding: 1.25rem 1.5rem;
-        border-color: var(--border);
-        transition: all 0.2s ease;
+
+    /* Messages */
+    .alert {
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: var(--border-radius);
+        border: 1px solid;
+        position: relative;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        background: var(--surface-primary);
+        animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
     }
-    
-    .list-group-item:hover {
-        background-color: var(--light);
+
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
-    
-    .list-group-item.active {
+
+    .alert-success {
+        background-color: rgba(16, 185, 129, 0.05);
+        border-color: rgba(16, 185, 129, 0.2);
+        color: var(--success);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+    }
+
+    .alert-warning {
+        background-color: rgba(245, 158, 11, 0.05);
+        border-color: rgba(245, 158, 11, 0.2);
+        color: var(--warning);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+    }
+
+    .alert-danger,
+    .alert-error {
+        background-color: rgba(239, 68, 68, 0.05);
+        border-color: rgba(239, 68, 68, 0.2);
+        color: var(--danger);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+    }
+
+    .alert-info {
+        background-color: rgba(59, 130, 246, 0.05);
+        border-color: rgba(59, 130, 246, 0.2);
+        color: var(--info);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        cursor: pointer;
+        color: inherit;
+        opacity: 0.7;
+        transition: var(--transition-fast);
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    /* Buttons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        border: 1px solid transparent;
+        border-radius: var(--border-radius-sm);
+        background-color: var(--surface-primary);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        margin: 0.125rem;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.025em;
+        white-space: nowrap;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary {
         background-color: var(--primary);
         border-color: var(--primary);
+        color: var(--text-inverse);
     }
-    
-    .badge {
-        font-weight: 500;
-        padding: 0.35em 0.65em;
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        color: var(--text-inverse);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
     }
-    
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
+
+    .btn-primary1 {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        color: var(--text-inverse);
     }
-    
-    .btn-group .btn {
-        border-radius: 6px !important;
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
+
+    .btn-primary1:hover,
+    .btn-primary1:focus {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        color: var(--text-inverse);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
     }
-    
-    .form-control, .form-select {
-        border-radius: 6px;
-        border: 1px solid var(--border);
+
+    .btn-secondary {
+        background-color: var(--surface-secondary);
+        border-color: var(--border-medium);
+        color: var(--text-primary);
     }
-    
+
+    .btn-secondary:hover,
+    .btn-secondary:focus {
+        background-color: var(--gray-200);
+        border-color: var(--border-dark);
+        color: var(--text-primary);
+        transform: translateY(-1px);
+    }
+
+    .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+        background-color: transparent;
+    }
+
+    .btn-outline-primary:hover,
+    .btn-outline-primary:focus {
+        background-color: var(--primary);
+        color: var(--text-inverse);
+        transform: translateY(-1px);
+    }
+
+    .btn-success {
+        background-color: var(--success);
+        border-color: var(--success);
+        color: var(--text-inverse);
+    }
+
+    .btn-success:hover,
+    .btn-success:focus {
+        background-color: #059669;
+        border-color: #059669;
+        color: var(--text-inverse);
+        transform: translateY(-1px);
+    }
+
+    .btn-outline-success {
+        border-color: var(--success);
+        color: var(--success);
+        background-color: transparent;
+    }
+
+    .btn-outline-success:hover {
+        background-color: var(--success);
+        color: var(--text-inverse);
+    }
+
+    .btn-outline-warning {
+        border-color: var(--warning);
+        color: var(--warning);
+        background-color: transparent;
+    }
+
+    .btn-outline-warning:hover {
+        background-color: var(--warning);
+        color: var(--text-inverse);
+    }
+
+    .btn-outline-danger {
+        border-color: var(--danger);
+        color: var(--danger);
+        background-color: transparent;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: var(--danger);
+        color: var(--text-inverse);
+    }
+
+    .btn-warning {
+        background-color: var(--warning);
+        border-color: var(--warning);
+        color: var(--text-inverse);
+    }
+
+    .btn-danger {
+        background-color: var(--danger);
+        border-color: var(--danger);
+        color: var(--text-inverse);
+    }
+
+    /* Payment button */
+    .payment-btn {
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-normal);
+    }
+
+    .payment-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    /* Filter Section */
+    .filter-section {
+        background: var(--surface-primary);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        border: 1px solid var(--border-light);
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-sm);
+    }
+
     .form-label {
-        font-weight: 500;
-        color: var(--dark);
+        font-weight: 600;
+        color: var(--text-secondary);
         margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        letter-spacing: 0.025em;
     }
-    
-    .text-muted {
-        color: var(--gray) !important;
+
+    .form-control,
+    .form-select {
+        border: 1px solid var(--border-medium);
+        border-radius: var(--border-radius-sm);
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        background-color: var(--surface-primary);
+        color: var(--text-primary);
+        transition: var(--transition-fast);
     }
-    
-    .highlight {
-        animation: highlight-fade 1.5s ease-out;
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        outline: none;
     }
-    
-    @keyframes highlight-fade {
-        0% { background-color: rgba(13, 110, 253, 0.1); }
-        100% { background-color: transparent; }
+
+    /* Order List Items */
+    .order-item {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border-light);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        background-color: var(--surface-primary);
+        border-left: 3px solid transparent;
     }
-    
+
+    .order-item:hover {
+        background-color: var(--surface-hover);
+        border-left-color: var(--gray-400);
+    }
+
+    .order-item.active {
+        background-color: var(--gray-100) !important;
+        border-left-color: var(--primary);
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Order Status Badges */
     .order-status {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.25rem;
     }
-    
+
     .order-status-icon {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
+        display: inline-block;
     }
-    
-    .status-pending {
-        background-color: var(--warning);
-    }
-    
+
     .status-completed {
         background-color: var(--success);
     }
-    
-    .status-processing {
-        background-color: var(--primary);
+
+    .status-pending {
+        background-color: var(--warning);
     }
-    
-    .status-failed {
-        background-color: var(--danger);
-    }
-    
-    .table-sm td, .table-sm th {
-        padding: 0.5rem;
-    }
-    
-    .loading-spinner {
-        width: 1.5rem;
-        height: 1.5rem;
-        border-width: 0.2em;
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 992px) {
-        .col-md-4, .col-md-8 {
-            width: 100%;
-        }
-        
-        .col-md-4 {
-            margin-bottom: 1.5rem;
-        }
-    }
-    
-    /* Filter section styling */
-    .filter-section {
-        background-color: white;
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .filter-section h5 {
-        font-size: 1.1rem;
+
+    /* Status badges */
+    .bg-danger {
+        background-color: var(--danger) !important;
+        color: var(--text-inverse) !important;
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--border-radius-sm);
+        font-size: 0.75rem;
         font-weight: 600;
-        margin-bottom: 1rem;
-        color: var(--dark);
     }
-    
-    /* Order list styling */
-    .order-list-container {
-        max-height: 70vh;
-        overflow-y: auto;
+
+    .bg-success {
+        background-color: var(--success) !important;
+        color: var(--text-inverse) !important;
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--border-radius-sm);
+        font-size: 0.75rem;
+        font-weight: 600;
     }
-    
-    .order-item {
-        cursor: pointer;
-        transition: all 0.2s ease;
+
+    .bg-secondary {
+        background-color: var(--gray-500) !important;
+        color: var(--text-inverse) !important;
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--border-radius-sm);
+        font-size: 0.75rem;
+        font-weight: 600;
     }
-    
-    .order-item:hover {
-        transform: translateX(2px);
+
+    .orange-status {
+        background-color: var(--warning) !important;
+        color: var(--text-inverse) !important;
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--border-radius-sm);
+        font-size: 0.75rem;
+        font-weight: 600;
     }
-    
-    .order-item .badge {
-        font-size: 0.75em;
+
+    /* Order Details */
+    .detail-header {
+        padding: 1.5rem;
+        background-color: var(--surface-secondary);
+        border-bottom: 1px solid var(--border-light);
     }
-    
-    /* Order detail styling */
-    .order-detail-section {
+
+    .detail-section {
         padding: 1.5rem;
     }
-    
-    .detail-header {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid var(--border);
+
+    .detail-section:not(:last-child) {
+        border-bottom: 1px solid var(--border-light);
     }
-    
-    .detail-section {
-        margin-bottom: 1.5rem;
-    }
-    
+
     .detail-section h6 {
         font-weight: 600;
+        color: var(--text-primary);
         margin-bottom: 1rem;
-        color: var(--dark);
+        font-size: 1rem;
+        letter-spacing: -0.015em;
     }
-    
-    /* Item table styling */
-    .items-table {
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table td {
+        padding: 0.5rem 0;
+        border: none;
+        vertical-align: top;
+    }
+
+    .table .text-muted {
+        color: var(--text-tertiary) !important;
+        font-weight: 500;
+    }
+
+    /* Text Colors */
+    .text-muted {
+        color: var(--text-muted) !important;
+    }
+
+    .text-success {
+        color: var(--success) !important;
+    }
+
+    .text-danger {
+        color: var(--danger) !important;
+    }
+
+    .fw-medium {
+        font-weight: 500;
+    }
+
+    .fw-bold {
+        font-weight: 600;
+    }
+
+    /* Highlight animation for order details */
+    @keyframes highlight {
+        0% {
+            background-color: var(--surface-primary);
+        }
+
+        50% {
+            background-color: var(--gray-100);
+        }
+
+        100% {
+            background-color: var(--surface-primary);
+        }
+    }
+
+    .highlight {
+        animation: highlight 1s ease-in-out;
+    }
+
+    /* Loading spinner */
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.125rem;
+        border-color: var(--primary);
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spinner-border 0.75s linear infinite;
+    }
+
+    @keyframes spinner-border {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+
+        .col-md-4,
+        .col-md-8,
+        .col-md-2,
+        .col-md-5 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .container-fluid {
+            padding: 1rem 0.5rem;
+        }
+
+        .filter-section {
+            padding: 1rem;
+        }
+
+        .order-list-container {
+            max-height: 50vh;
+        }
+
+        .dashboard-card:hover,
+        .customer-card:hover {
+            transform: translateY(-1px);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .page-title {
+            font-size: 1.75rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .filter-section {
+            padding: 1rem;
+        }
+
+        .detail-section {
+            padding: 1rem;
+        }
+
+        .detail-header {
+            padding: 1rem;
+        }
+    }
+
+    /* Utility Classes */
+    .d-flex {
+        display: flex;
+    }
+
+    .align-items-center {
+        align-items: center;
+    }
+
+    .align-items-start {
+        align-items: flex-start;
+    }
+
+    .justify-content-between {
+        justify-content: space-between;
+    }
+
+    .justify-content-center {
+        justify-content: center;
+    }
+
+    .flex-wrap {
+        flex-wrap: wrap;
+    }
+
+    .flex-grow-1 {
+        flex-grow: 1;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-end {
+        text-align: right;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    .mb-0 {
+        margin-bottom: 0;
+    }
+
+    .mb-2 {
+        margin-bottom: 0.5rem;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .mt-3 {
         margin-top: 1rem;
     }
-    
-    .items-table th {
-        font-weight: 500;
-        background-color: var(--light);
+
+    .me-2 {
+        margin-right: 0.5rem;
     }
-    
-    /* Search input styling */
-    .search-container {
+
+    .me-3 {
+        margin-right: 1rem;
+    }
+
+    .ms-2 {
+        margin-left: 0.5rem;
+    }
+
+    .py-3 {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .py-4 {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .py-5 {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    .gap-2 {
+        gap: 0.5rem;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    .position-fixed {
+        position: fixed;
+    }
+
+    .top-0 {
+        top: 0;
+    }
+
+    .start-50 {
+        left: 50%;
+    }
+
+    .translate-middle-x {
+        transform: translateX(-50%);
+    }
+
+    .p-3 {
+        padding: 1rem;
+    }
+
+    .shadow-sm {
+        box-shadow: var(--shadow-sm);
+    }
+
+    .fade {
+        opacity: 1;
+    }
+
+    .show {
+        display: block;
+    }
+
+    .my-4 {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .g-3>* {
+        padding: 0.75rem;
+    }
+
+    .list-group {
+        display: flex;
+        flex-direction: column;
+        padding-left: 0;
+        margin-bottom: 0;
+        border-radius: var(--border-radius);
+    }
+
+    .list-group-flush {
+        border-radius: 0;
+    }
+
+    .list-group-item {
         position: relative;
+        display: block;
+        padding: 0.5rem 1rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        background-color: var(--surface-primary);
+        border: 1px solid var(--border-light);
     }
-    
-    .search-container .bi-search {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--gray);
+
+    .list-group-item:first-child {
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
     }
-    
-    .search-input {
-        padding-left: 35px;
+
+    .list-group-item:last-child {
+        border-bottom-right-radius: inherit;
+        border-bottom-left-radius: inherit;
+    }
+
+    .list-group-flush .list-group-item {
+        border-right: 0;
+        border-left: 0;
+        border-radius: 0;
+    }
+
+    .list-group-flush .list-group-item:last-child {
+        border-bottom-width: 0;
+    }
+
+    .h-100 {
+        height: 100% !important;
     }
 </style>
 {% endblock %}
@@ -272,77 +960,81 @@
     </div>
     
     <!-- Filters section -->
-    <div class="filter-section mb-4">
+    <div class="filter-section mb-4 customer-card">
         <div class="row g-3">
             <!-- Status filters -->
-            <div class="col-md-3">
-                <label class="form-label">Order Status</label>
-                <div class="d-flex flex-wrap">
-                    <button type="button" class="btn btn-sm btn-primary status-filter" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary status-filter" data-filter="recent">Recent</button>
-                    <button type="button" class="btn btn-sm btn-outline-success status-filter" data-filter="completed">Completed</button>
-                    <button type="button" class="btn btn-sm btn-outline-warning status-filter" data-filter="ongoing">Processing</button>
-                    <button type="button" class="btn btn-sm btn-outline-danger status-filter" data-filter="pending_payment">Pending Payment</button>
+            <div class="col-md-4">                
+                <label class="form-label" style="cursor: pointer !important;">Order Status</label>
+                <div class="filter-buttons">
+                    <button type="button" class="btn btn-sm status-filter active" data-filter="all">All</button>
+                    <button type="button" class="btn btn-sm status-filter" data-filter="recent">Recent</button>
+                    <button type="button" class="btn btn-sm status-filter" data-filter="completed">Completed</button>
+                    <button type="button" class="btn btn-sm status-filter" data-filter="ongoing">Ongoing</button>
+                    <button type="button" class="btn btn-sm status-filter" data-filter="pending_payment">Pending Payment</button>
                 </div>
             </div>
-            
+
             <!-- Date filters -->
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="row">
                     <div class="col-md-5">
-                        <label for="date_from" class="form-label">From Date</label>
-                        <input type="date" class="form-control form-control-sm" id="date_from">
-                    </div>
-                    <div class="col-md-5">
+                        <label for="date_from" class="form-label" style="cursor: pointer;">From Date</label>
+                        <input type="date" class="form-control form-control-sm" style="cursor: pointer;" id="date_from">
+                    </div>                    <div class="col-md-5">
                         <label for="date_to" class="form-label">To Date</label>
-                        <input type="date" class="form-control form-control-sm" id="date_to">
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="button" class="btn btn-sm btn-primary w-100" id="apply-date-filter">Apply</button>
+                        <input type="date" class="form-control form-control-sm" style="cursor: pointer;" id="date_to">
+                    </div>                    <div class="col-md-2 d-flex align-items-end justify-content-center">
+                        <button type="button" class="btn btn-sm btn-primary"
+                            style="width: 100%; margin-bottom: 8px; border-radius: 50px; 
+                            background: linear-gradient(135deg, #000000, #333333); 
+                            color: white; 
+                            letter-spacing: 0.5px;
+                            font-weight: 600; 
+                            box-shadow: var(--shadow-md);
+                            padding: 0.625rem 2rem;
+                            border: none;
+                            position: relative;
+                            overflow: hidden;
+                            z-index: 1;
+                            transition: all 0.3s ease;"
+                            id="apply-date-filter"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)';">
+                            Apply
+                        </button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Admin filter for superadmin only -->
-            {% if request.session.role == 'superadmin' %}
-            <div class="col-md-3">
-                <label for="admin-filter" class="form-label">Filter by Admin</label>
-                <select id="admin-filter" class="form-select form-select-sm">
-                    <option value="all">All Admins</option>
-                    <!-- This will be populated via JavaScript -->
-                </select>
-            </div>
-            {% endif %}
-            
-            <!-- Category filter -->
-            <div class="{% if request.session.role == 'superadmin' %}col-md-3{% else %}col-md-3{% endif %}">
+
+            <div class="col-md-2">
                 <label for="category-filter" class="form-label">Category</label>
-                <select id="category-filter" class="form-select form-select-sm">
+                <select id="category-filter" class="form-select form-select-sm" style="cursor: pointer;">
                     <option value="all">All Categories</option>
                     <option value="1">Rice</option>
                     <option value="2">Paddy</option>
                     <option value="3">Pesticide</option>
                 </select>
             </div>
-            
+
             <!-- Sorting options -->
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label for="sort" class="form-label">Sort By</label>
-                <select class="form-select form-select-sm" id="sort">
-                    <option value="-order_id">Newest First</option>
-                    <option value="order_id">Oldest First</option>
+                <select class="form-select form-select-sm" style="cursor: pointer;" id="sort">
+                    <option value="-order_date">Newest First</option>
+                    <option value="order_date">Oldest First</option>
                     <option value="-overall_amount">Amount (High to Low)</option>
                     <option value="overall_amount">Amount (Low to High)</option>
                 </select>
             </div>
-            
+
             <!-- Search box -->
-            <div class="col-md-12 mt-3">
+            <div class="col-md-2">
                 <div class="search-container">
                     <i class="bi bi-search"></i>
                     <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
                 </div>
             </div>
+
         </div>
     </div>
     
@@ -387,6 +1079,8 @@
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Global variables
@@ -1114,5 +1808,7 @@
         });
     });
 </script>
+
+
 {% endblock %}
 {% endblock %}
