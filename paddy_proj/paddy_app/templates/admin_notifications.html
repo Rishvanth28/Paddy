@@ -3,8 +3,103 @@
 {% block content %}
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/notifications.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        /* Toast Notification Styles */
+        .toast-container .toast {
+            min-width: 300px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Enhanced mobile responsive styles */
+        @media (max-width: 767.98px) {
+            .header-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                margin-left: 0;
+                text-align: center;
+            }
+            
+            .page-title {
+                font-size: 1
+                text-align: center;
+            }
+            
+            .page-title::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .notification-card {
+                padding: 15px !important;
+                margin-bottom: 12px !important;
+            }
+            
+            .notification-header {
+                flex-wrap: wrap;
+                gap: 8px !important;
+            }
+            
+            .notification-title {
+                font-size: 1rem !important;
+            }
+            
+            .notification-time {
+                font-size: 0.8rem !important;
+            }
+            
+            .notification-message {
+                font-size: 0.9rem !important;
+                line-height: 1.4;
+            }
+            
+            .btn-sm {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .delete-controls {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .selection-info {
+                text-align: center;
+            }
+            
+            .toast-container {
+                padding: 10px !important;
+            }
+            
+            .toast-container .toast {
+                min-width: 280px;
+            }
+        }
+        
+        @media (max-width: 575.98px) {
+            .page-title {
+                font-size: 1.4rem;
+            }
+            
+            .notification-card {
+                padding: 12px !important;
+            }
+            
+            .notification-checkbox {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .custom-checkbox {
+                width: 16px;
+                height: 16px;
+            }
+        }
+        
         /* Black & White Theme with White Predominance */
         .container-fluid {
             min-height: 100vh !important;
@@ -576,6 +671,27 @@
     </style>
 </head>
 
+<!-- Toast Notifications -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast align-items-center text-white border-0 mb-2 show" role="alert" aria-live="assertive" aria-atomic="true" 
+                 style="background-color: 
+                     {% if message.tags == 'error' %}#dc3545{% elif message.tags == 'warning' %}#ffc107{% elif message.tags == 'success' %}#28a745{% else %}#17a2b8{% endif %};">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas 
+                            {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %} 
+                            me-2"></i>
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
 <div class="container-fluid my-4">
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h1 class="page-title mb-0 me-3">Notifications
@@ -979,6 +1095,22 @@
                 const orderId = notificationCard.getAttribute('data-notification-id');
                 handleNotificationIconClick(notificationType, orderId, this);
             });
+        });
+    });
+
+    // Toast auto-dismiss functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        var toasts = document.querySelectorAll('.toast');
+        toasts.forEach(function(toast) {
+            // Auto dismiss after 5 seconds
+            setTimeout(function() {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+                    var bsToast = new bootstrap.Toast(toast);
+                    bsToast.hide();
+                } else {
+                    toast.style.display = 'none';
+                }
+            }, 5000);
         });
     });
 </script>
