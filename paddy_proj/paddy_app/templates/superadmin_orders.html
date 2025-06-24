@@ -160,8 +160,8 @@ transform: translateX(2px);
 }
 
 .list-group-item.active {
-background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-border-color: var(--primary);
+background: linear-gradient(135deg, var(--dark) 0%, var(--dark) 100%);
+border-color: var(--light);
 border-left-color: #ffffff;
 color: white;
 box-shadow: var(--shadow-md);
@@ -231,13 +231,13 @@ font-weight: 500;
 }
 
 .btn-primary {
-background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+background: linear-gradient(135deg, var(--dark) 0%, var(--dark) 100%);
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary:hover {
 transform: translateY(-1px);
-box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4);
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .btn-outline-primary {
@@ -267,7 +267,7 @@ backdrop-filter: blur(5px);
 }
 
 .form-control:focus, .form-select:focus {
-border-color: var(--primary);
+border-color: var(--dark);
 box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 background: rgba(255, 255, 255, 0.95);
 }
@@ -477,7 +477,7 @@ top: 0;
 left: 0;
 right: 0;
 height: 3px;
-background: linear-gradient(90deg, var(--primary) 0%, var(--info) 100%);
+background: linear-gradient(90deg, var(--dark) 0%, var(--dark) 100%);
 border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
@@ -493,7 +493,7 @@ letter-spacing: -0.025em;
 max-height: 75vh;
 overflow-y: auto;
 scrollbar-width: thin;
-scrollbar-color: var(--primary) var(--border-light);
+scrollbar-color: var(--dark) var(--light);
 }
 
 .order-list-container::-webkit-scrollbar {
@@ -544,7 +544,7 @@ bottom: -2px;
 left: 0;
 width: 60px;
 height: 2px;
-background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
+background: linear-gradient(90deg, var(--dark) 0%, var(--dark) 100%);
 border-radius: 1px;
 }
 
@@ -575,7 +575,7 @@ top: 50%;
 transform: translateY(-50%);
 width: 4px;
 height: 20px;
-background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+background: linear-gradient(135deg, var(--dark) 0%, var(--dark) 100%);
 border-radius: 2px;
 }
 /* Item table styling */
@@ -629,7 +629,7 @@ transition: var(--transition);
 
 .search-input:focus {
 background: white;
-border-color: var(--primary);
+border-color: var(--dark);
 box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
