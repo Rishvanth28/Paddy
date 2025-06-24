@@ -117,7 +117,7 @@ body, html {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #4e6ef2, #845ef7, #4e6ef2);
+  background: #333;
   border-radius: 20px 20px 0 0;
 }
 
@@ -405,7 +405,7 @@ button:hover {
 #signup button[type="submit"] {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #4e6ef2 0%, #845ef7 100%);
+  background: #333;
   color: white;
   border: none;
   border-radius: 10px;
