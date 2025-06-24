@@ -2,7 +2,6 @@
 {% load static %}
 {% block content %}
 
-
 <head>
     <link rel="stylesheet" href="{% static 'css/notifications.css' %}">
     <style>
@@ -34,9 +33,7 @@
             text-transform: uppercase;
             padding-bottom: 0.6rem;
             text-align: left;
-            /* <-- Ensure left alignment */
         }
-
 
         .page-title::after {
             content: '';
@@ -45,19 +42,15 @@
             left: 50%;
             transform: translateX(-50%);
             width: 80px;
-            /* initial width */
             height: 4px;
             background-color: #000000;
             border-radius: 2px;
             transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-            /* added transition for both properties */
         }
 
         .page-title:hover::after {
             width: 110%;
-            /* makes the underline grow */
             transform: translateX(-50%);
-            /* keep it centered */
         }
 
         .btn-outline-primary {
@@ -78,7 +71,6 @@
         }
 
         .notifications-container {
-            /* max-width: 800px !important; */
             margin: 0 auto !important;
         }
 
@@ -240,21 +232,6 @@
             }
         }
 
-        /* Enhanced confirmation dialog styles */
-        .swal2-popup {
-            background: #ffffff !important;
-            color: #000000 !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .swal2-title {
-            color: #000000 !important;
-        }
-
-        .swal2-content {
-            color: #333333 !important;
-        }
-
         .notification-icon i {
             font-size: 1.2rem !important;
             color: #000000 !important;
@@ -311,6 +288,7 @@
             border-radius: 8px !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
+            text-decoration: none;
         }
 
         .notification-actions .btn:hover {
@@ -423,7 +401,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
         }
 
-        /* Professional Delete Button Styles */
+        /* Delete Controls */
         .delete-controls {
             background: #ffffff !important;
             border-radius: 12px !important;
@@ -517,7 +495,7 @@
             border-color: #000000 !important;
         }
 
-        /* Notification Badge Styles */
+        /* Badge Styles */
         .badge {
             background: #000000 !important;
             font-weight: 700 !important;
@@ -536,22 +514,15 @@
             transform: translateY(-5px) !important;
         }
 
-        .page-title .badge {
-            vertical-align: middle !important;
-            margin-top: -5px !important;
-        }
-
         @keyframes pulse-badge {
             0% {
                 box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
                 transform: translateY(-5px) scale(1);
             }
-
             50% {
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
                 transform: translateY(-5px) scale(1.1);
             }
-
             100% {
                 box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
                 transform: translateY(-5px) scale(1);
@@ -559,42 +530,8 @@
         }
 
         /* Icon color customizations */
-        .text-success {
+        .text-success, .text-primary, .text-info, .text-warning, .text-secondary {
             color: #000000 !important;
-        }
-
-        .text-primary {
-            color: #000000 !important;
-        }
-
-        .text-info {
-            color: #000000 !important;
-        }
-
-        .text-warning {
-            color: #000000 !important;
-        }
-
-        .text-secondary {
-            color: #000000 !important;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px !important;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05) !important;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.2) !important;
-            border-radius: 4px !important;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 0, 0, 0.4) !important;
         }
 
         /* Responsive adjustments */
@@ -602,42 +539,34 @@
             .header-bar {
                 padding: 16px 20px !important;
             }
-
             .page-title {
                 font-size: 1.5rem !important;
             }
-
             .notification-card {
                 padding: 16px !important;
             }
-
             .notification-header {
                 flex-wrap: wrap !important;
             }
-
             /* Make delete-controls stack vertically on mobile */
             .delete-controls {
                 flex-direction: column !important;
                 align-items: stretch !important;
                 gap: 12px !important;
             }
-
-            .delete-controls>div {
+            .delete-controls > div {
                 width: 100% !important;
                 justify-content: flex-start !important;
             }
-
             .delete-controls .selection-info {
                 justify-content: flex-start !important;
             }
-
             .delete-controls .btn-cancel-selection,
             .delete-controls .btn-delete-selected {
                 width: 100% !important;
                 margin-right: 0 !important;
                 margin-bottom: 8px !important;
             }
-
             .delete-controls .btn-delete-selected {
                 margin-bottom: 0 !important;
                 padding: 8px 16px !important;
@@ -651,20 +580,22 @@
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h1 class="page-title mb-0 me-3">Notifications
             {% if unread_count > 0 %}
-            <span class="badge ms-2">{{ unread_count }}</span>
+                <span class="badge ms-2">{{ unread_count }}</span>
             {% endif %}
-        </h1>        <div class="d-flex align-items-center gap-4">
+        </h1>
+        
+        <div class="d-flex align-items-center gap-2">
             {% if notifications %}
-            <button class="btn btn-select-all btn-sm" style="display: inline-flex;margin-right: 1rem;" onclick="toggleSelectAll()">
-                <i class="bi bi-check-square me-1"></i>Select All
-            </button>
-            <button class="btn btn-outline-primary btn-sm" onclick="markAllAsRead()">
-                <i class="bi bi-check-all me-1"></i>Mark All as Read
-            </button>
+                <button class="btn btn-select-all btn-sm" style="display: inline-flex; margin-right: 1rem;" onclick="toggleSelectAll()">
+                    <i class="bi bi-check-square me-1"></i>Select All
+                </button>
+                <button class="btn btn-outline-primary btn-sm" onclick="markAllAsRead()">
+                    <i class="bi bi-check-all me-1"></i>Mark All as Read
+                </button>
             {% endif %}
         </div>
     </div>
-
+    
     <!-- Delete Controls (hidden by default) -->
     <div class="delete-controls" id="deleteControls">
         <div class="selection-info">
@@ -684,59 +615,67 @@
 
     <div class="notifications-container">
         {% if notifications %}
-        {% for notification in notifications %} <div
-            class="notification-card {% if not notification.is_read %}unread{% endif %}"
-            data-notification-id="{{ notification.notification_id }}">
-
-            <!-- Selection Checkbox -->
-            <div class="notification-checkbox">
-                <input type="checkbox" class="custom-checkbox notification-select"
-                    value="{{ notification.notification_id }}" onchange="updateSelection()">
-            </div>
-            <div class="notification-header">
-                <div>
-                    {% if notification.notification_type == 'order_placed' %}
-                    <i class="bi bi-cart-plus text-success" title="View Order Details"></i>
-                    {% elif notification.notification_type == 'payment_received' %}
-                    <i class="bi bi-credit-card text-primary" title="View Payment Receipt"></i>
-                    {% elif notification.notification_type == 'order_delivered' %}
-                    <i class="bi bi-truck text-info" title="Track Delivery"></i>
-                    {% elif notification.notification_type == 'subscription_payment' %}
-                    <i class="bi bi-crown text-warning" title="Manage Subscription"></i>
-                    {% else %}
-                    <i class="bi bi-info-circle text-secondary" title="View Details"></i>
+            {% for notification in notifications %}
+                <div class="notification-card {% if not notification.is_read %}unread{% endif %}" 
+                     data-notification-id="{{ notification.notification_id }}">
+                     
+                    <!-- Selection Checkbox -->
+                    <div class="notification-checkbox">
+                        <input type="checkbox" class="custom-checkbox notification-select"
+                               value="{{ notification.notification_id }}" onchange="updateSelection()">
+                    </div>
+                    
+                    <div class="notification-header">
+                        <div>
+                            {% if notification.notification_type == 'order_placed' %}
+                                <i class="bi bi-cart-plus text-success" title="View Order Details"></i>
+                            {% elif notification.notification_type == 'payment_received' %}
+                                <i class="bi bi-credit-card text-primary" title="View Payment Receipt"></i>
+                            {% elif notification.notification_type == 'subscription_payment' %}
+                                <i class="bi bi-crown text-warning" title="Manage Subscription"></i>
+                            {% elif notification.notification_type == 'subscription_upgrade' %}
+                                <i class="bi bi-arrow-up-circle text-success" title="View Upgrade Details"></i>
+                            {% elif notification.notification_type == 'user_limit_reached' %}
+                                <i class="bi bi-exclamation-triangle text-warning" title="Users Limit Alert"></i>
+                            {% else %}
+                                <i class="bi bi-info-circle text-secondary" title="View Details"></i>
+                            {% endif %}
+                        </div>
+                        <div class="notification-title">{{ notification.title }}</div>
+                        <div class="notification-time">
+                            {{ notification.created_at|timesince }} ago
+                        </div>
+                        {% if not notification.is_read %}
+                            <div class="unread-indicator"></div>
+                        {% endif %}
+                    </div>
+                    <div class="notification-message">
+                        {{ notification.message }}
+                    </div>
+                    {% if notification.related_order_id %}
+                        <div class="notification-actions">
+                            <a href="{% url 'admin_orders' %}?order_id={{ notification.related_order_id }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>View Order
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if notification.notification_type == 'user_limit_reached' %}
+                        <div class="notification-actions">
+                            <a href="{% url 'admin_add_subscription' %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-plus-circle me-1"></i>Upgrade User Limit
+                            </a>
+                        </div>
                     {% endif %}
                 </div>
-                <div class="notification-title">{{ notification.title }}</div>
-                <div class="notification-time">
-                    {{ notification.created_at|timesince }} ago
-                </div>
-                {% if not notification.is_read %}
-                <div class="unread-indicator"></div>
-                {% endif %}
-            </div>
-            <div class="notification-message">
-                {{ notification.message }}
-            </div>
-            {% if notification.related_order_id %} <div class="notification-actions">
-                <a href="{% url 'customer_orders' %}?order_id={{ notification.related_order_id }}"
-                    class="btn btn-sm btn-outline-primary"
-                    style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem; transition: all 0.3s ease;">
-                    <i class="bi bi-eye me-1"></i>View Order
-                </a>
-            </div>
-            {% endif %}
-        </div>
-        {% endfor %}
+            {% endfor %}
         {% else %}
-        <div class="empty-state">
-            <div class="empty-icon">
-                <i class="bi bi-bell"></i>
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-bell"></i>
+                </div>
+                <h3>No Notifications</h3>
+                <p>You don't have any notifications yet. When customers place orders or make payments, you'll see updates here.</p>
             </div>
-            <h3>No Notifications</h3>
-            <p>You don't have any notifications yet. When you place orders or make payments, you'll see updates here.
-            </p>
-        </div>
         {% endif %}
     </div>
 </div>
@@ -753,20 +692,20 @@
                 notification_id: notificationId
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const notificationElement = document.querySelector(`[data-notification-id="${notificationId}"]`);
-                    if (notificationElement) {
-                        notificationElement.classList.remove('unread');
-                        const unreadIndicator = notificationElement.querySelector('.unread-indicator');
-                        if (unreadIndicator) {
-                            unreadIndicator.remove();
-                        }
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const notificationElement = document.querySelector(`[data-notification-id="${notificationId}"]`);
+                if (notificationElement) {
+                    notificationElement.classList.remove('unread');
+                    const unreadIndicator = notificationElement.querySelector('.unread-indicator');
+                    if (unreadIndicator) {
+                        unreadIndicator.remove();
                     }
-                    updateUnreadCount();
                 }
-            });
+                updateUnreadCount();
+            }
+        });
     }
 
     function markAllAsRead() {
@@ -777,12 +716,12 @@
                 'X-CSRFToken': getCookie('csrftoken')
             }
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                }
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        });
     }
 
     function updateUnreadCount() {
@@ -791,7 +730,9 @@
         if (unreadCards.length === 0 && badge) {
             badge.remove();
         }
-    } function getCookie(name) {
+    }
+
+    function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
@@ -805,7 +746,7 @@
         }
         return cookieValue;
     }
-
+    
     // Handle notification icon clicks with different actions
     function handleNotificationIconClick(notificationType, orderId, iconElement) {
         // Add pulse animation
@@ -822,7 +763,7 @@
             case 'order_placed':
                 if (orderId) {
                     // Redirect to order details
-                    window.open(`/order-details/${orderId}/`, '_blank');
+                    window.location.href = `/admin-orders/?order_id=${orderId}`;
                     message = 'Opening order details...';
                     actionType = 'success';
                 } else {
@@ -832,51 +773,18 @@
 
             case 'payment_received':
                 if (orderId) {
-                    // Redirect to payment page or receipt
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '{% url "payment" %}';
-                    form.target = '_blank';
-
-                    const csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = 'csrfmiddlewaretoken';
-                    csrfInput.value = getCookie('csrftoken');
-
-                    const orderInput = document.createElement('input');
-                    orderInput.type = 'hidden';
-                    orderInput.name = 'order_id';
-                    orderInput.value = orderId;
-
-                    form.appendChild(csrfInput);
-                    form.appendChild(orderInput);
-                    document.body.appendChild(form);
-                    form.submit();
-                    document.body.removeChild(form);
-
-                    message = 'Opening payment receipt...';
+                    window.location.href = `/admin-orders/?order_id=${orderId}`;
+                    message = 'Opening payment details...';
                     actionType = 'success';
                 } else {
                     message = 'Payment details not available';
                 }
                 break;
 
-            case 'order_delivered':
-                if (orderId) {
-                    // Show delivery tracking info
-                    showDeliveryTracking(orderId);
-                    message = 'Showing delivery tracking...';
-                    actionType = 'info';
-                } else {
-                    message = 'Tracking information not available';
-                }
-                break;
-
-            case 'subscription_payment':
-                // Redirect to subscription management
-                window.open('/subscription/', '_blank');
+            case 'user_limit_reached':
+                window.location.href = "{% url 'admin_add_subscription' %}";
                 message = 'Opening subscription management...';
-                actionType = 'success';
+                actionType = 'warning';
                 break;
 
             default:
@@ -888,60 +796,7 @@
         showActionFeedback(message, actionType);
     }
 
-    // Show delivery tracking modal or info
-    function showDeliveryTracking(orderId) {
-        const trackingInfo = {
-            'Processing': '✓ Order confirmed and being prepared',
-            'Shipped': '✓ Package shipped and on the way',
-            'Out for Delivery': '🚚 Out for delivery - arriving today',
-            'Delivered': '✅ Successfully delivered'
-        };
-
-        let trackingHtml = `
-            <div class="modal fade" id="trackingModal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content" style="background: #2d2d2d; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
-                        <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <h5 class="modal-title">📦 Delivery Tracking - Order #${orderId}</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="tracking-timeline">`;
-
-        Object.entries(trackingInfo).forEach(([status, description]) => {
-            trackingHtml += `
-                <div class="tracking-step completed">
-                    <div class="step-icon">✓</div>
-                    <div class="step-content">
-                        <h6>${status}</h6>
-                        <p>${description}</p>
-                    </div>
-                </div>`;
-        });
-
-        trackingHtml += `
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <style>
-                .tracking-timeline { padding: 1rem 0; }
-                .tracking-step { display: flex; align-items: center; margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px; background: rgba(255,255,255,0.05); }
-                .step-icon { width: 30px; height: 30px; border-radius: 50%; background: #28a745; display: flex; align-items: center; justify-content: center; margin-right: 1rem; }
-                .step-content h6 { margin: 0; color: #fff; }
-                .step-content p { margin: 0; color: #ccc; font-size: 0.9rem; }
-            </style>`;
-
-        document.body.insertAdjacentHTML('beforeend', trackingHtml);
-        const modal = new bootstrap.Modal(document.getElementById('trackingModal'));
-        modal.show();
-
-        // Clean up modal after it's hidden
-        document.getElementById('trackingModal').addEventListener('hidden.bs.modal', function () {
-            this.remove();
-        });
-    }    // Show action feedback toast
+    // Show action feedback toast
     function showActionFeedback(message, type = 'info') {
         // Remove existing feedback
         const existingFeedback = document.querySelector('.action-feedback');
@@ -1059,56 +914,70 @@
                 notification_ids: selectedIds
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Remove notifications from DOM with fade effect
-                    selectedIds.forEach(id => {
-                        const card = document.querySelector(`[data-notification-id="${id}"]`);
-                        if (card) {
-                            card.style.transition = 'all 0.3s ease';
-                            card.style.opacity = '0';
-                            card.style.transform = 'translateX(-100%)';
-                            setTimeout(() => card.remove(), 300);
-                        }
-                    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove notifications from DOM with fade effect
+                selectedIds.forEach(id => {
+                    const card = document.querySelector(`[data-notification-id="${id}"]`);
+                    if (card) {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateX(-100%)';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                });
 
-                    showActionFeedback(`${selectedIds.length} notification(s) deleted successfully`, 'success');
+                showActionFeedback(`${selectedIds.length} notification(s) deleted successfully`, 'success');
 
-                    // Reset selection
+                // Reset selection
+                setTimeout(() => {
+                    cancelSelection();
+
+                    // Check if no notifications left
                     setTimeout(() => {
-                        cancelSelection();
-
-                        // Check if no notifications left
-                        setTimeout(() => {
-                            const remainingCards = document.querySelectorAll('.notification-card');
-                            if (remainingCards.length === 0) {
-                                location.reload();
-                            }
-                        }, 400);
-                    }, 300);
-                } else {
-                    showActionFeedback(data.error || 'Failed to delete notifications', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showActionFeedback('Failed to delete notifications', 'error');
-            })
-            .finally(() => {
-                // Restore button state
-                deleteBtn.innerHTML = originalContent;
-                deleteBtn.disabled = false;
-            });
+                        const remainingCards = document.querySelectorAll('.notification-card');
+                        if (remainingCards.length === 0) {
+                            location.reload();
+                        }
+                    }, 400);
+                }, 300);
+            } else {
+                showActionFeedback(data.error || 'Failed to delete notifications', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showActionFeedback('Failed to delete notifications', 'error');
+        })
+        .finally(() => {
+            // Restore button state
+            deleteBtn.innerHTML = originalContent;
+            deleteBtn.disabled = false;
+        });
     }
 
     // Auto-mark as read when notification is clicked
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const notificationCards = document.querySelectorAll('.notification-card.unread');
         notificationCards.forEach(card => {
-            card.addEventListener('click', function () {
+            card.addEventListener('click', function() {
                 const notificationId = this.getAttribute('data-notification-id');
                 markAsRead(notificationId);
+            });
+        });
+        
+        // Setup notification icon click handlers
+        document.querySelectorAll('.notification-icon').forEach(icon => {
+            icon.addEventListener('click', function(event) {
+                const notificationCard = this.closest('.notification-card');
+                const notificationType = this.querySelector('i').className.includes('cart-plus') ? 'order_placed' :
+                                        this.querySelector('i').className.includes('credit-card') ? 'payment_received' :
+                                        this.querySelector('i').className.includes('crown') ? 'subscription_payment' : 
+                                        this.querySelector('i').className.includes('arrow-up-circle') ? 'subscription_upgrade' :
+                                        this.querySelector('i').className.includes('exclamation-triangle') ? 'user_limit_reached' : 'other';
+                const orderId = notificationCard.getAttribute('data-notification-id');
+                handleNotificationIconClick(notificationType, orderId, this);
             });
         });
     });

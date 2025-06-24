@@ -84,13 +84,114 @@
       background-color: var(--gray-50);
       color: var(--text-primary);
       line-height: 1.6;
-    }
-
-   .container-fluid {
+    }    .container-fluid {
         min-height: 100vh !important;
         color: #262626 !important;
         background-color: #ffffff !important;
     }
+    
+    /* Notification Badge Styles */
+    .sidebar-badge {
+        position: absolute;
+        right: 10px;
+        top: 40%;
+        transform: translateY(-50%);
+        background-color: #000000;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        animation: pulse-badge 2s infinite;
+        /* Ensure visibility for unread notifications */
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Style for nav item with notifications */
+    .nav-item.has-notifications .nav-link {
+        font-weight: bold;
+        position: relative;
+    }
+    
+    .nav-item.has-notifications::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background-color: var(--danger);
+        opacity: 0.8;
+    }
+      @keyframes pulse-badge {
+        0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5); }
+        70% { box-shadow: 0 0 0 6px rgba(0, 0, 0, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+    }
+    
+    /* Floating Unread Notification Indicator */
+    /* .unread-notification-indicator {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        background: #000000;
+        color: #ffffff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        animation: float-pulse 3s infinite ease-in-out;
+    } */
+    
+    /* .unread-notification-indicator::after {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 50%;
+        padding: 2px;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    } */
+    
+    /* .unread-notification-indicator:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+    
+    .unread-notification-indicator:hover::after {
+        opacity: 1;
+    } */
+    
+    @keyframes float-pulse {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+    
     .row {
       display: flex;
       flex-wrap: wrap;
@@ -1032,9 +1133,53 @@
 
     /* Scrollbar styling */
   </style>
+  
+  <style>
+    /* Floating Unread Notification Indicator Styles */
+    /* .unread-notification-indicator {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: #000000;
+      color: #ffffff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: float-pulse 3s infinite ease-in-out;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .unread-notification-indicator:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+     */
+    /* Ensure the notification item stands out */
+    .nav-item.has-notifications {
+      background-color: rgba(239, 68, 68, 0.05);
+      border-left: 3px solid var(--danger);
+    }
+    
+    .nav-item.has-notifications .nav-link {
+      font-weight: 600;
+    }
+  </style>
 </head>
 
-<body>
+<body>  <!-- Floating Unread Notification Indicator -->
+  <div class="unread-notification-indicator" id="globalUnreadIndicator" title="{{ unread_count }} unread notification(s)" onclick="window.location.href='{% url 'customer_notifications' %}'" {% if unread_count > 0 %}style="display:flex;"{% else %}style="display:none;"{% endif %}>
+    {{ unread_count }}
+  </div>
+  
   <!-- Hamburger Button -->
   <button class="hamburger" id="hamburger" aria-label="Toggle menu">
     <span class="hamburger-line"></span>
@@ -1071,13 +1216,12 @@
             <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Orders Icon">
             <span class="nav-text">View Orders</span>
           </a>
-        </li>
-        <li class="nav-item">
+        </li>        <li class="nav-item {% if unread_count > 0 %}has-notifications{% endif %}" id="notification-nav-item">
           <a href="{% url 'customer_notifications' %}" class="nav-link">
             <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Notifications Icon">
             <span class="nav-text">Notifications</span>
             {% if unread_count > 0 %}
-            <span class="sidebar-badge">{{ unread_count }}</span>
+            <span class="sidebar-badge" id="notification-badge">{{ unread_count }}</span>
             {% endif %}
           </a>
         </li>
@@ -1181,18 +1325,131 @@
       window.addEventListener('resize', adjustSidebarHeight);
     });
   </script>
-  <script src="{% static 'js/admin_base.js' %}"></script>
-  <script>
+  <script src="{% static 'js/admin_base.js' %}"></script>  <script>
     // Handle notifications indicator
     window.addEventListener('DOMContentLoaded', () => {
-      {% if unread_count > 0 %}
-      // Add the has-notifications class to the notifications menu item
-      const notificationMenuItem = document.querySelector('.nav-link[href*="notifications"]').closest('.nav-item');
-      if (notificationMenuItem) {
-        notificationMenuItem.classList.add('has-notifications');
+      // Initialize notification system
+      setupNotificationListeners();
+      
+      // Add the has-notifications class to the notifications menu item if there are unread notifications
+      const unreadCount = {{ unread_count|default:0 }};
+      if (unreadCount > 0) {
+        const notificationMenuItem = document.querySelector('.nav-link[href*="notifications"]').closest('.nav-item');
+        if (notificationMenuItem) {
+          notificationMenuItem.classList.add('has-notifications');
+        }
       }
-      {% endif %}
     });
+      // Function to update notification badge count globally
+    function updateNotificationBadge(count) {
+      // Get the badge and floating indicator elements
+      let badge = document.getElementById('notification-badge');
+      let floatingIndicator = document.getElementById('globalUnreadIndicator');
+      const notificationMenuItem = document.getElementById('notification-nav-item');
+      
+      // Convert count to a number if it's a string
+      if (typeof count === 'string') {
+        count = parseInt(count) || 0;
+      }
+      
+      // If count is 0, hide the badge
+      if (count === 0) {
+        if (badge) badge.style.display = 'none';
+        if (notificationMenuItem) notificationMenuItem.classList.remove('has-notifications');
+        
+        // Hide floating indicator if it exists
+        if (floatingIndicator) floatingIndicator.style.display = 'none';
+        
+        // Update page title to remove count
+        const originalTitle = document.title.replace(/^\(\d+\)\s/, '');
+        document.title = originalTitle;
+      } else {
+        // If badge doesn't exist, create it
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.id = 'notification-badge';
+          badge.className = 'sidebar-badge';
+          const notificationLink = notificationMenuItem.querySelector('.nav-link');
+          if (notificationLink) {
+            notificationLink.appendChild(badge);
+          }
+        }
+        
+        // Update badge with new count and ensure it's visible
+        badge.textContent = count;
+        badge.style.display = 'flex';
+        badge.style.visibility = 'visible';
+        badge.style.opacity = '1';
+        
+        if (notificationMenuItem) {
+          notificationMenuItem.classList.add('has-notifications');
+        }
+        
+        // Update or create the floating indicator
+        if (!floatingIndicator) {
+          floatingIndicator = document.createElement('div');
+          floatingIndicator.id = 'globalUnreadIndicator';
+          floatingIndicator.className = 'unread-notification-indicator';
+          floatingIndicator.title = count + ' unread notification(s)';
+          floatingIndicator.onclick = function() {
+            window.location.href = '{% url "customer_notifications" %}';
+          };
+          document.body.prepend(floatingIndicator);
+        }
+        
+        // Update floating indicator with new count
+        floatingIndicator.textContent = count;
+        floatingIndicator.title = count + ' unread notification(s)';
+        floatingIndicator.style.display = 'flex';
+        
+        // Update page title with count
+        const originalTitle = document.title.replace(/^\(\d+\)\s/, '');
+        document.title = `(${count}) ${originalTitle}`;
+      }
+    }    // Setup event listeners to catch notification updates
+    function setupNotificationListeners() {
+      // Create a custom event for notification updates
+      window.addEventListener('notificationCountUpdated', function(event) {
+        if (event.detail && event.detail.count !== undefined) {
+          updateNotificationBadge(event.detail.count);
+        }
+      });
+      
+      // Initialize the notification badge and floating indicator on page load
+      const unreadCount = {{ unread_count|default:0 }};
+      updateNotificationBadge(unreadCount);
+
+      // Add visual indicator to notification menu item if there are unread notifications
+      if (unreadCount > 0) {
+        const notificationMenuItem = document.getElementById('notification-nav-item');
+        if (notificationMenuItem) {
+          notificationMenuItem.classList.add('has-notifications');
+        }
+      }
+      
+      // Add click handler for the floating indicator
+      const globalIndicator = document.getElementById('globalUnreadIndicator');
+      if (globalIndicator) {
+        globalIndicator.addEventListener('click', function() {
+          window.location.href = '{% url "customer_notifications" %}';
+        });
+      }
+
+      // Check for notifications periodically (every 60 seconds)
+      setInterval(function() {
+        // We don't auto-refresh the count here, but this could be used
+        // to fetch new notifications via an API call if needed
+        const badge = document.getElementById('notification-badge');
+        const notificationMenuItem = document.getElementById('notification-nav-item');
+        
+        if (badge && notificationMenuItem) {
+          // Ensure visibility of existing notifications
+          badge.style.visibility = 'visible';
+          badge.style.opacity = '1';
+          notificationMenuItem.classList.add('has-notifications');
+        }
+      }, 60000);
+    }
   </script>
 
   {% block extra_js %}{% endblock %}
