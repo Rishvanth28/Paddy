@@ -1493,6 +1493,7 @@ button, .btn {
     padding-left: 15px !important;
     padding-right: 15px !important;
     width: 100% !important;
+    margin-top: -5rem;
   }
   
   /* Page titles and headers proper spacing */
@@ -1501,7 +1502,7 @@ button, .btn {
   .header-bar h1,
   h1:first-child,
   h2:first-child {
-    margin-top: 5px !important;
+    margin-top: 4rem !important;
     padding-left: 0 !important;
     text-align: left !important;
   }

@@ -120,7 +120,7 @@
         }
     }
 
-    /* Header Bar */
+     /* Header Bar */
     .header-bar {
         display: flex;
         align-items: center;
@@ -1121,19 +1121,16 @@
       }, 5000);
 
       // Add close button functionality
-      const closeBtn = toast.querySelector('.toast-close');
-      if (closeBtn) {
+      const closeBtn = toast.querySelector('.toast-close');      if (closeBtn) {
         closeBtn.addEventListener('click', closeToastHandler);
-      }
-    }
+      }    }
   });
 </script>
-{% endif %}
 
 <div class="container-fluid my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
-        <div class="text-muted" id="order-count-text">0 orders found</div>
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+        <h2 class="page-title mb-0 me-3">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
+        <div class="text-muted" style="color : rgb(0, 0, 0)  !important;" id="order-count-text">0 orders found</div>
     </div>
     
     <!-- Filters section -->
@@ -1183,16 +1180,6 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
-                <label for="category-filter" class="form-label">Category</label>
-                <select id="category-filter" class="form-select form-select-sm" style="cursor: pointer;">
-                    <option value="all">All Categories</option>
-                    <option value="1">Rice</option>
-                    <option value="2">Paddy</option>
-                    <option value="3">Pesticide</option>
-                </select>
-            </div>
-
             <!-- Sorting options -->
             <div class="col-md-2">
                 <label for="sort" class="form-label">Sort By</label>
@@ -1204,6 +1191,16 @@
                 </select>
             </div>
 
+             <div class="col-md-2">
+                <label for="category-filter" class="form-label">Category</label>
+                <select id="category-filter" class="form-select form-select-sm" style="cursor: pointer;">
+                    <option value="all">All Categories</option>
+                    <option value="1">Rice</option>
+                    <option value="2">Paddy</option>
+                    <option value="3">Pesticide</option>
+                </select>
+            </div>
+            
             <!-- Search box -->
             <div class="col-md-2">
                 <div class="search-container">
@@ -1998,6 +1995,6 @@
     });
 </script>
 
-
 {% endblock %}
+
 {% endblock %}

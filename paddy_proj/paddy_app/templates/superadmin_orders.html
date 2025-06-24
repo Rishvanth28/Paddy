@@ -27,10 +27,16 @@
         --border-light: #f1f5f9;
         --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
         --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-        --border-radius: 12px;
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);        --border-radius: 12px;
         --border-radius-sm: 8px;
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        /* Text Colors */
+        --text-primary: #000000;
+        --text-secondary: #404040;
+        --text-tertiary: #737373;
+        --text-muted: #a3a3a3;
+        --text-inverse: #ffffff;
     }
       body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -45,28 +51,51 @@
         background: transparent;
         padding: 1.5rem;
     }
-    
-    /* Page Header */
-    .page-header {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-        color: white;
-        padding: 2rem;
-        border-radius: var(--border-radius);
-        margin-bottom: 2rem;
-        box-shadow: var(--shadow-lg);
+      /* Header Bar */
+    .header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-left: 0.5rem;
+        margin-top: -1rem;
     }
-    
-    .page-header h2 {
-        font-weight: 700;
+
+    .page-title {
         font-size: 2rem;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.025em;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 1px;
+        color: #000000;
+        position: relative;
+        text-transform: uppercase;
+        padding-bottom: 0.6rem;
+        text-align: left;
     }
-    
-    .page-header .subtitle {
-        opacity: 0.9;
-        font-size: 1rem;
-        font-weight: 400;
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: #000000;
+        border-radius: 2px;
+        transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    .page-title:hover::after {
+        width: 110%;
+        transform: translateX(-50%);
+    }
+
+    #order-count-text {
+        color: var(--text-tertiary) !important;
+        font-weight: 500;
+        font-size: 0.95rem;
     }
       .dashboard-card {
         background: rgba(255, 255, 255, 0.95);
@@ -672,17 +701,9 @@
 {% endif %}
 
 <div class="container-fluid my-4">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h2 class="mb-0">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
-                <p class="subtitle mb-0">Manage and track order status, payments, and deliveries</p>
-            </div>
-            <div class="text-white-50" id="order-count-text">
-                <i class="bi bi-box-seam me-2"></i>0 orders found
-            </div>
-        </div>
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+        <h2 class="page-title mb-0 me-3">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
+        <div class="text-muted" style="color : rgb(0, 0, 0)  !important;" id="order-count-text">0 orders found</div>
     </div>
       <!-- Filters section -->
     <div class="filter-section">
@@ -707,9 +728,8 @@
                     </div>
                     <div class="col-5">
                         <input type="date" class="form-control form-control-sm" id="date_to" placeholder="To">
-                    </div>
-                    <div class="col-2">
-                        <button type="button" class="btn btn-sm btn-primary w-100" id="apply-date-filter">
+                    </div>                    <div class="col-2 d-flex align-items-end justify-content-center">
+                        <button type="button" class="btn btn-sm btn-primary" id="apply-date-filter" style="width: 100%; min-width: 50px;top: -0.5rem;margin-left: 1rem;">
                             <i class="bi bi-check"></i>
                         </button>
                     </div>
