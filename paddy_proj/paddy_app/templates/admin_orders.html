@@ -914,10 +914,36 @@
 
     .list-group-flush .list-group-item:last-child {
         border-bottom-width: 0;
+    }    .h-100 {
+        height: 100% !important;
     }
 
-    .h-100 {
-        height: 100% !important;
+    /* Search input styling */
+    .search-container {
+        position: relative;
+    }
+
+    .search-container .bi-search {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-tertiary);
+        z-index: 1;
+    }
+
+    .search-input {
+        padding-left: 3rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid var(--border-medium);
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition-fast);
+    }
+
+    .search-input:focus {
+        background: white;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
 </style>
 {% endblock %}
@@ -1198,11 +1224,11 @@
                     <option value="1">Rice</option>
                     <option value="2">Paddy</option>
                     <option value="3">Pesticide</option>
-                </select>
-            </div>
+                </select>            </div>
             
             <!-- Search box -->
-            <div class="col-md-2">
+            <div class="col-12">
+                <label class="form-label">Search Orders</label>
                 <div class="search-container">
                     <i class="bi bi-search"></i>
                     <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
