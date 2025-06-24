@@ -557,6 +557,63 @@
             }
         }
 
+        /* Unread Notification Floating Indicator */
+        /* .unread-notification-indicator {
+            position: fixed !important;
+            top: 70px !important;
+            right: 20px !important;
+            background: #000000 !important;
+            color: #ffffff !important;
+            border-radius: 50% !important;
+            width: 40px !important;
+            height: 40px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-weight: bold !important;
+            font-size: 1rem !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+            z-index: 1000 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            animation: float-pulse 3s infinite ease-in-out !important;
+        } */
+
+        /* .unread-notification-indicator::after {
+            content: '' !important;
+            position: absolute !important;
+            inset: -2px !important;
+            border-radius: 50% !important;
+            padding: 2px !important;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+            mask-composite: exclude !important;
+            opacity: 0 !important;
+            transition: opacity 0.3s ease !important;
+        } */
+/* 
+        .unread-notification-indicator:hover {
+            transform: scale(1.1) !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .unread-notification-indicator:hover::after {
+            opacity: 1 !important;
+        } */
+
+        @keyframes float-pulse {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
         /* Icon color customizations */
         .text-success {
             color: #000000 !important;
@@ -647,6 +704,7 @@
 </head>
 
 <div class="container-fluid my-4">
+
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h1 class="page-title mb-0 me-3">Notifications
             {% if unread_count > 0 %}
@@ -693,19 +751,18 @@
             <div class="notification-checkbox">
                 <input type="checkbox" class="custom-checkbox notification-select"
                     value="{{ notification.notification_id }}" onchange="updateSelection()">
-            </div>
-            <div class="notification-header">
+            </div>            <div class="notification-header">
                 <div>
                     {% if notification.notification_type == 'order_placed' %}
-                    <i class="bi bi-cart-plus text-success" title="View Order Details"></i>
+                    <i class="bi bi-cart-plus text-success" title="View Order Details" onclick="handleNotificationIconClick('order_placed', '{{ notification.related_order_id }}', this)"></i>
                     {% elif notification.notification_type == 'payment_received' %}
-                    <i class="bi bi-credit-card text-primary" title="View Payment Receipt"></i>
+                    <i class="bi bi-credit-card text-primary" title="View Payment Receipt" onclick="handleNotificationIconClick('payment_received', '{{ notification.related_order_id }}', this)"></i>
                     {% elif notification.notification_type == 'order_delivered' %}
-                    <i class="bi bi-truck text-info" title="Track Delivery"></i>
+                    <i class="bi bi-truck text-info" title="Track Delivery" onclick="handleNotificationIconClick('order_delivered', '{{ notification.related_order_id }}', this)"></i>
                     {% elif notification.notification_type == 'subscription_payment' %}
-                    <i class="bi bi-crown text-warning" title="Manage Subscription"></i>
+                    <i class="bi bi-crown text-warning" title="Manage Subscription" onclick="handleNotificationIconClick('subscription_payment', '', this)"></i>
                     {% else %}
-                    <i class="bi bi-info-circle text-secondary" title="View Details"></i>
+                    <i class="bi bi-info-circle text-secondary" title="View Details" onclick="handleNotificationIconClick('other', '', this)"></i>
                     {% endif %}
                 </div>
                 <div class="notification-title">{{ notification.title }}</div>
@@ -740,8 +797,7 @@
     </div>
 </div>
 
-<script>
-    function markAsRead(notificationId) {
+<script>    function markAsRead(notificationId) {
         fetch('/mark_notification_read/', {
             method: 'POST',
             headers: {
@@ -763,12 +819,16 @@
                             unreadIndicator.remove();
                         }
                     }
+                    // Update the unread count for the page and notify parent page
                     updateUnreadCount();
                 }
             });
-    }
-
-    function markAllAsRead() {
+    }    function markAllAsRead() {
+        // Show a confirmation message to inform users about this behavior change
+        if (!confirm("Notifications will be marked as read in the system, but the indicators will remain until you actually open or interact with each notification. Continue?")) {
+            return;
+        }
+        
         fetch('/mark_all_notifications_read/', {
             method: 'POST',
             headers: {
@@ -779,18 +839,70 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    location.reload();
+                    showActionFeedback("All notifications have been marked as read. The indicators will remain until you interact with each notification.", "success");
+                    // We no longer reload the page, so individual indicators remain visible
+                    
+                    // Update the badge on this page but don't remove indicators
+                    updatePageBadgeOnly();
+                    
+                    // Update the sidebar badge via the custom event so floating indicator is updated
+                    const event = new CustomEvent('notificationCountUpdated', {
+                        detail: {
+                            count: 0 // This will hide the floating indicator but keep individual indicators
+                        },
+                        bubbles: true
+                    });
+                    window.dispatchEvent(event);
                 }
             });
+    }    // Function to update just the badge on the page title, not the indicators
+    function updatePageBadgeOnly() {
+        // While the page badge should show 0, we want to make sure UI indicators remain visible
+        // Get the page title badge
+        const pageTitleBadge = document.querySelector('.page-title .badge');
+        if (pageTitleBadge) {
+            pageTitleBadge.remove();
+        }
+        
+        // Update page title
+        const originalTitle = document.title.replace(/^\(\d+\)\s/, '');
+        document.title = originalTitle;
+        
+        // Note: We deliberately don't trigger badge updates here
+        // This function is called after "Mark All as Read" so we want
+        // to keep individual indicators visible until actually viewed
     }
-
+    
     function updateUnreadCount() {
         const unreadCards = document.querySelectorAll('.notification-card.unread');
-        const badge = document.querySelector('.badge');
-        if (unreadCards.length === 0 && badge) {
-            badge.remove();
+        const badge = document.querySelector('.page-title .badge');
+        
+        // Get the unread count
+        const count = unreadCards.length;
+        
+        // Update badge on this page title if needed
+        if (badge) {
+            if (count === 0) {
+                badge.remove();
+            } else {
+                badge.textContent = count;
+            }
         }
-    } function getCookie(name) {
+        
+        // Dispatch event to update badge and floating indicator in customer_base.html
+        const event = new CustomEvent('notificationCountUpdated', {
+            detail: {
+                count: count
+            },
+            bubbles: true
+        });
+        window.dispatchEvent(event);
+        
+        // Also call the updateNotificationBadge function if it exists in the parent window
+        if (typeof updateNotificationBadge === 'function') {
+            updateNotificationBadge(count);
+        }
+    }function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
@@ -803,9 +915,7 @@
             }
         }
         return cookieValue;
-    }
-
-    // Handle notification icon clicks with different actions
+    }    // Handle notification icon clicks with different actions
     function handleNotificationIconClick(notificationType, orderId, iconElement) {
         // Add pulse animation
         iconElement.classList.add('animate-pulse');
@@ -813,6 +923,13 @@
 
         // Prevent event bubbling to avoid triggering card click
         event.stopPropagation();
+
+        // Mark the notification as read when clicked
+        const card = iconElement.closest('.notification-card');
+        if (card && card.classList.contains('unread')) {
+            const notificationId = card.getAttribute('data-notification-id');
+            markAsRead(notificationId);
+        }
 
         let message = '';
         let actionType = 'info';
@@ -1098,19 +1215,37 @@
                 // Restore button state
                 deleteBtn.innerHTML = originalContent;
                 deleteBtn.disabled = false;
-            });
-    }
-
-    // Auto-mark as read when notification is clicked
+            });    }
+    
+    // Initialize on page load
     document.addEventListener('DOMContentLoaded', function () {
-        const notificationCards = document.querySelectorAll('.notification-card.unread');
-        notificationCards.forEach(card => {
-            card.addEventListener('click', function () {
-                const notificationId = this.getAttribute('data-notification-id');
-                markAsRead(notificationId);
+        // Set up click handlers for "View Order" and action buttons to mark as read
+        setupViewActionHandlers();
+        
+        // Initialize unread count in page title
+        const unreadCount = document.querySelectorAll('.notification-card.unread').length;
+        if (unreadCount > 0) {
+            const originalTitle = document.title;
+            document.title = `(${unreadCount}) ${originalTitle}`;
+        }
+        
+        // Initialize notification count update on page load
+        updateUnreadCount();
+    });
+    
+    // Set up handlers for "View Order" buttons and other action buttons
+    function setupViewActionHandlers() {
+        // Set up handlers for "View Order" buttons
+        document.querySelectorAll('.notification-actions .btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.notification-card');
+                if (card && card.classList.contains('unread')) {
+                    const notificationId = card.getAttribute('data-notification-id');
+                    markAsRead(notificationId);
+                }
             });
         });
-    });
+    }
 </script>
 
 {% endblock %}
