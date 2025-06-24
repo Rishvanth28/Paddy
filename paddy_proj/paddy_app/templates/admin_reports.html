@@ -1,0 +1,190 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<div class="reports-container">
+    <h1 class="page-title">Admin Reports</h1>
+    
+    <div class="filters-section">
+        <h2>Filter Reports</h2>
+        <form id="report-filter-form" method="get" action="{% url 'admin_reports' %}">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="customer">Customer:</label>
+                    <select name="customer" id="customer">
+                        <option value="">All Customers</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.customer_id }}" {% if filters.customer == customer.customer_id %}selected{% endif %}>
+                            {{ customer.first_name }} {{ customer.last_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                  <div class="filter-group">
+                    <label for="order_status">Order Status:</label>
+                    <select name="order_status" id="order_status">
+                        <option value="">All Statuses</option>
+                        <option value="0" {% if filters.order_status == '0' %}selected{% endif %}>Pending</option>
+                        <option value="1" {% if filters.order_status == '1' %}selected{% endif %}>Delivered</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="payment_status">Payment Status:</label>
+                    <select name="payment_status" id="payment_status">
+                        <option value="">All Payment Statuses</option>
+                        <option value="1" {% if filters.payment_status == '1' %}selected{% endif %}>Paid</option>
+                        <option value="0" {% if filters.payment_status == '0' %}selected{% endif %}>Not Paid</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="product_type">Product Type:</label>
+                    <select name="product_type" id="product_type">
+                        <option value="">All Product Types</option>
+                        <option value="1" {% if filters.product_type == '1' %}selected{% endif %}>Rice</option>
+                        <option value="2" {% if filters.product_type == '2' %}selected{% endif %}>Paddy</option>
+                        <option value="3" {% if filters.product_type == '3' %}selected{% endif %}>Pesticide</option>
+                    </select>
+                </div>
+  
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="date_preset">Date Range:</label>
+                    <select name="date_preset" id="date_preset">
+                        <option value="">Custom Range</option>
+                        <option value="today" {% if filters.date_preset == 'today' %}selected{% endif %}>Today</option>
+                        <option value="yesterday" {% if filters.date_preset == 'yesterday' %}selected{% endif %}>Yesterday</option>
+                        <option value="last_7_days" {% if filters.date_preset == 'last_7_days' %}selected{% endif %}>Last 7 Days</option>
+                        <option value="last_30_days" {% if filters.date_preset == 'last_30_days' %}selected{% endif %}>Last 30 Days</option>
+                        <option value="last_3_months" {% if filters.date_preset == 'last_3_months' %}selected{% endif %}>Last 3 Months</option>
+                        <option value="last_6_months" {% if filters.date_preset == 'last_6_months' %}selected{% endif %}>Last 6 Months</option>
+                        <option value="last_year" {% if filters.date_preset == 'last_year' %}selected{% endif %}>Last Year</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group date-field">
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" name="start_date" id="start_date" value="{{ filters.start_date }}">
+                </div>
+                
+                <div class="filter-group date-field">
+                    <label for="end_date">End Date:</label>
+                    <input type="date" name="end_date" id="end_date" value="{{ filters.end_date }}">
+                </div>
+                
+                <div class="filter-actions">
+                    <button type="submit" class="btn-primary">Apply Filters</button>
+                    <button type="button" id="reset-filters" class="btn-secondary">Reset</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div class="export-section">
+        <h2>Export Report</h2>
+        <div class="export-buttons">
+            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=excel" class="btn-export excel">Export to Excel</a>
+            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=pdf" class="btn-export pdf">Export to PDF</a>
+        </div>
+    </div>
+      <!-- Rice and Paddy Orders Table -->
+    <div class="reports-table-container">
+        <h2>Rice & Paddy Orders</h2>
+        <div class="table-responsive">
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th data-sort="id">Order ID</th>
+                        <th data-sort="customer_name">Customer</th>
+                        <th data-sort="order_date">Order Date</th>
+                        <th data-sort="product_type">Product Type</th>
+                        <th data-sort="quantity">Quantity</th>
+                        <th data-sort="total_amount">Total Amount</th>
+                        <th data-sort="pending_amount">Pending Amount</th>
+                        <th data-sort="status">Delivery Status</th>
+                        <th data-sort="payment_status">Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if rice_paddy_orders %}
+                        {% for order in rice_paddy_orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.customer_name }}</td>
+                            <td>{{ order.order_date }}</td>
+                            <td>{{ order.product_type }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ order.total_amount }}</td>
+                            <td>{{ order.pending_amount }}</td>
+                            <td class="status-{{ order.status|lower }}">{{ order.status }}</td>
+                            <td class="payment-{{ order.payment_status|lower }}">{{ order.payment_status }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="no-data">No rice or paddy orders found matching your criteria.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Pesticide Orders Table -->
+    <div class="reports-table-container">
+        <h2>Pesticide Orders</h2>
+        <div class="table-responsive">
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th data-sort="id">Order ID</th>
+                        <th data-sort="customer_name">Customer</th>
+                        <th data-sort="order_date">Order Date</th>
+                        <th data-sort="product_name">Product Name</th>
+                        <th data-sort="batch_number">Batch Number</th>
+                        <th data-sort="expiry_date">Expiry Date</th>
+                        <th data-sort="item_quantity">Quantity</th>
+                        <th data-sort="unit">Unit</th>
+                        <th data-sort="price_per_unit">Price per Unit</th>
+                        <th data-sort="item_total">Item Total</th>
+                        <th data-sort="status">Delivery Status</th>
+                        <th data-sort="payment_status">Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if pesticide_orders %}
+                        {% for order in pesticide_orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.customer_name }}</td>
+                            <td>{{ order.order_date }}</td>
+                            <td>{{ order.product_name }}</td>
+                            <td>{{ order.batch_number }}</td>
+                            <td>{{ order.expiry_date }}</td>
+                            <td>{{ order.item_quantity }}</td>
+                            <td>{{ order.unit }}</td>
+                            <td>{{ order.price_per_unit }}</td>
+                            <td>{{ order.item_total }}</td>
+                            <td class="status-{{ order.status|lower }}">{{ order.status }}</td>
+                            <td class="payment-{{ order.payment_status|lower }}">{{ order.payment_status }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="12" class="no-data">No pesticide orders found matching your criteria.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/reports.js' %}"></script>
+{% endblock %}

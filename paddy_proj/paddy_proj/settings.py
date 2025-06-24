@@ -146,6 +146,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost'
 ]
 
+# Authentication settings
+LOGIN_URL = '/'  # Redirect to homepage (login view)
+LOGIN_REDIRECT_URL = '/'  # Where to go after login
+LOGOUT_REDIRECT_URL = '/'  # Where to go after logout
+
 # Razorpay Settings
 RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
 RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"

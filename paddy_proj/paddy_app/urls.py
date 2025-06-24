@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .reports import admin_reports, superadmin_reports
 
 
 urlpatterns = [
@@ -51,21 +52,11 @@ urlpatterns = [
     path("create-admin-signup/", create_admin_signup, name="create_admin_signup"),    # Notification URLs
     path('customer/notifications/', customer_notifications, name='customer_notifications'),
     path('admin-notifications/', admin_notifications, name='admin_notifications'),
-    path('superadmin/notifications/', superadmin_notifications, name='superadmin_notifications'),
-    path('mark_notification_read/', mark_notification_read, name='mark_notification_read'),
-    path('mark_all_notifications_read/', mark_all_notifications_read, name='mark_all_notifications_read'),
-    path('delete_notifications/', delete_notifications, name='delete_notifications'),
-    # Reports URLs
-path("unified-report-admin/", unified_report_admin, name="unified_report_admin"),
-    path("unified-report-superadmin/", unified_report_superadmin, name="unified_report_superadmin"),
-
-    path('download-report-excel/', download_report_excel_admin, name='download_report_excel'),
-    path("download-invoice-pdf/", download_invoice_pdf_admin, name="download_invoice_pdf"),
-path('download-invoice-pdf1/', download_invoice_pdf_superadmin, name='download_invoice_pdf1'),
-path('download-invoice-excel1/', download_invoice_excel_superadmin, name='download_invoice_excel1'),
- path('report/customize/',customize_pdf_report, name='customize_pdf_report'),
-    path('report/download/custom/',download_custom_pdf, name='download_custom_pdf'),
-
-
+    path('superadmin/notifications/', superadmin_notifications, name='superadmin_notifications'),    path('mark_notification_read/', mark_notification_read, name='mark_notification_read'),
+    path('mark_all_notifications_read/', mark_all_notifications_read, name='mark_all_notifications_read'),    path('delete_notifications/', delete_notifications, name='delete_notifications'),
+    
+    # Reports URLs - using app-reports to avoid conflicts with Django's admin
+    path('app-admin-reports/', admin_reports, name='admin_reports'),
+    path('app-superadmin-reports/', superadmin_reports, name='superadmin_reports'),
 
 ]
