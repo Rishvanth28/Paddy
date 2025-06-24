@@ -1,0 +1,300 @@
+/* Reports Module Styles */
+
+/* Container and layout */
+.reports-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.filters-section,
+.export-section,
+.reports-table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.filters-section h2,
+.export-section h2,
+.reports-table-container h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #444;
+    font-weight: 500;
+}
+
+/* Filter controls */
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+.filter-group select,
+.filter-group input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+}
+
+.filter-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary,
+.btn-export {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #e1e1e1;
+}
+
+/* Export section */
+.export-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-export {
+    padding: 10px 20px;
+    flex: 1;
+    max-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-export.excel {
+    background-color: #217346;
+    color: white;
+}
+
+.btn-export.excel:hover {
+    background-color: #1e6b3e;
+}
+
+.btn-export.pdf {
+    background-color: #db4437;
+    color: white;
+}
+
+.btn-export.pdf:hover {
+    background-color: #c53929;
+}
+
+/* Table styles */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reports-table th,
+.reports-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word;    /* Enable word wrapping for all cells */
+    white-space: normal;      /* Ensure text wraps instead of overflowing */
+}
+
+/* Add specific styles for payment status column to prevent overflow */
+.reports-table td:last-child,
+.reports-table th:last-child {
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.reports-table th {
+    background-color: #f8f8f8;
+    font-weight: 600;
+    color: #333;
+    position: sticky;
+    top: 0;
+}
+
+.reports-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Date fields */
+.date-field {
+    transition: all 0.3s ease;
+}
+
+/* Sortable headers */
+.reports-table th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 25px;
+}
+
+.reports-table th.sortable:hover {
+    background-color: #f0f0f0;
+}
+
+.reports-table th.sortable::after {
+    content: "↕";
+    position: absolute;
+    right: 8px;
+    color: #999;
+}
+
+.reports-table th.sort-asc::after {
+    content: "↑";
+    color: #333;
+}
+
+.reports-table th.sort-desc::after {
+    content: "↓";
+    color: #333;
+}
+
+/* Status colors */
+.status-pending {
+    color: #ff9800;
+}
+
+.status-processing {
+    color: #2196F3;
+}
+
+.status-shipped {
+    color: #9C27B0;
+}
+
+.status-delivered {
+    color: #4CAF50;
+}
+
+.status-cancelled {
+    color: #F44336;
+}
+
+.payment-paid {
+    color: #4CAF50;
+}
+
+.payment-not-paid {
+    color: #F44336;
+}
+
+.payment-pending {
+    color: #ff9800;
+}
+
+.payment-failed {
+    color: #F44336;
+}
+
+.no-data {
+    text-align: center;
+    color: #777;
+    padding: 30px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .filter-row {
+        flex-wrap: wrap;
+    }
+    
+    .filter-group {
+        min-width: calc(50% - 15px);
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .filter-group,
+    .filter-actions {
+        width: 100%;
+    }
+    
+    .export-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-export {
+        max-width: 100%;
+    }
+    
+    .reports-table th,
+    .reports-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 22px;
+    }
+    
+    .filters-section h2,
+    .export-section h2,
+    .reports-table-container h2 {
+        font-size: 18px;
+    }
+}
