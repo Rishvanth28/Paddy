@@ -1,57 +1,3 @@
-{% extends 'admin_base.html' %}
-{% load static %}
-
-{% block content %}
-<link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}" />
-<div class="customer-list-container">
-    <div class="customer-header">
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-            <h1 class="page-title mb-0 me-3 " >Customer List</h1>
-        </div>
-        <form class="search-form" method="GET" action="">
-            <i class="fas fa-search search-icon"></i>
-            <input type="search" name="q" class="search-input" placeholder="Search customers...">
-        </form>
-    </div>
-
-    <div class="customer-table-container">
-        {% if customers %}
-        <table class="customer-table">
-            <thead>
-                <tr>
-                    <th >Customer ID</th>
-                    <th >Full Name</th>
-                    <th >Email</th>
-                    <th >Phone</th>
-                    <th >Company</th>
-                    <th >GST</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for customer in customers %}
-                <tr>
-                    <td>{{ customer.customer_id|lower }}</td>
-                    <td>{{ customer.first_name }} {{ customer.last_name }}</td>
-                    <td>{{ customer.email }}</td>
-                    <td>{{ customer.phone_number }}</td>
-                    <td>{{ customer.company_name|default:"-"|lower }}</td>
-                    <td>{{ customer.GST|default:"-" }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-icon">
-                <i class="fas fa-user-friends"></i>
-            </div>
-            <p >No customers found for this admin.</p>
-        </div>
-        {% endif %}
-    </div>
-</div>
-
-{% if messages %}
 <!-- Toast Notification System -->
 <style>
   .toast-container {
@@ -145,17 +91,19 @@
 </style>
 
 <div class="toast-container">
-  {% for message in messages %}
-    <div class="toast 
-              {% if message.tags == 'success' %}success
-              {% elif message.tags == 'info' %}info
-              {% elif message.tags == 'warning' %}warning
-              {% elif message.tags == 'error' %}error
-              {% endif %}">
-      {{ message }}
-      <button type="button" class="toast-close" aria-label="Close">&times;</button>
-    </div>
-  {% endfor %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="toast 
+                {% if message.tags == 'success' %}success
+                {% elif message.tags == 'info' %}info
+                {% elif message.tags == 'warning' %}warning
+                {% elif message.tags == 'error' %}error
+                {% endif %}">
+        {{ message }}
+        <button type="button" class="toast-close" aria-label="Close">&times;</button>
+      </div>
+    {% endfor %}
+  {% endif %}
 </div>
 
 <script>
@@ -186,6 +134,3 @@
     });
   });
 </script>
-{% endif %}
-
-{% endblock %}
