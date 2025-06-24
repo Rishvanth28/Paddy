@@ -1282,11 +1282,12 @@ bsAlert.close();
             </div>
         </div>
     </div>
-      <!-- Filters section -->
+    <!-- Filters section -->
     <div class="filter-section">
         <h5><i class="bi bi-funnel me-2"></i>Filter Orders</h5>
-        <div class="row g-4">            <!-- Status filters -->
-            <div class="col-lg-4 col-md-6">
+        <div class="row g-4">
+            <!-- Status filters -->
+            <div class="col-12 col-md-6 col-lg-4">
                 <label class="form-label"><i class="bi bi-check-circle me-1"></i>Order Status</label>
                 <div class="d-flex flex-wrap gap-2">
                     <button type="button" class="btn btn-sm btn-primary status-filter" data-filter="all">All</button>
@@ -1296,36 +1297,40 @@ bsAlert.close();
                     <button type="button" class="btn btn-sm btn-outline-danger status-filter" data-filter="pending_payment">Pending Payment</button>
                 </div>
             </div>
-              <!-- Date filters -->
-            <div class="col-lg-4 col-md-6">
+            <!-- Date filters -->
+            <div class="col-12 col-md-6 col-lg-8">
                 <label class="form-label"><i class="bi bi-calendar-range me-1"></i>Date Range</label>
                 <div class="row g-2">
-                    <div class="col-5">
+                    <div class="col-12 col-sm-4">
                         <input type="date" class="form-control form-control-sm" id="date_from" placeholder="From">
                     </div>
-                    <div class="col-5">
+                    <div class="col-12 col-sm-4">
                         <input type="date" class="form-control form-control-sm" id="date_to" placeholder="To">
                     </div>
-                    <div class="col-2">
-                        <button type="button" class="btn btn-sm btn-primary w-100" id="apply-date-filter">
-                            <i class="bi bi-check"></i>
+                    <div class="col-12 col-sm-4">
+                        <button type="button" class="btn btn-sm btn-primary w-100" id="apply-date-filter"
+                            style="margin-bottom: 8px; border-radius: 50px; background: linear-gradient(135deg, #000000, #333333); color: white; letter-spacing: 0.5px; font-weight: 600; box-shadow: var(--shadow-md); padding: 0.625rem 2rem; border: none; position: relative; overflow: hidden; z-index: 1; transition: all 0.3s ease;"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)';">
+                            Apply
                         </button>
                     </div>
                 </div>
             </div>
-              <!-- Admin filter for superadmin only -->
+           
+            {# Uncomment and use this block if needed #}
+            {% comment %} {# 
             {% if request.session.role == 'superadmin' %}
-            <div class="col-lg-4 col-md-6">
+            <div class="col-12 col-md-6 col-lg-4">
                 <label for="admin-filter" class="form-label"><i class="bi bi-person-badge me-1"></i>Filter by Admin</label>
                 <select id="admin-filter" class="form-select form-select-sm">
                     <option value="all">All Admins</option>
-                    <!-- This will be populated via JavaScript -->
                 </select>
             </div>
             {% endif %}
-            
-            <!-- Category filter -->
-            <div class="col-lg-{% if request.session.role == 'superadmin' %}3{% else %}4{% endif %} col-md-6">
+            #} {% endcomment %}
+            {% comment %} <!-- Category filter --> {% endcomment %}
+            <div class="col-12 col-md-4 col-lg-{% if request.session.role == 'superadmin' %}3{% else %}4{% endif %}">
                 <label for="category-filter" class="form-label"><i class="bi bi-tag me-1"></i>Category</label>
                 <select id="category-filter" class="form-select form-select-sm">
                     <option value="all">All Categories</option>
@@ -1334,9 +1339,8 @@ bsAlert.close();
                     <option value="3">Pesticide</option>
                 </select>
             </div>
-            
-            <!-- Sorting options -->
-            <div class="col-lg-{% if request.session.role == 'superadmin' %}3{% else %}4{% endif %} col-md-6">
+            {% comment %} <!-- Sorting options --> {% endcomment %}
+            <div class="col-12 col-md-4 col-lg-{% if request.session.role == 'superadmin' %}3{% else %}4{% endif %}">
                 <label for="sort" class="form-label"><i class="bi bi-sort-down me-1"></i>Sort By</label>
                 <select class="form-select form-select-sm" id="sort">
                     <option value="-order_id">Newest First</option>
@@ -1345,54 +1349,59 @@ bsAlert.close();
                     <option value="overall_amount">Amount (Low to High)</option>
                 </select>
             </div>
-              <!-- Search box -->
-            <div class="col-12">
-                <label class="form-label"><i class="bi bi-search me-1"></i>Search Orders</label>
-                <div class="search-container">
-                    <i class="bi bi-search"></i>
-                    <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
-                </div>
-            </div>
-        </div>
-    </div>
-      <!-- Main content with two-panel layout -->
-    <div class="row g-4">
-        <!-- Left panel: Order list -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="dashboard-card order-list-container">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5><i class="bi bi-list-ul me-2"></i>Order List</h5>
-                    <div class="spinner-border spinner-border-sm text-primary d-none" id="loading-spinner" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-                {% csrf_token %}
-                <div class="list-group list-group-flush" id="orders-list">
-                    <div class="empty-state">
-                        <div class="spinner-border text-primary loading-spinner" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Right panel: Order details -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="dashboard-card h-100">
-                <div class="card-header">
-                    <h5><i class="bi bi-receipt me-2"></i>Order Details</h5>
-                    <div class="subtitle">View comprehensive order information</div>
-                </div>
-                <div class="order-detail-section" id="order-details">
-                    <div class="empty-state">
-                        <i class="bi bi-box-seam"></i>
-                        <p>Select an order to view details</p>
+            {% comment %} <!-- Search box --> {% endcomment %}
+            <div class="col-12 col-md-4 col-lg-{% if request.session.role == 'superadmin' %}4{% else %}4{% endif %} d-flex align-items-end">
+                <div class="w-100">
+                    <label class="form-label"><i class="bi bi-search me-1"></i>Search Orders</label>
+                    <div class="search-container">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    {% comment %} <!-- Main content with two-panel layout --> {% endcomment %}
+    <div class="order-layout">
+  {% comment %} <!-- Left panel: Order list --> {% endcomment %}
+  <div class="order-list-panel">
+    <div class="dashboard-card order-list-container">
+      <div class="card-header">
+        <h5><i class="bi bi-list-ul me-2"></i>Order List</h5>
+        <div class="spinner-border text-primary d-none" id="loading-spinner" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      {% csrf_token %}
+      <div class="list-group" id="orders-list">
+        <div class="empty-state">
+          <div class="spinner-border text-primary loading-spinner" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} <!-- Right panel: Order details --> {% endcomment %}
+  <div class="order-details-panel">
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h5><i class="bi bi-receipt me-2"></i>Order Details</h5>
+        <div class="subtitle">View comprehensive order information</div>
+      </div>
+      <div class="order-detail-section" id="order-details">
+        <div class="empty-state">
+          <i class="bi bi-box-seam"></i>
+          <p>Select an order to view details</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </div>
 
 {% block extra_js %}
@@ -1811,7 +1820,7 @@ bsAlert.close();
             
             orderDetails.innerHTML = `
                 <div class="detail-header">
-                    <div class="d-flex justify-content-between align-items-start">
+                    <div class="detail-header-div justify-content-between align-items-start">
                         <div>
                             <h5 class="fw-bold">Order #${order.order_id}</h5>
                             <p class="text-muted mb-0">Placed on ${formatDate(order.order_date)}</p>
