@@ -55,6 +55,21 @@
       outline: 2px solid var(--primary-color);
     }
     
+    /* Ensure sidebar is scrollable */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #888 #f1f1f1;
+    }
+    
+    .sidebar-nav {
+      flex: 1 1 auto;
+      overflow-y: auto;
+    }
+    
     /* Superadmin submenu specific styles */
     @media (max-width: 768px) {
       .submenu-item {
@@ -211,8 +226,7 @@
         {% csrf_token %}
         <button type="submit" class="logout-button">Logout</button>
       </form>
-    </footer>
-  </aside>
+    </footer>  </aside>
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <!-- Main content -->
@@ -222,7 +236,50 @@
   </main>
   <script src="{% static 'js/superadmin_base.js' %}"></script>
   
+  <!-- Additional script for sidebar scrolling -->
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if active menu item is out of view and scroll to it
+      const activeNavItem = document.querySelector('.nav-item.active, .nav-link.active');
+      if (activeNavItem) {
+        activeNavItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      // Make sure sidebar scroll works on mobile too
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) {
+        sidebar.style.overflowY = 'auto';
+        
+        // Set height of sidebar-nav to enable scrolling
+        const sidebarHeader = document.querySelector('.sidebar-header');
+        const sidebarFooter = document.querySelector('.sidebar-footer');
+        const sidebarNav = document.querySelector('.sidebar-nav');
+        
+        if (sidebarHeader && sidebarFooter && sidebarNav) {
+          const headerHeight = sidebarHeader.offsetHeight;
+          const footerHeight = sidebarFooter.offsetHeight;
+          const windowHeight = window.innerHeight;
+          
+          sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
+        }
+      }
+    });
+    
+    // Update sidebar nav height on window resize
+    window.addEventListener('resize', function() {
+      const sidebarHeader = document.querySelector('.sidebar-header');
+      const sidebarFooter = document.querySelector('.sidebar-footer');
+      const sidebarNav = document.querySelector('.sidebar-nav');
+      
+      if (sidebarHeader && sidebarFooter && sidebarNav) {
+        const headerHeight = sidebarHeader.offsetHeight;
+        const footerHeight = sidebarFooter.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
+      }
+    });
+  </script><script>
     // Handle notifications indicator
     document.addEventListener('DOMContentLoaded', function() {
       {% if unread_count > 0 %}

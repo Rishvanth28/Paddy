@@ -7,8 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Admin</title>
   <link rel="stylesheet" href="{% static 'css/admin_base.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
-  <style>    /* Admin-specific style overrides that can't be centralized */
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />  <style>    /* Admin-specific style overrides that can't be centralized */
     .messages-container {
       top: 60px;
     }
@@ -47,6 +46,48 @@
         box-shadow: 0 3px 6px rgba(0,0,0,0.2);
         transform: translateY(-50%) scale(1);
       }
+    }
+    
+    /* Ensure sidebar is scrollable */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #888 #f1f1f1;
+    }
+    
+    .sidebar-nav {
+      flex: 1 1 auto;
+      overflow-y: auto;
+    }
+    
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #666;
+    }
+    
+    /* Footer styling */
+    .sidebar-footer {
+      position: sticky;
+      bottom: 0;
+      background-color: var(--sidebar-bg);
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
     }
     
     /* Add 'has-notifications' class styling */
@@ -205,13 +246,52 @@
   <script>
     // Handle notifications indicator
     document.addEventListener('DOMContentLoaded', function() {
-      {% if unread_count > 0 %}
-      // Add the has-notifications class to the notifications menu item
+      {% if unread_count > 0 %}      // Add the has-notifications class to the notifications menu item
       const notificationMenuItem = document.getElementById('notifications-menu-item');
       if (notificationMenuItem) {
         notificationMenuItem.classList.add('has-notifications');
       }
       {% endif %}
+      
+      // Check if active menu item is out of view and scroll to it
+      const activeNavItem = document.querySelector('.nav-item.active, .nav-link.active');
+      if (activeNavItem) {
+        activeNavItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      // Make sure sidebar scroll works on mobile too
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) {
+        sidebar.style.overflowY = 'auto';
+        
+        // Set height of sidebar-nav to enable scrolling
+        const sidebarHeader = document.querySelector('.sidebar-header');
+        const sidebarFooter = document.querySelector('.sidebar-footer');
+        const sidebarNav = document.querySelector('.sidebar-nav');
+        
+        if (sidebarHeader && sidebarFooter && sidebarNav) {
+          const headerHeight = sidebarHeader.offsetHeight;
+          const footerHeight = sidebarFooter.offsetHeight;
+          const windowHeight = window.innerHeight;
+          
+          sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
+        }
+      }
+    });
+    
+    // Update sidebar nav height on window resize
+    window.addEventListener('resize', function() {
+      const sidebarHeader = document.querySelector('.sidebar-header');
+      const sidebarFooter = document.querySelector('.sidebar-footer');
+      const sidebarNav = document.querySelector('.sidebar-nav');
+      
+      if (sidebarHeader && sidebarFooter && sidebarNav) {
+        const headerHeight = sidebarHeader.offsetHeight;
+        const footerHeight = sidebarFooter.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
+      }
     });
   </script>
 </body>

@@ -72,7 +72,7 @@ body {
 /* Sidebar */
 .sidebar {
   width: var(--sidebar-width);
-  min-height: 100vh;
+  height: 100vh; /* Changed from min-height to height to ensure consistency */
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text);
   display: flex;
@@ -84,7 +84,7 @@ body {
   z-index: 1000;
   box-shadow: var(--shadow);
   border-right: 1px solid var(--sidebar-border);
-  overflow-y: auto;
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .sidebar-header {
@@ -120,6 +120,7 @@ body {
   flex: 1;
   padding: 20px 0;
   overflow-y: auto;
+  max-height: calc(100vh - 200px); /* Reserve space for header and footer */
 }
 
 .nav-menu {
@@ -273,6 +274,10 @@ body {
   text-align: center;
   border-top: 1px solid var(--sidebar-border);
   margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--sidebar-bg); /* Ensure footer has same background as sidebar */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.05); /* Subtle shadow to separate from content */
 }
 
 .footer-logo {
@@ -339,20 +344,27 @@ body {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px; /* Increased width for better visibility */
 }
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
+  background: #888; /* Darker color for better visibility */
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #666; /* Even darker on hover */
+}
+
+/* Firefox scrollbar (optional) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 }
 
 .nav-link:hover, .submenu-toggle:hover {
