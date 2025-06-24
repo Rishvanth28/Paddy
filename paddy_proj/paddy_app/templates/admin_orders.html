@@ -3,6 +3,7 @@
 {% block content %}
 {% block head %}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/admin_orders.css' %}" />
 <style>
     :root {
         /* Primary Colors - Black & White Theme */
@@ -1119,8 +1120,20 @@
         }
         fetchOrders();
         
-        // Event Listeners
+        // Event Listeners        // Initialize filter buttons with proper styling
         statusFilters.forEach(btn => {
+            const filterType = btn.dataset.filter;
+            const btnType = getButtonType(filterType);
+            
+            // Set initial styling - "All" button is active by default
+            if (filterType === 'all') {
+                btn.classList.add(`btn-${btnType}`);
+                btn.classList.remove(`btn-outline-${btnType}`);
+            } else {
+                btn.classList.add(`btn-outline-${btnType}`);
+                btn.classList.remove(`btn-${btnType}`);
+            }
+            
             btn.addEventListener('click', function() {
                 // Update UI for selected filter
                 statusFilters.forEach(b => {

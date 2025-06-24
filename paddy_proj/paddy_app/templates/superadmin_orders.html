@@ -4,6 +4,8 @@
 {% block head %}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/admin_orders.css' %}" />
 <style>
     :root {
         --primary: #0d6efd;
@@ -210,26 +212,9 @@
     }
     
     .items-table th {
-        font-weight: 500;
-        background-color: var(--light);
+        font-weight: 500;        background-color: var(--light);
     }
     
-    /* Search input styling */
-    .search-container {
-        position: relative;
-    }
-    
-    .search-container .bi-search {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--gray);
-    }
-    
-    .search-input {
-        padding-left: 35px;
-    }
 </style>
 {% endblock %}
 
@@ -425,8 +410,20 @@
         }
         fetchOrders();
         
-        // Event Listeners
+        // Event Listeners        // Initialize filter buttons with proper styling
         statusFilters.forEach(btn => {
+            const filterType = btn.dataset.filter;
+            const btnType = getButtonType(filterType);
+            
+            // Set initial styling - "All" button is active by default
+            if (filterType === 'all') {
+                btn.classList.add(`btn-${btnType}`);
+                btn.classList.remove(`btn-outline-${btnType}`);
+            } else {
+                btn.classList.add(`btn-outline-${btnType}`);
+                btn.classList.remove(`btn-${btnType}`);
+            }
+            
             btn.addEventListener('click', function() {
                 // Update UI for selected filter
                 statusFilters.forEach(b => {
