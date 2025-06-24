@@ -51,6 +51,21 @@ body {
         display: block;
         overflow-x: auto;
     }
+    
+    .admin-navigation-section {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .admin-navigation-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .admin-dashboard-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.2rem;
+    }
 }
 
 /* Mobile specific adjustments */
@@ -411,6 +426,92 @@ body {
     transition: height 0.3s ease, opacity 0.3s ease;
 }
 
+/* Admin Navigation Section */
+.admin-navigation-section {
+    margin: 3rem 0 2.5rem 0;
+    padding: 2.5rem 2.5rem;
+    background: linear-gradient(145deg, #ffffff, #ffffff);
+    border-radius: var(--radius);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    animation: pulse-highlight 2s infinite alternate;
+}
+
+@keyframes pulse-highlight {
+    0% {
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1);
+    }
+    100% {
+        box-shadow: 0 25px 55px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.admin-navigation-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #000000 0%, #444444 100%);
+}
+
+/* Add accent border to make it stand out */
+.admin-navigation-section::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(0, 0, 0, 0.05);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    pointer-events: none;
+}
+
+.admin-navigation-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: #000000;
+    text-align: left;
+    position: relative;
+    display: inline-block;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+}
+
+.admin-navigation-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+}
+
+.admin-navigation-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #000000 0%, rgba(0,0,0,0.1) 100%);
+    border-radius: 2px;
+}
+
+/* Enhanced Admin Dashboard Grid */
+.admin-navigation-section .admin-dashboard-grid {
+    margin-top: 1rem;
+    gap: 1.8rem;
+}
+
 .admin-dashboard-btn::after {
     content: '';
     position: absolute;
@@ -536,6 +637,7 @@ body {
     margin-bottom: 2.5rem;
     position: relative;
     letter-spacing: -0.5px;
+    margin-left: 2rem;
 }
 
 .analytics-section h2::after {
@@ -1024,8 +1126,7 @@ body {
             <span class="stat-label">Expiring Subscriptions</span>
             <span class="stat-value">{{ expiring_subscriptions|default:'0' }}</span>
             <span class="stat-extra">Expiring soon</span>
-        </div>
-    </div>    <div class="stats-row-3">
+        </div>    </div>    <div class="stats-row-3">
         <div class="stat-card stat-green">
             <span class="stat-label">Total Revenue</span>
             <span class="stat-value">₹{{ total_revenue|default:'0' }}</span>
@@ -1045,6 +1146,48 @@ body {
             <span class="stat-label">Customer Growth</span>
             <span class="stat-value">{{ customer_growth|default:'0%' }}</span>
             <span class="stat-extra">This month</span>
+        </div>
+    </div>
+    
+    <!-- Admin Actions Navigation - Quick Access -->
+    <div class="admin-navigation-section">
+        <h2 class="admin-navigation-title">Quick Admin Access</h2>
+        <div class="admin-dashboard-grid">
+            <a href="{% url 'admin_orders' %}" class="admin-dashboard-btn">
+                <span class="icon">📦</span>
+                <span class="btn-label">Orders</span>
+                <span class="btn-desc">View and manage all orders</span>
+            </a>
+            <a href="{% url 'admin_add_subscription' %}" class="admin-dashboard-btn">
+                <span class="icon">🔄</span>
+                <span class="btn-label">Subscriptions</span>
+                <span class="btn-desc">Manage active subscriptions</span>
+            </a>
+            <a href="{% url 'admin_customer_list' %}" class="admin-dashboard-btn">
+                <span class="icon">👥</span>
+                <span class="btn-label">Customers</span>
+                <span class="btn-desc">View all customers</span>
+            </a>
+            <a href="{% url 'unified_report_admin' %}" class="admin-dashboard-btn">
+                <span class="icon">📊</span>
+                <span class="btn-label">Reports</span>
+                <span class="btn-desc">Download and view reports</span>
+            </a>
+            <a href="{% url 'admin_notifications' %}" class="admin-dashboard-btn">
+                <span class="icon">🔔</span>
+                <span class="btn-label">Notifications</span>
+                <span class="btn-desc">All system alerts</span>
+            </a>
+            <a href="{% url 'customer_onboard' %}" class="admin-dashboard-btn">
+                <span class="icon">✨</span>
+                <span class="btn-label">Onboarding</span>
+                <span class="btn-desc">Add new customers</span>
+            </a>
+            <a href="{% url 'admin_place_order' %}" class="admin-dashboard-btn">
+                <span class="icon">➕</span>
+                <span class="btn-label">Place Order</span>
+                <span class="btn-desc">Create a new order</span>
+            </a>
         </div>
     </div>
     <div class="recent-activity-section">        <div class="recent-activity-list">
@@ -1115,48 +1258,14 @@ body {
             <!-- Monthly Trend Chart -->
             <div class="chart-card wide">                <div class="chart-header">
                     <h3>Monthly Trends</h3>
-                    <p>Orders and revenue over time</p>
-                </div>
+                    <p>Orders and revenue over time</p>                </div>
                 <div class="chart-body">
                     <canvas id="trendChart" width="600" height="300"></canvas>
                 </div>
             </div>
         </div>
-    </div>    <div class="admin-dashboard-grid">        <a href="{% url 'admin_orders' %}" class="admin-dashboard-btn">
-            <span class="icon">📦</span>
-            <span class="btn-label">Orders</span>
-            <span class="btn-desc">View and manage all orders</span>
-        </a>
-        <a href="{% url 'admin_add_subscription' %}" class="admin-dashboard-btn">
-            <span class="icon">🔄</span>
-            <span class="btn-label">Subscriptions</span>
-            <span class="btn-desc">Manage active subscriptions</span>
-        </a>
-        <a href="{% url 'admin_customer_list' %}" class="admin-dashboard-btn">
-            <span class="icon">👥</span>
-            <span class="btn-label">Customers</span>
-            <span class="btn-desc">View all customers</span>
-        </a>
-        <a href="{% url 'unified_report_admin' %}" class="admin-dashboard-btn">
-            <span class="icon">📊</span>
-            <span class="btn-label">Reports</span>
-            <span class="btn-desc">Download and view reports</span>
-        </a>
-        <a href="{% url 'admin_notifications' %}" class="admin-dashboard-btn">
-            <span class="icon">🔔</span>
-            <span class="btn-label">Notifications</span>
-            <span class="btn-desc">All system alerts</span>
-        </a>
-        <a href="{% url 'customer_onboard' %}" class="admin-dashboard-btn">
-            <span class="icon">✨</span>
-            <span class="btn-label">Onboarding</span>
-            <span class="btn-desc">Add new customers</span>
-        </a>
-        <a href="{% url 'admin_place_order' %}" class="admin-dashboard-btn">
-            <span class="icon">➕</span>
-            <span class="btn-label">Place Order</span>
-            <span class="btn-desc">Create a new order</span>
-        </a></div>
+    </div>
+</div>
 </div>
 
 <!-- Chart.js CDN -->

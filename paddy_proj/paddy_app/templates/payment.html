@@ -1,5 +1,5 @@
-{% extends 'customer_base.html' %} 
-{% load static %} 
+{% extends 'customer_base.html' %}
+{% load static %}
 {% block content %}
 {% if messages %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
@@ -14,12 +14,13 @@
             let messages = document.querySelectorAll('.messages');
             messages.forEach((message) => {
                 message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
+                setTimeout(() => message.remove(), 100);
             });
         }, 5000);
     });
 </script>
 {% endif %}
+
 <style>
     /* Print-specific styles */
     @media print {
@@ -84,72 +85,129 @@
     .invoice-container {
         font-family: Arial, sans-serif;
         max-width: 8.5in;
-        margin: 0 auto;
-        margin-top:20px;
+        margin: 20px auto;
         padding: 20px;
-        border: 1px solid #ddd;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         position: relative;
+        color: #222;
     }
     
     .invoice-header {
         display: flex;
         justify-content: space-between;
         margin-bottom: 20px;
+        font-weight: 600;
     }
     
-    .invoice-left {
-        text-align: left;
+    .invoice-left, .invoice-center, .invoice-right {
         flex: 1;
     }
     
     .invoice-center {
         text-align: center;
-        flex: 2;
     }
     
-    .invoice-right {
-        text-align: right;
-        flex: 1;
+    .invoice-left p, .invoice-center p, .invoice-right p {
+        margin: 4px 0;
+    }
+    
+    .invoice-center h2 {
+        margin: 0;
+        font-size: 1.6rem;
+    }
+    
+    .invoice-center h1 {
+        margin: 5px 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #111;
+    }
+    
+    .customer-address {
+        margin-top: 10px;
+        font-weight: 500;
+        color: #444;
+        line-height: 1.4;
+    }
+    
+    .payment-terms {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #333;
     }
     
     .invoice-table {
         width: 100%;
         border-collapse: collapse;
-        margin: 20px 0;
+        margin-bottom: 20px;
+        font-weight: 500;
+        color: #333;
     }
     
     .invoice-table th, .invoice-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
+        border: 1px solid rgba(0,0,0,0.1);
+        padding: 10px 15px;
         text-align: left;
     }
     
     .invoice-table th {
-        background-color: #f2f2f2;
+        background: rgba(255, 255, 255, 0.3);
+        color: #222;
     }
     
-    .payment-terms {
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
+    .invoice-table td em {
+        font-size: 0.85rem;
+        color: #666;
+    }
+    
+    .invoice-table tfoot td {
+        font-weight: 700;
+        border-top: 2px solid rgba(0,0,0,0.2);
     }
     
     .eoe-note {
         text-align: right;
-        margin: 10px 0;
+        font-weight: 600;
+        margin-bottom: 30px;
+        color: #555;
+    }
+    
+    .amount-in-words {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        color: #444;
     }
     
     .signatures {
         display: flex;
         justify-content: space-between;
-        margin-top: 50px;
+        margin-top: 60px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .signatures div {
+        width: 45%;
+        border-top: 1px solid rgba(0,0,0,0.15);
+        text-align: center;
+        padding-top: 5px;
+        font-style: italic;
+        font-size: 0.9rem;
     }
     
     .invoice-note {
         text-align: center;
-        margin-top: 40px;
-        font-size: 0.9em;
-        color: #666;
+        margin-top: 50px;
+        font-style: italic;
+        color: #777;
     }
     
     .nowrap {
@@ -160,107 +218,186 @@
         position: absolute;
         top: 20px;
         right: 20px;
-        padding: 8px 16px;
-        background-color: #4CAF50;
+        padding: 10px 18px;
+        background-color: #222;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 14px;
+        font-weight: 700;
+        box-shadow: 0 0 8px rgba(0,0,0,0.4);
+        transition: background-color 0.3s ease;
+        z-index: 10;
     }
     
     .print-button:hover {
-        background-color: #45a049;
+        background-color: #555;
     }
     
-    /* Add some padding between address lines */
-    .customer-address {
-        line-height: 1.5;
-    }
-    
-    /* Payment section styles */
+    /* Payment Section */
     .payment-section {
-        margin-top: 30px;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f9f9f9;
+        margin-top: 40px;
+        padding: 25px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: #222;
+    }
+    
+    .payment-section h2 {
+        font-weight: 700;
+        margin-bottom: 25px;
     }
     
     .payment-details {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        font-size: 1rem;
     }
     
-    .payment-info {
-        flex: 2;
+    .payment-info, .payment-summary {
+        flex: 1;
     }
     
     .payment-summary {
-        flex: 1;
         text-align: right;
     }
     
-    .payment-form {
-        margin-top: 15px;
-    }
-    
-    .form-group {
-        margin-bottom: 15px;
-    }
-    
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-    
-    .form-group input {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-    
-    .pay-button {
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    
-    .pay-button:hover {
-        background-color: #45a049;
+    .payment-summary p {
+        margin: 4px 0;
     }
     
     .payment-status {
-        padding: 10px;
-        margin-top: 10px;
-        border-radius: 4px;
+        padding: 15px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        text-align: center;
     }
     
     .status-paid {
         background-color: #d4edda;
         color: #155724;
+        border: 1px solid #c3e6cb;
     }
     
     .status-partial {
         background-color: #fff3cd;
         color: #856404;
+        border: 1px solid #ffeeba;
     }
     
     .status-pending {
         background-color: #f8d7da;
         color: #721c24;
+        border: 1px solid #f5c6cb;
     }
+    
+    /* Payment Form */
+    .payment-form {
+        margin-top: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 18px;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 8px;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.1);
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 6px #4CAF50;
+    }
+    
+    .pay-button {
+        width: 100%;
+        padding: 15px 0;
+        background-color: #222;
+        border: none;
+        border-radius: 15px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        box-shadow: 0 0 12px rgba(0,0,0,0.3);
+        transition: background-color 0.3s ease;
+    }
+    
+    .pay-button:hover {
+        background-color: #4CAF50;
+        box-shadow: 0 0 15px #4CAF50;
+        color: #fff;
+    }
+
+@media (max-width: 768px) {
+    /* Header container becomes vertical stack */
+    .invoice-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;  /* center all */
+        text-align: center;
+        gap: 15px;  /* space between sections */
+        padding: 0 1rem;
+    }
+
+    /* Left and right sections become full width but smaller font */
+    .invoice-left,
+    .invoice-right {
+        width: 100%;
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    /* Center section (title) is prominent and full width */
+    .invoice-center {
+        width: 100%;
+    }
+
+    /* Main title and subtitle sizes for mobile */
+    .invoice-center h1 {
+        font-size: 1.6rem;
+        margin: 0.3rem 0 0.1rem 0;
+    }
+
+    .invoice-center h2 {
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 600;
+        color: #222;
+    }
+
+    /* Customer address text smaller and spaced nicely */
+    .customer-address {
+        font-size: 0.9rem;
+        margin-top: 0.4rem;
+        color: #666;
+        line-height: 1.3;
+    }
+}
+
+
 </style>
 
 <div class="invoice-container">
-    
     <div class="invoice-header">
         <div class="invoice-left">
             <p class="nowrap">Invoice No. {{ invoice_number }}</p>
@@ -268,91 +405,76 @@
         </div>
         <div class="invoice-center">
             <h2><strong>{{ business_year }}</strong></h2>
-            <h1>{{order_name}} Sales</h1>
-            <p class="customer-address">Party: {{ customer.first_name }} {{ customer.last_name }}, 
-            {% if customer.address %}{{ customer.address }}{% endif %}</p>
+            <h1>{{ order_name }} Sales</h1>
+            <p class="customer-address">Party: {{ customer.first_name }} {{ customer.last_name }}, {% if customer.address %}{{ customer.address }}{% endif %}</p>
         </div>
         <div class="invoice-right">
             <p class="nowrap">Dated: {{ invoice_date|date:"d-M-Y" }}</p>
         </div>
     </div>
-    
+
     <div class="payment-terms">
         <p>Payment Terms: {{ payment_terms }} Days</p>
     </div>
-    
-    <div class="invoice-items">
-        <table class="invoice-table">
-            <thead>
-                <tr>
-                    <th>Sr. No.</th>
-                    <th>Description of Goods</th>
-                    <th>Quantity</th>
-                    <th>Rate</th>
-                    <th>per</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in order_items %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>
-                        {{ item.product_name }}
-                        {% if item.product_name == 'Fertilizer' %}
-                        <em>Batch: {{ item.batch_number }}</em>
-                        <br>
-                        <em>Expiry: {{ item.expiry_date|date:"d-M-Y" }}</em>
-                        {% endif %}
-                    </td>
-                    <td>{{ item.quantity }} Nos</td>
-                    <td>{{ item.price_per_unit }}</td>
-                    <td>Nos</td>
-                    <td>{{ item.total_amount }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2">Total</td>
-                    <td>{{ total_items }} Nos</td>
-                    <td></td>
-                    <td></td>
-                    <td>&#8377; {{ total_amount }}</td>
-                </tr>
-            </tfoot>
-        </table>
-        <div class="eoe-note">
-            <p>E. & O.E</p>
-        </div>
+
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Description of Goods</th>
+                <th>Quantity</th>
+                <th>Rate</th>
+                <th>per</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    {{ item.product_name }}
+                    {% if item.product_name == 'Fertilizer' %}
+                        <br><em>Batch: {{ item.batch_number }}</em>
+                        <br><em>Expiry: {{ item.expiry_date|date:"d-M-Y" }}</em>
+                    {% endif %}
+                </td>
+                <td>{{ item.quantity }} Nos</td>
+                <td>{{ item.price_per_unit }}</td>
+                <td>Nos</td>
+                <td>{{ item.total_amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">Total</td>
+                <td>{{ total_items }} Nos</td>
+                <td></td>
+                <td></td>
+                <td>&#8377; {{ total_amount }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="eoe-note"><p>E. & O.E</p></div>
+
+    <div class="amount-in-words">
+        <p>Amount Chargeable (in words)</p>
+        <p><strong>{{ amount_in_words }} INR Only</strong></p>
     </div>
-    
-    <div class="invoice-footer">
-        <div class="amount-in-words">
-            <p>Amount Chargeable (in words)</p>
-            <p><strong>{{ amount_in_words }} INR Only</strong></p>
-        </div>
-        
-        <div class="signatures">
-            <div class="customer-signature">
-                <p>Customer's Seal and Signature</p>
-            </div>
-            <div class="authorized-signature">
-                <p><strong>for {{ business_year }}</strong></p>
-                <p>Authorised Signatory</p>
-            </div>
-        </div>
-        
-        <div class="invoice-note">
-            <p>This is a Computer Generated Invoice</p>
-        </div>
+
+    <div class="signatures">
+        <div>Customer's Seal and Signature</div>
+        <div><strong>for {{ business_year }}</strong><br>Authorised Signatory</div>
     </div>
+
+    <div class="invoice-note"><p>This is a Computer Generated Invoice</p></div>
 </div>
 
-<!-- Payment Section -->
 <div class="payment-section">
     <h2>Payment Details</h2>
-    
+
     <div class="payment-details">
         <div class="payment-info">
             <p><strong>Order ID:</strong> {{ order.order_id }}</p>
@@ -364,7 +486,7 @@
             <p><strong>Balance Due:</strong> ₹{{ balance_due }}</p>
         </div>
     </div>
-    
+
     {% if payment_status == 0 %}
     <div class="payment-status status-pending">
         <p><strong>Payment Status:</strong> Pending</p>
@@ -378,149 +500,123 @@
         <p><strong>Payment Status:</strong> Fully Paid</p>
     </div>
     {% endif %}
-    
+
     {% if payment_status != 2 %}
-    <div class="payment-form">
-        <form id="payment-form">
-            <div class="form-group">
-                <label for="payment-amount">Payment Amount (₹):</label>
-                <input type="number" id="payment-amount" name="payment_amount" min="1" max="{{ balance_due }}" value="{{ balance_due }}" required>
-                <input type="hidden" id="order-id" name="order_id" value="{{ order.order_id }}">
-                <input type="hidden" id="customer-id" name="customer_id" value="{{ customer.id }}">
-            </div>
-            <button type="button" id="make-payment" class="pay-button">Make Payment</button>
-        </form>
-    </div>
+    <form id="payment-form" class="payment-form">
+        <div class="form-group">
+            <label for="payment-amount">Payment Amount (₹):</label>
+            <input type="number" id="payment-amount" name="payment_amount" min="1" max="{{ balance_due }}" value="{{ balance_due }}" required>
+            <input type="hidden" id="order-id" name="order_id" value="{{ order.order_id }}">
+            <input type="hidden" id="customer-id" name="customer_id" value="{{ customer.id }}">
+        </div>
+        <button type="button" id="make-payment" class="pay-button">Make Payment</button>
+    </form>
     {% endif %}
 </div>
 
 <button class="print-button" onclick="printInvoice()">Print Invoice</button>
 
-<!-- Include Razorpay SDK -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <script>
-    function printInvoice() {
-        window.print();
+function printInvoice() {
+    window.print();
+}
+
+document.addEventListener('keydown', function(event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
+        event.preventDefault();
+        printInvoice();
     }
-    
-    // Optional: Add keyboard shortcut (Ctrl+P or Cmd+P)
-    document.addEventListener('keydown', function(event) {
-        if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
-            event.preventDefault();
-            printInvoice();
-        }
-    });
-    
-    // Razorpay integration
-    document.getElementById('make-payment').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        const paymentAmount = document.getElementById('payment-amount').value;
-        const orderId = document.getElementById('order-id').value;
-        const customerId = document.getElementById('customer-id').value;
-        
-        if (!paymentAmount || paymentAmount <= 0) {
-            alert('Please enter a valid payment amount');
-            return;
-        }
-        
-        // Send AJAX request to create Razorpay order
-        fetch('/create_partial_payment_order/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({
-                order_id: orderId,
-                amount: paymentAmount,
-                customer_id: customerId
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Initialize Razorpay
-                const options = {
-                    key: data.key_id,
-                    amount: data.amount,
-                    currency: "INR",
-                    name: "{{ business_year }}",
-                    description: "Invoice Payment",
-                    order_id: data.razorpay_order_id,
-                    handler: function (response) {
-                        // Handle successful payment
-                        verifyPayment(response, data.razorpay_order_id, paymentAmount, orderId);
-                    },
-                    prefill: {
-                        name: "{{ customer.first_name }} {{ customer.last_name }}",
-                        email: "{{ customer.email }}",
-                        contact: "{{ customer.phone_number }}"
-                    },
-                    theme: {
-                        color: "#4CAF50"
-                    }
-                };
-                
-                const rzp = new Razorpay(options);
-                rzp.open();
-            } else {
-                alert('Failed to create payment order. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Something went wrong. Please try again.');
-        });
-    });
-    
-    function verifyPayment(payment, razorpay_order_id, amount, order_id) {
-        // Verify payment with server
-        fetch('/verify_partial_payment/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({
-                razorpay_payment_id: payment.razorpay_payment_id,
-                razorpay_order_id: payment.razorpay_order_id,
-                razorpay_signature: payment.razorpay_signature,
-                order_id: order_id,
-                amount: amount
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Payment successful!');
-                // Reload page to show updated payment status
-                window.location.reload();
-            } else {
-                alert('Payment verification failed. Please contact support.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Something went wrong during verification. Please contact support.');
-        });
+});
+
+document.getElementById('make-payment')?.addEventListener('click', function (e) {
+    e.preventDefault();
+    const amount = document.getElementById('payment-amount').value;
+    const orderId = document.getElementById('order-id').value;
+    const customerId = document.getElementById('customer-id').value;
+
+    if (!amount || amount <= 0) {
+        alert('Enter a valid payment amount.');
+        return;
     }
-    
-    // Function to get CSRF token from cookies
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+
+    fetch('/create_partial_payment_order/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ order_id: orderId, amount: amount, customer_id: customerId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const options = {
+                key: data.key_id,
+                amount: data.amount,
+                currency: "INR",
+                name: "{{ business_year }}",
+                description: "Invoice Payment",
+                order_id: data.razorpay_order_id,
+                handler: function (response) {
+                    verifyPayment(response, data.razorpay_order_id, amount, orderId);
+                },
+                prefill: {
+                    name: "{{ customer.first_name }} {{ customer.last_name }}",
+                    email: "{{ customer.email }}",
+                    contact: "{{ customer.phone_number }}"
+                },
+                theme: {
+                    color: "#4CAF50"
                 }
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            alert('Unable to initiate payment.');
+        }
+    });
+});
+
+function verifyPayment(payment, razorpay_order_id, amount, localOrderId) {
+    fetch('/verify_partial_payment/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            razorpay_payment_id: payment.razorpay_payment_id,
+            razorpay_order_id: payment.razorpay_order_id,
+            razorpay_signature: payment.razorpay_signature,
+            order_id: localOrderId,
+            amount: amount
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Payment successful!');
+            window.location.reload();
+        } else {
+            alert('Payment verification failed.');
+        }
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
         }
-        return cookieValue;
     }
+    return cookieValue;
+}
 </script>
 {% endblock %}
