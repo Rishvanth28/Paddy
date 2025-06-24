@@ -4,10 +4,12 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Superadmin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />  <title>Superadmin</title>
   <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />  <style>
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <style>
     /* Superadmin-specific style overrides */
     /* Notification Badge for Sidebar */
     .notification-badge {
@@ -91,6 +93,27 @@
         font-size: 14px;
         padding: 10px;
       }
+    }
+    
+    /* Bootstrap Icons styling for navigation */
+    .nav-icon.bi {
+      font-size: 1.2rem;
+      width: 1.2rem;
+      height: 1.2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Ensure proper spacing and alignment */
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .nav-link .nav-icon {
+      flex-shrink: 0;
     }
   </style>
 </head>
@@ -321,25 +344,24 @@
 
     <!-- Navigation -->
     <nav class="sidebar-nav">
-      <ul class="nav-menu">
-        <!-- Onboarding -->
+      <ul class="nav-menu">        <!-- Onboarding -->
         <li class="nav-item">
           <a href="{% url 'profile' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
+            <i class="bi bi-person-circle nav-icon"></i>
             <span class="nav-text">Profile</span>
           </a>
         </li>
 
         <li class="nav-item">
           <a href="{% url 'superadmin_dashboard' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
+            <i class="bi bi-speedometer2 nav-icon"></i>
             <span class="nav-text">Dashboard</span>
           </a>
         </li>
         
         <li class="nav-item">
           <a href="{% url 'onboard' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/ShoppingBagOpen.png' %}" alt="Onboarding">
+            <i class="bi bi-person-plus nav-icon"></i>
             <span class="nav-text">Onboarding</span>
           </a>
         </li>
@@ -347,7 +369,7 @@
         <!-- Subscribers -->
         <li class="nav-item has-submenu">
           <div class="submenu-toggle">
-            <img class="nav-icon" src="{% static 'media/IconSet (1).png' %}" alt="Subscribers">
+            <i class="bi bi-people-fill nav-icon"></i>
             <span class="nav-text">Subscribers</span>
             <span class="chevron"></span>
           </div>
@@ -364,7 +386,7 @@
         <!-- Customers -->
         <li class="nav-item">
           <a href="{% url 'customer_list' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/IconSet (2).png' %}" alt="Customers">
+            <i class="bi bi-people nav-icon"></i>
             <span class="nav-text">Customers</span>
           </a>
         </li>
@@ -372,19 +394,19 @@
         <!-- Admins -->
         <li class="nav-item">
           <a href="{% url 'view_admins' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/Group 2.png' %}" alt="Admins">
+            <i class="bi bi-shield-check nav-icon"></i>
             <span class="nav-text">Admins</span>
           </a>
         </li>        <!-- Place Order -->
         <li class="nav-item">
           <a href="{% url 'place_order' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/Vector.png' %}" alt="Place Order">
+            <i class="bi bi-cart-plus nav-icon"></i>
             <span class="nav-text">Place Order</span>
           </a>
         </li>        <!-- Notifications -->
         <li class="nav-item" id="admin-activities-menu-item">
           <a href="{% url 'superadmin_notifications' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Notifications">
+            <i class="bi bi-bell nav-icon"></i>
             <span class="nav-text">Admin Activities</span>
             {% if unread_count > 0 %}
             <span class="notification-badge">{{ unread_count }}</span>
@@ -393,21 +415,21 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'super_admin_orders' %}">
-            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}">
+            <i class="bi bi-box-seam nav-icon"></i>
             <span>Orders</span>
           </a>
         </li>
         <!-- Subscription -->
         <li class="nav-item">
           <a href="{% url 'superadmin_subscription' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/ChartPieSlice.png' %}" alt="Subscription">
+            <i class="bi bi-credit-card nav-icon"></i>
             <span class="nav-text">Subscription</span>
           </a>
         </li>
           <!-- Reports -->
         <li class="nav-item">
           <a href="{% url 'superadmin_reports' %}" class="nav-link">
-            <img class="nav-icon" src="{% static 'media/reports-icon.svg' %}" alt="Reports">
+            <i class="bi bi-graph-up nav-icon"></i>
             <span class="nav-text">Reports</span>
           </a>
         </li>
