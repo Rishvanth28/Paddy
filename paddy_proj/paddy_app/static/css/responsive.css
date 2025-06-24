@@ -1163,12 +1163,13 @@ button, .btn {
     .stat-icon {
         width: 40px !important;
         height: 40px !important;
-        font-size: 1rem !important;
+        font-size: 1.5rem !important;
         margin-right: 0.75rem !important;
     }
     
     .stat-value {
-        font-size: 1.25rem !important;
+        font-size: 1.5rem !important;
+
     }
     
     .stat-breakdown {
