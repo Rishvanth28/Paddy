@@ -484,7 +484,13 @@ body { background: var(--bg); color: var(--text-main); }
 .chart-card:hover .chart-title::after {
     width: 60px;
 }
-.chart-container { position: relative; height: 260px; width: 100%; }
+.chart-container { 
+    position: relative; 
+    height: 260px; 
+    width: 100%;
+    display: flex;
+    justify-content: center;
+ }
 .table-section {
     background: var(--glass);
     border-radius: var(--radius);
@@ -1105,7 +1111,8 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: categoryData.map(item => item.name),                datasets: [{
+                // labels: categoryData.map(item => item.name),                
+                datasets: [{
                     data: categoryData.map(item => item.count),
                     backgroundColor: pastelColors(categoryData.length),
                     borderColor: '#ffffff',
@@ -1151,7 +1158,8 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: paymentStatusData.map(item => item.name),                datasets: [{
+                // labels: paymentStatusData.map(item => item.name),                
+                datasets: [{
                     data: paymentStatusData.map(item => item.count),
                     backgroundColor: pastelColors(paymentStatusData.length),
                     borderColor: '#ffffff',

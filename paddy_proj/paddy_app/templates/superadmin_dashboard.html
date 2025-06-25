@@ -365,7 +365,8 @@ document.addEventListener('DOMContentLoaded', function() {    // Set up Chart.js
         new Chart(adminDistributionCtx, {
             type: 'doughnut',
             data: {
-                labels: adminNames,                datasets: [{
+                // labels: adminNames,                
+                datasets: [{
                     data: adminCustomerCounts,
                     backgroundColor: [
                         '#000000',
@@ -433,7 +434,8 @@ document.addEventListener('DOMContentLoaded', function() {    // Set up Chart.js
         new Chart(categoryCtx, {
             type: 'doughnut',
             data: {
-                labels: orderCategories,                datasets: [{
+                // labels: orderCategories,                
+                datasets: [{
                     data: categoryCounts,
                     backgroundColor: [
                         '#000000',
@@ -508,7 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {    // Set up Chart.js
             new Chart(paymentCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Completed', 'Partial', 'Pending'],
+                    // labels: ['Completed', 'Partial', 'Pending'],
                     datasets: [{
                         data: paymentData,                    backgroundColor: [
                         '#28a745',
