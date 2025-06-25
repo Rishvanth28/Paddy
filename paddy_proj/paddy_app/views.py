@@ -1951,10 +1951,6 @@ def upgrade_to_admin(request):
         )
         new_admin.save()
         
-        # Set session role to admin after successful upgrade
-        request.session['role'] = 'admin'
-        request.session['user_id'] = new_admin.admin_id
-        
         messages.success(request, "You have been upgraded to admin successfully!")
         return render(request, 'upgrade_to_admin.html', {'customer': customer, 'is_admin': True})
 
