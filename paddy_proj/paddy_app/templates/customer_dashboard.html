@@ -1044,17 +1044,18 @@ body { background: var(--bg); color: var(--text-main); }
                 </tbody>
             </table>
         </div>
-    </div>
-    <div class="table-section">
-        <div class="section-title">Upcoming Deliveries</div>
+    </div>    <div class="table-section">
+        <div class="section-title">Pending Deliveries</div>
         <div class="table-responsive">
             <table class="recent-orders-table">
                 <thead>
                     <tr>
                         <th>Order ID</th>
+                        <th>Order Date</th>
                         <th>Delivery Date</th>
                         <th>Category</th>
                         <th>Quantity</th>
+                        <th>Amount</th>
                         <th>Contact</th>
                     </tr>
                 </thead>
@@ -1062,14 +1063,16 @@ body { background: var(--bg); color: var(--text-main); }
                     {% for order in upcoming_deliveries %}
                     <tr>
                         <td>#{{ order.order_id }}</td>
-                        <td>{{ order.delivery_date|date:"M d, Y" }}</td>
-                        <td>{{ order.category }}</td>
+                        <td>{{ order.order_date|date:"M d, Y" }}</td>
+                        <td>{{ order.delivery_date|date:"M d, Y"|default:"Not scheduled" }}</td>
+                        <td>{{ order.category|default:"Not specified" }}</td>
                         <td>{{ order.quantity }}</td>
+                        <td>₹{{ order.overall_amount|floatformat:2 }}</td>
                         <td>{{ order.driver_ph_no|default:"Not available" }}</td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" style="text-align: center;">No upcoming deliveries</td>
+                        <td colspan="7" style="text-align: center;">No pending deliveries</td>
                     </tr>
                     {% endfor %}
                 </tbody>

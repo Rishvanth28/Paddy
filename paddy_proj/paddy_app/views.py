@@ -587,12 +587,10 @@ def customer_dashboard(request):
         if order.paid_amount is None:
             order.paid_amount = 0
         order.due_amount = order.overall_amount - order.paid_amount
-    
-    # Upcoming deliveries
+      # Pending deliveries (all orders that haven't been delivered yet)
     upcoming_deliveries = active_orders.filter(
-        delivery_status=0,
-        delivery_date__gte=today
-    ).order_by('delivery_date')[:5]
+        delivery_status=0  # Only pending deliveries
+    ).order_by('-order_date')  # Show most recent orders first
     
     # Calculate due amount
     due_amount = total_amount - paid_amount
