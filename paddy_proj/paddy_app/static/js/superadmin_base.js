@@ -3,20 +3,26 @@ document.addEventListener('DOMContentLoaded', function() {
   const hamburger = document.getElementById('hamburger');
   const mainContent = document.getElementById('main-content');
   const body = document.body;
-  
-  // Enhanced sidebar toggle functionality
+    // Enhanced sidebar toggle functionality with smooth animations
   function toggleSidebar() {
-    sidebar.classList.toggle('open');
-    hamburger.classList.toggle('active');
-    body.classList.toggle('sidebar-open');
-    
-    // Simplified mobile behavior - no overlay, no body overflow blocking
-    localStorage.setItem('sidebarOpen', sidebar.classList.contains('open'));
+    // Use requestAnimationFrame for smoother animations
+    requestAnimationFrame(() => {
+      sidebar.classList.toggle('open');
+      hamburger.classList.toggle('active');
+      body.classList.toggle('sidebar-open');
+      
+      // Simplified mobile behavior - no overlay, no body overflow blocking
+      localStorage.setItem('sidebarOpen', sidebar.classList.contains('open'));
+    });
   }
-
+  // Initialize with performance optimizations
   function initSidebar() {
     const isMobile = window.innerWidth <= 1024;
     const isOpen = !isMobile && localStorage.getItem('sidebarOpen') === 'true';
+    
+    // Force hardware acceleration
+    sidebar.style.transform = 'translateZ(0)';
+    mainContent.style.transform = 'translateZ(0)';
     
     // Only auto-open sidebar on desktop
     if (isOpen && !isMobile) {
@@ -33,17 +39,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     hamburger.addEventListener('click', toggleSidebar);
-    
-    // Simplified click outside to close - only on mobile and doesn't use overlay
+      // Optimized click outside to close with debouncing
+    let clickTimeout;
     document.addEventListener('click', function(e) {
-      if (
-        window.innerWidth <= 992 &&
-        sidebar.classList.contains('open') &&
-        !sidebar.contains(e.target) &&
-        !hamburger.contains(e.target)
-      ) {
-        toggleSidebar();
-      }
+      if (clickTimeout) clearTimeout(clickTimeout);
+      
+      clickTimeout = setTimeout(() => {
+        if (
+          window.innerWidth <= 992 &&
+          sidebar.classList.contains('open') &&
+          !sidebar.contains(e.target) &&
+          !hamburger.contains(e.target)
+        ) {
+          toggleSidebar();
+        }
+      }, 10); // Small debounce to prevent excessive calls
     });
   }
 
@@ -111,18 +121,19 @@ document.addEventListener('DOMContentLoaded', function() {
       }, 5000);
     }
   }
-
-  // Auto-close sidebar when navigation link is clicked on mobile
+  // Auto-close sidebar when navigation link is clicked on mobile with smooth transition
   function addMobileNavHandlers() {
     const navLinks = document.querySelectorAll('.nav-link, .submenu-link');
     
     navLinks.forEach(link => {
       link.addEventListener('click', function() {
-        // Close sidebar on mobile when navigating
+        // Close sidebar on mobile when navigating with smooth delay
         if (window.innerWidth <= 992 && sidebar.classList.contains('open')) {
-          setTimeout(() => {
-            toggleSidebar();
-          }, 150); // Small delay to allow navigation to start
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              toggleSidebar();
+            }, 100); // Reduced delay for smoother UX
+          });
         }
       });
     });

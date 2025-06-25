@@ -8,6 +8,7 @@
   --sidebar-border: #e0e0e0;
   --primary-color: #000000;
   --transition-speed: 0.3s;
+  --smooth-easing: cubic-bezier(0.4, 0, 0.2, 1);
   --nav-item-height: 48px;
   --nav-icon-size: 20px;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -69,31 +70,36 @@ body {
   /* Other styles are inherited from responsive.css */
 }
 
-/* Sidebar */
-.sidebar {
-  width: var(--sidebar-width);
-  height: 100vh; /* Changed from min-height to height to ensure consistency */
-  background-color: var(--sidebar-bg);
-  color: var(--sidebar-text);
-  display: flex;
-  flex-direction: column;
-  transition: all var(--transition-speed) ease;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  box-shadow: var(--shadow);
-  border-right: 1px solid var(--sidebar-border);
-  overflow-y: auto; /* Enable vertical scrolling */
+/* Sidebar with enhanced consistency and priority */
+.sidebar, 
+body.superadmin-page .sidebar {
+  width: var(--sidebar-width) !important;
+  height: 100vh !important; /* Changed from min-height to height to ensure consistency */
+  background-color: var(--sidebar-bg) !important;
+  color: var(--sidebar-text) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: transform var(--transition-speed) var(--smooth-easing) !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1000 !important;
+  box-shadow: var(--shadow) !important;
+  border-right: 1px solid var(--sidebar-border) !important;
+  overflow-y: auto !important; /* Enable vertical scrolling */
+  will-change: transform !important;
+  transform: translateX(0) !important;
 }
 
-.sidebar-header {
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid var(--sidebar-border);
+.sidebar-header,
+body.superadmin-page .sidebar-header {
+  padding: 24px 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 12px !important;
+  border-bottom: 1px solid var(--sidebar-border) !important;
+  background-color: var(--sidebar-bg) !important;
 }
 
 .logo-link {
@@ -116,11 +122,12 @@ body {
   text-align: center;
 }
 
-.sidebar-nav {
-  flex: 1;
-  padding: 20px 0;
-  overflow-y: auto;
-  max-height: calc(100vh - 200px); /* Reserve space for header and footer */
+.sidebar-nav,
+body.superadmin-page .sidebar-nav {
+  flex: 1 !important;
+  padding: 20px 0 !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 200px) !important; /* Reserve space for header and footer */
 }
 
 .nav-menu {
@@ -135,35 +142,42 @@ body {
 }
 
 .nav-link,
-.submenu-toggle {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  text-decoration: none;
-  color: inherit;
-  border-radius: 6px;
-  transition: all var(--transition-speed) ease;
-  height: var(--nav-item-height);
+.submenu-toggle,
+body.superadmin-page .nav-link,
+body.superadmin-page .submenu-toggle {
+  display: flex !important;
+  align-items: center !important;
+  padding: 12px 16px !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  border-radius: 6px !important;
+  transition: all var(--transition-speed) ease !important;
+  height: var(--nav-item-height) !important;
 }
 
 .nav-link:hover,
-.submenu-toggle:hover {
-  background-color: var(--sidebar-hover);
+.submenu-toggle:hover,
+body.superadmin-page .nav-link:hover,
+body.superadmin-page .submenu-toggle:hover {
+  background-color: var(--sidebar-hover) !important;
 }
 
-.nav-item.active .nav-link {
-  background-color: var(--sidebar-active);
-  border-left: 3px solid var(--primary-color);
-  font-weight: 600;
-  color: var(--primary-color);
+.nav-item.active .nav-link,
+body.superadmin-page .nav-item.active .nav-link {
+  background-color: var(--sidebar-active) !important;
+  border-left: 3px solid var(--primary-color) !important;
+  font-weight: 600 !important;
+  color: var(--primary-color) !important;
 }
 
 .nav-link.active,
-.submenu-link.active {
-  background-color: var(--sidebar-active);
-  color: var(--primary-color);
-  font-weight: 600;
-  border-left: 3px solid var(--primary-color);
+.submenu-link.active,
+body.superadmin-page .nav-link.active,
+body.superadmin-page .submenu-link.active {
+  background-color: var(--sidebar-active) !important;
+  color: var(--primary-color) !important;
+  font-weight: 600 !important;
+  border-left: 3px solid var(--primary-color) !important;
 }
 
 .nav-icon {
@@ -268,16 +282,17 @@ body {
   transition: background-color var(--transition-speed), color var(--transition-speed), border-left var(--transition-speed);
 }
 
-/* Sidebar Footer */
-.sidebar-footer {
-  padding: 20px;
-  text-align: center;
-  border-top: 1px solid var(--sidebar-border);
-  margin-top: auto;
-  position: sticky;
-  bottom: 0;
-  background-color: var(--sidebar-bg); /* Ensure footer has same background as sidebar */
-  box-shadow: 0 -2px 5px rgba(0,0,0,0.05); /* Subtle shadow to separate from content */
+/* Sidebar Footer with enhanced consistency */
+.sidebar-footer,
+body.superadmin-page .sidebar-footer {
+  padding: 20px !important;
+  text-align: center !important;
+  border-top: 1px solid var(--sidebar-border) !important;
+  margin-top: auto !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  background-color: var(--sidebar-bg) !important; /* Ensure footer has same background as sidebar */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.05) !important; /* Subtle shadow to separate from content */
 }
 
 .footer-logo {
@@ -290,90 +305,127 @@ body {
   width: 100%;
 }
 
-.logout-button {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color var(--transition-speed) ease;
+.logout-button,
+body.superadmin-page .logout-button {
+  width: 100% !important;
+  padding: 12px !important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background-color var(--transition-speed) ease !important;
 }
 
-.logout-button:hover {
-  background-color: #d32f2f;
+.logout-button:hover,
+body.superadmin-page .logout-button:hover {
+  background-color: #1a1a1a !important;
 }
 
-/* Main Content */
-.main-content {
-  flex: 1;
-  margin-left: var(--sidebar-width);
-  min-height: 100vh;
-  transition: margin-left var(--transition-speed) ease;
-  background-color: #ffffff;
-  padding: 20px;
+/* Main Content with consistent positioning */
+.main-content,
+body.superadmin-page .main-content {
+  flex: 1 !important;
+  margin-left: var(--sidebar-width) !important;
+  min-height: 100vh !important;
+  transition: margin-left var(--transition-speed) var(--smooth-easing) !important;
+  background-color: #ffffff !important;
+  padding: 20px !important;
+  will-change: margin-left !important;
 }
 
-/* Responsive Styles */
+/* Responsive Styles with enhanced priority */
 @media (max-width: 992px) {
-  .sidebar {
-    transform: translateX(-100%);
-    width: 280px;
+  .sidebar,
+  body.superadmin-page .sidebar {
+    transform: translateX(-100%) !important;
+    width: 280px !important;
+    transition: transform var(--transition-speed) var(--smooth-easing) !important;
+    will-change: transform !important;
   }
 
-  .sidebar.open {
-    transform: translateX(0);
+  .sidebar.open,
+  body.superadmin-page .sidebar.open {
+    transform: translateX(0) !important;
   }
 
-  .main-content {
-    margin-left: 50px;
+  .main-content,
+  body.superadmin-page .main-content {
+    margin-left: 0 !important;
+    transition: margin-left var(--transition-speed) var(--smooth-easing) !important;
   }
 
-  .hamburger {
-    display: flex;
+  .hamburger,
+  body.superadmin-page .hamburger {
+    display: flex !important;
+    transition: all var(--transition-speed) var(--smooth-easing) !important;
   }
 }
 
 @media (max-width: 576px) {
-  .main-content {
-    padding: 15px;
+  .main-content,
+  body.superadmin-page .main-content {
+    padding: 15px !important;
+    transition: padding var(--transition-speed) var(--smooth-easing) !important;
   }
 }
 
-/* Scrollbar */
+/* Enhanced Scrollbar with high priority */
 ::-webkit-scrollbar {
-  width: 8px; /* Increased width for better visibility */
+  width: 8px !important; /* Increased width for better visibility */
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  background: #f1f1f1 !important;
+  border-radius: 4px !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888; /* Darker color for better visibility */
-  border-radius: 4px;
+  background: #888 !important; /* Darker color for better visibility */
+  border-radius: 4px !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #666; /* Even darker on hover */
+  background: #666 !important; /* Even darker on hover */
 }
 
-/* Firefox scrollbar (optional) */
+/* Firefox scrollbar (optional) with enhanced priority */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
+  scrollbar-width: thin !important;
+  scrollbar-color: #888 #f1f1f1 !important;
 }
 
-.nav-link:hover, .submenu-toggle:hover {
-  background-color: var(--sidebar-hover);
-  box-shadow: inset 4px 0 0 var(--primary-color);
+/* Sidebar specific scrollbar */
+body.superadmin-page .sidebar::-webkit-scrollbar {
+  width: 8px !important;
 }
 
-.submenu-link:hover {
-  background-color: var(--sidebar-hover);
-  color: var(--primary-color);
-  box-shadow: inset 4px 0 0 var(--primary-color);
+body.superadmin-page .sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  border-radius: 4px !important;
+}
+
+body.superadmin-page .sidebar::-webkit-scrollbar-thumb {
+  background: #888 !important;
+  border-radius: 4px !important;
+}
+
+body.superadmin-page .sidebar::-webkit-scrollbar-thumb:hover {
+  background: #666 !important;
+}
+
+.nav-link:hover, 
+.submenu-toggle:hover,
+body.superadmin-page .nav-link:hover,
+body.superadmin-page .submenu-toggle:hover {
+  background-color: var(--sidebar-hover) !important;
+  box-shadow: inset 4px 0 0 var(--primary-color) !important;
+}
+
+.submenu-link:hover,
+body.superadmin-page .submenu-link:hover {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--primary-color) !important;
+  box-shadow: inset 4px 0 0 var(--primary-color) !important;
 }
