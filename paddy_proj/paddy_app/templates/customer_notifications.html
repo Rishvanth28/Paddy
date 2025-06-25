@@ -826,15 +826,13 @@
             {% if unread_count > 0 %}
             <span class="badge ms-2">{{ unread_count }}</span>
             {% endif %}
-        </h1>
-
-        <div class="d-flex align-items-center gap-2">
+        </h1>        <div class="d-flex align-items-center gap-2">
             {% if notifications %}
-            <button class="btn btn-select-all btn-sm" style="display: inline-flex;" onclick="toggleSelectAll()">
-                <i class="bi bi-check-square me-1"></i>Select All
+            <button class="btn btn-select-all btn-sm" style="display: inline-flex; align-items: center;" onclick="toggleSelectAll()">
+                <i class="bi bi-check-square" style="margin-right: 8px;"></i>Select All
             </button>
-            <button class="btn btn-outline-primary btn-sm" onclick="markAllAsRead()">
-                <i class="bi bi-check-all me-1"></i>Mark All as Read
+            <button class="btn btn-outline-primary btn-sm" style="display: inline-flex; align-items: center;" onclick="markAllAsRead()">
+                <i class="bi bi-check-all" style="margin-right: 8px;"></i>Mark All as Read
             </button>
             {% endif %}
         </div>
@@ -846,13 +844,12 @@
             <i class="bi bi-check-circle-fill"></i>
             <span class="selection-count" id="selectionCount">0</span>
             <span>notifications selected</span>
-        </div>
-        <div style="display: flex;">
-            <button class="btn btn-cancel-selection" onclick="cancelSelection()">
-                <i class="bi bi-x-circle me-1"></i>Cancel
+        </div>        <div style="display: flex;">
+            <button class="btn btn-cancel-selection" onclick="cancelSelection()" style="display: inline-flex; align-items: center;">
+                <i class="bi bi-x-circle" style="margin-right: 8px;"></i>Cancel
             </button>
-            <button class="btn btn-delete-selected" style="height: 5.5vh;" onclick="deleteSelectedNotifications()">
-                <i class="bi bi-trash3 me-1"></i>Delete Selected
+            <button class="btn btn-delete-selected" style="height: 5.5vh; display: inline-flex; align-items: center;" onclick="deleteSelectedNotifications()">
+                <i class="bi bi-trash3" style="margin-right: 8px;"></i>Delete Selected
             </button>
         </div>
     </div>
@@ -1238,12 +1235,10 @@
 
         checkboxes.forEach(checkbox => {
             checkbox.checked = !allChecked;
-        });
-
-        // Update button text
+        });        // Update button text
         selectAllBtn.innerHTML = allChecked ?
-            '<i class="bi bi-check-square me-1"></i>Select All' :
-            '<i class="bi bi-square me-1"></i>Deselect All';
+            '<i class="bi bi-check-square" style="margin-right: 8px;"></i>Select All' :
+            '<i class="bi bi-square" style="margin-right: 8px;"></i>Deselect All';
 
         updateSelection();
     }
@@ -1256,7 +1251,7 @@
             checkbox.checked = false;
         });
 
-        selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1"></i>Select All';
+        selectAllBtn.innerHTML = '<i class="bi bi-check-square" style="margin-right: 8px;"></i>Select All';
         updateSelection();
     }
 
@@ -1272,12 +1267,10 @@
         // Show confirmation dialog
         if (!confirm(`Are you sure you want to delete ${selectedIds.length} notification(s)? This action cannot be undone.`)) {
             return;
-        }
-
-        // Show loading state
+        }        // Show loading state
         const deleteBtn = document.querySelector('.btn-delete-selected');
         const originalContent = deleteBtn.innerHTML;
-        deleteBtn.innerHTML = '<i class="bi bi-spinner bi-spin me-1"></i>Deleting...';
+        deleteBtn.innerHTML = '<i class="bi bi-spinner bi-spin" style="margin-right: 8px;"></i>Deleting...';
         deleteBtn.disabled = true;
 
         // Send delete request
