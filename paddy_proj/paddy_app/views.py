@@ -1947,13 +1947,9 @@ def upgrade_to_admin(request):
             phone_number=customer.phone_number,
             email=customer.email,
             password=customer.password,  # already hashed
-            user_count=0,
+            user_count=50,
         )
         new_admin.save()
-        
-        # Set session role to admin after successful upgrade
-        request.session['role'] = 'admin'
-        request.session['user_id'] = new_admin.admin_id
         
         messages.success(request, "You have been upgraded to admin successfully!")
         return render(request, 'upgrade_to_admin.html', {'customer': customer, 'is_admin': True})
