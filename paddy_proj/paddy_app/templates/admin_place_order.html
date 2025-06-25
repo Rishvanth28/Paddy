@@ -1,469 +1,73 @@
 {% extends 'admin_base.html' %}
 {% load static %}
 {% block content %}
-
+{% if messages or request.GET.order_placed == '1' %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<ul class="messages">
+    {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+    {% if request.GET.order_placed == '1' %}
+        <li class="success">Order placed successfully!</li>
+    {% endif %}
+</ul>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let messages = document.querySelectorAll('.messages');
+            messages.forEach((message) => {
+                message.style.opacity = '0';
+                setTimeout(() => message.remove(), 100);
+            });
+        }, 5000);
+    });
+</script>
+{% endif %}
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
     <style>
-        /* Toast Notification Styles */
-        .toast-container .toast {
-            min-width: 300px;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        }
-
-        /* Enhanced responsive styles for place order */
-        body {
-            background-color: #f8f9fa;
-        }
-
-        /* Header */
-        .header-bar {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .page-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #000;
-            position: relative;
-            text-transform: uppercase;
-            padding-bottom: 0.6rem;
-            text-align: left;
-        }
-
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: #000;
-            border-radius: 2px;
-            transition: width 0.3s ease-in-out;
-        }
-
-        .page-title:hover::after {
-            width: 110%;
-        }
-
-
-        .tab-header {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-            background: white;
-            border-radius: 12px;
-            padding: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e9ecef;
-        }
-
-        .tab-button {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            background: transparent;
-            color: #6c757d;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .tab-button.active {
-            background: #333;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
-        }
-
-        .tab-button:hover:not(.active) {
-            background: #e9ecef;
-            color: #495057;
-        }
-
-        .form-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .form-card {
-            background: white;
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e9ecef;
-        }
-
-        .form-card h3 {
-            color: #2c3e50;
-            font-weight: 600;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .form-card hr {
-            border: none;
-            height: 2px;
-            background: linear-gradient(90deg, #333, transparent);
-            margin-bottom: 25px;
-        }
-
-        .form-row {
-            display: grid;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 12px 16px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background-color: #fff;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-        .form-group input[readonly] {
-            background-color: #f8f9fa;
-            color: #6c757d;
-        }
-
-        .form-actions {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .form-actions button {
-            background: #333 color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 200px;
-        }
-
-        .form-actions button:hover {
-            background: #333;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
-        }
-
-        .form-actions button:active {
-            transform: translateY(0);
-        }
-
-        /* Pesticide specific styles */
-        .pesticide-items {
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: #f8f9fa;
-        }
-
-        .pesticide-item {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid #e9ecef;
-            position: relative;
-        }
-
-        .pesticide-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .remove-item-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .add-item-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 15px;
-        }
-
-        /* Tablet styles */
-        @media (max-width: 991.98px) {
+                @media (max-width:768px) {
             .form-container {
-                padding: 0 10px;
+                padding: 10px;
             }
-
             .form-card {
-                padding: 30px 25px;
+                padding: 15px;
             }
-
-            .page-title {
-                font-size: 1.8rem;
-            }
-
-            .tab-button {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-
             .form-row {
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
+                flex-direction: column;
             }
-        }
-
-        /* Mobile styles */
-        @media (max-width: 767.98px) {
-            .header-bar {
-                padding: 15px 0;
-                margin-bottom: 1.5rem;
-                text-align: center;
+            .form-group {
+                width: 100%;
+                margin-bottom: 10px;
             }
-
-            .page-title {
-                font-size: 1.6rem;
-            }
-
-            .form-container {
-                padding: 0 5px;
-            }
-
-            .form-card {
-                padding: 25px 20px;
-                border-radius: 12px;
-                margin: 0 5px;
-            }
-
             .tab-header {
                 flex-direction: column;
-                gap: 8px;
-                padding: 15px;
+                margin-top: 18vh;
             }
-
             .tab-button {
-                padding: 12px;
-                font-size: 14px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 12px;
-                margin-bottom: 15px;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                padding: 10px 14px;
-                font-size: 13px;
-            }
-
-            .form-group label {
-                font-size: 13px;
-                margin-bottom: 6px;
-            }
-
-            .form-actions button {
-                padding: 12px 30px;
-                font-size: 14px;
-                min-width: 180px;
-            }
-
-            .pesticide-items {
-                padding: 15px;
-            }
-
-            .pesticide-item {
-                padding: 15px;
-            }
-
-            .toast-container {
-                padding: 10px !important;
-            }
-
-            .toast-container .toast {
-                min-width: 280px;
-            }
-        }
-
-        @media (max-width: 575.98px) {
-            .header-bar {
-                padding: 10px 0;
-            }
-
-            .page-title {
-                font-size: 1.4rem;
-            }
-
-            .form-card {
-                padding: 20px 15px;
-                margin: 0;
-                border-radius: 8px;
-            }
-
-            .tab-header {
-                margin-bottom: 20px;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                padding: 9px 12px;
-            }
-
-            .form-actions button {
                 width: 100%;
-                min-width: auto;
+                margin-bottom: 5px;
             }
-        }
-
-        /* Desktop styles */
-        @media (min-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .form-row.single-column,
-            .form-row:has(> .form-group:only-child) {
-                grid-template-columns: 1fr;
-            }
-
-            .tab-header {
-                max-width: 400px;
-                margin: 0 auto 30px auto;
-            }
-        }
-
-        @media (min-width: 992px) {
-            .header-bar {
-                padding: 30px 0;
-            }
-
-            .page-title {
-                font-size: 2.2rem;
-            }
-
-            .form-card {
-                padding: 50px;
-            }
-
-            .form-row {
-                gap: 25px;
-                margin-bottom: 25px;
-            }
-
-            .form-row.triple-column {
-                grid-template-columns: 1fr 1fr 1fr;
-            }
+            
         }
     </style>
 </head>
 
-<!-- Toast Notifications -->
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-    {% if messages %}
-    {% for message in messages %}
-    <div class="toast align-items-center text-white border-0 mb-2 show" role="alert" aria-live="assertive"
-        aria-atomic="true"
-        style="background-color: 
-                     {% if message.tags == 'error' %}#dc3545{% elif message.tags == 'warning' %}#ffc107{% elif message.tags == 'success' %}#28a745{% else %}#17a2b8{% endif %};">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas 
-                            {% if message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% elif message.tags == 'success' %}fa-check-circle{% else %}fa-info-circle{% endif %} 
-                            me-2"></i>
-                {{ message }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                aria-label="Close"></button>
-        </div>
-    </div>
-    {% endfor %}
-    {% endif %}
-
-    {% if request.GET.order_placed == '1' %}
-    <div class="toast align-items-center text-white border-0 mb-2 show bg-success" role="alert" aria-live="assertive"
-        aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                <i class="fas fa-check-circle me-2"></i>
-                Order placed successfully!
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                aria-label="Close"></button>
-        </div>
-    </div>
-    {% endif %}
-</div>
-
 <body>
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-        <h1 class="page-title mb-0 me-3 ">Place New Order</h1>
+        <h1 class="page-title mb-0 me-3 " >Place New Order</h1>
     </div>
     <!-- Tab Buttons -->
     <div class="tab-header">
-        <button class="tab-button active " type="button" onclick="showForm('Rice')">Rice</button>
-        <button class="tab-button " type="button" onclick="showForm('Paddy')">Paddy</button>
-        <button class="tab-button " type="button" onclick="showForm('Pesticide')">Pesticide</button>
+        <button class="tab-button active "  type="button" onclick="showForm('Rice')">Rice</button>
+        <button class="tab-button "  type="button" onclick="showForm('Paddy')">Paddy</button>
+        <button class="tab-button "  type="button" onclick="showForm('Pesticide')">Pesticide</button>
     </div>
     <div class="form-container">
         <!-- RICE FORM -->
         <div id="rice-form" class="form-card">
-            <h3>Customer Details <span title="Fill customer information">ⓘ</span></h3>
+            <h3 >Customer Details <span title="Fill customer information">ⓘ</span></h3>
             <hr>
             <form method="POST" id="rice-order-form" class="order-form">
                 {% csrf_token %}
@@ -474,8 +78,7 @@
                         <select name="customer" id="customer-select-rice" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{
-                                customer.first_name }} {{ customer.last_name }}</option>
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -487,36 +90,29 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required
-                            pattern="[A-Za-z\s]+" minlength="2">
+                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required
-                            pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
+                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required
-                    pattern="[0-9]{10}" maxlength="10">
+                <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="category-rice">Category</label>
-                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category"
-                            required>
-                    </div>
-
-                    <div class="form-group">
                         <label for="quantity">Quantity</label>
                         <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">
                     </div>
-
+                    <div class="form-group">
+                        <label for="category-rice">Category</label>
+                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required>
+                    </div>
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0"
-                            step="0.01">
+                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01">
                     </div>
                 </div>
                 <div class="form-row">
@@ -532,7 +128,7 @@
         </div>
         <!-- PADDY FORM -->
         <div style="display: none;" id="paddy-form" class="form-card">
-            <h3>Customer Details <span title="Fill customer information">ⓘ</span></h3>
+            <h3 >Customer Details <span title="Fill customer information">ⓘ</span></h3>
             <hr>
             <form method="POST" id="paddy-order-form" class="order-form">
                 {% csrf_token %}
@@ -543,8 +139,7 @@
                         <select name="customer" id="customer-select-paddy" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{
-                                customer.first_name }} {{ customer.last_name }}</option>
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }} {{ customer.last_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -556,34 +151,25 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required
-                            pattern="[A-Za-z\s]+" minlength="2">
+                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required
-                            pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
+                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}"
-                    maxlength="10">
+                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="category-rice">Category</label>
-                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category"
-                            required>
-                    </div>
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
                         <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">
                     </div>
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0"
-                            step="0.01">
+                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01">
                     </div>
                 </div>
                 <div class="form-row">
@@ -599,7 +185,7 @@
         </div>
         <!-- PESTICIDE FORM -->
         <div style="display: none;" id="pesticide-form" class="form-card">
-            <h3>Customer Details <span title="Fill customer information">ⓘ</span></h3>
+            <h3 >Customer Details <span title="Fill customer information">ⓘ</span></h3>
             <hr>
             <form method="POST" id="pesticide-order-form" class="order-form">
                 {% csrf_token %}
@@ -610,8 +196,7 @@
                         <select name="customer" id="customer-select-pesticide" required>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
-                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{
-                                customer.first_name }} {{ customer.last_name }}</option>
+                            <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }} {{ customer.last_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -623,18 +208,15 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required
-                            pattern="[A-Za-z\s]+" minlength="2">
+                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required
-                            pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
+                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
                     </div>
                 </div>
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}"
-                    maxlength="10">
+                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="items-section">
@@ -657,10 +239,8 @@
                                 <td><input type="text" name="product_name[]" class="product-name" required></td>
                                 <td><input type="text" name="batch_number[]" class="batch-number" required></td>
                                 <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
-                                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01"
-                                        required onchange="calculateRowTotal(this)"></td>
-                                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0"
-                                        required onchange="calculateRowTotal(this)"></td>
+                                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
+                                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
                                 <td>
                                     <select name="unit[]" class="unit" required>
                                         <option value="Nos">Nos</option>
@@ -668,28 +248,22 @@
                                         <option value="Ltr">Ltr</option>
                                     </select>
                                 </td>
-                                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly>
-                                </td>
-                                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)"
-                                        title="Remove Item">✕</button></td>
+                                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
+                                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="6" style="text-align: right;"><strong>Total:</strong></td>
-                                <td><input type="number" id="pesticide-grand-total" name="grand_total" step="0.01"
-                                        readonly></td>
+                                <td><input type="number" id="pesticide-grand-total" name="grand_total" step="0.01" readonly></td>
                                 <td></td>
                             </tr>
                         </tfoot>
                     </table>
                     <div class="form-row" style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
-                        <button type="button" id="pesticide-add-item-btn" class="add-item-btn"
-                            onclick="addPesticideRow()">+ Add Item</button>
-                        <button type="button" id="pesticide-save-btn" class="submit-btn" style="background:#2196F3;"
-                            onclick="savePesticideOrderDraft()" disabled>Save Order</button>
-                        <button type="submit" id="pesticide-submit-btn" class="submit-btn">Place Pesticide
-                            Order</button>
+                        <button type="button" id="pesticide-add-item-btn" class="add-item-btn" onclick="addPesticideRow()">+ Add Item</button>
+                        <button type="button" id="pesticide-save-btn" class="submit-btn" style="background:#2196F3;" onclick="savePesticideOrderDraft()" disabled>Save Order</button>
+                        <button type="submit" id="pesticide-submit-btn" class="submit-btn">Place Pesticide Order</button>
                     </div>
                 </div>
             </form>
@@ -701,7 +275,7 @@
             const tableBody = document.getElementById("items-container");
             const newRow = document.createElement("tr");
             newRow.classList.add("item-row");
-
+        
             newRow.innerHTML = `
                 <td><input type="text" name="product_name[]" class="product-name" required></td>
                 <td><input type="text" name="batch_number[]" class="batch-number" required></td>
@@ -718,10 +292,10 @@
                 <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
                 <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
             `;
-
+        
             tableBody.appendChild(newRow);
         }
-
+        
         function removeRow(button) {
             const row = button.closest("tr");
             if (row) {
@@ -729,17 +303,17 @@
                 updateGrandTotal();
             }
         }
-
+        
         function calculateRowTotal(input) {
             const row = input.closest("tr");
             const quantity = parseFloat(row.querySelector(".quantity")?.value || 0);
             const price = parseFloat(row.querySelector(".price")?.value || 0);
             const total = (quantity * price).toFixed(2);
-
+        
             row.querySelector(".row-total").value = total;
             updateGrandTotal();
         }
-
+        
         function updateGrandTotal() {
             let grandTotal = 0;
             document.querySelectorAll(".row-total").forEach(input => {
@@ -766,106 +340,106 @@
                     "X-CSRFToken": csrfToken
                 }
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // Launch Razorpay payment modal
-                        const options = {
-                            key: data.razorpay_key,
-                            amount: data.amount * 100, // Amount in paise
-                            currency: "INR",
-                            name: "Order Booking Fee",
-                            description: "Rs. 10 booking fee for placing an order",
-                            order_id: data.order_id,
-                            handler: function (response) {
-                                // Create a form to submit payment details back to server
-                                const paymentForm = document.createElement('form');
-                                paymentForm.method = 'POST';
-                                paymentForm.action = "{% url 'place_order' %}";
-                                // Add CSRF token
-                                const csrfInput = document.createElement('input');
-                                csrfInput.type = 'hidden';
-                                csrfInput.name = 'csrfmiddlewaretoken';
-                                csrfInput.value = csrfToken;
-                                paymentForm.appendChild(csrfInput);
-                                // Add payment response fields
-                                const paymentId = document.createElement('input');
-                                paymentId.type = 'hidden';
-                                paymentId.name = 'razorpay_payment_id';
-                                paymentId.value = response.razorpay_payment_id;
-                                paymentForm.appendChild(paymentId);
-                                const orderId = document.createElement('input');
-                                orderId.type = 'hidden';
-                                orderId.name = 'razorpay_order_id';
-                                orderId.value = response.razorpay_order_id;
-                                paymentForm.appendChild(orderId);
-                                const signature = document.createElement('input');
-                                signature.type = 'hidden';
-                                signature.name = 'razorpay_signature';
-                                signature.value = response.razorpay_signature;
-                                paymentForm.appendChild(signature);
-                                // Add to DOM and submit
-                                document.body.appendChild(paymentForm);
-                                paymentForm.submit();
-                            },
-                            theme: {
-                                color: "#3399cc"
-                            },
-                            method: {
-                                netbanking: true,
-                                card: true,
-                                upi: true,
-                                wallet: true,
-                                paylater: true
-                            },
-                            config: {
-                                display: {
-                                    blocks: {
-                                        paylater: {
-                                            name: "Pay Later",
-                                            instruments: [
-                                                { method: "paylater" }
-                                            ]
-                                        }
-                                    },
-                                    sequence: ["block.paylater", "block.cards", "block.netbanking", "block.upi", "block.wallet"],
-                                    preferences: {
-                                        show_default_blocks: true
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Launch Razorpay payment modal
+                    const options = {
+                        key: data.razorpay_key,
+                        amount: data.amount * 100, // Amount in paise
+                        currency: "INR",
+                        name: "Order Booking Fee",
+                        description: "Rs. 10 booking fee for placing an order",
+                        order_id: data.order_id,
+                        handler: function(response) {
+                            // Create a form to submit payment details back to server
+                            const paymentForm = document.createElement('form');
+                            paymentForm.method = 'POST';
+                            paymentForm.action = "{% url 'place_order' %}";
+                            // Add CSRF token
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = 'csrfmiddlewaretoken';
+                            csrfInput.value = csrfToken;
+                            paymentForm.appendChild(csrfInput);
+                            // Add payment response fields
+                            const paymentId = document.createElement('input');
+                            paymentId.type = 'hidden';
+                            paymentId.name = 'razorpay_payment_id';
+                            paymentId.value = response.razorpay_payment_id;
+                            paymentForm.appendChild(paymentId);
+                            const orderId = document.createElement('input');
+                            orderId.type = 'hidden';
+                            orderId.name = 'razorpay_order_id';
+                            orderId.value = response.razorpay_order_id;
+                            paymentForm.appendChild(orderId);
+                            const signature = document.createElement('input');
+                            signature.type = 'hidden';
+                            signature.name = 'razorpay_signature';
+                            signature.value = response.razorpay_signature;
+                            paymentForm.appendChild(signature);
+                            // Add to DOM and submit
+                            document.body.appendChild(paymentForm);
+                            paymentForm.submit();
+                        },
+                        theme: {
+                            color: "#3399cc"
+                        },
+                        method: {
+                            netbanking: true,
+                            card: true,
+                            upi: true,
+                            wallet: true,
+                            paylater: true
+                        },
+                        config: {
+                            display: {
+                                blocks: {
+                                    paylater: {
+                                        name: "Pay Later",
+                                        instruments: [
+                                            { method: "paylater" }
+                                        ]
                                     }
+                                },
+                                sequence: ["block.paylater", "block.cards", "block.netbanking", "block.upi", "block.wallet"],
+                                preferences: {
+                                    show_default_blocks: true
                                 }
                             }
-                        };
-                        const rzp = new Razorpay(options);
-                        rzp.open();
-                    } else {
-                        alert(data.message || "An error occurred");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("An error occurred while processing your request");
-                });
+                        }
+                    };
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+                } else {
+                    alert(data.message || "An error occurred");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while processing your request");
+            });
         }
 
         // Attach submit event listeners to all forms
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const riceForm = document.getElementById('rice-order-form');
             const paddyForm = document.getElementById('paddy-order-form');
             const pesticideForm = document.getElementById('pesticide-order-form');
             if (riceForm) {
-                riceForm.addEventListener('submit', function (e) {
+                riceForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     submitOrderForm('rice-order-form', 1);
                 });
             }
             if (paddyForm) {
-                paddyForm.addEventListener('submit', function (e) {
+                paddyForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     submitOrderForm('paddy-order-form', 2);
                 });
             }
             if (pesticideForm) {
-                pesticideForm.addEventListener('submit', function (e) {
+                pesticideForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     submitOrderForm('pesticide-order-form', 3);
                 });
@@ -890,7 +464,7 @@
             document.querySelector(`.tab-button[onclick="showForm('${formType}')"]`).classList.add('active');
         }
         // Show only the first form on page load
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             showForm('Rice');
         });
     </script>
@@ -939,7 +513,7 @@
             `;
 
             tableBody.appendChild(newRow);
-
+            
             // Initialize the row total
             const quantityInput = newRow.querySelector(".quantity");
             if (quantityInput) {
@@ -983,24 +557,24 @@
                 itemsContainer.querySelectorAll(".row-total").forEach(input => {
                     grandTotal += parseFloat(input.value) || 0;
                 });
-
+                
                 const grandTotalInput = document.getElementById(`${formId}-grand-total`);
                 if (grandTotalInput) {
                     grandTotalInput.value = grandTotal.toFixed(2);
                 }
-
+                
             }
         }
         // Initialize all rows when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Add event listeners to tab buttons to ensure calculations are updated when switching tabs
             document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function() {
                     // Give the DOM time to update before recalculating
                     setTimeout(updateGrandTotal, 100);
                 });
             });
-
+            
             // Initialize any existing rows
             document.querySelectorAll('.quantity').forEach(input => {
                 calculateRowTotal(input);
@@ -1014,8 +588,8 @@
             let formId = "";
             let formElement = null;
             let submitBtn = null;
-
-            if (document.getElementById("rice-form").style.display === "block" ||
+            
+            if (document.getElementById("rice-form").style.display === "block" || 
                 document.getElementById("rice-form").style.display === "") {
                 formId = "rice";
                 formElement = document.querySelector("#rice-form form");
@@ -1029,19 +603,19 @@
                 formElement = document.querySelector("#pesticide-form form");
                 submitBtn = document.querySelector("#pesticide-form button[onclick*='submitOrderForm']");
             }
-
+            
             if (!formElement || !submitBtn) return;
-
+            
             // Check if all required fields are filled
             const requiredFields = formElement.querySelectorAll('input[required], select[required]');
             let allFilled = true;
-
+            
             requiredFields.forEach(field => {
                 if (!field.value.trim()) {
                     allFilled = false;
                 }
             });
-
+            
             // Special check for pesticide form to ensure at least one item row is valid
             if (formId === "pesticide") {
                 const rows = document.querySelectorAll('#pesticide-items-container .item-row');
@@ -1058,10 +632,10 @@
                     allFilled = false; // No item rows
                 }
             }
-
+            
             // Enable or disable the submit button
             submitBtn.disabled = !allFilled;
-
+            
             // Visual feedback
             if (allFilled) {
                 submitBtn.classList.add('ready');
@@ -1069,28 +643,28 @@
                 submitBtn.classList.remove('ready');
             }
         }
-
+        
         // Add this to the DOMContentLoaded event
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Add the existing initialization code...
-
+            
             // Add event listeners to all required inputs for live validation
             document.querySelectorAll('input[required], select[required]').forEach(input => {
                 input.addEventListener('input', validateCurrentForm);
                 input.addEventListener('change', validateCurrentForm);
                 input.addEventListener('blur', validateCurrentForm);
             });
-
+            
             // Add event listeners to customer selects
             document.querySelectorAll('#customer-select-rice, #customer-select-paddy, #customer-select-pesticide').forEach(select => {
                 select.addEventListener('change', validateCurrentForm);
             });
-
+            
             // Add listeners to the add/remove item functions for pesticide
             const addItemBtn = document.getElementById('pesticide-add-item-btn');
             if (addItemBtn) {
                 const originalAddFn = addPesticideRow;
-                window.addPesticideRow = function () {
+                window.addPesticideRow = function() {
                     originalAddFn();
                     // Add listeners to new row inputs
                     const newRow = document.querySelector('#pesticide-items-container tr:last-child');
@@ -1103,21 +677,21 @@
                     validateCurrentForm();
                 };
             }
-
+            
             // Override removeRow to validate after removing
             const originalRemoveFn = removeRow;
-            window.removeRow = function (button) {
+            window.removeRow = function(button) {
                 originalRemoveFn(button);
                 validateCurrentForm();
             };
-
+            
             // Initial validation
             validateCurrentForm();
         });
-
+        
         // Add validation when switching tabs
         const originalShowForm = showForm;
-        window.showForm = function (formType) {
+        window.showForm = function(formType) {
             originalShowForm(formType);
             // Check form after tab switch
             setTimeout(validateCurrentForm, 100);
@@ -1131,24 +705,21 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
-
+        
         button.ready {
             background-color: #4CAF50;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-
+        
         /* Style for required fields */
-        input:required,
-        select:required {
+        input:required, select:required {
             border-left: 3px solid #4CAF50;
         }
-
-        input:required:invalid,
-        select:required:invalid {
+        
+        input:required:invalid, select:required:invalid {
             border-left: 3px solid #ff6b6b;
         }
-
         .add-item-btn {
             background: #f5f5f5;
             color: #333;
@@ -1159,14 +730,11 @@
             transition: background 0.2s, box-shadow 0.2s;
             margin-right: 0.5rem;
         }
-
         .add-item-btn:hover:not(:disabled) {
             background: #e0e0e0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
         }
-
-        .submit-btn,
-        .form-actions button {
+        .submit-btn, .form-actions button {
             background: #fff;
             color: #e53935;
             border: 1.5px solid #e53935;
@@ -1177,20 +745,15 @@
             transition: background 0.2s, color 0.2s, box-shadow 0.2s;
             box-shadow: none;
         }
-
-        .submit-btn:hover:not(:disabled),
-        .form-actions button:hover:not(:disabled) {
+        .submit-btn:hover:not(:disabled), .form-actions button:hover:not(:disabled) {
             background: #e53935;
             color: #fff;
-            box-shadow: 0 2px 8px rgba(229, 57, 53, 0.13);
+            box-shadow: 0 2px 8px rgba(229,57,53,0.13);
         }
-
-        .submit-btn.ready,
-        .form-actions button.ready {
+        .submit-btn.ready, .form-actions button.ready {
             background: #e53935;
             color: #fff;
         }
-
         #pesticide-save-btn {
             background: #2196F3;
             color: #fff;
@@ -1200,15 +763,13 @@
             font-size: 1rem;
             font-weight: 600;
             transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.07);
+            box-shadow: 0 2px 8px rgba(33,150,243,0.07);
             margin-right: 0.5rem;
         }
-
         #pesticide-save-btn:hover:not(:disabled) {
             background: #1565c0;
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.13);
+            box-shadow: 0 4px 12px rgba(33,150,243,0.13);
         }
-
         .remove-row-btn {
             background: #fff;
             color: #e53935;
@@ -1220,13 +781,11 @@
             cursor: pointer;
             transition: background 0.2s, color 0.2s, box-shadow 0.2s;
         }
-
         .remove-row-btn:hover:not(:disabled) {
             background: #e53935;
             color: #fff;
-            box-shadow: 0 2px 8px rgba(229, 57, 53, 0.13);
+            box-shadow: 0 2px 8px rgba(229,57,53,0.13);
         }
-
         .order-placed-success {
             position: fixed;
             top: 30px;
@@ -1238,20 +797,12 @@
             border-radius: 8px;
             font-size: 1.2rem;
             z-index: 9999;
-            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.18);
+            box-shadow: 0 4px 16px rgba(76,175,80,0.18);
             animation: fadeIn 0.5s;
         }
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
     </style>
 </body>
