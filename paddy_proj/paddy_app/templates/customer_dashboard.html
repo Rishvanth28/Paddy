@@ -998,8 +998,7 @@ body { background: var(--bg); color: var(--text-main); }
                 </tbody>
             </table>
         </div>
-    </div>
-    <div class="table-section">
+    </div>    <div class="table-section">
         <div class="section-title">Pending Payments</div>
         <div class="table-responsive">
             <table class="recent-orders-table">
@@ -1008,17 +1007,27 @@ body { background: var(--bg); color: var(--text-main); }
                         <th>Order ID</th>
                         <th>Date</th>
                         <th>Total Amount</th>
+                        <th>Paid Amount</th>
                         <th>Due Amount</th>
+                        <th>Payment Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for order in due_payments %}
+                    {% for order in pending_payments %}
                     <tr>
                         <td>#{{ order.order_id }}</td>
                         <td>{{ order.order_date|date:"M d, Y" }}</td>
                         <td>₹{{ order.overall_amount|floatformat:2 }}</td>
+                        <td>₹{{ order.paid_amount|default:"0.00"|floatformat:2 }}</td>
                         <td><strong>₹{{ order.due_amount|default:"0.00"|floatformat:2 }}</strong></td>
+                        <td>
+                            {% if order.payment_status == 0 %}
+                            <span class="status-badge status-pending">Not Paid</span>
+                            {% elif order.payment_status == 1 %}
+                            <span class="status-badge status-partial">Partially Paid</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <form action="{% url 'payment' %}" method="post">
                                 {% csrf_token %}
@@ -1029,7 +1038,7 @@ body { background: var(--bg); color: var(--text-main); }
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" style="text-align: center;">No pending payments</td>
+                        <td colspan="7" style="text-align: center;">No pending payments</td>
                     </tr>
                     {% endfor %}
                 </tbody>

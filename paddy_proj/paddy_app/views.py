@@ -577,14 +577,13 @@ def customer_dashboard(request):
     delivery_status_data = [
         {'name': 'Pending', 'count': pending_delivery},
         {'name': 'Completed', 'count': completed_delivery}
-    ]
-      # Due payments (where payment is not complete)
-    due_payments = active_orders.filter(
-        payment_status=0
-    ).order_by('-order_date')[:5]
+    ]    # Pending payments (where payment is not complete - includes unpaid and partially paid)
+    pending_payments = active_orders.filter(
+        Q(payment_status=0) | Q(payment_status=1)  # Unpaid or partially paid
+    ).order_by('-order_date')
     
-    # Calculate due amount for each order
-    for order in due_payments:
+    # Calculate due amount and paid amount for each order
+    for order in pending_payments:
         if order.paid_amount is None:
             order.paid_amount = 0
         order.due_amount = order.overall_amount - order.paid_amount
@@ -608,8 +607,7 @@ def customer_dashboard(request):
         'completed_delivery': completed_delivery,        'pending_payment': pending_payment,
         'partial_payment': partial_payment,
         'completed_payment': completed_payment,
-        'recent_orders': recent_orders,
-        'due_payments': due_payments,
+        'recent_orders': recent_orders,        'pending_payments': pending_payments,
         'upcoming_deliveries': upcoming_deliveries,
         'category_data_json': json.dumps(category_data),
         'monthly_orders_json': json.dumps(monthly_orders),
