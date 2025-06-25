@@ -1,6 +1,6 @@
 .invoice-container {
     width: 100%;
-    max-width: 800px;
+    /* max-width: 800px; */
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
@@ -80,5 +80,8 @@ td em {
 }
 .invoice-right{
     text-align: right;
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-end;
 }   

@@ -1,28 +1,6 @@
 {% extends 'admin_base.html' %}
 {% load static %}
 {% block content %}
-{% if messages or request.GET.order_placed == '1' %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-<ul class="messages">
-    {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-    {% if request.GET.order_placed == '1' %}
-        <li class="success">Order placed successfully!</li>
-    {% endif %}
-</ul>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
-            let messages = document.querySelectorAll('.messages');
-            messages.forEach((message) => {
-                message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100);
-            });
-        }, 5000);
-    });
-</script>
-{% endif %}
 <head>
     <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -730,7 +708,7 @@
             margin-right: 0.5rem;
         }
         .add-item-btn:hover:not(:disabled) {
-            background: #e0e0e0;
+            background: #662222;
             box-shadow: 0 2px 8px rgba(0,0,0,0.07);
         }
         .submit-btn, .form-actions button {
@@ -745,7 +723,7 @@
             box-shadow: none;
         }
         .submit-btn:hover:not(:disabled), .form-actions button:hover:not(:disabled) {
-            background: #e53935;
+            background: #662222;
             color: #fff;
             box-shadow: 0 2px 8px rgba(229,57,53,0.13);
         }

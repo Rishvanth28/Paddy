@@ -105,7 +105,7 @@ body, html {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #4e6ef2, #845ef7, #4e6ef2);
+  background: #333;
   border-radius: 20px 20px 0 0;
 }
 
@@ -162,7 +162,7 @@ h1 {
 }
 
 .tab-btn.active {
-  background-color: #4e6ef2;
+  background-color: #333;
   color: white;
   border-color: #4e6ef2;
   box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
@@ -210,7 +210,7 @@ input:focus, select:focus, textarea:focus {
 button, button[type="submit"] {
   margin-top: 20px; /* Reduced margin */
   padding: 14px 35px; /* Reduced padding */
-  background: linear-gradient(135deg, #4e6ef2 0%, #845ef7 100%);
+  background: #333;
   color: white;
   border: none;
   border-radius: 12px;
@@ -219,7 +219,7 @@ button, button[type="submit"] {
   font-weight: 600;
   align-self: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 180px; /* Reduced width */
+  /* min-width: 180px; Reduced width */
   box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
   letter-spacing: 0.5px;
 }
@@ -796,44 +796,4 @@ button:hover {
 input:focus, select:focus, textarea:focus, button:focus {
   outline: 3px solid rgba(78, 110, 242, 0.3);
   outline-offset: 2px;
-}
-
-/* Error messages style */
-.messages {
-  list-style-type: none;
-  padding: 8px 12px;
-  margin: 10px 0;
-  border-radius: 6px;
-  background-color: rgba(255, 248, 230, 0.9);
-  border-left: 3px solid #ffcc00;
-  font-size: 14px;
-  transition: opacity 0.3s ease;
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  z-index: 100;
-  max-height: 60px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.messages li {
-  margin: 5px 0;
-}
-
-.messages li.error {
-  color: #d32f2f;
-}
-
-.messages li.success {
-  color: #388e3c;
-}
-
-.messages li.warning {
-  color: #f57c00;
-}
-
-.messages li.info {
-  color: #1976d2;
 }
