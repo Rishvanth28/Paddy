@@ -1947,7 +1947,7 @@ def upgrade_to_admin(request):
             phone_number=customer.phone_number,
             email=customer.email,
             password=customer.password,  # already hashed
-            user_count=0,
+            user_count=50,
         )
         new_admin.save()
         
