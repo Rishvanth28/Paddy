@@ -14,7 +14,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
         # Allow access to these paths without subscription check
         exempt_paths = [
             "/login/", "/logout/",
-            "/admin-subscription/", "/payment-success/",
+            "/admin_subscription_payment/", "/payment-success/",
             "/customer-subscription/", "/customer-payment-success/",
             "/admin"
         ]

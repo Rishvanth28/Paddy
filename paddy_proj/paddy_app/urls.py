@@ -46,7 +46,8 @@ urlpatterns = [
     path('create_partial_payment_order/', create_partial_payment_order, name='create_partial_payment_order'),
     path('verify_partial_payment/', verify_partial_payment, name='verify_partial_payment'),
     path('ajax/create_admin_user_increase_order/', create_admin_user_increase_order, name='create_admin_user_increase_order'),
-    path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),    path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
+    path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),    
+    path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
     path('upgrade-to-customer/',upgrade_to_customer, name='upgrade_to_customer'),
     path("create-customer-signup/", create_customer_signup, name="create_customer_signup"),
     path("create-admin-signup/", create_admin_signup, name="create_admin_signup"),    # Notification URLs

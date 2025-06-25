@@ -555,7 +555,7 @@
           By upgrading, you’ll gain access to the admin dashboard, product management, order analytics, and much more. It's a one-time subscription to empower your business.
         </p>
 
-        <form action="{% url 'admin_subscription_payment' %}" method="get">
+        <form action="{% url 'upgrade_to_admin' %}" method="post">{% csrf_token %}
           <button type="submit" class="upgrade-btn" style="
             background: #000;
             color: #fff;
