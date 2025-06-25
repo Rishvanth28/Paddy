@@ -430,8 +430,18 @@
   }
 </style>
 
-<script>  document.addEventListener('DOMContentLoaded', function () {
-    // Create toast container if it doesn't exist
+<script>
+  // Override base template's toast handling to prevent duplicates
+  document.addEventListener('DOMContentLoaded', function () {
+    // Remove any existing toasts that might have been rendered by base template
+    const existingToasts = document.querySelectorAll('.toast:not(.js-created)');
+    existingToasts.forEach(toast => toast.remove());
+    
+    // Clear any existing toast containers
+    const existingContainers = document.querySelectorAll('.toast-container');
+    existingContainers.forEach(container => container.innerHTML = '');
+    
+    // Create our own toast container
     let toastContainer = document.querySelector('.toast-container');
     if (!toastContainer) {
       toastContainer = document.createElement('div');
@@ -439,8 +449,8 @@
       document.body.appendChild(toastContainer);
     }
 
-    // Convert Django messages to toasts
-    const messages = document.querySelectorAll('.alert');
+    // Process hidden alert messages only once
+    const messages = document.querySelectorAll('.alert[style*="display: none"]');
     messages.forEach(message => {
       const toastType = message.classList.contains('alert-success') ? 'success' :
         message.classList.contains('alert-info') ? 'info' :
@@ -450,36 +460,9 @@
       message.remove();
     });
 
-    // Initialize close functionality for existing toasts
-    initializeToastCloseButtons();
-
-    function initializeToastCloseButtons() {
-      // Handle close button for all toasts
-      const allToasts = document.querySelectorAll('.toast');
-      allToasts.forEach(toast => {
-        const closeBtn = toast.querySelector('.toast-close');
-        if (closeBtn) {
-          // Remove any existing event listeners
-          closeBtn.removeEventListener('click', closeToastHandler);
-          // Add new event listener
-          closeBtn.addEventListener('click', closeToastHandler);
-        }
-      });
-    }
-
-    function closeToastHandler(e) {
-      const toast = this.closest('.toast');
-      if (toast) {
-        toast.classList.add('hide');
-        setTimeout(() => {
-          toast.remove();
-        }, 500);
-      }
-    }
-
     function createToast(message, type) {
       const toast = document.createElement('div');
-      toast.classList.add('toast', type);
+      toast.classList.add('toast', type, 'js-created');
       toast.innerHTML = `
         ${message}
         <button type="button" class="toast-close" aria-label="Close">&times;</button>
@@ -498,28 +481,35 @@
       // Add close button functionality
       const closeBtn = toast.querySelector('.toast-close');
       if (closeBtn) {
-        closeBtn.addEventListener('click', closeToastHandler);
+        closeBtn.addEventListener('click', function() {
+          const toast = this.closest('.toast');
+          if (toast) {
+            toast.classList.add('hide');
+            setTimeout(() => {
+              toast.remove();
+            }, 500);
+          }
+        });
       }
     }
   });
 </script>
 
-<div class="container-fluid my-4">  <!-- Toast container for messages -->
-  <div class="toast-container">
-    {% if messages %}
-    {% for message in messages %}
-    <div class="toast 
-              {% if message.tags == 'success' %}success
-              {% elif message.tags == 'info' %}info
-              {% elif message.tags == 'warning' %}warning
-              {% elif message.tags == 'error' %}error
-              {% endif %}">
-      {{ message }}
-      <button type="button" class="toast-close" aria-label="Close">&times;</button>
-    </div>
-    {% endfor %}
-    {% endif %}
+
+<div class="container-fluid my-4">
+  <!-- Hidden Django messages for JavaScript processing -->
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert 
+            {% if message.tags == 'success' %}alert-success
+            {% elif message.tags == 'info' %}alert-info
+            {% elif message.tags == 'warning' %}alert-warning
+            {% elif message.tags == 'error' %}alert-danger
+            {% endif %}" style="display: none;">
+    {{ message }}
   </div>
+  {% endfor %}
+  {% endif %}
 
   <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
     <h1 class="page-title mb-0 me-3">Upgrade To Admin</h1>
