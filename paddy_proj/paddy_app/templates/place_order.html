@@ -1,25 +1,7 @@
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
-{% if messages %}
-<link rel="stylesheet" href="{% static 'css/login.css' %}">
-<ul class="messages">
-    {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-</ul>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
-            let messages = document.querySelectorAll('.messages');
-            messages.forEach((message) => {
-                message.style.opacity = '0';
-                setTimeout(() => message.remove(), 100); 
-            });
-        }, 5000);
-    });
-</script>
-{% endif %}
+
 <head>
     <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>

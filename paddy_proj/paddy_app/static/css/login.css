@@ -386,45 +386,6 @@ button:disabled {
   border-radius: 16px 16px 0 0;
 }
 
-/* Alert Messages */
-.messages {
-  position: fixed;
-  top: 25px;
-  right: 25px;
-  z-index: 9999;
-  max-width: 400px;
-  list-style: none;
-  padding: 16px 20px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  background-color: #ffffff;
-  color: #333;
-  border: 2px solid #e53935;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
-}
-
-.messages li.success { 
-  color: #2e7d32; 
-  border-color: #4caf50;
-  background-color: #f1f8e9;
-}
-.messages li.error { 
-  color: #c62828; 
-  border-color: #f44336;
-  background-color: #ffebee;
-}
-.messages li.info { 
-  color: #1565c0; 
-  border-color: #2196f3;
-  background-color: #e3f2fd;
-}
-.messages li.warning { 
-  color: #ef6c00; 
-  border-color: #ff9800;
-  background-color: #fff3e0;
-}
 
 /* Form Validation */
 input.error,
@@ -874,18 +835,6 @@ button:focus {
     height: 3px;
     border-radius: 20px 20px 0 0;
   }
-
-  /* Mobile Messages */
-  .messages {
-    top: 15px;
-    right: 15px;
-    left: 15px;
-    max-width: none;
-    padding: 14px 18px;
-    font-size: 14px;
-    border-radius: 10px;
-  }
-}
 
 /* Mobile Landscape Orientation */
 @media screen and (max-width: 768px) and (orientation: landscape) {
