@@ -84,7 +84,7 @@ h1 {
 }
 
 .highlight {
-  color: #4e6ef2;
+  color: #333;
   font-weight: 700;
 }
 
@@ -148,7 +148,7 @@ h1 {
 }
 
 .tab-btn.active {
-  background-color: #4e6ef2;
+  background-color: #333;
   color: white;
   border-color: #4e6ef2;
   box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
@@ -188,7 +188,7 @@ h1 {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #4e6ef2, #845ef7, #4e6ef2);
+  background: #333;
   border-radius: 20px 20px 0 0;
 }
 
@@ -292,7 +292,7 @@ option {
 button, button[type="submit"] {
   margin-top: 25px;
   padding: 16px 40px;
-  background: linear-gradient(135deg, #4e6ef2 0%, #845ef7 100%);
+  background: #333;
   color: white;
   border: none;
   border-radius: 12px;
@@ -303,7 +303,7 @@ button, button[type="submit"] {
   font-weight: 600;
   align-self: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 200px;
+  /* min-width: 200px; */
   box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
   letter-spacing: 0.5px;
 }
@@ -382,7 +382,7 @@ button:disabled {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #4e6ef2, #845ef7);
+  background: #333;
   border-radius: 16px 16px 0 0;
 }
 
@@ -518,7 +518,7 @@ button:focus {
   button, button[type="submit"] {
     padding: 18px 45px;
     font-size: 17px;
-    min-width: 220px;
+    /* min-width: 220px; */
   }
 
   .form-row {
@@ -559,7 +559,7 @@ button:focus {
   button, button[type="submit"] {
     padding: 17px 42px;
     font-size: 16px;
-    min-width: 210px;
+    /* min-width: 210px; */
   }
 
   .form-row {
@@ -615,7 +615,7 @@ button:focus {
   button, button[type="submit"] {
     padding: 15px 35px;
     font-size: 15px;
-    min-width: 190px;
+    /* min-width: 190px; */
   }
 }
 
@@ -663,7 +663,7 @@ button:focus {
   button, button[type="submit"] {
     padding: 14px 32px;
     font-size: 15px;
-    min-width: 180px;
+    /* min-width: 180px; */
   }
 }
 
@@ -800,7 +800,7 @@ button:focus {
   }
 
   .tab-btn.active {
-    background-color: #4e6ef2;
+    background-color: #333;
     color: white;
     box-shadow: 0 4px 15px rgba(78, 110, 242, 0.3);
     transform: translateY(-1px);
