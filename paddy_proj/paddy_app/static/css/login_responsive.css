@@ -208,7 +208,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 button, button[type="submit"] {
-  margin-top: 20px; /* Reduced margin */
+  /* margin-top: 20px; Reduced margin */
   padding: 14px 35px; /* Reduced padding */
   background: #333;
   color: white;
@@ -456,7 +456,7 @@ button:hover {
     padding: 14px 22px;
     font-size: 16px;
     border-radius: 12px;
-    margin-top: 18px;
+    /* margin-top: 18px; */
     min-width: unset;
   }
 
@@ -614,7 +614,7 @@ button:hover {
 
   button, button[type="submit"] {
     padding: 11px 18px;
-    margin-top: 14px;
+    /* margin-top: 14px; */
   }
 }
 

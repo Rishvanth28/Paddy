@@ -290,7 +290,7 @@ option {
 
 /* Button Styling */
 button, button[type="submit"] {
-  margin-top: 25px;
+  /* margin-top: 25px; */
   padding: 16px 40px;
   background: #333;
   color: white;
@@ -803,7 +803,7 @@ button:focus {
     padding: 16px 24px;
     font-size: 16px;
     border-radius: 12px;
-    margin-top: 25px;
+    /* margin-top: 25px; */
     min-width: unset;
   }
 
@@ -881,7 +881,7 @@ button:focus {
 
   button, button[type="submit"] {
     padding: 14px 20px;
-    margin-top: 20px;
+    /* margin-top: 20px; */
   }
 }
 
