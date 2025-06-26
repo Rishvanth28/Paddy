@@ -1470,7 +1470,7 @@ def create_admin_user_increase_order(request):
         razorpay_order = client.order.create(data=razorpay_order_data)
 
         # Store necessary details in session for the verification step
-        request.session['user_increase_sub_id'] = razorpay_order['id']
+        request.session['user_increase_sub_id'] = subscription.sid  # Store actual subscription ID
         request.session['user_increase_payment_amount'] = float(subscription.payment_amount)
         request.session['user_increase_razorpay_order_id'] = razorpay_order['id']
 
@@ -2487,6 +2487,20 @@ def view_admin_subscribers(request):
     admin_subscriptions = Subscription.objects.filter(subscription_type="admin") \
                                               .select_related('admin_id') \
                                               .order_by('-start_date')
+    
+     # Add comparable end_date and today's date for frontend comparison
+    today_date = timezone.now().date().isoformat()
+    # Prepare a list with comparable end_date and today's date
+    admin_subscriptions = [
+        {
+            "subscription": sub,
+            "end_date_comparable": sub.end_date.isoformat() if sub.end_date else None,
+            "today_date": today_date
+        }
+        for sub in admin_subscriptions
+    ]
+    
+
     return render(request, "admin_subscribers.html", {
         "subscriptions": admin_subscriptions,
         "user_type": "admin",  # Make sure to pass this context
@@ -2497,6 +2511,18 @@ def view_customer_subscribers(request):
     customer_subscriptions = Subscription.objects.filter(subscription_type="customer") \
                                                  .select_related('customer_id') \
                                                  .order_by('-start_date')
+
+    # Add comparable end_date and today's date for frontend comparison
+    today_date = timezone.now().date().isoformat()
+    # Prepare a list with comparable end_date and today's date
+    customer_subscriptions = [
+        {
+            "subscription": sub,
+            "end_date_comparable": sub.end_date.isoformat() if sub.end_date else None,
+            "today_date": today_date
+        }
+        for sub in customer_subscriptions
+    ]
     
     return render(request, "customer_subscribers.html", {
         "subscriptions": customer_subscriptions,
