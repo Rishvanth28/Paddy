@@ -3,6 +3,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <div class="reports-container">
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h2 class="page-title mb-0 me-3">Super Admin Reports</h2>
@@ -93,20 +94,22 @@
             
             <div class="filter-actions-bar">
                 <button type="submit" class="btn-primary">
-                    <i class="fas fa-filter"></i> Apply Filters
+                     Apply Filters
                 </button>
                 <button type="button" id="reset-filters" class="btn-secondary">
-                    <i class="fas fa-undo"></i> Reset
+                    </i> Reset
                 </button>
             </div>
         </form>
     </div>
     
     <div class="export-section">
-        <h2>Export Report</h2>
-        <div class="export-buttons">
-            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=excel" class="btn-export excel">Export to Excel</a>
-            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=pdf" class="btn-export pdf">Export to PDF</a>
+        <h2>Export Report</h2>        <div class="export-buttons">
+            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=excel" class="btn-export excel">
+                <i class="fas fa-file-excel me-2"></i>Export to Excel
+            </a>            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=pdf" class="btn-export pdf">
+                <i class="fa-solid fa-file-pdf me-2"></i>Export to PDF
+            </a>
         </div>
     </div>
       <!-- Rice and Paddy Orders Table -->

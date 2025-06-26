@@ -225,21 +225,11 @@ style.textContent = `
     
     .reports-table th.sort-asc::after {
         content: "↑";
-        color: white;
-    }
+        color: white;    }
     
     .reports-table th.sort-desc::after {
         content: "↓";
         color: white;
-    }
-    
-    /* Font Awesome fallback for export icons */
-    .btn-export.excel::before {
-        content: "📊 ";
-    }
-    
-    .btn-export.pdf::before {
-        content: "📄 ";
     }
 `;
 document.head.appendChild(style);
