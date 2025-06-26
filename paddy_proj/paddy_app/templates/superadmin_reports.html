@@ -78,8 +78,7 @@
                         <option value="last_6_months" {% if filters.date_preset == 'last_6_months' %}selected{% endif %}>Last 6 Months</option>
                         <option value="last_year" {% if filters.date_preset == 'last_year' %}selected{% endif %}>Last Year</option>
                     </select>
-                </div>
-            </div>
+                </div>            </div>
               <div class="filter-row">
                 <div class="filter-group date-field">
                     <label for="start_date">Start Date:</label>
@@ -90,11 +89,15 @@
                     <label for="end_date">End Date:</label>
                     <input type="date" name="end_date" id="end_date" value="{{ filters.end_date }}">
                 </div>
-                
-                <div class="filter-actions">
-                    <button type="submit" class="btn-primary">Apply Filters</button>
-                    <button type="button" id="reset-filters" class="btn-secondary">Reset</button>
-                </div>
+            </div>
+            
+            <div class="filter-actions-bar">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+                <button type="button" id="reset-filters" class="btn-secondary">
+                    <i class="fas fa-undo"></i> Reset
+                </button>
             </div>
         </form>
     </div>
