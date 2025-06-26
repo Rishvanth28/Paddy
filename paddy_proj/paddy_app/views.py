@@ -1773,12 +1773,16 @@ def super_admin_orders(request):
                 })
 
             customer_full_name = f"{order.customer.first_name} {order.customer.last_name}" if order.customer else "N/A"
-
+ 
+            admin_name = f"{order.admin.first_name} {order.admin.last_name}" if order.admin else "N/A"
+            admin_email = order.admin.email if order.admin else "N/A"
             orders_data.append({
                 'order_id': order.order_id,
                 'customer_id': order.customer.customer_id if order.customer else None,
                 'customer_full_name': customer_full_name,
                 'admin_id': order.admin.admin_id if order.admin else None,
+                'admin_name': admin_name,  # Add admin name
+                'admin_email': admin_email,  # Add admin email
                 'payment_status': order.payment_status,
                 'delivery_status': order.delivery_status,
                 'product_category_id': order.product_category_id,
