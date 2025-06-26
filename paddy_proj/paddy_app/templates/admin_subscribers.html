@@ -39,34 +39,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for subscription in subscriptions %}
+                            {% for item in subscriptions %}
                             <tr>
-                                <td>{{ subscription.sid }}</td>
+                                <td>{{ item.subscription.sid }}</td>
                                 <td>
                                     {% if user_type == "admin" %}
-                                        {% if subscription.admin_id %}
-                                            {{ subscription.admin_id.first_name }} {{ subscription.admin_id.last_name }}
+                                        {% if item.subscription.admin_id %}
+                                            {{ item.subscription.admin_id.first_name }} {{ item.subscription.admin_id.last_name }}
                                         {% else %}
                                             <em>No Admin Assigned</em>
                                         {% endif %}
                                     {% elif user_type == "customer" %}
-                                        {% if subscription.customer_id %}
-                                            {{ subscription.customer_id.name }}
+                                        {% if item.subscription.customer_id %}
+                                            {{ item.subscription.customer_id.name }}
                                         {% else %}
                                             <em>No Customer Assigned</em>
                                         {% endif %}
                                     {% endif %}
                                 </td>
-                                <td>{{ subscription.payment_amount }}</td>
+                                <td>{{ item.subscription.payment_amount }}</td>
                                 <td>
-                                    {% if subscription.subscription_status == 1 %}
+                                    {% if item.end_date_comparable and item.end_date_comparable > item.today_date %}
                                         <span class="active-status">Active</span>
                                     {% else %}
                                         <span class="inactive-status">Inactive</span>
                                     {% endif %}
                                 </td>
-                                <td>{{ subscription.start_date }}</td>
-                                <td>{{ subscription.end_date|default:"-" }}</td>
+                                <td>{{ item.subscription.start_date }}</td>
+                                <td>{{ item.subscription.end_date|default:"-" }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
