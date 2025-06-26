@@ -43,16 +43,7 @@
     position: relative;
 }
 
-.nav-item.has-notifications::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 3px;
-    background-color: var(--danger);
-    opacity: 0.8;
-}
+/*  */
 
 /* Ensure active items also maintain bold text */
 .nav-item.active .nav-link {

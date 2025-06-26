@@ -140,30 +140,15 @@
         visibility: visible !important;
         opacity: 1 !important;
     }
-    
-    /* Style for nav item with notifications */
-    .nav-item.has-notifications::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 3px;
-        background-color: var(--danger);
-        opacity: 0.8;
-    }
+
     
     @keyframes pulse-badge {
         0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5); }
         70% { box-shadow: 0 0 0 6px rgba(0, 0, 0, 0); }
         100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
     }
-    
-    /* Ensure the notification item stands out */
-    .nav-item.has-notifications {
-      background-color: rgba(239, 68, 68, 0.05);
-      border-left: 3px solid var(--danger);
-    }
+      /* Ensure the notification item stands out */
+
     
     /* Rest of your existing styles... */
     /* [All your existing styles from the original file should remain here] */
