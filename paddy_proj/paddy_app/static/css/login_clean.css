@@ -1,4 +1,4 @@
-/* ===== RESPONSIVE NON-SCROLLABLE LOGIN WITH ACCESSIBLE SIGNUP ===== */
+/* ===== RESPONSIVE SCROLLABLE LOGIN WITH ACCESSIBLE SIGNUP ===== */
 
 /* Reset and Base Styles */
 * {
@@ -12,7 +12,7 @@ body, html {
   background-color: #f8f9fa;
   color: #333;
   height: 100%;
-  overflow: hidden; /* Prevent page scrolling */
+  overflow: hidden; /* Prevent page scrolling on desktop */
   line-height: 1.6;
 }
 
@@ -95,7 +95,6 @@ body, html {
   position: relative;
   backdrop-filter: blur(10px);
   height: auto;
-  /* max-height: 80vh; */
   overflow: hidden; /* Ensure container clips overflow */
   box-sizing: border-box;
   display: flex;
@@ -233,7 +232,6 @@ input:focus, select:focus, textarea:focus {
 }
 
 button, button[type="submit"] {
-  /* margin-top: 20px; */
   padding: 14px 35px;
   background: #333;
   color: white;
@@ -244,7 +242,6 @@ button, button[type="submit"] {
   font-weight: 600;
   align-self: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  /* min-width: 180px; */
   box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
   letter-spacing: 0.5px;
 }
@@ -478,56 +475,30 @@ button:hover {
   width: 100%;
 }
 
-/* ===== TABLET RESPONSIVE (769px - 1023px) ===== */
-@media screen and (min-width: 769px) and (max-width: 1023px) {
-  .auth-left {
-    width: 60%;
-    padding: 40px 35px;
-  }
-
-  .auth-right {
-    width: 40%;
-    background-position: center center;
-  }
-
-  .content-wrapper {
-    max-width: 450px;
-  }
-
-  .login-section {
-    padding: 30px;
-    border-radius: 16px;
-  }
-
-  h1 {
-    font-size: 26px;
-  }
-    /* Adjust scrollable area for signup */
-  #signup {
-    max-height: 60vh;
-  }
-}
-
-/* ===== MOBILE RESPONSIVE DESIGN (≤768px) ===== */
+/* ===== MOBILE RESPONSIVE DESIGN (≤768px) - FIXED SCROLLING ===== */
 @media screen and (max-width: 768px) {
   body, html {
     background-color: #f8f9fa;
-    overflow: hidden;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-y: auto !important; /* Force vertical scroll */
+    height: auto !important; /* Allow body to expand */
+    min-height: 100vh; /* Ensure minimum height */
   }
 
   .auth-container {
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh; /* Use min-height instead of fixed height */
+    height: auto !important; /* Allow container to expand */
     box-shadow: none;
     background-color: #f8f9fa;
-    overflow: hidden;
+    overflow: visible !important; /* Allow overflow for scrolling */
     position: relative;
   }
 
-  /* MOBILE: Image Section First (Top 40%) */
+  /* MOBILE: Image Section First (Fixed Height) */
   .auth-right {
     width: 100%;
-    height: 40vh;
+    height: 30vh; /* Reduced height for image area */
     background-size: cover;
     background-position: center center;
     background-color: #f0f4ff;
@@ -541,6 +512,7 @@ button:hover {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    flex-shrink: 0; /* Prevent shrinking */
   }
 
   .auth-right::after {
@@ -548,11 +520,12 @@ button:hover {
     border-radius: 0;
   }
 
-  /* MOBILE: Forms Section Overlapping (Bottom 60% + Overlap) */
+  /* MOBILE: Forms Section (Scrollable) */
   .auth-left {
     width: 100%;
-    height: 70vh;
-    padding: 0 20px 20px;
+    min-height: 70vh; /* Increase minimum height */
+    height: auto !important; /* Allow expansion */
+    padding: 0 20px 80px !important; /* Increase bottom padding significantly */
     background-color: transparent;
     position: relative;
     display: flex;
@@ -561,7 +534,8 @@ button:hover {
     align-items: center;
     order: 2;
     z-index: 10;
-    margin-top: -10vh;
+    margin-top: -5vh; /* Reduce overlap */
+    overflow: visible !important; /* Allow content to overflow */
   }
   
   /* Mobile Content */
@@ -569,11 +543,11 @@ button:hover {
     width: 100%;
     max-width: 380px;
     margin: 0 auto;
-    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Align to top */
     padding-top: 20px;
+    padding-bottom: 80px !important; /* Increase bottom padding significantly */
   }
 
   /* Mobile Logo - Position on Image */
@@ -587,18 +561,22 @@ button:hover {
     z-index: 50;
     font-weight: 700;
   }
-  /* Mobile Login Section - Floating Above Image */
+
+  /* Mobile Login Section - Scrollable Content */
   .login-section {
     padding: 25px;
     background: #ffffff;
     border-radius: 25px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     border: 1px solid rgba(0, 0, 0, 0.06);
-    margin: 0;
+    margin: 0 0 40px 0; /* Add bottom margin */
     width: 100%;
     position: relative;
-    max-height: 70vh;
+    min-height: auto !important; /* Allow expansion */
+    max-height: none !important; /* Remove height restriction */
+    height: auto !important; /* Dynamic height */
     backdrop-filter: blur(20px);
+    overflow: visible !important; /* Allow content to be visible */
   }
 
   .login-section::before {
@@ -619,6 +597,22 @@ button:hover {
   /* Mobile Tab Navigation */
   .tab-container {
     margin-top: 12px;
+    overflow: visible !important; /* Allow tab content to be visible */
+    height: auto !important; /* Dynamic height */
+    max-height: none !important; /* Remove restrictions */
+  }
+
+  .tab-content {
+    overflow: visible !important; /* Allow content to expand */
+    height: auto !important; /* Allow dynamic height */
+    max-height: none !important; /* Remove height restrictions */
+    min-height: auto !important; /* Remove minimum height restriction */
+  }
+
+  .tab-content.active {
+    height: auto !important; /* Dynamic height for active content */
+    max-height: none !important; /* Remove restrictions */
+    overflow: visible !important; /* Make content visible */
   }
 
   .tab-nav {
@@ -641,10 +635,24 @@ button:hover {
 
   .tab-btn.active {
     transform: translateY(-1px);
-  }  /* Mobile signup adjustments - PROPERLY ALIGNED */
+  }
+
+  /* Mobile signin section - ensure button is visible */
+  #signin {
+    overflow: visible !important; /* Allow signin content to be visible */
+    height: auto !important; /* Dynamic height */
+    max-height: none !important; /* Remove restrictions */
+    min-height: auto !important; /* Remove height restrictions */
+    padding-bottom: 40px !important; /* Add bottom padding */
+  }
+
+  /* Mobile signup adjustments - PROPERLY SCROLLABLE */
   #signup {
-    max-height: 50vh;
+    max-height: none !important; /* Remove height restriction */
+    height: auto !important; /* Allow dynamic height */
     width: 100%;
+    overflow: visible !important; /* Make content visible */
+    padding-bottom: 40px !important; /* Add significant bottom padding */
   }
 
   /* Single column layout on mobile */
@@ -686,6 +694,7 @@ button:hover {
     padding: 12px;
     font-size: 16px;
     margin-top: 15px;
+    margin-bottom: 40px !important; /* Add significant bottom margin */
     box-sizing: border-box;
   }
 
@@ -693,15 +702,16 @@ button:hover {
     width: 100%;
     font-size: 16px;
     margin-bottom: 15px;
-  }  /* Mobile Button */
-  
+  }
+
+  /* Mobile Button - ensure visibility */
   button, button[type="submit"] {
     width: 100%;
     padding: 14px 22px;
     font-size: 16px;
     border-radius: 12px;
     margin-top: 18px;
-    /* min-width: unset; */
+    margin-bottom: 40px !important; /* Add significant bottom margin for accessibility */
   }
 
   /* Mobile Labels */
@@ -715,18 +725,20 @@ button:hover {
 /* ===== SMALL MOBILE (≤480px) ===== */
 @media screen and (max-width: 480px) {
   .auth-right {
-    height: 35vh;
+    height: 25vh; /* Further reduce image height */
   }
 
   .auth-left {
-    height: 75vh;
-    padding: 0 15px 15px;
-    margin-top: -10vh;
+    min-height: 75vh !important; /* Increase minimum height */
+    height: auto !important; /* Allow expansion */
+    padding: 0 15px 100px !important; /* Increase bottom padding even more */
+    margin-top: -5vh;
   }
 
   .content-wrapper {
     max-width: 100%;
     padding-top: 15px;
+    padding-bottom: 100px !important; /* Increase bottom padding significantly */
   }
 
   .logo {
@@ -738,16 +750,24 @@ button:hover {
   .login-section {
     padding: 20px;
     border-radius: 20px;
-    max-height: 70vh;
+    max-height: none !important; /* Remove height restriction */
+    height: auto !important; /* Allow dynamic height */
+    min-height: auto !important; /* Allow dynamic height */
+    margin: 0 0 60px 0; /* Increase bottom margin */
   }
 
   h1 {
     font-size: 20px;
     margin-bottom: 8px;
-  }  /* Small mobile signup adjustments - PROPERLY ALIGNED */
+  }
+
+  /* Small mobile signup adjustments - PROPERLY SCROLLABLE */
   #signup {
-    max-height: 45vh;
+    max-height: none !important; /* Remove height restriction */
+    height: auto !important; /* Allow dynamic height */
     width: 100%;
+    overflow: visible !important; /* Make content visible */
+    padding-bottom: 60px !important; /* Add more bottom padding */
   }
 
   #signup .form-row {
@@ -787,6 +807,7 @@ button:hover {
     padding: 10px;
     font-size: 15px;
     margin-top: 12px;
+    margin-bottom: 60px !important; /* Add more bottom margin */
     box-sizing: border-box;
   }
 
@@ -806,120 +827,18 @@ button:hover {
     padding: 10px 12px;
     font-size: 15px;
     margin-bottom: 5px;
-  }  button, button[type="submit"] {
+  }
+
+  button, button[type="submit"] {
     padding: 12px 18px;
     font-size: 15px;
     margin-top: 15px;
+    margin-bottom: 60px !important; /* Add significant bottom margin */
   }
   
   label {
     font-size: 13px;
     margin-top: 6px;
     margin-bottom: 3px;
-  }
-}
-
-/* ===== LANDSCAPE MOBILE ORIENTATION ===== */
-@media screen and (max-width: 768px) and (orientation: landscape) {
-  .auth-container {
-    flex-direction: row;
-    height: 100vh;
-  }
-  
-  .auth-right {
-    width: 40%;
-    height: 100vh;
-    order: 2;
-  }
-  
-  .auth-left {
-    width: 60%;
-    height: 100vh;
-    margin-top: 0;
-    order: 1;
-    padding: 15px;
-  }
-  
-  .login-section {
-    max-height: 90vh;
-    padding: 15px;
-  }
-  /* Landscape signup adjustments - PROPERLY ALIGNED */
-  #signup {
-    max-height: 70vh;
-    width: 100%;
-  }
-
-  /* Two column layout in landscape if space allows */
-  #signup .form-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 0;
-    width: 100%;
-  }
-
-  #signup .form-group {
-    width: 100%;
-  }
-
-  #signup input, 
-  #signup select, 
-  #signup textarea {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    margin-bottom: 6px;
-    box-sizing: border-box;
-  }
-
-  #signup label {
-    font-size: 12px;
-    margin-top: 4px;
-    margin-bottom: 2px;
-    width: 100%;
-  }
-
-  #signup textarea {
-    min-height: 50px;
-  }
-
-  #signup button[type="submit"] {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    margin-top: 10px;
-    box-sizing: border-box;
-  }
-
-  #signup-role {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-  }
-  #signup button[type="submit"] {
-    padding: 8px;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-
-  /* General landscape form adjustments */
-  .form-row {
-    gap: 8px;
-  }
-  
-  input, select, textarea {
-    padding: 8px 10px;
-    font-size: 14px;
-    margin-bottom: 5px;
-  }
-  label {
-    font-size: 12px;
-    margin-top: 5px;
-    margin-bottom: 2px;
-  }
-  
-  button, button[type="submit"] {
-    padding: 10px 15px;
-    margin-top: 10px;
   }
 }
