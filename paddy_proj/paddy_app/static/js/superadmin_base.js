@@ -55,30 +55,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }, 10); // Small debounce to prevent excessive calls
     });
-  }
-
-  function initSubmenus() {
+  }  function initSubmenus() {
     const submenuToggles = document.querySelectorAll('.submenu-toggle');
+    const currentPath = window.location.pathname.replace(/\/$/, '');
 
     submenuToggles.forEach(toggle => {
       const parentItem = toggle.closest('.has-submenu');
-      const menuKey = parentItem.querySelector('.nav-text').textContent.trim();
-
-      const savedState = localStorage.getItem(`submenu_${menuKey}`) === 'open';
-      if (savedState) parentItem.classList.add('open');
+      
+      // Check if any submenu link in this parent matches current page
+      const submenuLinks = parentItem.querySelectorAll('.submenu-link');
+      let isCurrentPageInSubmenu = false;
+      
+      submenuLinks.forEach(submenuLink => {
+        const linkPath = new URL(submenuLink.href).pathname.replace(/\/$/, '');
+        if (linkPath === currentPath) {
+          isCurrentPageInSubmenu = true;
+        }
+      });
+      
+      // If current page is not in this submenu, close it by default
+      if (!isCurrentPageInSubmenu) {
+        parentItem.classList.remove('open');
+      }
+      // If current page IS in this submenu, it will be opened by setActiveMenu()
 
       toggle.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
+        
+        // Close all other submenus first
+        document.querySelectorAll('.has-submenu.open').forEach(openSubmenu => {
+          if (openSubmenu !== parentItem) {
+            openSubmenu.classList.remove('open');
+          }
+        });
+        
+        // Toggle current submenu
         parentItem.classList.toggle('open');
-        localStorage.setItem(
-          `submenu_${menuKey}`,
-          parentItem.classList.contains('open') ? 'open' : 'closed'
-        );
       });
     });
   }
-
   function setActiveMenu() {
     const currentPath = window.location.pathname.replace(/\/$/, '');
     const navLinks = document.querySelectorAll('.nav-link, .submenu-link');
@@ -98,12 +114,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (navItem) {
           navItem.classList.add('active');
         }
+
         if (submenuItem) {
           submenuItem.classList.add('active');
+          // If user is on a submenu page, keep the parent submenu open
           const parentMenu = submenuItem.closest('.has-submenu');
           if (parentMenu) {
             parentMenu.classList.add('open');
-            const menuKey = parentMenu.querySelector('.nav-text').textContent.trim();            localStorage.setItem(`submenu_${menuKey}`, 'open');
           }
         }
       }
@@ -120,8 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }, 5000);
     }
-  }
-  // Auto-close sidebar when navigation link is clicked on mobile with smooth transition
+  }  // Auto-close sidebar when navigation link is clicked on mobile with smooth transition
   function addMobileNavHandlers() {
     const navLinks = document.querySelectorAll('.nav-link, .submenu-link');
     
@@ -138,11 +154,39 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-
+  // Close submenus when clicking outside
+  function addSubmenuClickOutsideHandler() {
+    document.addEventListener('click', function(e) {
+      const openSubmenus = document.querySelectorAll('.has-submenu.open');
+      const currentPath = window.location.pathname.replace(/\/$/, '');
+      
+      openSubmenus.forEach(submenu => {
+        // Check if current page is in this submenu
+        const submenuLinks = submenu.querySelectorAll('.submenu-link');
+        let isCurrentPageInSubmenu = false;
+        
+        submenuLinks.forEach(submenuLink => {
+          const linkPath = new URL(submenuLink.href).pathname.replace(/\/$/, '');
+          if (linkPath === currentPath) {
+            isCurrentPageInSubmenu = true;
+          }
+        });
+        
+        // If click is outside the submenu and not on a submenu toggle
+        // AND current page is not in this submenu, then close it
+        if (!submenu.contains(e.target) && 
+            !e.target.closest('.submenu-toggle') && 
+            !isCurrentPageInSubmenu) {
+          submenu.classList.remove('open');
+        }
+      });
+    });
+  }
   // Init
   initSidebar();
   initSubmenus();
   setActiveMenu();
   initMessages();
   addMobileNavHandlers();
+  addSubmenuClickOutsideHandler();
 });

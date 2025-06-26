@@ -116,8 +116,7 @@
       position: relative !important;
       margin: 4px 12px !important;
     }
-    
-    body.superadmin-page .nav-link,
+      body.superadmin-page .nav-link,
     body.superadmin-page .submenu-toggle {
       display: flex !important;
       align-items: center !important;
@@ -128,6 +127,11 @@
       transition: all var(--transition-speed, 0.3s) ease !important;
       height: var(--nav-item-height, 48px) !important;
       gap: 0.75rem !important;
+      cursor: pointer !important;
+      border: none !important;
+      background: none !important;
+      width: 100% !important;
+      text-align: left !important;
     }
     
     body.superadmin-page .nav-link:hover,
@@ -225,8 +229,7 @@
       justify-content: center !important;
       flex-shrink: 0 !important;
     }
-    
-    /* Submenu styles */
+      /* Submenu styles */
     body.superadmin-page .submenu {
       list-style: none !important;
       padding-left: 16px !important;
@@ -239,6 +242,19 @@
     body.superadmin-page .has-submenu.open .submenu {
       max-height: 500px !important;
       padding: 8px 0 !important;
+    }
+    
+    /* Chevron styling for submenu toggle */
+    body.superadmin-page .chevron {
+      margin-left: auto !important;
+      transition: transform var(--transition-speed, 0.3s) ease !important;
+      font-size: 14px !important;
+      color: var(--sidebar-text, #333333) !important;
+    }
+
+    
+    body.superadmin-page .has-submenu.open .chevron {
+      transform: rotate(360deg) !important;
     }
     
     body.superadmin-page .submenu-link {
