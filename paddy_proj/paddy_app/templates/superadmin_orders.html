@@ -154,6 +154,7 @@ body {
     }
 }
 
+
 /* Button Group Layout using Flexbox */
 .superadmin-orders-page .button-group {
     display: flex;
@@ -382,7 +383,14 @@ body {
     justify-content: space-between;
     align-items: center;
 }
-
+.superadmin-orders-page .header-flex {
+    flex-direction: row;
+    align-items: flex-start;
+}
+.superadmin-orders-page #order-count-text {
+    font-weight: 600;
+    margin:auto 0;
+}
 .superadmin-orders-page .flex-center {
     display: flex;
     align-items: center;
@@ -627,20 +635,20 @@ body {
 }
 
 /* Table System */
+/* Table System */
 .superadmin-orders-page .table {
     width: 100%;
     margin-bottom: 1rem;
     color: var(--dark);
     vertical-align: top;
     border-color: var(--border);
-    border-collapse: collapse;
+    /* border-collapse: collapse; */
     border-radius: var(--border-radius-sm);
-    overflow: hidden;
-    box-shadow: var(--shadow);
+    overflow: scroll;
+    /* box-shadow: var(--shadow); */
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
 }
-
 .superadmin-orders-page .table > :not(caption) > * > * {
     padding: 0.5rem 0.5rem;
     background-color: var(--bs-table-bg);
@@ -682,70 +690,50 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Modern List Group */
+/* Classic List Group - Simple & Clean */
 .superadmin-orders-page .list-group {
     display: flex;
     flex-direction: column;
     padding-left: 0;
     margin-bottom: 0;
     border-radius: var(--border-radius-sm);
-    gap: 0.5rem;
-    padding: 0.75rem;
 }
 
 .superadmin-orders-page .list-group-item {
     position: relative;
     display: block;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
-    border: 1px solid rgba(99, 102, 241, 0.1);
-    border-radius: var(--border-radius-sm);
+    padding: 1rem 1.25rem;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
     text-decoration: none;
     color: inherit;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(10px);
-    overflow: hidden;
-}
-
-.superadmin-orders-page .list-group-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.superadmin-orders-page .list-group-item:hover::before {
-    opacity: 1;
+    transition: all 0.2s ease;
 }
 
 .superadmin-orders-page .list-group-item:first-child {
-    border-top-left-radius: var(--border-radius-sm);
-    border-top-right-radius: var(--border-radius-sm);
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
 }
 
 .superadmin-orders-page .list-group-item:last-child {
-    border-bottom-right-radius: var(--border-radius-sm);
-    border-bottom-left-radius: var(--border-radius-sm);
+    border-bottom-right-radius: inherit;
+    border-bottom-left-radius: inherit;
+}
+
+.superadmin-orders-page .list-group-item + .list-group-item {
+    border-top-width: 0;
+}
+
+.superadmin-orders-page .list-group-item:hover {
+    background-color: #f8f9fa;
+    border-color: #333;
 }
 
 .superadmin-orders-page .list-group-item.active {
     z-index: 2;
     color: #fff;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-    border-color: var(--primary);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-    transform: translateY(-2px);
-}
-
-.superadmin-orders-page .list-group-item.active::before {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.2);
+    background-color: #000;
+    border-color: #000;
 }
 
 /* Order Layout - Traditional Responsive Design */
@@ -840,505 +828,271 @@ body {
     }
 }
 
-/* Modern Dashboard Cards */
+/* Classic Dashboard Cards - Simple & Functional */
 .superadmin-orders-page .dashboard-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: #fff;
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    border: 1px solid rgba(99, 102, 241, 0.1);
-    height: auto;
-    min-height: 400px;
-    backdrop-filter: blur(20px);
-    position: relative;
+    border: 1px solid #e5e5e5;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.superadmin-orders-page .dashboard-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary) 0%, var(--info) 50%, var(--success) 100%);
-    z-index: 1;
-}
-
-/* Modern Order List Container */
+/* Classic Order List Container - Perfect Height Management */
 .superadmin-orders-page .order-list-container {
-    height: auto;
-    min-height: 400px;
-    max-height: none;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
 
 .superadmin-orders-page .order-list-container .list-group {
     flex: 1;
-    max-height: 60vh;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--primary) transparent;
+    scrollbar-color: #666 #f1f1f1;
 }
 
 .superadmin-orders-page .order-list-container .list-group::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .superadmin-orders-page .order-list-container .list-group::-webkit-scrollbar-track {
-    background: transparent;
+    background: #f1f1f1;
 }
 
 .superadmin-orders-page .order-list-container .list-group::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-    border-radius: 8px;
-    border: 2px solid transparent;
-    background-clip: content-box;
+    background: #666;
+    border-radius: 3px;
 }
 
 .superadmin-orders-page .order-list-container .list-group::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+    background: #333;
 }
 
-/* Modern Order Details Container */
+/* Classic Order Details Container - Perfect Height Management */
 .superadmin-orders-page .order-details-panel .dashboard-card {
-    min-height: 400px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    height: 100%;
 }
 
 .superadmin-orders-page .order-detail-section {
-    padding: 2rem;
+    padding: 1.5rem;
     background: transparent;
-    min-height: 350px;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #666 #f1f1f1;
 }
 
-/* Modern Card Header */
+.superadmin-orders-page .order-detail-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.superadmin-orders-page .order-detail-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.superadmin-orders-page .order-detail-section::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 3px;
+}
+
+.superadmin-orders-page .order-detail-section::-webkit-scrollbar-thumb:hover {
+    background: #333;
+}
+
+/* Classic Card Header */
 .superadmin-orders-page .card-header {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    background-color: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e5e5;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    backdrop-filter: blur(10px);
-    position: relative;
-    z-index: 2;
+    flex-shrink: 0;
 }
 
 .superadmin-orders-page .card-header h5 {
     margin: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--dark);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.superadmin-orders-page .card-header h5 i {
     font-size: 1.1rem;
-    color: var(--primary);
+    font-weight: 600;
+    color: #333;
 }
 
 .superadmin-orders-page .subtitle {
     font-size: 0.875rem;
-    color: var(--gray);
+    color: #666;
     margin-top: 0.25rem;
     font-weight: 400;
 }
 
-/* Modern Order Item Styles */
+/* Classic Order Item Styles - Simple & Clean */
 .superadmin-orders-page .order-item {
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     position: relative;
-    padding: 0;
-    min-height: 80px;
-    display: flex;
-    align-items: stretch;
-    overflow: hidden;
-    border-radius: var(--border-radius-sm);
-}
-
-.superadmin-orders-page .order-item-content {
-    padding: 1.25rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    min-height: auto;
+    display: block;
 }
 
 .superadmin-orders-page .order-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
-    border-color: var(--primary);
+    background-color: #f8f9fa;
+    border-color: #333;
 }
 
 .superadmin-orders-page .order-item.active {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(99, 102, 241, 0.3);
+    background-color: #000;
+    color: white;
+    border-color: #000;
 }
 
 .superadmin-orders-page .order-item .badge {
     font-size: 0.75rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-weight: 600;
-    letter-spacing: 0.025em;
-}
-
-/* Order Item Header */
-.superadmin-orders-page .order-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.5rem;
-}
-
-.superadmin-orders-page .order-item-title {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex: 1;
-}
-
-.superadmin-orders-page .order-item-title .order-number {
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--dark);
-}
-
-.superadmin-orders-page .order-item.active .order-item-title .order-number {
-    color: white;
-}
-
-.superadmin-orders-page .order-date {
-    font-size: 0.8rem;
-    color: var(--gray);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
     font-weight: 500;
 }
 
-.superadmin-orders-page .order-item.active .order-date {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* Order Item Body */
-.superadmin-orders-page .order-item-body {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.superadmin-orders-page .order-item-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.superadmin-orders-page .order-category {
-    font-size: 0.8rem;
-    color: var(--primary);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.superadmin-orders-page .order-item.active .order-category {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.superadmin-orders-page .customer-name {
-    font-size: 0.9rem;
-    color: var(--dark);
-    font-weight: 500;
-}
-
-.superadmin-orders-page .order-item.active .customer-name {
-    color: white;
-}
-
-.superadmin-orders-page .admin-info {
-    font-size: 0.8rem;
-    color: var(--gray);
-    font-weight: 400;
-}
-
-.superadmin-orders-page .order-item.active .admin-info {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-/* Order Item Amount & Status */
-.superadmin-orders-page .order-item-amount {
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-}
-
-.superadmin-orders-page .order-amount {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--dark);
-}
-
-.superadmin-orders-page .order-item.active .order-amount {
-    color: white;
-}
-
-.superadmin-orders-page .order-status-badges {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    align-items: flex-end;
-}
-
-/* Enhanced Responsive Layout - Modern Mobile-First Design */
+/* Perfect Height Management - Responsive for All Screens */
 
 /* Mobile Responsive Adjustments */
 @media (max-width: 575.98px) {
     .superadmin-orders-page .dashboard-card {
-        min-height: 350px;
-        border-radius: var(--border-radius-sm);
-    }
-    
-    .superadmin-orders-page .order-list-container .list-group {
-        max-height: 45vh;
-        padding: 0.5rem;
-        gap: 0.5rem;
+        height: auto;
+        min-height: auto;
     }
     
     .superadmin-orders-page .order-detail-section {
         padding: 1rem;
-        min-height: 300px;
-        gap: 1rem;
     }
     
     .superadmin-orders-page .detail-section {
-        padding: 1rem;
+        padding: 0.75rem;
         margin-bottom: 1rem;
     }
     
-    .superadmin-orders-page .detail-section h6 {
-        font-size: 1rem;
-        margin-bottom: 1rem;
+   .superadmin-orders-page .card-header {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
     }
-    
-    .superadmin-orders-page .order-item-content {
-        padding: 1rem;
-    }
-    
-    .superadmin-orders-page .card-header {
-        padding: 1rem 1.25rem;
-    }
-    
     .superadmin-orders-page .card-header h5 {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
     .superadmin-orders-page .dashboard-card {
-        min-height: 400px;
-    }
-    
-    .superadmin-orders-page .order-list-container .list-group {
-        max-height: 50vh;
-        padding: 0.625rem;
+        height: auto;
+        min-height: auto;
     }
     
     .superadmin-orders-page .order-detail-section {
         padding: 1.25rem;
-        min-height: 350px;
-    }
-    
-    .superadmin-orders-page .detail-section {
-        padding: 1.25rem;
     }
     
     .superadmin-orders-page .card-header {
-        padding: 1.25rem 1.5rem;
+        padding: 1rem 1.25rem;
     }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
     .superadmin-orders-page .dashboard-card {
-        min-height: 450px;
-    }
-    
-    .superadmin-orders-page .order-list-container .list-group {
-        max-height: 55vh;
-        padding: 0.75rem;
+        height: auto;
+        min-height: auto;
     }
     
     .superadmin-orders-page .order-detail-section {
-        padding: 1.5rem;
-        min-height: 400px;
-    }
-    
-    .superadmin-orders-page .detail-section {
         padding: 1.5rem;
     }
 }
 
-/* Desktop Layout Enhancements - Modern Scaling */
+/* Desktop Layout - Perfect Height Management */
 @media (min-width: 992px) {
     .superadmin-orders-page .dashboard-card {
-        min-height: 75vh;
-    }
-    
-    .superadmin-orders-page .order-list-container .list-group {
-        max-height: 68vh;
-        padding: 1rem;
+        height: auto;
+        min-height: auto;
+        
     }
     
     .superadmin-orders-page .order-detail-section {
-        padding: 2rem;
-        min-height: 68vh;
-        max-height: 68vh;
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: var(--primary) transparent;
-    }
-    
-    .superadmin-orders-page .order-detail-section::-webkit-scrollbar {
-        width: 8px;
-    }
-    
-    .superadmin-orders-page .order-detail-section::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    
-    .superadmin-orders-page .order-detail-section::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-        border-radius: 8px;
-        border: 2px solid transparent;
-        background-clip: content-box;
+        padding: 1.5rem;
     }
 }
 
 @media (min-width: 1200px) {
     .superadmin-orders-page .dashboard-card {
-        min-height: 80vh;
-    }
-    
-    .superadmin-orders-page .order-list-container .list-group {
-        max-height: 72vh;
-    }
-    
-    .superadmin-orders-page .order-detail-section {
-        min-height: 72vh;
-        max-height: 72vh;
+        height: auto;
+        min-height: auto;
     }
 }
 
 @media (min-width: 1400px) {
     .superadmin-orders-page .dashboard-card {
-        min-height: 82vh;
-    }
-    
-    .superadmin-orders-page .order-list-container .list-group {
-        max-height: 75vh;
-    }
-    
-    .superadmin-orders-page .order-detail-section {
-        min-height: 75vh;
-        max-height: 75vh;
+        height: auto;
+        min-height: auto;
     }
 }
 
-/* Modern Order Detail Elements */
+/* Classic Order Detail Elements - Simple & Clean */
 .superadmin-orders-page .detail-header {
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(99, 102, 241, 0.1);
-    position: relative;
-    overflow: hidden;
-}
-
-.superadmin-orders-page .detail-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary) 0%, var(--info) 100%);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .superadmin-orders-page .detail-section {
     margin-bottom: 1.5rem;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(99, 102, 241, 0.08);
-    backdrop-filter: blur(10px);
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.superadmin-orders-page .detail-section:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    border-color: rgba(99, 102, 241, 0.15);
+    padding: 1.25rem;
+    background: #fff;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid #e5e5e5;
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
 }
 
 .superadmin-orders-page .detail-section h6 {
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: var(--dark);
-    font-size: 1.1rem;
-    letter-spacing: -0.025em;
-    text-transform: none;
-    position: relative;
-    padding-left: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid #000;
+    line-height: 1.4;
+    word-wrap: break-word;
 }
 
-.superadmin-orders-page .detail-section h6::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 24px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-    border-radius: 3px;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-}
-
-/* Modern Table Styles */
+/* Classic Table Styles with Enhanced Responsiveness */
 .superadmin-orders-page .detail-section .table {
     margin-bottom: 0;
     background: transparent;
-    border: none;
-    box-shadow: none;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .superadmin-orders-page .detail-section .table td {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    padding: 0.6rem 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
     vertical-align: middle;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .superadmin-orders-page .detail-section .table td:first-child {
-    font-weight: 600;
-    color: var(--gray);
-    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
     width: 40%;
+    min-width: 120px;
 }
 
 .superadmin-orders-page .detail-section .table td:last-child {
-    color: var(--dark);
-    font-weight: 500;
+    color: #333;
+    font-weight: 400;
+    width: 60%;
 }
 
 /* Order Details Grid */
@@ -1359,39 +1113,88 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
+    align-items: center;
+    overflow: scroll;
 }
-
 @media (min-width: 768px) {
     .superadmin-orders-page .delivery-info-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
     }
 }
 
-/* Items Table */
+/* Delivery info grid responsiveness within detail sections */
+.superadmin-orders-page .detail-section .delivery-info-grid > div {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.superadmin-orders-page .detail-section .delivery-info-grid .table {
+    margin-bottom: 0;
+}
+
+/* Enhanced mobile responsiveness for delivery info */
+@media (max-width: 575.98px) {
+    .superadmin-orders-page .delivery-info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .superadmin-orders-page .detail-section .delivery-info-grid .table td {
+        padding: 0.4rem 0.25rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .superadmin-orders-page .delivery-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Utility Classes for Perfect Alignment */
+.superadmin-orders-page .text-truncate-responsive {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .superadmin-orders-page .text-truncate-responsive {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+}
+
+/* Items Table - Classic Style */
 .superadmin-orders-page .items-table {
     margin-top: 1.5rem;
     border-radius: var(--border-radius-sm);
     overflow: hidden;
-    box-shadow: var(--shadow-md);
+    border: 1px solid #e5e5e5;
 }
 
 .superadmin-orders-page .items-table th {
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    font-weight: 600;
+    background: #000;
     color: white;
     border: none;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-size: 0.75rem;
+    padding: 0.75rem 0.5rem;
 }
 
 .superadmin-orders-page .items-table td {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: var(--border-light);
+    background: #fff;
+    border-color: #f0f0f0;
+    padding: 0.6rem 0.5rem;
 }
 
 .superadmin-orders-page .items-table tbody tr:nth-child(even) {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(255, 255, 255, 0.9) 100%);
+    background: #f8f9fa;
 }
 
 /* Search Input */
@@ -1422,65 +1225,37 @@ body {
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-/* Modern Empty State */
+/* Classic Simple Styles - Clean & Functional */
 .superadmin-orders-page .empty-state {
     text-align: center;
-    padding: 4rem 2rem;
-    color: var(--gray);
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(59, 130, 246, 0.02) 100%);
-    border-radius: var(--border-radius);
-    border: 1px dashed rgba(99, 102, 241, 0.2);
+    padding: 3rem 2rem;
+    color: #666;
 }
 
 .superadmin-orders-page .empty-state i {
-    font-size: 3.5rem;
-    margin-bottom: 1.5rem;
-    opacity: 0.6;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+    color: #999;
 }
 
 .superadmin-orders-page .empty-state p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 0;
-    font-weight: 500;
+    color: #666;
 }
 
-/* Modern Order Status Indicators */
+/* Simple Order Status Indicators */
 .superadmin-orders-page .order-status {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
 }
 
 .superadmin-orders-page .order-status-icon {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    margin-right: 0;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
-    position: relative;
-}
-
-.superadmin-orders-page .order-status-icon::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: inherit;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.2); }
-    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    margin-right: 0.5rem;
 }
 
 .superadmin-orders-page .status-completed {
@@ -1491,77 +1266,46 @@ body {
     background-color: var(--warning);
 }
 
-/* Enhanced Badge Styles */
+/* Classic Badge Styles */
 .superadmin-orders-page .badge {
     display: inline-block;
-    padding: 0.4em 0.8em;
+    padding: 0.25em 0.6em;
     font-size: 0.75em;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1;
     color: #fff;
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
-    border-radius: 20px;
-    letter-spacing: 0.025em;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
+    border-radius: 4px;
 }
 
-.superadmin-orders-page .badge::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.superadmin-orders-page .badge:hover::before {
-    left: 100%;
-}
-
-/* Animation for order details with staggered entrance */
+/* Simple Animation */
 .superadmin-orders-page .highlight {
-    animation: slideInUp 0.6s ease-out;
+    animation: fadeIn 0.3s ease-out;
 }
 
-@keyframes slideInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
-
-.superadmin-orders-page .detail-section {
-    animation: fadeInUp 0.4s ease-out backwards;
-}
-
-.superadmin-orders-page .detail-section:nth-child(1) { animation-delay: 0.1s; }
-.superadmin-orders-page .detail-section:nth-child(2) { animation-delay: 0.2s; }
-.superadmin-orders-page .detail-section:nth-child(3) { animation-delay: 0.3s; }
-.superadmin-orders-page .detail-section:nth-child(4) { animation-delay: 0.4s; }
-
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
+@media (max-width: 768px) {
+   .superadmin-orders-page .header-flex {
+        flex-direction: column !important;
+        
     }
 }
 
 /* Enhanced Responsive Layout for Flexbox */
-
+@media (max-width: 422px) {
+    .superadmin-orders-page .flex-between {
+        flex-direction: column !important;
+        align-items: flex-start;
+    }
+    .superadmin-orders-page .text-right{
+        text-align: left !important;
+    }
+}
 /* Extra Small Mobile (Portrait phones) */
 @media (max-width: 575.98px) {
     .superadmin-orders-page .page-header {
@@ -1574,7 +1318,7 @@ body {
     }
     
     .superadmin-orders-page .flex-between {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
         gap: 0.75rem;
     }
@@ -1604,7 +1348,7 @@ body {
     }
     
     .superadmin-orders-page .flex-between {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
         gap: 1rem;
     }
@@ -1667,12 +1411,60 @@ body {
         grid-template-columns: 1fr;
         gap: 0.5rem;
     }
+    
+    .superadmin-orders-page .detail-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .superadmin-orders-page .detail-section h6 {
+        font-size: 0.95rem;
+        padding-left: 0.5rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:first-child {
+        width: 45%;
+        min-width: 100px;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:last-child {
+        width: 55%;
+    }
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
     .superadmin-orders-page .date-range-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.75rem;
+    }
+    
+    .superadmin-orders-page .detail-section {
+        padding: 1.1rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .superadmin-orders-page .detail-section h6 {
+        font-size: 1rem;
+        padding-left: 0.65rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.55rem 0.4rem;
+        font-size: 0.95rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:first-child {
+        width: 42%;
+        min-width: 110px;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:last-child {
+        width: 58%;
     }
 }
 
@@ -1684,6 +1476,31 @@ body {
     .superadmin-orders-page .delivery-info-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    .superadmin-orders-page .detail-section {
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .superadmin-orders-page .detail-section h6 {
+        font-size: 1.05rem;
+        padding-left: 0.75rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.6rem 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:first-child {
+        width:77%;
+        min-width: 120px;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:last-child {
+        width: 60%;
+    }
+    
 }
 
 /* Large screen adjustments */
@@ -1691,6 +1508,110 @@ body {
     .superadmin-orders-page .container-fluid {
         max-width: 1400px;
         margin: 0 auto;
+    }
+    
+    .superadmin-orders-page .detail-section {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .superadmin-orders-page .detail-section h6 {
+        font-size: 1.1rem;
+        margin-bottom: 1.25rem;
+        padding-left: 1rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:first-child {
+        width: 55%;
+        min-width: 140px;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:last-child {
+        width: 65%;
+    }
+}
+
+/* Ultra-wide screen adjustments */
+@media (min-width: 1600px) {
+    .superadmin-orders-page .container-fluid {
+        max-width: 1600px;
+    }
+    
+    .superadmin-orders-page .detail-section {
+        padding: 1.75rem;
+        margin-bottom: 2.25rem;
+    }
+    
+    .superadmin-orders-page .detail-section h6 {
+        font-size: 1.15rem;
+        margin-bottom: 1.5rem;
+        padding-left: 1.25rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.85rem 0.75rem;
+        font-size: 1.05rem;
+    }
+}
+
+/* Items Table Responsiveness within Detail Sections */
+.superadmin-orders-page .detail-section .table-responsive {
+    border-radius: var(--border-radius-sm);
+    box-shadow: none;
+    border: 1px solid #e5e5e5;
+    margin-top: 0.5rem;
+}
+
+.superadmin-orders-page .detail-section .items-table {
+    margin-top: 0;
+    border-radius: 0;
+    overflow: scroll;
+    box-shadow: none;
+    border: none;
+}
+
+.superadmin-orders-page .detail-section .items-table th {
+    font-weight: 600;
+    background: #000;
+    color: white;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    padding: 0.75rem 0.5rem;
+}
+
+.superadmin-orders-page .detail-section .items-table td {
+    background: #fff;
+    border-color: #f0f0f0;
+    padding: 0.6rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+.superadmin-orders-page .detail-section .items-table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.superadmin-orders-page .detail-section .items-table tfoot tr {
+    background: #f1f3f4;
+    font-weight: 600;
+}
+
+/* Mobile responsiveness for items table */
+@media (max-width: 767.98px) {
+    .superadmin-orders-page .detail-section .items-table th,
+    .superadmin-orders-page .detail-section .items-table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+    }
+    
+    .superadmin-orders-page .detail-section .items-table th {
+        font-size: 0.7rem;
     }
 }
 </style>
@@ -1738,7 +1659,7 @@ setTimeout(() => alert.remove(), 300);
 <div class="container-fluid py-4">
     <!-- Page Header -->
     <div class="page-header">
-        <div class="flex-between">
+        <div class="flex-between header-flex">
             <div>
                 <h2 class="mb-0">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
                 <p class="subtitle mb-0">Manage and track order status, payments, and deliveries</p>
@@ -1767,10 +1688,10 @@ setTimeout(() => alert.remove(), 300);
             <div>
                 <label class="form-label"><i class="bi bi-calendar-range mr-1"></i>Date Range</label>
                 <div class="date-range-grid">
-                    <input type="date" class="form-control form-control-sm" id="date_from" placeholder="From">
-                    <input type="date" class="form-control form-control-sm" id="date_to" placeholder="To">
+                    <input type="date" class="form-control form-control-sm" id="date_from" placeholder="From" style="min-width:0;">
+                    <input type="date" class="form-control form-control-sm" id="date_to" placeholder="To" style="min-width:0;">
                     <button type="button" class="btn btn-sm btn-primary w-full" id="apply-date-filter"
-                        style="margin-bottom: 8px; border-radius: 50px; background: linear-gradient(135deg, #000000, #333333); color: white; letter-spacing: 0.5px; font-weight: 600; box-shadow: var(--shadow-md); padding: 0.625rem 2rem; border: none; position: relative; overflow: hidden; z-index: 1; transition: all 0.3s ease;"
+                        style="margin-bottom: 8px; border-radius: 50px; background: linear-gradient(135deg, #000000, #333333); color: white; letter-spacing: 0.5px; font-weight: 600; box-shadow: var(--shadow-md); padding: 0.625rem 2rem; border: none; position: relative; overflow: hidden; z-index: 1; transition: all 0.3s ease; min-width:0;"
                         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)';">
                         Apply
@@ -2097,29 +2018,25 @@ setTimeout(() => alert.remove(), 300);
                 html += `
                     <div class="list-group-item order-item ${isActive ? 'active' : ''}" 
                          data-order-id="${order.order_id}">
-                        <div class="order-item-content">
-                            <div class="order-item-header">
-                                <div class="order-item-title">
-                                    <span class="order-number">Order #${order.order_id}</span>
-                                    <span class="order-status">
-                                        <span class="order-status-icon ${statusClass}"></span>
-                                    </span>
-                                </div>
-                                <span class="order-date">${formatDate(order.order_date)}</span>
+                        <div class="flex-between mb-2">
+                            <div>
+                                <span class="font-medium">Order #${order.order_id}</span>
+                                <span class="order-status ml-2">
+                                    <span class="order-status-icon ${statusClass}"></span>
+                                    <small>${paymentStatusBadge}</small>
+                                </span>
                             </div>
-                            <div class="order-item-body">
-                                <div class="order-item-details">
-                                    <div class="order-category">${getCategoryName(order.product_category_id)}</div>
-                                    <div class="customer-name">${order.customer_full_name}</div>
-                                    ${isSuperadmin && order.admin_name ? `<div class="admin-info">Admin: ${order.admin_name}</div>` : ''}
-                                </div>
-                                <div class="order-item-amount">
-                                    <div class="order-amount">₹${order.overall_amount.toLocaleString()}</div>
-                                    <div class="order-status-badges">
-                                        <div>${paymentStatusBadge}</div>
-                                        <div>${deliveryStatusBadge}</div>
-                                    </div>
-                                </div>
+                            <small class="text-muted">${formatDate(order.order_date)}</small>
+                        </div>
+                        <div class="flex-between mb-1">
+                            <div>
+                                <small class="text-muted">${getCategoryName(order.product_category_id)}</small>
+                                <small class="block">${order.customer_full_name}</small>
+                                ${isSuperadmin && order.admin_name ? `<small class="block text-muted">Admin: ${order.admin_name}</small>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium">₹${order.overall_amount.toLocaleString()}</div>
+                                <small>${deliveryStatusBadge}</small>
                             </div>
                         </div>
                     </div>
