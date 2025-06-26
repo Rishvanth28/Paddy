@@ -819,14 +819,13 @@
             <span class="badge ms-2">{{ unread_count }}</span>
             {% endif %}
         </h1>
-        <div class="d-flex align-items-center gap-4">
-            {% if notifications %}
+        <div class="d-flex align-items-center gap-4">            {% if notifications %}
             <button class="btn btn-select-all btn-sm" style="display: inline-flex;margin-right: 1rem;"
                 onclick="toggleSelectAll()">
-                <i class="bi bi-check-square me-1"></i>Select All
+                <i class="bi bi-check-square me-2" style="margin-right: 8px;"></i>Select All
             </button>
             <button class="btn btn-outline-primary btn-sm" onclick="markAllAsRead()">
-                <i class="bi bi-check-all me-1"></i>Mark All as Read
+                <i class="bi bi-check-all me-2" style="margin-right: 8px;"></i>Mark All as Read
             </button>
             {% endif %}
         </div>
@@ -841,10 +840,10 @@
         </div>
         <div style="display: flex;">
             <button class="btn btn-cancel-selection" onclick="cancelSelection()">
-                <i class="bi bi-x-circle me-1"></i>Cancel
+                <i class="bi bi-x-circle me-1" style="margin-right: 8px;"></i>Cancel
             </button>
             <button class="btn btn-delete-selected" style="height: 5.5vh;" onclick="deleteSelectedNotifications()">
-                <i class="bi bi-trash3 me-1"></i>Delete Selected
+                <i class="bi bi-trash3 me-1" style="margin-right: 8px;"></i>Delete Selected
             </button>
         </div>
     </div>
@@ -1177,8 +1176,8 @@
 
         // Update button text
         selectAllBtn.innerHTML = allChecked ?
-            '<i class="bi bi-check-square me-1"></i>Select All' :
-            '<i class="bi bi-square me-1"></i>Deselect All';
+            '<i class="bi bi-check-square me-1" style="margin-right: 8px;"></i>Select All' :
+            '<i class="bi bi-square me-1" style="margin-right: 8px;"></i>Deselect All';
 
         updateSelection();
     }
