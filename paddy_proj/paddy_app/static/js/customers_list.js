@@ -21,18 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const customerID = cells[0].textContent.toLowerCase();
             const fullName = cells[1].textContent.toLowerCase();
-            const email = cells[2].textContent.toLowerCase();
-            const phoneNumber = cells[3].textContent.toLowerCase();
-            const company = cells[4].textContent.toLowerCase();
-            const gst = cells[5].textContent.toLowerCase();
 
             const matches =
                 customerID.includes(query) ||
-                fullName.includes(query) ||
-                email.includes(query) ||
-                phoneNumber.includes(query) ||
-                company.includes(query) ||
-                gst.includes(query);
+                fullName.includes(query);
 
             row.style.display = matches ? "" : "none";
             if (matches) anyVisible = true;

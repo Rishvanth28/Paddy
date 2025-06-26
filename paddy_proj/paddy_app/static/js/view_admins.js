@@ -19,16 +19,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         rows.forEach(row => {
             const cells = row.querySelectorAll("td");
-            const adminId = cells[0]?.textContent.toLowerCase();
             const name = cells[1]?.textContent.toLowerCase();
-            const email = cells[2]?.textContent.toLowerCase();
-            const phone = cells[3]?.textContent.toLowerCase();
-
-            const matches =
-                adminId.includes(query) ||
-                name.includes(query) ||
-                email.includes(query) ||
-                phone.includes(query);
+            
+            // Only check name column
+            const matches = name.includes(query);
 
             row.style.display = matches ? "" : "none";
             if (matches) anyVisible = true;

@@ -1773,12 +1773,16 @@ def super_admin_orders(request):
                 })
 
             customer_full_name = f"{order.customer.first_name} {order.customer.last_name}" if order.customer else "N/A"
-
+ 
+            admin_name = f"{order.admin.first_name} {order.admin.last_name}" if order.admin else "N/A"
+            admin_email = order.admin.email if order.admin else "N/A"
             orders_data.append({
                 'order_id': order.order_id,
                 'customer_id': order.customer.customer_id if order.customer else None,
                 'customer_full_name': customer_full_name,
                 'admin_id': order.admin.admin_id if order.admin else None,
+                'admin_name': admin_name,  # Add admin name
+                'admin_email': admin_email,  # Add admin email
                 'payment_status': order.payment_status,
                 'delivery_status': order.delivery_status,
                 'product_category_id': order.product_category_id,
@@ -1960,9 +1964,12 @@ def upgrade_to_admin(request):
 def upgrade_to_customer(request):
     admin_id = request.session.get('user_id')
     admin = AdminTable.objects.get(admin_id=admin_id)
+    
+    # Check if admin is already a customer
+    is_customer = CustomerTable.objects.filter(email=admin.email).exists()
 
     if request.method == 'POST':
-        if CustomerTable.objects.filter(email=admin.email).exists():
+        if is_customer:
             messages.info(request, "You are already a customer.")
             return redirect('admin_dashboard')
 
@@ -1983,13 +1990,12 @@ def upgrade_to_customer(request):
         )
         new_customer.save()
 
-        messages.success(request, "You have been upgraded to customer!")
-        return redirect('upgrade_success')
+        messages.success(request, "You have been upgraded to customer successfully!")
+        # Update is_customer to True after successful upgrade
+        is_customer = True
+        return render(request, 'upgrade_to_customer.html', {'admin': admin, 'is_customer': is_customer})
 
-    return render(request, 'upgrade_to_customer.html', {'admin': admin})
-
-def upgrade_success(request):
-    return render(request, 'upgrade_success.html')
+    return render(request, 'upgrade_to_customer.html', {'admin': admin, 'is_customer': is_customer})
 
 
 @role_required(["superadmin"])
