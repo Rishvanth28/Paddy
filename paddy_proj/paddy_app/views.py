@@ -1699,6 +1699,10 @@ def super_admin_orders(request):
         category_filter = request.GET.get('category', 'all')
         search_query = request.GET.get('search', '').strip()
         sort_by = request.GET.get('sort', '-order_id') # Default sort by latest order
+        admin_filter = request.GET.get('admin', 'all')  # Get admin filter parameter
+
+        if admin_filter != 'all':
+            orders_query = orders_query.filter(admin__admin_id=admin_filter)
 
         # Status filter
         if status_filter == 'completed':
@@ -1744,7 +1748,8 @@ def super_admin_orders(request):
 
         # Apply sorting
         orders_query = orders_query.order_by(sort_by)
-
+# Use select_related to efficiently fetch related admin and customer data
+        orders_query = orders_query.select_related('admin', 'customer')
         orders_data = []
         for order in orders_query:
             order_items_data = []
@@ -1780,17 +1785,19 @@ def super_admin_orders(request):
                 'order_id': order.order_id,
                 'customer_id': order.customer.customer_id if order.customer else None,
                 'customer_full_name': customer_full_name,
+                'customer_phone': order.customer.phone_number,
                 'admin_id': order.admin.admin_id if order.admin else None,
                 'admin_name': admin_name,  # Add admin name
                 'admin_email': admin_email,  # Add admin email
                 'payment_status': order.payment_status,
                 'delivery_status': order.delivery_status,
+                'delivery_date':order.delivery_date if order.delivery_status else None,
                 'product_category_id': order.product_category_id,
                 'category': order.category,
                 'quantity': float(order.quantity),
                 'price_per_unit': float(order.price_per_unit),
                 'overall_amount': float(order.overall_amount),
-                'GST': order.GST,
+                'GST': order.GST if order.GST else "-",
                 'lorry_number': order.lorry_number,
                 'driver_name': order.driver_name,
                 'driver_ph_no': order.driver_ph_no,
@@ -1800,8 +1807,13 @@ def super_admin_orders(request):
                 'category': order.category,
             })
         return JsonResponse({'orders': orders_data})
-
-    return render(request, "superadmin_orders.html")
+    admins = []
+    if request.session.get('role') == 'superadmin':
+        # Get all admins except superadmin (admin_id=1000000)
+        admin_objs = AdminTable.objects.exclude(admin_id=1000000)
+        admins = [{'id': admin.admin_id, 'name': f"{admin.first_name} {admin.last_name}"} for admin in admin_objs]
+    
+    return render(request, "superadmin_orders.html", {'admins': admins})
 
 @role_required(["admin"])
 def admin_orders(request):
