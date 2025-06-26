@@ -5,9 +5,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />  <title>Superadmin</title>
-  <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>    /* CSS Custom Properties for consistency */
     :root {
       --sidebar-width: 260px;
@@ -84,6 +84,19 @@
       background-color: var(--sidebar-bg, #ffffff) !important;
     }
     
+    /* Crown icon styling */
+    body.superadmin-page .sidebar-logo {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: all 0.3s ease !important;
+    }
+    
+    body.superadmin-page .sidebar-logo {
+      transform: scale(1.1) !important;
+      color: #000000 !important;
+    }
+    
     /* Sidebar navigation consistency */
     body.superadmin-page .sidebar-nav {
       flex: 1 1 auto !important;
@@ -103,8 +116,7 @@
       position: relative !important;
       margin: 4px 12px !important;
     }
-    
-    body.superadmin-page .nav-link,
+      body.superadmin-page .nav-link,
     body.superadmin-page .submenu-toggle {
       display: flex !important;
       align-items: center !important;
@@ -115,6 +127,11 @@
       transition: all var(--transition-speed, 0.3s) ease !important;
       height: var(--nav-item-height, 48px) !important;
       gap: 0.75rem !important;
+      cursor: pointer !important;
+      border: none !important;
+      background: none !important;
+      width: 100% !important;
+      text-align: left !important;
     }
     
     body.superadmin-page .nav-link:hover,
@@ -212,8 +229,7 @@
       justify-content: center !important;
       flex-shrink: 0 !important;
     }
-    
-    /* Submenu styles */
+      /* Submenu styles */
     body.superadmin-page .submenu {
       list-style: none !important;
       padding-left: 16px !important;
@@ -226,6 +242,19 @@
     body.superadmin-page .has-submenu.open .submenu {
       max-height: 500px !important;
       padding: 8px 0 !important;
+    }
+    
+    /* Chevron styling for submenu toggle */
+    body.superadmin-page .chevron {
+      margin-left: auto !important;
+      transition: transform var(--transition-speed, 0.3s) ease !important;
+      font-size: 14px !important;
+      color: var(--sidebar-text, #333333) !important;
+    }
+
+    
+    body.superadmin-page .has-submenu.open .chevron {
+      transform: rotate(360deg) !important;
     }
     
     body.superadmin-page .submenu-link {
@@ -551,10 +580,9 @@
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
-    <!-- Top section -->
-    <div class="sidebar-header">
+    <!-- Top section -->    <div class="sidebar-header">
       <a href="{% url 'profile' %}" class="logo-link">
-        <img src="{% static 'media/IconSet.png' %}" alt="Logo" class="sidebar-logo">
+        <i class="fas fa-user-tie sidebar-logo" style="font-size: 2.5rem; color: #000000;"></i>
       </a>
       <h1 class="sidebar-title">Super Admin</h1>
     </div>
