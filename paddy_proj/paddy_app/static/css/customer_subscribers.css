@@ -30,18 +30,7 @@ body {
     color: #1a202c;
 }
 
-/* ========== Header ========== */
-.header-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-left: 3rem;
-    margin-top: 3rem;
-}
-
-/* ========== Page Title ========== */
+/* ========== Page Title - FIXED DESKTOP LEFT ALIGNMENT ========== */
 .page-title {
     font-size: 2rem;
     font-weight: 700;
@@ -49,7 +38,7 @@ body {
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #000;
-    text-align: left;
+    text-align: left !important; /* Force left alignment on desktop */
     position: relative;
     padding-bottom: 0.6rem;
 }
@@ -58,8 +47,8 @@ body {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0 !important; /* Left-aligned underline on desktop */
+    transform: none !important; /* Remove centering transform */
     width: 80px;
     height: 4px;
     background-color: #000;
@@ -68,14 +57,27 @@ body {
 }
 
 .page-title:hover::after {
-    width: 110%;
+    width: 110px; /* Expand to the right on hover */
+    left: 0 !important; /* Keep left position */
+    transform: none !important; /* No centering */
 }
 
-/* ========== Search Input ========== */
+/* ========== Header - DESKTOP LEFT POSITIONING ========== */
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 3rem; /* Keep original left margin */
+    margin-top: 3rem;
+}
+
+/* ========== Search Input - DESKTOP RIGHT ALIGNMENT ========== */
 .search-wrapper {
     flex-grow: 1;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-end; /* Keep right alignment on desktop */
     position: relative;
     z-index: 1;
     flex-wrap: wrap;
@@ -284,213 +286,6 @@ body {
     }
 }
 
-/* ========== Responsive Layout ========== */
-@media (max-width: 768px) {
-    body {
-        overflow-x: hidden;
-        overflow-y: auto;
-        padding-top: 0;
-    }
-
-    .header-bar {
-        width: 100%;
-        position: relative;
-        top: auto;
-        left: auto;
-        height: auto;
-        z-index: 10;
-        margin: 20px 0;
-        background-color: #fff;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px 15px;
-        border-bottom: 1px solid #e0e0e0;
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .page-title {
-        font-size: 1.5rem;
-        text-align: center;
-        width: 100%;
-        order: 1;
-    }
-
-    .page-title::after {
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-    }
-
-    .page-title:hover::after {
-        width: 80px;
-    }
-
-    .search-wrapper {
-        width: 100%;
-        max-width: 100%;
-        justify-content: center;
-        order: 2;
-    }
-
-    .search-wrapper input[type="search"] {
-        max-width: 300px;
-        width: 100%;
-    }
-
-    .card {
-        margin-top: 20px;
-        margin-left: 10px;
-        margin-right: 10px;
-        border-radius: 1rem;
-    }
-
-    .main {
-        padding: 0 !important;
-    }
-
-    .card-header {
-        padding: 1.5rem;
-    }
-
-    .container {
-        margin-left: 0;
-        margin-right: 0;
-        padding: 0 10px;
-    }
-
-    /* Enhanced Table Responsive Design */
-    .table-responsive {
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .table {
-        font-size: 0.875rem;
-        min-width: 700px; /* Ensures table doesn't get too cramped */
-    }
-
-    .table thead th {
-        padding: 12px 8px;
-        font-size: 0.75rem;
-        white-space: nowrap;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    .table tbody td {
-        padding: 12px 8px;
-        word-wrap: break-word;
-        max-width: 150px;
-    }
-
-    /* Specific column adjustments for better mobile display */
-    .table tbody td:first-child { /* ID column */
-        min-width: 60px;
-        font-weight: 600;
-    }
-
-    .table tbody td:nth-child(2) { /* Name column */
-        min-width: 120px;
-        max-width: 120px;
-    }
-
-    .table tbody td:nth-child(3) { /* Payment Amount */
-        min-width: 80px;
-        font-weight: 600;
-        color: #059669;
-    }
-
-    .table tbody td:nth-child(4) { /* Status */
-        min-width: 80px;
-    }
-
-    .table tbody td:nth-child(5), 
-    .table tbody td:nth-child(6) { /* Date columns */
-        min-width: 100px;
-        font-size: 0.8rem;
-    }
-
-    /* Status badges adjustment for mobile */
-    .active-status,
-    .inactive-status {
-        padding: 2px 8px;
-        font-size: 0.75rem;
-        white-space: nowrap;
-    }
-
-    /* Improve scrolling experience */
-    .table-responsive::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #9ca3af;
-        border-radius: 6px;
-    }
-
-    .table-responsive::-webkit-scrollbar-track {
-        background: #f3f4f6;
-        border-radius: 6px;
-    }
-
-    /* No data message adjustment */
-    .no-customers {
-        padding: 2rem 1rem;
-    }
-
-    .no-customers p {
-        font-size: 1rem;
-    }
-}
-
-/* ========== Extra Small Devices ========== */
-@media (max-width: 480px) {
-    .header-bar {
-        padding: 15px 10px;
-    }
-
-    .page-title {
-        font-size: 1rem;
-    }
-
-    .page-title::after {
-        width: 50px;
-    }
-
-    .search-wrapper input[type="search"] {
-        max-width: 280px;
-        font-size: 0.9rem;
-        padding: 0.6rem 0.8rem 0.6rem 2.2rem;
-    }
-
-    .card {
-        margin-top: 10px;
-        margin-left: 5px;
-        margin-right: 5px;
-    }
-
-    .table {
-        font-size: 0.8rem;
-        min-width: 650px;
-    }
-
-    .table thead th {
-        padding: 10px 6px;
-        font-size: 0.7rem;
-    }
-
-    .table tbody td {
-        padding: 10px 6px;
-    }
-
-    .container {
-        padding: 0 5px;
-    }
-}
-
 /* ========== Utilities ========== */
 .mt-2 {
     margin-top: 0.5rem !important;
@@ -578,4 +373,448 @@ body {
     pointer-events: none;
     height: 1em;
     width: 1em;
+}
+
+/* ========== Enhanced Mobile Responsive Design - FIXED CENTERING ========== */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-top: 0;
+    }
+
+    /* FIXED: Header container perfectly centered */
+    .header-bar {
+        width: calc(100% - 80px) !important; /* Account for hamburger space but keep centered */
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        height: auto !important;
+        z-index: 10 !important;
+        margin: 80px auto 20px auto !important; /* Center horizontally with auto margins */
+        margin-left: 40px !important; /* Minimal left margin for hamburger clearance */
+        margin-right: 40px !important; /* Equal right margin for perfect centering */
+        background-color: #fff !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+        padding: 20px 15px !important;
+        border-radius: 12px !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        display: flex !important;
+    }
+
+    /* FIXED: Page title perfectly centered */
+    .page-title {
+        font-size: 1.5rem !important;
+        text-align: center !important;
+        width: 100% !important;
+        order: 1 !important;
+        margin: 0 auto !important;
+        display: block !important;
+        position: relative !important;
+        left: 0 !important;
+        transform: none !important;
+    }
+
+    /* FIXED: Underline perfectly centered */
+    .page-title::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: -8px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 60px !important;
+        height: 4px !important;
+        background-color: #000 !important;
+        border-radius: 2px !important;
+        transition: width 0.3s ease-in-out !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .page-title:hover::after {
+        width: 80px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+
+    /* FIXED: Search wrapper centered */
+    .search-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        justify-content: center !important;
+        order: 2 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .search-wrapper input[type="search"] {
+        max-width: 300px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+
+    /* FIXED: Card with subtle curves - reduced border-radius */
+    .card {
+        margin-top: 20px !important;
+        margin-left: 40px !important;
+        margin-right: 40px !important;
+        border-radius: 8px !important; /* REDUCED from 1.5rem to 8px */
+        overflow: hidden !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .card-body {
+        padding: 0 !important;
+        border-radius: 8px !important; /* REDUCED from 1.5rem to 8px */
+        overflow: hidden !important;
+    }
+
+    /* FIXED: Table responsive container with PROPER SCROLL CONTAINMENT */
+    .table-responsive {
+        border-radius: 8px !important; /* REDUCED from 1.5rem to 8px */
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        overflow: hidden !important; /* Hide any overflow */
+        position: relative !important;
+        max-height: 70vh !important;
+        /* FIXED: Proper scroll containment */
+        overflow-y: auto !important;
+        overflow-x: auto !important;
+        /* IMPORTANT: Contain the scrolling within bounds */
+        contain: layout style paint !important;
+        border: 1px solid #e5e7eb !important; /* Add border to define boundaries */
+    }
+
+    /* FIXED: Table with REDUCED curves and proper containment */
+    .table {
+        font-size: 0.875rem !important;
+        min-width: 700px !important;
+        margin-bottom: 0 !important;
+        border-radius: 0 !important; /* REMOVED table border-radius completely */
+        overflow: visible !important; /* Allow table to be visible within container */
+        width: 100% !important;
+        border-collapse: separate !important; /* Separate borders for better control */
+        border-spacing: 0 !important; /* No spacing between cells */
+    }
+
+    /* FIXED: Header with SUBTLE curves - only on container edges */
+    .table thead th {
+        padding: 12px 8px !important;
+        font-size: 0.75rem !important;
+        white-space: nowrap !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+        background-color: #111827 !important;
+        border: none !important;
+        border-radius: 0 !important; /* Remove individual cell radius */
+    }
+
+    /* FIXED: Only first and last header cells get SUBTLE curves */
+    .table thead th:first-child {
+        border-top-left-radius: 6px !important; /* REDUCED from 1.5rem to 6px */
+    }
+
+    .table thead th:last-child {
+        border-top-right-radius: 6px !important; /* REDUCED from 1.5rem to 6px */
+    }
+
+    /* FIXED: Table body cells with no individual curves */
+    .table tbody td {
+        padding: 12px 8px !important;
+        word-wrap: break-word !important;
+        max-width: 150px !important;
+        border: none !important;
+        border-radius: 0 !important; /* Remove all individual cell radius */
+        border-top: 1px solid #f0f0f0 !important; /* Subtle row separators */
+    }
+
+    /* FIXED: Last row with SUBTLE bottom curves */
+    .table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 6px !important; /* REDUCED from 1.5rem to 6px */
+    }
+
+    .table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 6px !important; /* REDUCED from 1.5rem to 6px */
+    }
+
+    /* FIXED: Enhanced scrollbar that stays within bounds */
+    .table-responsive::-webkit-scrollbar {
+        width: 8px !important;
+        height: 8px !important;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #9ca3af !important;
+        border-radius: 4px !important;
+        border: 1px solid #e5e7eb !important; /* Add border to scrollbar */
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f9fafb !important;
+        border-radius: 4px !important;
+        margin: 0 !important; /* Remove margin to prevent overflow */
+    }
+
+    .table-responsive::-webkit-scrollbar-corner {
+        background: #f9fafb !important;
+    }
+
+    /* FIXED: Add visual boundaries to prevent "tunnel effect" */
+    .table-responsive::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        z-index: 5;
+    }
+
+
+    /* Specific column adjustments for better mobile display */
+    .table tbody td:first-child { /* ID column */
+        min-width: 60px !important;
+        font-weight: 600 !important;
+    }
+
+    .table tbody td:nth-child(2) { /* Name column */
+        min-width: 120px !important;
+        max-width: 120px !important;
+    }
+
+    .table tbody td:nth-child(3) { /* Payment Amount */
+        min-width: 80px !important;
+        font-weight: 600 !important;
+        color: #059669 !important;
+    }
+
+    .table tbody td:nth-child(4) { /* Status */
+        min-width: 80px !important;
+    }
+
+    .table tbody td:nth-child(5), 
+    .table tbody td:nth-child(6) { /* Date columns */
+        min-width: 100px !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Status badges adjustment for mobile */
+    .active-status,
+    .inactive-status {
+        padding: 2px 8px !important;
+        font-size: 0.75rem !important;
+        white-space: nowrap !important;
+    }
+
+    .main {
+        padding: 0 !important;
+    }
+
+    .card-header {
+        padding: 1.5rem !important;
+        border-radius: 1.5rem 1.5rem 0 0 !important;
+    }
+
+    .container {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 0 10px !important;
+    }
+
+    /* No data message adjustment */
+    .no-customers {
+        padding: 2rem 1rem !important;
+        border-radius: 1.5rem !important;
+    }
+
+    .no-customers p {
+        font-size: 1rem !important;
+    }
+}
+
+/* ========== Extra Small Devices - FIXED CENTERING ========== */
+@media (max-width: 480px) {
+    .header-bar {
+        width: calc(100% - 60px) !important; /* Account for hamburger space */
+        padding: 15px 10px !important;
+        margin: 80px auto 20px auto !important; /* Center with auto margins */
+        margin-left: 30px !important; /* Minimal left margin */
+        margin-right: 30px !important; /* Equal right margin */
+        border-radius: 8px !important;
+    }
+
+    .page-title {
+        font-size: 1.2rem !important;
+    }
+
+    .page-title::after {
+        width: 50px !important;
+    }
+
+    .page-title:hover::after {
+        width: 65px !important;
+    }
+
+    .search-wrapper input[type="search"] {
+        max-width: 280px !important;
+        font-size: 0.9rem !important;
+        padding: 0.6rem 0.8rem 0.6rem 2.2rem !important;
+    }
+
+    .card {
+        margin-top: 10px !important;
+        margin-left: 30px !important; /* Match header margins */
+        margin-right: 30px !important; /* Match header margins */
+        border-radius: 6px !important;
+    }
+
+    .table-responsive {
+        max-height: 60vh !important;
+        border-radius: 6px !important; /* REDUCED curves */
+        border: 1px solid #e5e7eb !important;
+    }
+
+    .table {
+        font-size: 0.8rem !important;
+        min-width: 650px !important;
+        border-radius: 0 !important; /* No individual cell radius */
+        overflow: hidden   !important; /* Allow table to be visible within container */
+    }
+
+    .table thead th {
+        padding: 10px 6px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .table tbody td {
+        padding: 10px 6px !important;
+    }
+
+    .table thead th:first-child {
+        border-top-left-radius: 4px !important;
+    }
+
+    .table thead th:last-child {
+        border-top-right-radius: 4px !important;
+    }
+
+    .table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 4px !important;
+    }
+
+    .table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 4px !important;
+    }
+
+    .container {
+        padding: 0 5px !important;
+    }
+}
+
+/* ========== Force Center Header Utilities - ENHANCED ========== */
+.header-bar .page-title {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    width: 100% !important;
+    position: relative !important;
+    left: 0 !important;
+    transform: none !important;
+}
+
+.header-bar .page-title::after {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    position: absolute !important;
+}
+
+/* ========== Additional Centering Fixes ========== */
+@media (max-width: 768px) {
+    /* Force center everything inside header */
+    .header-bar {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    .header-bar * {
+        text-align: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    
+    /* Override any conflicting styles */
+    .page-title {
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: none !important;
+        text-align: center !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        display: block !important;
+    }
+
+    /* Ensure search wrapper is also centered */
+    .search-wrapper {
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: none !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    /* ========== Additional Scroll Containment Rules ========== */
+    /* Ensure table content stays within container bounds */
+    .table-responsive {
+        scroll-behavior: smooth !important;
+        -webkit-overflow-scrolling: touch !important;
+        will-change: scroll-position !important;
+        transform: translateZ(0) !important; /* Force GPU acceleration */
+    }
+    
+    /* Prevent any child elements from breaking container bounds */
+    .table-responsive * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Force proper table containment */
+    .table {
+        table-layout: fixed !important; /* Fixed layout for better control */
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+    }
+    
+    /* Ensure cells respect container boundaries */
+    .table th,
+    .table td {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Allow text wrapping only for specific columns that need it */
+    .table tbody td:nth-child(2) { /* Name column */
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
 }
