@@ -1243,7 +1243,7 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctx, {
             type: 'pie',
             data: {
-                // labels: categoryData.map(item => item.name),                
+                labels: categoryData.map(item => item.name),                
                 datasets: [{
                     data: categoryData.map(item => item.count),
                     backgroundColor: pastelColors(categoryData.length),
@@ -1290,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                // labels: paymentStatusData.map(item => item.name),                
+                labels: paymentStatusData.map(item => item.name),                
                 datasets: [{
                     data: paymentStatusData.map(item => item.count),
                     backgroundColor: pastelColors(paymentStatusData.length),
