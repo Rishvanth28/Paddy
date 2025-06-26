@@ -1,4 +1,3 @@
-
 {% extends 'superadmin_base.html' %}
 {% load static %}
 {% block content %}
@@ -1783,6 +1782,9 @@ setTimeout(() => alert.remove(), 300);
                 <label for="admin-filter" class="form-label"><i class="bi bi-person-badge mr-1"></i>Filter by Admin</label>
                 <select id="admin-filter" class="form-select form-select-sm">
                     <option value="all">All Admins</option>
+                    {% for admin in admins %}
+                    <option value="{{ admin.id }}">{{ admin.name }}</option>
+                    {% endfor %}
                 </select>
             </div>
             {% endif %}
@@ -1891,9 +1893,7 @@ setTimeout(() => alert.remove(), 300);
         const csrfToken = getCookie('csrftoken');
         
         // Initialization
-        if (isSuperadmin) {
-            fetchAdmins();
-        }
+
         fetchOrders();
         
         // Event Listeners
@@ -1934,10 +1934,11 @@ setTimeout(() => alert.remove(), 300);
             applyFilters();
         });
         
-        if (isSuperadmin && adminSelect) {
+        // Admin filter event listener
+        if (adminSelect) {
             adminSelect.addEventListener('change', function() {
                 currentAdmin = this.value;
-                applyFilters();
+                fetchOrders();
             });
         }
         
@@ -1962,33 +1963,6 @@ setTimeout(() => alert.remove(), 300);
         }
         
         // Functions
-        function fetchAdmins() {
-            if (!isSuperadmin) return;
-            
-            fetch('/api/get-admins/', {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': csrfToken
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error('Error:', data.error);
-                    return;
-                }
-                
-                let html = '<option value="all">All Admins</option>';
-                data.admins.forEach(admin => {
-                    html += `<option value="${admin.admin_id}">${admin.first_name} ${admin.last_name}</option>`;
-                });
-                adminSelect.innerHTML = html;
-            })
-            .catch(error => {
-                console.error('Error fetching admins:', error);
-            });
-        }
         
         function fetchOrders() {
             showLoading(true);
@@ -2002,9 +1976,9 @@ setTimeout(() => alert.remove(), 300);
             if (searchQuery) url.searchParams.append('search', searchQuery);
             url.searchParams.append('sort', currentSort);
             
-            // Add admin filter for superadmin
+            // Add admin filter parameter when applicable
             if (isSuperadmin && currentAdmin !== 'all') {
-                url.searchParams.append('admin_id', currentAdmin);
+                url.searchParams.append('admin', currentAdmin);
             }
             
             fetch(url, {
@@ -2263,7 +2237,7 @@ setTimeout(() => alert.remove(), 300);
                                 <td>${order.quantity || 'N/A'}</td>
                             </tr>
                             <tr>
-                                <td class="text-muted">Price Per Unit:</td>
+                                                               <td class="text-muted">Price Per Unit:</td>
                                 <td>₹${order.price_per_unit ? order.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : 'N/A'}</td>
                             </tr>
                             <tr>
@@ -2465,9 +2439,9 @@ setTimeout(() => alert.remove(), 300);
             else url.searchParams.delete('search');
             
             if (isSuperadmin && currentAdmin !== 'all') {
-                url.searchParams.set('admin_id', currentAdmin);
+                url.searchParams.set('admin', currentAdmin);
             } else {
-                url.searchParams.delete('admin_id');
+                url.searchParams.delete('admin');
             }
             
             window.history.replaceState({}, '', url);
@@ -2573,9 +2547,12 @@ setTimeout(() => alert.remove(), 300);
                 searchInput.value = searchQuery;
             }
             
-            if (isSuperadmin && urlParams.has('admin_id')) {
-                currentAdmin = urlParams.get('admin_id');
-                // We'll set the adminSelect value after it's loaded
+            if (isSuperadmin && urlParams.has('admin')) {
+                currentAdmin = urlParams.get('admin');
+                // Set the dropdown value when it's available
+                if (adminSelect) {
+                    adminSelect.value = currentAdmin;
+                }
             }
         }
         
