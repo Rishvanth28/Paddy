@@ -826,9 +826,9 @@
             {% if unread_count > 0 %}
             <span class="badge ms-2">{{ unread_count }}</span>
             {% endif %}
-        </h1>        <div class="d-flex align-items-center gap-2">
+        </h1>        <div class="d-flex align-items-center gap-4">
             {% if notifications %}
-            <button class="btn btn-select-all btn-sm" style="display: inline-flex; align-items: center;" onclick="toggleSelectAll()">
+            <button class="btn btn-select-all btn-sm me-4" style="display: inline-flex; align-items: center; margin-right: 20px;" onclick="toggleSelectAll()">
                 <i class="bi bi-check-square" style="margin-right: 8px;"></i>Select All
             </button>
             <button class="btn btn-outline-primary btn-sm" style="display: inline-flex; align-items: center;" onclick="markAllAsRead()">
