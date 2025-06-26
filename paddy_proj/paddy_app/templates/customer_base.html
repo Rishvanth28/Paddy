@@ -1,257 +1,526 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="stylesheet" type="text/css" href="{% static 'css/invoice.css' %}">
   <title>Customer Dashboard</title>
   <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/customer_base.css' %}" />  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/customer_base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* CSS Custom Properties for consistency */
     :root {
-      /* Primary Colors - Black & White Theme */
-      --primary: #000000;
-      --primary-hover: #1a1a1a;
-      --secondary: #333333;
-      --accent: #666666;
-
-      /* Status Colors */
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --info: #3b82f6;
-
-      /* Neutral Colors */
-      --white: #ffffff;
-      --black: #000000;
-      --gray-50: #fafafa;
-      --gray-100: #f5f5f5;
-      --gray-200: #e5e5e5;
-      --gray-300: #d4d4d4;
-      --gray-400: #a3a3a3;
-      --gray-500: #737373;
-      --gray-600: #525252;
-      --gray-700: #404040;
-      --gray-800: #262626;
-      --gray-900: #171717;
-
-      /* Surface Colors */
-      --surface-primary: #ffffff;
-      --surface-secondary: #fafafa;
-      --surface-elevated: #ffffff;
-      --surface-hover: #f5f5f5;
-
-      /* Border & Shadow */
-      --border-light: #e5e5e5;
-      --border-medium: #d4d4d4;
-      --border-dark: #a3a3a3;
-
-      --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-
-      /* Text Colors */
-      --text-primary: #000000;
-      --text-secondary: #404040;
-      --text-tertiary: #737373;
-      --text-muted: #a3a3a3;
-      --text-inverse: #ffffff;
-
-      /* Transitions & Effects */
-      --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-      --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-
-      --border-radius-sm: 6px;
-      --border-radius: 8px;
-      --border-radius-lg: 12px;
-      --border-radius-xl: 16px;
+      --sidebar-width: 260px;
+      --sidebar-collapsed-width: 80px;
+      --sidebar-bg: #ffffff;
+      --sidebar-text: #333333;
+      --sidebar-hover: rgba(0, 0, 0, 0.05);
+      --sidebar-active: rgba(0, 0, 0, 0.1);
+      --sidebar-border: #e0e0e0;
+      --primary-color: #000000;
+      --transition-speed: 0.3s;
+      --smooth-easing: cubic-bezier(0.4, 0, 0.2, 1);
+      --nav-item-height: 48px;
+      --nav-icon-size: 20px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
+    
+    /* Performance optimizations for smooth animations */
     * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--gray-50);
-      color: var(--text-primary);
-      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
-    .container-fluid {
-        min-height: 100vh !important;
-        color: #262626 !important;
-        background-color: #ffffff !important;
+    /* Enable hardware acceleration for smooth transforms */
+    .sidebar,
+    .main-content,
+    .hamburger {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000px;
     }
     
-    /* Sidebar Navigation Styles - Ensures consistent bold text */
-    .sidebar-nav .nav-menu .nav-item .nav-link,
-    .sidebar-nav .nav-menu .nav-item.active .nav-link,
-    .sidebar-nav .nav-menu .nav-item.has-notifications .nav-link,
-    .sidebar-nav .nav-menu .nav-item:hover .nav-link {
-      font-weight: 600 !important;
+    /* CUSTOMER BASE TEMPLATE STYLES - HIGH PRIORITY */
+    /* These styles ensure consistent sidebar appearance across all customer pages */
+    
+    /* Force consistent sidebar styling across all pages */
+    body.customer-page {
+      font-family: 'Inter', sans-serif !important;
+      background-color: #f4f6f8 !important;
+      color: #333 !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
     
-    .nav-text {
-      font-weight: 600 !important;
+    /* Ensure sidebar container has consistent styling */
+    body.customer-page .sidebar {
+      width: var(--sidebar-width, 260px) !important;
+      height: 100vh !important;
+      background-color: var(--sidebar-bg, #ffffff) !important;
+      color: var(--sidebar-text, #333333) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      transition: transform var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 1000 !important;
+      box-shadow: var(--shadow, 0 4px 6px rgba(0, 0, 0, 0.1)) !important;
+      border-right: 1px solid var(--sidebar-border, #e0e0e0) !important;
+      overflow-y: auto !important;
+      scrollbar-width: thin !important;
+      scrollbar-color: #888 #f1f1f1 !important;
+      will-change: transform !important;
+      transform: translateX(0) !important;
     }
     
-    .sidebar-badge {
-      font-weight: 600 !important;
+    /* Sidebar header consistency */
+    body.customer-page .sidebar-header {
+      padding: 24px 20px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 12px !important;
+      border-bottom: 1px solid var(--sidebar-border, #e0e0e0) !important;
+      background-color: var(--sidebar-bg, #ffffff) !important;
     }
     
-    .nav-item .nav-link {
-      font-weight: 600 !important;
+    /* Logo icon styling */
+    body.customer-page .sidebar-logo {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: all 0.3s ease !important;
     }
     
-    .nav-item.has-notifications .nav-link {
-      font-weight: 600 !important;
-      position: relative;
+    body.customer-page .sidebar-logo {
+      transform: scale(1.1) !important;
+      color: #000000 !important;
     }
     
-    .nav-item.active .nav-link {
-      font-weight: 600 !important;
+    /* Sidebar navigation consistency */
+    body.customer-page .sidebar-nav {
+      flex: 1 1 auto !important;
+      padding: 20px 0 !important;
+      overflow-y: auto !important;
+      max-height: calc(100vh - 200px) !important;
     }
     
-    /* Notification Badge Styles */
-    .sidebar-badge {
-        position: absolute;
-        right: 10px;
-        top: 40%;
-        transform: translateY(-50%);
-        background-color: #000000;
-        color: white;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        animation: pulse-badge 2s infinite;
-        visibility: visible !important;
-        opacity: 1 !important;
+    /* Navigation menu items */
+    body.customer-page .nav-menu {
+      list-style: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
-
+    
+    body.customer-page .nav-item {
+      position: relative !important;
+      margin: 4px 12px !important;
+    }
+      body.customer-page .nav-link,
+    body.customer-page .submenu-toggle {
+      display: flex !important;
+      align-items: center !important;
+      padding: 12px 16px !important;
+      text-decoration: none !important;
+      color: inherit !important;
+      border-radius: 6px !important;
+      transition: all var(--transition-speed, 0.3s) ease !important;
+      height: var(--nav-item-height, 48px) !important;
+      gap: 0.75rem !important;
+      cursor: pointer !important;
+      border: none !important;
+      background: none !important;
+      width: 100% !important;
+      text-align: left !important;
+      font-weight: normal !important;
+    }
+    
+    body.customer-page .nav-link:hover,
+    body.customer-page .submenu-toggle:hover {
+      background-color: var(--sidebar-hover, rgba(0, 0, 0, 0.05)) !important;
+      box-shadow: inset 4px 0 0 var(--primary-color, #000000) !important;
+      font-weight: normal !important;
+    }
+    
+    body.customer-page .nav-item.active .nav-link {
+      background-color: var(--sidebar-active, rgba(0, 0, 0, 0.1)) !important;
+      border-left: 3px solid var(--primary-color, #000000) !important;
+      font-weight: normal !important;
+      color: var(--primary-color, #000000) !important;
+    }
+    
+    /* Ensure all nav text has normal font weight */
+    body.customer-page .nav-text {
+      font-weight: normal !important;
+    }
+    
+    body.customer-page .sidebar-title {
+      /* font-weight: normal !important; */
+    }
+    
+    /* Sidebar footer consistency */
+    body.customer-page .sidebar-footer {
+      padding: 20px !important;
+      text-align: center !important;
+      border-top: 1px solid var(--sidebar-border, #e0e0e0) !important;
+      margin-top: auto !important;
+      position: sticky !important;
+      bottom: 0 !important;
+      background-color: var(--sidebar-bg, #ffffff) !important;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.05) !important;
+    }
+      body.customer-page .logout-button {
+      width: 100% !important;
+      padding: 12px !important;
+      background-color: var(--primary-color, #000000) !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 6px !important;
+      font-weight: normal !important;
+      cursor: pointer !important;
+      transition: background-color var(--transition-speed, 0.3s) ease !important;
+    }
+    
+    body.customer-page .logout-button:hover {
+      background-color: #1a1a1a !important;
+    }
+    
+    /* Main content positioning */
+    body.customer-page .main-content {
+      margin-left: var(--sidebar-width, 260px) !important;
+      min-height: 100vh !important;
+      transition: margin-left var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+      padding: 20px !important;
+      will-change: margin-left !important;
+    }
+      /* Notification Badge for Sidebar */
+    body.customer-page .notification-badge {
+      position: absolute !important;
+      right: 15px !important;
+      top: 40% !important;
+      transform: translateY(-50%) !important;
+      background-color: #000000 !important;
+      color: white !important;
+      border-radius: 50% !important;
+      min-width: 18px !important;
+      height: 18px !important;
+      font-size: 11px !important;
+      font-weight: normal !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 2px !important;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16) !important;
+      animation: pulse-badge 2s infinite !important;
+    }
     
     @keyframes pulse-badge {
-        0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5); }
-        70% { box-shadow: 0 0 0 6px rgba(0, 0, 0, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+      0% {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        transform: translateY(-50%) scale(1);
+      }
+      50% {
+        box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+        transform: translateY(-50%) scale(1.1);
+      }
+      100% {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        transform: translateY(-50%) scale(1);
+      }
     }
-      /* Ensure the notification item stands out */
-
     
-    /* Rest of your existing styles... */
-    /* [All your existing styles from the original file should remain here] */
-    /* I'm omitting them for brevity but they should be included */
+    /* Bootstrap Icons styling for navigation */
+    body.customer-page .nav-icon.bi {
+      font-size: 1.2rem !important;
+      width: 1.2rem !important;
+      height: 1.2rem !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+    }
     
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .col-md-4,
-      .col-md-8,
-      .col-md-2,
-      .col-md-5 {
-        flex: 0 0 100%;
-        max-width: 100%;
-      }
-
-      .page-title {
-        font-size: 2rem;
-      }
-
-      .container-fluid {
-        padding: 1rem 0.5rem;
-      }
-
-      .filter-section {
-        padding: 1rem;
-      }
-
-      .order-list-container {
-        max-height: 50vh;
-      }
-
-      .dashboard-card:hover,
-      .customer-card:hover {
-        transform: translateY(-1px);
+    /* Submenu styles */
+    body.customer-page .submenu {
+      list-style: none !important;
+      padding-left: 16px !important;
+      margin-top: 4px !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+      transition: max-height var(--transition-speed, 0.3s) ease, padding var(--transition-speed, 0.3s) ease !important;
+    }
+    
+    body.customer-page .has-submenu.open .submenu {
+      max-height: 500px !important;
+      padding: 8px 0 !important;
+    }
+    
+    /* Chevron styling for submenu toggle */
+    body.customer-page .chevron {
+      margin-left: auto !important;
+      transition: transform var(--transition-speed, 0.3s) ease !important;
+      font-size: 14px !important;
+      color: var(--sidebar-text, #333333) !important;
+    }
+    
+    body.customer-page .has-submenu.open .chevron {
+      transform: rotate(360deg) !important;
+    }
+    
+    body.customer-page .submenu-link {
+      display: block !important;
+      padding: 10px 16px 10px 40px !important;
+      text-decoration: none !important;
+      color: var(--sidebar-text, #333333) !important;
+      border-radius: 6px !important;
+      font-size: 14px !important;
+      transition: all var(--transition-speed, 0.3s) ease !important;
+    }
+    
+    body.customer-page .submenu-link:hover {
+      background-color: var(--sidebar-hover, rgba(0, 0, 0, 0.05)) !important;
+      color: var(--primary-color, #000000) !important;
+      box-shadow: inset 4px 0 0 var(--primary-color, #000000) !important;
+    }
+    
+    /* Responsive styles with high priority */
+    @media (max-width: 1024px) {
+      body.customer-page .main-content {
+        margin-left: 0 !important;
+        padding: 70px 15px 20px 15px !important;
+        width: 100% !important;
+        transition: margin-left var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
       }
       
-      /* Ensure sidebar text remains bold on mobile */
-      .sidebar-nav .nav-menu .nav-item .nav-link,
-      .sidebar-nav .nav-menu .nav-item.active .nav-link,
-      .sidebar-nav .nav-menu .nav-item.has-notifications .nav-link {
-        font-weight: 600 !important;
+      body.customer-page .sidebar {
+        transform: translateX(-100%) !important;
+        width: 280px !important;
+        z-index: 1001 !important;
+        transition: transform var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+        will-change: transform !important;
+      }
+      
+      body.customer-page .sidebar.open {
+        transform: translateX(0) !important;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.2) !important;
+      }
+      
+      body.customer-page .hamburger {
+        display: flex !important;
+        position: fixed !important;
+        top: 25px !important;
+        left: 15px !important;
+        z-index: 1003 !important;
+        transition: all var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
       }
     }
-
+    
+    @media (max-width: 768px) {
+      body.customer-page .submenu-item {
+        margin: 2px 0 !important;
+      }
+      
+      body.customer-page .submenu-link {
+        padding: 8px 12px 8px 30px !important;
+      }
+    }
+    
     @media (max-width: 480px) {
-      .page-title {
-        font-size: 1.75rem;
+      body.customer-page .sidebar-footer {
+        padding: 15px 10px !important;
       }
-
-      .btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
-      }
-
-      .filter-section {
-        padding: 1rem;
-      }
-
-      .detail-section {
-        padding: 1rem;
-      }
-
-      .detail-header {
-        padding: 1rem;
+      
+      body.customer-page .logout-button {
+        font-size: 14px !important;
+        padding: 10px !important;
       }
     }
+    
+    /* Hamburger focus state */
+    body.customer-page .hamburger:focus {
+      outline: 2px solid var(--primary-color, #000000) !important;
+    }
+    
+    /* Add 'has-notifications' class styling */
+    body.customer-page .nav-item.has-notifications .nav-link {
+      position: relative !important;
+    }
+      /* For Chrome, Edge, Safari */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
 
-    /* For Chrome, Edge, Safari */
-::-webkit-scrollbar {
-  width: 12px;
-}
+    ::-webkit-scrollbar-track {
+      background: #f5f5f5; /* Light background track */
+      border-radius: 10px;
+    }
 
-::-webkit-scrollbar-track {
-  background: #f5f5f5; /* Light background track */
-  border-radius: 10px;
-}
+    ::-webkit-scrollbar-thumb {
+      background-color: #000000; /* Black scrollbar */
+      border-radius: 10px;        /* Rounded corners */
+      border: 3px solid #f5f5f5;  /* Creates padding effect */
+    }
 
-::-webkit-scrollbar-thumb {
-  background-color: #000000; /* Black scrollbar */
-  border-radius: 10px;        /* Rounded corners */
-  border: 3px solid #f5f5f5;  /* Creates padding effect */
-}
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #1a1a1a;
+    }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: #1a1a1a;
-}
-
-/* For Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #000000 #f5f5f5;
-}
-
+    /* For Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #000000 #f5f5f5;
+    }
+    
+    /* Additional font weight overrides to prevent bold text */
+    
+    body.customer-page .nav-menu *,
+    body.customer-page .nav-item *,
+    body.customer-page .nav-link *,
+    body.customer-page .nav-text,
+    body.customer-page,
+    body.customer-page .footer-logo {
+      font-weight: normal !important;
+    }
+    
+    /* Ensure no external CSS can override our font weights */
+    body.customer-page a,
+    body.customer-page span,
+   
+    body.customer-page h2,
+    body.customer-page h3,
+    body.customer-page h4,
+    body.customer-page h5,
+    body.customer-page h6 {
+      font-weight: normal !important;
+    }
   </style>
+
+    
+    
+ 
 </head>
 
-<body>
-  <!-- Floating Unread Notification Indicator -->
-  <div class="unread-notification-indicator" id="globalUnreadIndicator" title="{{ unread_count }} unread notification(s)" onclick="window.location.href='{% url 'customer_notifications' %}'" {% if unread_count > 0 %}style="display:flex;"{% else %}style="display:none;"{% endif %}>
-    {{ unread_count }}
-  </div>
-  
-  <!-- Hamburger Button -->
+<body class="customer-page">
+<style>
+  /* Toast Notifications Styling */
+  .toast-container {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+    max-width: 350px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .toast {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 16px 40px 16px 24px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #000000;
+    font-weight: normal;
+    position: relative;
+    animation: slideInRight 0.5s forwards;
+    pointer-events: auto;
+    font-family: 'Inter', sans-serif;
+    color: #000000;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+  }
+
+  .toast::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #000000;
+    flex-shrink: 0;
+  }
+
+  .toast.success {
+    border-left-color: #000000;
+  }
+
+  .toast.info {
+    border-left-color: #000000;
+  }
+
+  .toast.warning {
+    border-left-color: #000000;
+  }
+
+  .toast.error {
+    border-left-color: #000000;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .toast-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #000000;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+  }
+
+  .toast-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .toast.hide {
+    animation: slideOutRight 0.5s forwards;
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+  }
+</style>  <!-- Hamburger Button -->
   <button class="hamburger" id="hamburger" aria-label="Toggle menu">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
@@ -260,16 +529,18 @@
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
-    <!-- Top Section -->    <div class="sidebar-header">
+    <!-- Top section -->
+    <div class="sidebar-header">
       <a href="{% url 'profile' %}" class="logo-link">
-      <i class="bi bi-person-circle sidebar-logo" style="font-size: 2.5rem; color: #000000;"></i>
+        <i class="fas fa-user sidebar-logo" style="font-size: 2.5rem; color: #000000;"></i>
       </a>
-      <h1 class="sidebar-title">Customer</h1>
+      <h1 class="sidebar-title" style="font-weight: bold;">Customer</h1>
     </div>
 
-    <!-- Navigation - This will be scrollable -->
+    <!-- Navigation -->
     <nav class="sidebar-nav">
       <ul class="nav-menu">
+        <!-- Profile -->
         <li class="nav-item">
           <a href="{% url 'profile' %}" class="nav-link">
             <i class="bi bi-person-circle nav-icon"></i>
@@ -283,18 +554,21 @@
             <span class="nav-text">Dashboard</span>
           </a>
         </li>
+
         <li class="nav-item">
           <a href="{% url 'customer_orders' %}" class="nav-link">
             <i class="bi bi-box-seam nav-icon"></i>
             <span class="nav-text">View Orders</span>
           </a>
         </li>
-        <li class="nav-item {% if unread_count > 0 %}has-notifications{% endif %}" id="notification-nav-item">
+
+        <!-- Notifications -->
+        <li class="nav-item" id="notification-nav-item">
           <a href="{% url 'customer_notifications' %}" class="nav-link">
             <i class="bi bi-bell nav-icon"></i>
             <span class="nav-text">Notifications</span>
             {% if unread_count > 0 %}
-            <span class="sidebar-badge" id="notification-badge">{{ unread_count }}</span>
+            <span class="notification-badge">{{ unread_count }}</span>
             {% endif %}
           </a>
         </li>
@@ -305,6 +579,7 @@
             <span class="nav-text">Upgrade to Admin</span>
           </a>
         </li>
+
         <li class="nav-item">
           <div class="switch-container">
             <label class="switch">
@@ -317,7 +592,7 @@
       </ul>
     </nav>
 
-    <!-- Footer - This will be fixed at bottom -->
+    <!-- Footer -->
     <footer class="sidebar-footer">
       <div class="footer-logo">Logo Here</div>
       <form action="{% url 'logout' %}" method="post" class="logout-form">
@@ -326,7 +601,6 @@
       </form>
     </footer>
   </aside>
-
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <!-- Main content -->
@@ -334,196 +608,68 @@
     {% block content %}
     {% endblock %}
   </main>
-
-  <!-- Mobile Block Overlay -->
-  <!-- <div id="mobile-block-message" style="display:none;">
-    <div class="icon">🖥️</div>
-    <div class="text">Mobile view is not supported.<br>Please use a device with a larger screen.</div>
-  </div> -->
+  <script src="{% static 'js/customer_base.js' %}"></script>    <!-- Additional script for sidebar scrolling -->
   <script>
-    // Show the overlay on mobile
-    function showMobileBlockIfNeeded() {
-      if (window.innerWidth <= 720) {
-        document.getElementById('mobile-block-message').style.display = 'flex';
-        document.documentElement.setAttribute('data-mobile-block', '1');
-      } else {
-        document.getElementById('mobile-block-message').style.display = 'none';
-        document.documentElement.removeAttribute('data-mobile-block');
+    document.addEventListener('DOMContentLoaded', function() {
+      {% if unread_count > 0 %}
+      // Add the has-notifications class to the notifications menu item
+      const notificationMenuItem = document.getElementById('notification-nav-item');
+      if (notificationMenuItem) {
+        notificationMenuItem.classList.add('has-notifications');
       }
-    }
-    window.addEventListener('resize', showMobileBlockIfNeeded);
-    window.addEventListener('DOMContentLoaded', showMobileBlockIfNeeded);
-  </script>
-  <!-- Sidebar & Active Item Highlight -->
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const body = document.body;
-
-      sidebar.classList.toggle('open');
-      body.classList.toggle('sidebar-open');
-
-      // Add click event to overlay to close sidebar on mobile
-      overlay.addEventListener('click', function () {
-        sidebar.classList.remove('open');
-        body.classList.remove('sidebar-open');
-      });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
+      {% endif %}
+      
+      // Handle active menu item highlighting
       const currentPath = window.location.pathname;
       const menuItems = document.querySelectorAll('.nav-menu .nav-item');
-
+      
       menuItems.forEach(item => {
         const link = item.querySelector('a');
         if (link && link.getAttribute('href') === currentPath) {
           item.classList.add('active');
         }
       });
-
-      // Ensure sidebar height is calculated correctly on load and resize
-      function adjustSidebarHeight() {
-        const sidebar = document.getElementById('sidebar');
-        const sidebarNav = sidebar.querySelector('.sidebar-nav');
-        const sidebarHeader = sidebar.querySelector('.sidebar-header');
-        const sidebarFooter = sidebar.querySelector('.sidebar-footer');
-
+      
+      // Check if active menu item is out of view and scroll to it
+      const activeNavItem = document.querySelector('.nav-item.active, .nav-link.active');
+      if (activeNavItem) {
+        activeNavItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      // Make sure sidebar scroll works on mobile too
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) {
+        sidebar.style.overflowY = 'auto';
+        
+        // Set height of sidebar-nav to enable scrolling
+        const sidebarHeader = document.querySelector('.sidebar-header');
+        const sidebarFooter = document.querySelector('.sidebar-footer');
+        const sidebarNav = document.querySelector('.sidebar-nav');
+        
         if (sidebarHeader && sidebarFooter && sidebarNav) {
           const headerHeight = sidebarHeader.offsetHeight;
           const footerHeight = sidebarFooter.offsetHeight;
-          sidebarNav.style.maxHeight = `calc(100vh - ${headerHeight + footerHeight + 20}px)`;
-        }
-      }
-
-      adjustSidebarHeight();
-      window.addEventListener('resize', adjustSidebarHeight);
-    });
-  </script>
-  <script src="{% static 'js/admin_base.js' %}"></script>  <script>
-    // Handle notifications indicator
-    window.addEventListener('DOMContentLoaded', () => {
-      // Initialize notification system
-      setupNotificationListeners();
-      
-      // Add the has-notifications class to the notifications menu item if there are unread notifications
-      const unreadCount = {{ unread_count|default:0 }};
-      if (unreadCount > 0) {
-        const notificationMenuItem = document.querySelector('.nav-link[href*="notifications"]').closest('.nav-item');
-        if (notificationMenuItem) {
-          notificationMenuItem.classList.add('has-notifications');
+          const windowHeight = window.innerHeight;
+          
+          sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
         }
       }
     });
-      // Function to update notification badge count globally
-    function updateNotificationBadge(count) {
-      // Get the badge and floating indicator elements
-      let badge = document.getElementById('notification-badge');
-      let floatingIndicator = document.getElementById('globalUnreadIndicator');
-      const notificationMenuItem = document.getElementById('notification-nav-item');
+    
+    // Update sidebar nav height on window resize
+    window.addEventListener('resize', function() {
+      const sidebarHeader = document.querySelector('.sidebar-header');
+      const sidebarFooter = document.querySelector('.sidebar-footer');
+      const sidebarNav = document.querySelector('.sidebar-nav');
       
-      // Convert count to a number if it's a string
-      if (typeof count === 'string') {
-        count = parseInt(count) || 0;
+      if (sidebarHeader && sidebarFooter && sidebarNav) {
+        const headerHeight = sidebarHeader.offsetHeight;
+        const footerHeight = sidebarFooter.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
       }
-      
-      // If count is 0, hide the badge
-      if (count === 0) {
-        if (badge) badge.style.display = 'none';
-        if (notificationMenuItem) notificationMenuItem.classList.remove('has-notifications');
-        
-        // Hide floating indicator if it exists
-        if (floatingIndicator) floatingIndicator.style.display = 'none';
-        
-        // Update page title to remove count
-        const originalTitle = document.title.replace(/^\(\d+\)\s/, '');
-        document.title = originalTitle;
-      } else {
-        // If badge doesn't exist, create it
-        if (!badge) {
-          badge = document.createElement('span');
-          badge.id = 'notification-badge';
-          badge.className = 'sidebar-badge';
-          const notificationLink = notificationMenuItem.querySelector('.nav-link');
-          if (notificationLink) {
-            notificationLink.appendChild(badge);
-          }
-        }
-        
-        // Update badge with new count and ensure it's visible
-        badge.textContent = count;
-        badge.style.display = 'flex';
-        badge.style.visibility = 'visible';
-        badge.style.opacity = '1';
-        
-        if (notificationMenuItem) {
-          notificationMenuItem.classList.add('has-notifications');
-        }
-        
-        // Update or create the floating indicator
-        if (!floatingIndicator) {
-          floatingIndicator = document.createElement('div');
-          floatingIndicator.id = 'globalUnreadIndicator';
-          floatingIndicator.className = 'unread-notification-indicator';
-          floatingIndicator.title = count + ' unread notification(s)';
-          floatingIndicator.onclick = function() {
-            window.location.href = '{% url "customer_notifications" %}';
-          };
-          document.body.prepend(floatingIndicator);
-        }
-        
-        // Update floating indicator with new count
-        floatingIndicator.textContent = count;
-        floatingIndicator.title = count + ' unread notification(s)';
-        floatingIndicator.style.display = 'flex';
-        
-        // Update page title with count
-        const originalTitle = document.title.replace(/^\(\d+\)\s/, '');
-        document.title = `(${count}) ${originalTitle}`;
-      }
-    }    // Setup event listeners to catch notification updates
-    function setupNotificationListeners() {
-      // Create a custom event for notification updates
-      window.addEventListener('notificationCountUpdated', function(event) {
-        if (event.detail && event.detail.count !== undefined) {
-          updateNotificationBadge(event.detail.count);
-        }
-      });
-      
-      // Initialize the notification badge and floating indicator on page load
-      const unreadCount = {{ unread_count|default:0 }};
-      updateNotificationBadge(unreadCount);
-
-      // Add visual indicator to notification menu item if there are unread notifications
-      if (unreadCount > 0) {
-        const notificationMenuItem = document.getElementById('notification-nav-item');
-        if (notificationMenuItem) {
-          notificationMenuItem.classList.add('has-notifications');
-        }
-      }
-      
-      // Add click handler for the floating indicator
-      const globalIndicator = document.getElementById('globalUnreadIndicator');
-      if (globalIndicator) {
-        globalIndicator.addEventListener('click', function() {
-          window.location.href = '{% url "customer_notifications" %}';
-        });
-      }
-
-      // Check for notifications periodically (every 60 seconds)
-      setInterval(function() {
-        // We don't auto-refresh the count here, but this could be used
-        // to fetch new notifications via an API call if needed
-        const badge = document.getElementById('notification-badge');
-        const notificationMenuItem = document.getElementById('notification-nav-item');
-        
-        if (badge && notificationMenuItem) {
-          // Ensure visibility of existing notifications
-          badge.style.visibility = 'visible';
-          badge.style.opacity = '1';
-          notificationMenuItem.classList.add('has-notifications');
-        }
-      }, 60000);
-    }
+    });
   </script>
 
   <div class="toast-container">
@@ -606,9 +752,7 @@
           setTimeout(() => {
             toast.remove();
           }, 500);
-        }, 5000);
-
-        // Add close button functionality
+        }, 5000);        // Add close button functionality
         const closeBtn = toast.querySelector('.toast-close');
         if (closeBtn) {
           closeBtn.addEventListener('click', closeToastHandler);
@@ -616,5 +760,6 @@
       }
     });
   </script>
-  
-  <!-- Hamburger Button -->
+</body>
+
+</html>
