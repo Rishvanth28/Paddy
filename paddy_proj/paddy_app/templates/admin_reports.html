@@ -548,28 +548,31 @@
             <div class="filter-group date-field">
                 <label for="start_date">Start Date:</label>
                 <input type="date" name="start_date" id="start_date" value="{{ filters.start_date }}">
-            </div>
-
-            <div class="filter-group date-field">
+            </div>            <div class="filter-group date-field">
                 <label for="end_date">End Date:</label>
                 <input type="date" name="end_date" id="end_date" value="{{ filters.end_date }}">
-            </div>
-
-            <div class="filter-actions">
-                <button type="submit" class="btn-primary">Apply Filters</button>
-                <button type="button" id="reset-filters" class="btn-secondary">Reset</button>
-            </div>
+            </div>        </div>
+          <div class="filter-actions-bar">
+            <button type="submit" class="btn-primary">
+                Apply Filters
+            </button>
+            <button type="button" id="reset-filters" class="btn-secondary">
+                Reset
+            </button>
         </div>
     </form>
 </div>
 
 <div class="export-section">
-    <h2>Export Report</h2>
-    <div class="export-buttons">
+    <h2>Export Report</h2>    <div class="export-buttons">
         <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=excel"
-            class="btn-export excel">Export to Excel</a>
+            class="btn-export excel">
+            <i class="fas fa-file-excel me-2"></i>Export to Excel
+        </a>
         <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=pdf"
-            class="btn-export pdf">Export to PDF</a>
+            class="btn-export pdf">
+            <i class="fas fa-file-pdf me-2"></i>Export to PDF
+        </a>
     </div>
 </div> <!-- Rice and Paddy Orders Table -->
 <div class="reports-table-container">

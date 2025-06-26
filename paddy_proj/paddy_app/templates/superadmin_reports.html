@@ -3,6 +3,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <div class="reports-container">
     <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h2 class="page-title mb-0 me-3">Super Admin Reports</h2>
@@ -78,8 +79,7 @@
                         <option value="last_6_months" {% if filters.date_preset == 'last_6_months' %}selected{% endif %}>Last 6 Months</option>
                         <option value="last_year" {% if filters.date_preset == 'last_year' %}selected{% endif %}>Last Year</option>
                     </select>
-                </div>
-            </div>
+                </div>            </div>
               <div class="filter-row">
                 <div class="filter-group date-field">
                     <label for="start_date">Start Date:</label>
@@ -90,20 +90,26 @@
                     <label for="end_date">End Date:</label>
                     <input type="date" name="end_date" id="end_date" value="{{ filters.end_date }}">
                 </div>
-                
-                <div class="filter-actions">
-                    <button type="submit" class="btn-primary">Apply Filters</button>
-                    <button type="button" id="reset-filters" class="btn-secondary">Reset</button>
-                </div>
+            </div>
+            
+            <div class="filter-actions-bar">
+                <button type="submit" class="btn-primary">
+                     Apply Filters
+                </button>
+                <button type="button" id="reset-filters" class="btn-secondary">
+                    </i> Reset
+                </button>
             </div>
         </form>
     </div>
     
     <div class="export-section">
-        <h2>Export Report</h2>
-        <div class="export-buttons">
-            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=excel" class="btn-export excel">Export to Excel</a>
-            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=pdf" class="btn-export pdf">Export to PDF</a>
+        <h2>Export Report</h2>        <div class="export-buttons">
+            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=excel" class="btn-export excel">
+                <i class="fas fa-file-excel me-2"></i>Export to Excel
+            </a>            <a href="{{ request.get_full_path }}{% if '?' in request.get_full_path %}&{% else %}?{% endif %}export=pdf" class="btn-export pdf">
+                <i class="fa-solid fa-file-pdf me-2"></i>Export to PDF
+            </a>
         </div>
     </div>
       <!-- Rice and Paddy Orders Table -->

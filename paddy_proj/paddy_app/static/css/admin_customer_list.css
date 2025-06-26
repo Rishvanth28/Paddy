@@ -4,7 +4,7 @@ html {
 }
 
 body, .customer-list-container,
-.customer-title, .search-input,
+.page-title, .search-input,
 .customer-table th, .customer-table td,
 .empty-state, .empty-state p {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,13 +26,16 @@ body, .customer-list-container,
 
 /* Header Section */
 .customer-header {
+    margin-bottom: 2.5rem;
+    animation: slideDown 0.6s ease-out;
+}
+
+.header-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2.5rem;
     flex-wrap: wrap;
     gap: 1.5rem;
-    animation: slideDown 0.6s ease-out;
 }
 
 @keyframes slideDown {
@@ -41,7 +44,7 @@ body, .customer-list-container,
 }
 
 /* Title - Only this is bold */
-.customer-title {
+.page-title {
     font-size: 2rem;
     font-weight: 700;
     color: #1a1a1a;
@@ -50,7 +53,7 @@ body, .customer-list-container,
     padding-bottom: 0.5rem;
 }
 
-.customer-title::after {
+.page-title::after {
     content: '';
     position: absolute;
     bottom: 0;
