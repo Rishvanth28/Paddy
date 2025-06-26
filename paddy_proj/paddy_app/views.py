@@ -1699,6 +1699,10 @@ def super_admin_orders(request):
         category_filter = request.GET.get('category', 'all')
         search_query = request.GET.get('search', '').strip()
         sort_by = request.GET.get('sort', '-order_id') # Default sort by latest order
+        admin_filter = request.GET.get('admin', 'all')  # Get admin filter parameter
+
+        if admin_filter != 'all':
+            orders_query = orders_query.filter(admin__admin_id=admin_filter)
 
         # Status filter
         if status_filter == 'completed':
@@ -1744,7 +1748,8 @@ def super_admin_orders(request):
 
         # Apply sorting
         orders_query = orders_query.order_by(sort_by)
-
+# Use select_related to efficiently fetch related admin and customer data
+        orders_query = orders_query.select_related('admin', 'customer')
         orders_data = []
         for order in orders_query:
             order_items_data = []
@@ -1773,20 +1778,26 @@ def super_admin_orders(request):
                 })
 
             customer_full_name = f"{order.customer.first_name} {order.customer.last_name}" if order.customer else "N/A"
-
+ 
+            admin_name = f"{order.admin.first_name} {order.admin.last_name}" if order.admin else "N/A"
+            admin_email = order.admin.email if order.admin else "N/A"
             orders_data.append({
                 'order_id': order.order_id,
                 'customer_id': order.customer.customer_id if order.customer else None,
                 'customer_full_name': customer_full_name,
+                'customer_phone': order.customer.phone_number,
                 'admin_id': order.admin.admin_id if order.admin else None,
+                'admin_name': admin_name,  # Add admin name
+                'admin_email': admin_email,  # Add admin email
                 'payment_status': order.payment_status,
                 'delivery_status': order.delivery_status,
+                'delivery_date':order.delivery_date if order.delivery_status else None,
                 'product_category_id': order.product_category_id,
                 'category': order.category,
                 'quantity': float(order.quantity),
                 'price_per_unit': float(order.price_per_unit),
                 'overall_amount': float(order.overall_amount),
-                'GST': order.GST,
+                'GST': order.GST if order.GST else "-",
                 'lorry_number': order.lorry_number,
                 'driver_name': order.driver_name,
                 'driver_ph_no': order.driver_ph_no,
@@ -1796,8 +1807,13 @@ def super_admin_orders(request):
                 'category': order.category,
             })
         return JsonResponse({'orders': orders_data})
-
-    return render(request, "superadmin_orders.html")
+    admins = []
+    if request.session.get('role') == 'superadmin':
+        # Get all admins except superadmin (admin_id=1000000)
+        admin_objs = AdminTable.objects.exclude(admin_id=1000000)
+        admins = [{'id': admin.admin_id, 'name': f"{admin.first_name} {admin.last_name}"} for admin in admin_objs]
+    
+    return render(request, "superadmin_orders.html", {'admins': admins})
 
 @role_required(["admin"])
 def admin_orders(request):
@@ -1960,9 +1976,12 @@ def upgrade_to_admin(request):
 def upgrade_to_customer(request):
     admin_id = request.session.get('user_id')
     admin = AdminTable.objects.get(admin_id=admin_id)
+    
+    # Check if admin is already a customer
+    is_customer = CustomerTable.objects.filter(email=admin.email).exists()
 
     if request.method == 'POST':
-        if CustomerTable.objects.filter(email=admin.email).exists():
+        if is_customer:
             messages.info(request, "You are already a customer.")
             return redirect('admin_dashboard')
 
@@ -1983,13 +2002,40 @@ def upgrade_to_customer(request):
         )
         new_customer.save()
 
-        messages.success(request, "You have been upgraded to customer!")
-        return redirect('upgrade_success')
+        # ✅ Create default 1-month free subscription for upgraded customer
+        Subscription.objects.create(
+            customer_id=new_customer,
+            subscription_type="customer",
+            subscription_status=1,  # Active
+            payment_amount=0,  # Free subscription
+            start_date=now().date(),
+            end_date=now().date() + timedelta(days=30)  # 1 month free
+        )
 
-    return render(request, 'upgrade_to_customer.html', {'admin': admin})
+        # Create notification for successful upgrade
+        create_notification(
+            user_type='customer',
+            user_id=new_customer.customer_id,
+            notification_type='account_upgrade',
+            title='Account Upgraded Successfully',
+            message='Your admin account has been upgraded to customer with 1 month free subscription.',
+        )
 
-def upgrade_success(request):
-    return render(request, 'upgrade_success.html')
+        # Create notification for admin (since they're now also a customer)
+        create_notification(
+            user_type='admin',
+            user_id=admin.admin_id,
+            notification_type='account_upgrade',
+            title='Upgraded to Customer',
+            message='You have successfully upgraded to customer account with 1 month free subscription.',
+        )
+
+        messages.success(request, "You have been upgraded to customer successfully with 1 month free subscription!")
+        # Update is_customer to True after successful upgrade
+        is_customer = True
+        return render(request, 'upgrade_to_customer.html', {'admin': admin, 'is_customer': is_customer})
+
+    return render(request, 'upgrade_to_customer.html', {'admin': admin, 'is_customer': is_customer})
 
 
 @role_required(["superadmin"])
