@@ -1990,7 +1990,35 @@ def upgrade_to_customer(request):
         )
         new_customer.save()
 
-        messages.success(request, "You have been upgraded to customer successfully!")
+        # ✅ Create default 1-month free subscription for upgraded customer
+        Subscription.objects.create(
+            customer_id=new_customer,
+            subscription_type="customer",
+            subscription_status=1,  # Active
+            payment_amount=0,  # Free subscription
+            start_date=now().date(),
+            end_date=now().date() + timedelta(days=30)  # 1 month free
+        )
+
+        # Create notification for successful upgrade
+        create_notification(
+            user_type='customer',
+            user_id=new_customer.customer_id,
+            notification_type='account_upgrade',
+            title='Account Upgraded Successfully',
+            message='Your admin account has been upgraded to customer with 1 month free subscription.',
+        )
+
+        # Create notification for admin (since they're now also a customer)
+        create_notification(
+            user_type='admin',
+            user_id=admin.admin_id,
+            notification_type='account_upgrade',
+            title='Upgraded to Customer',
+            message='You have successfully upgraded to customer account with 1 month free subscription.',
+        )
+
+        messages.success(request, "You have been upgraded to customer successfully with 1 month free subscription!")
         # Update is_customer to True after successful upgrade
         is_customer = True
         return render(request, 'upgrade_to_customer.html', {'admin': admin, 'is_customer': is_customer})
