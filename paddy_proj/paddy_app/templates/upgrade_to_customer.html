@@ -4,12 +4,258 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/admin_upgrade.css' %}">
+<style>
+  /* Customer status styling */
+  .customer-status {
+    text-align: center;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    max-width: 600px;
+    position: relative;
+  }
+
+  .customer-status::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #000000, rgba(0, 0, 0, 0.7), #000000);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 12px 12px 0 0;
+  }
+
+  .customer-icon {
+    margin: 0 auto 1.5rem;
+    width: 80px;
+    height: 80px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    animation: fadeIn 0.8s ease-in-out, pulse 2s infinite ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .customer-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #000000;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+  }
+  
+  .customer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #000000;
+  }
+  
+  .customer-info-box {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-left: 3px solid #000;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    text-align: left;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    animation: fadeIn 0.5s ease-in-out;
+    font-size: 0.95rem;
+    color: #000000;
+  }
+
+  .customer-description {
+    font-size: 0.9rem;
+    color: #333333;
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-top: 1rem;
+  }
+
+  /* Make form unusable when already a customer */
+  .upgrade-form.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .upgrade-card.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Toast Notifications Styling */
+  .toast-container {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+    max-width: 350px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 16px 40px 16px 24px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #000000;
+    font-weight: 500;
+    position: relative;
+    animation: slideInRight 0.5s forwards;
+    pointer-events: auto;
+    font-family: 'Inter', sans-serif;
+    color: #000000;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+  }
+
+  .toast::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #000000;
+    flex-shrink: 0;
+  }
+
+  .toast.success {
+    border-left-color: #000000 !important;
+  }
+
+  .toast.success::before {
+    background-color: #000000 !important;
+  }
+
+  .toast.error {
+    border-left-color: #e74c3c !important;
+  }
+
+  .toast.error::before {
+    background-color: #e74c3c !important;
+  }
+
+  .toast-close {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toast-close:hover {
+    color: #333;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+</style>
+
 <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
     <div class="title-group">
-        <h1 class="page-title mb-0 me-3 " >Upgrade to Customer</h1>
+        <h1 class="page-title mb-0 me-3">Upgrade to Customer</h1>
         <p class="upgrade-subtitle">Convert this admin account to a customer profile</p>
     </div>
 </div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+{% if is_customer %}
+  <!-- Already Customer Message -->
+  <div class="customer-status">
+    <div class="customer-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M8 12l2 2 6-6"></path>
+      </svg>
+    </div>
+    <h2 class="customer-title">You are already a Customer</h2>
+    <div class="customer-info-box">
+      <p><strong>You are already a customer!</strong> Your account doesn't need to be upgraded.</p>
+    </div>
+    <p class="customer-description">
+      As an existing customer, you already have access to all customer features including placing orders, managing subscriptions, and tracking deliveries. Your customer profile is active and ready to use.
+    </p>
+  </div>
+{% else %}
 <div class="upgrade-container">
     <!-- Main Card -->
     <div class="upgrade-card">
@@ -84,11 +330,57 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <!-- Form Validation Script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Handle Django messages and convert to toasts
+        {% if messages %}
+            {% for message in messages %}
+                showToast('{{ message|escapejs }}', '{{ message.tags }}');
+            {% endfor %}
+        {% endif %}
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'toast-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.onclick = () => removeToast(toast);
+            toast.appendChild(closeBtn);
+
+            toastContainer.appendChild(toast);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                removeToast(toast);
+            }, 5000);
+        }
+
+        function removeToast(toast) {
+            if (toast && toast.parentNode) {
+                toast.style.animation = 'slideOutRight 0.5s forwards';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 500);
+            }
+        }
+
+        // Form validation logic        
         const form = document.querySelector('.upgrade-form');
+        
+        if (!form) return; // Exit if no form (already a customer)
 
         form.addEventListener('submit', function (event) {
             let isValid = true;
@@ -106,7 +398,7 @@
 
             if (!isValid) {
                 event.preventDefault();
-                alert('Please fill in all required fields');
+                showToast('Please fill in all required fields', 'error');
             }
         });
 
@@ -123,4 +415,3 @@
 </script>
 
 {% endblock %}
-</script>
