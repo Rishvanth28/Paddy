@@ -136,6 +136,7 @@ h1 {
   margin-bottom: 20px; /* Reduced margin */
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 1vh;
 }
 
 .tab-btn {
@@ -420,6 +421,7 @@ button:hover {
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 18px;
+    margin-top: 1vh;
   }
 
   .tab-btn {
@@ -552,6 +554,7 @@ button:hover {
 
   .tab-nav {
     gap: 8px;
+    margin-top: 1vh;
   }
 
   .tab-btn {
@@ -601,6 +604,7 @@ button:hover {
 
   .tab-nav {
     margin-bottom: 12px;
+    margin-top: 1vh;
   }
 
   .tab-btn {

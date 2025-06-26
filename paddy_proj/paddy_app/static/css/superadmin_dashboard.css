@@ -911,7 +911,7 @@ body.superadmin-page {
 }
 
 .analytics-section {
-    padding: 3rem 1rem 1rem 1rem;
+    padding-top: 3rem ;
     margin-top: 1rem;
 }
 
@@ -990,7 +990,7 @@ body.superadmin-page {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    padding: 1rem;
+    /* padding: 1rem; */
 }
 
 /* Enhanced responsive analytics grid */
@@ -1730,7 +1730,7 @@ body.superadmin-page {
     }
     
     .analytics-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
     
     .superadmin-dashboard-grid {

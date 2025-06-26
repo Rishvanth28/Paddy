@@ -107,6 +107,7 @@ h1 {
   margin-bottom: 30px;
   justify-content: center;
   flex-wrap: wrap;
+  margin-top: 1vh;
 }
 
 .tab-btn {
@@ -745,6 +746,7 @@ button:focus {
     flex-wrap: wrap;
     gap: 12px;
     margin-bottom: 25px;
+    margin-top: 1vh;
   }
 
   .tab-btn {
@@ -866,6 +868,7 @@ button:focus {
   .tab-nav {
     margin-bottom: 20px;
     gap: 8px;
+    margin-top: 1vh;
   }
 
   .tab-btn {
@@ -975,6 +978,7 @@ button:focus {
 
   .tab-nav {
     gap: 6px;
+    margin-top: 1vh;
   }
 
   .tab-btn {
