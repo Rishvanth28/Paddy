@@ -2614,10 +2614,9 @@ def admin_notifications(request):
 @role_required(["superadmin"])
 def superadmin_notifications(request):
     """Display notifications for superadmin"""
-    admin_id = request.session.get
+    admin_id = request.session.get("user_id")
     
     # Get all admin payment and subscription notifications
-   
     notifications = Notification.objects.filter(
         Q(user_type='admin', notification_type__in=['subscription_payment', 'subscription_upgrade', 'admin_payment']) |
         Q(user_type='superadmin', user_id=str(admin_id))
@@ -2661,13 +2660,21 @@ def mark_all_notifications_read(request):
         if not user_id or not role:
             return JsonResponse({'success': False, 'message': 'Session expired'})
         
-        user_type = 'superadmin' if role == 'superadmin' else role
-        
-        Notification.objects.filter(
-            user_type=user_type,
-            user_id=str(user_id),
-            is_read=False
-        ).update(is_read=True)
+        # For superadmin, mark both admin notifications and their own notifications as read
+        if role == 'superadmin':
+            Notification.objects.filter(
+                Q(user_type='admin', notification_type__in=['subscription_payment', 'subscription_upgrade', 'admin_payment']) |
+                Q(user_type='superadmin', user_id=str(user_id)),
+                is_read=False
+            ).update(is_read=True)
+        else:
+            # For other users, only mark their own notifications as read
+            user_type = role
+            Notification.objects.filter(
+                user_type=user_type,
+                user_id=str(user_id),
+                is_read=False
+            ).update(is_read=True)
         
         return JsonResponse({'success': True})
     except Exception as e:
@@ -2687,7 +2694,11 @@ def delete_notifications(request):
         role = request.session.get("role")
         
         if not user_id or not role:
-            return JsonResponse({'success': False, 'error': 'Session expired'})
+            return JsonResponse({'success': False, 'error': 'Session expired. Please login again.'})
+        
+        # Additional role validation for security
+        if role not in ['admin', 'customer', 'superadmin']:
+            return JsonResponse({'success': False, 'error': 'Invalid user role'})
         
         if not notification_ids:
             return JsonResponse({'success': False, 'error': 'No notifications selected'})
@@ -2696,15 +2707,28 @@ def delete_notifications(request):
         if not isinstance(notification_ids, list):
             return JsonResponse({'success': False, 'error': 'Invalid notification IDs format'})
         
-        # Determine user type
-        user_type = 'superadmin' if role == 'superadmin' else role
+        # Convert string IDs to integers
+        try:
+            notification_ids = [int(id) for id in notification_ids]
+        except (ValueError, TypeError):
+            return JsonResponse({'success': False, 'error': 'Invalid notification ID format'})
         
-        # Delete notifications that belong to the current user
-        deleted_count = Notification.objects.filter(
-            notification_id__in=notification_ids,
-            user_type=user_type,
-            user_id=str(user_id)
-        ).delete()[0]
+        # For superadmin, allow deleting both admin notifications and their own notifications
+        if role == 'superadmin':
+            deleted_count = Notification.objects.filter(
+                notification_id__in=notification_ids
+            ).filter(
+                Q(user_type='admin', notification_type__in=['subscription_payment', 'subscription_upgrade', 'admin_payment']) |
+                Q(user_type='superadmin', user_id=str(user_id))
+            ).delete()[0]
+        else:
+            # For other users, only delete their own notifications
+            user_type = role
+            deleted_count = Notification.objects.filter(
+                notification_id__in=notification_ids,
+                user_type=user_type,
+                user_id=str(user_id)
+            ).delete()[0]
         
         if deleted_count > 0:
             return JsonResponse({
@@ -2715,7 +2739,7 @@ def delete_notifications(request):
         else:
             return JsonResponse({
                 'success': False, 
-                'error': 'No notifications found or unauthorized access'
+                'error': 'No matching notifications found or unauthorized access'
             })
             
     except json.JSONDecodeError:

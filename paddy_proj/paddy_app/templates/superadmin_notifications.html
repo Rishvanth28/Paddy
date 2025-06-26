@@ -775,7 +775,7 @@
             }
 
             .d-flex.align-items-center.gap-4 {
-                flex-direction: column;
+                flex-direction: row;
                 gap: 8px !important;
             }
 
@@ -1209,7 +1209,12 @@
                 notification_ids: selectedIds
             })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     // Remove notifications from DOM with fade effect
@@ -1238,12 +1243,22 @@
                         }, 400);
                     }, 300);
                 } else {
-                    showActionFeedback(data.error || 'Failed to delete notifications', 'error');
+                    const errorMessage = data.error || 'Failed to delete notifications';
+                    showActionFeedback(errorMessage, 'error');
+                    
+                    // If session expired, suggest page reload
+                    if (errorMessage.includes('Session expired') || errorMessage.includes('login')) {
+                        setTimeout(() => {
+                            if (confirm('Your session has expired. Would you like to reload the page to login again?')) {
+                                location.reload();
+                            }
+                        }, 2000);
+                    }
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                showActionFeedback('Failed to delete notifications', 'error');
+                console.error('Delete error:', error);
+                showActionFeedback('Network error occurred. Please try again.', 'error');
             })
             .finally(() => {
                 // Restore button state
