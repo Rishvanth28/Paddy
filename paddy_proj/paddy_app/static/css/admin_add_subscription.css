@@ -159,7 +159,7 @@ body::before {
 
 /* Content Section - Enhanced Background */
 .content-section {
-    padding: 3.5rem 3rem;
+    padding: 2.9rem 3rem;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.9) 100%);
     border-radius: 0 0 20px 20px;
     position: relative;
@@ -172,7 +172,7 @@ body::before {
     backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 3rem;
-    margin-bottom: 2.5rem;
+    /* margin-bottom: 2.5rem; */
     border-left: 4px solid #1a1a1a;
     border: 1px solid rgba(229, 229, 229, 0.6);
     box-shadow:
@@ -506,7 +506,7 @@ body::before {
     border-left-style: solid;
     border-radius: 16px;
     padding: 2.5rem;
-    margin-bottom: 2.5rem;
+    /* margin-bottom: 2.5rem; */
     background: rgba(248, 249, 250, 0.8);
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(229, 229, 229, 0.6);
