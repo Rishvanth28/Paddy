@@ -30,17 +30,6 @@ body {
     color: #1a202c;
 }
 
-/* ========== Header ========== */
-.header-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-left: 3rem;
-    margin-top: 3rem;
-}
-
 /* ========== Page Title - FIXED DESKTOP LEFT ALIGNMENT ========== */
 .page-title {
     font-size: 2rem;
@@ -52,6 +41,36 @@ body {
     text-align: left !important; /* Force left alignment on desktop */
     position: relative;
     padding-bottom: 0.6rem;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0 !important; /* Left-aligned underline on desktop */
+    transform: none !important; /* Remove centering transform */
+    width: 80px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 2px;
+    transition: width 0.3s ease-in-out;
+}
+
+.page-title:hover::after {
+    width: 110px; /* Expand to the right on hover */
+    left: 0 !important; /* Keep left position */
+    transform: none !important; /* No centering */
+}
+
+/* ========== Header - DESKTOP LEFT POSITIONING ========== */
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 3rem; /* Keep original left margin */
+    margin-top: 3rem;
 }
 
 .page-title::after {
@@ -121,9 +140,8 @@ body {
 .card {
     border: none;
     border-radius: 1.5rem;
-    backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 2px 10px rgba(39, 39, 39, 0.3);
+    background: transparent;
+    box-shadow: none;
     overflow: hidden;
 }
 
@@ -469,20 +487,21 @@ body {
         margin: 0 auto !important;
     }
 
-    /* FIXED: Card with subtle curves - reduced border-radius */
+    /* FIXED: Card with minimal styling - SMALLER SIZE */
     .card {
-        margin-top: 20px !important;
-        margin-left: 40px !important;
-        margin-right: 40px !important;
-        border-radius: 8px !important; /* REDUCED from 1.5rem to 8px */
+        margin-top: 15px !important;
+        margin-left: 20px !important;
+        margin-right: 20px !important;
+        border-radius: 6px !important;
         overflow: hidden !important;
-        background: rgba(255, 255, 255, 0.95) !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
     }
 
     .card-body {
         padding: 0 !important;
-        border-radius: 8px !important; /* REDUCED from 1.5rem to 8px */
+        border-radius: 6px !important;
         overflow: hidden !important;
     }
 
@@ -691,10 +710,13 @@ body {
     }
 
     .card {
-        margin-top: 10px !important;
-        margin-left: 30px !important; /* Match header margins */
-        margin-right: 30px !important; /* Match header margins */
-        border-radius: 6px !important;
+        margin-top: 8px !important;
+        margin-left: 20px !important;
+        margin-right: 20px !important;
+        border-radius: 5px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
     }
 
     .table-responsive {
@@ -737,6 +759,1328 @@ body {
 
     .container {
         padding: 0 5px !important;
+    }
+}
+
+/* ========== Force Center Header Utilities - ENHANCED ========== */
+.header-bar .page-title {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    width: 100% !important;
+    position: relative !important;
+    left: 0 !important;
+    transform: none !important;
+}
+
+.header-bar .page-title::after {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    position: absolute !important;
+}
+
+/* ========== Additional Centering Fixes ========== */
+@media (max-width: 768px) {
+    /* Force center everything inside header */
+    .header-bar {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    .header-bar * {
+        text-align: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    
+    /* Override any conflicting styles */
+    .page-title {
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: none !important;
+        text-align: center !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        display: block !important;
+    }
+
+    /* Ensure search wrapper is also centered */
+    .search-wrapper {
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: none !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    /* ========== Additional Scroll Containment Rules ========== */
+    /* Ensure table content stays within container bounds */
+    .table-responsive {
+        scroll-behavior: smooth !important;
+        -webkit-overflow-scrolling: touch !important;
+        will-change: scroll-position !important;
+        transform: translateZ(0) !important; /* Force GPU acceleration */
+    }
+    
+    /* Prevent any child elements from breaking container bounds */
+    .table-responsive * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Force proper table containment */
+    .table {
+        table-layout: fixed !important; /* Fixed layout for better control */
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+    }
+    
+    /* Ensure cells respect container boundaries */
+    .table th,
+    .table td {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Allow text wrapping only for specific columns that need it */
+    .table tbody td:nth-child(2) { /* Name column */
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+}
+
+/* ========== Comprehensive Mobile Responsive Design (max-width: 425px) - ULTRA COMPACT ========== */
+@media (max-width: 425px) {
+    body {
+        overflow-x: hidden;
+        font-size: 12px;
+        background: #f8f9fa;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0 5px;
+    }
+
+    /* Navbar Optimizations - ULTRA COMPACT */
+    .navbar {
+        padding: 0.5rem 0.8rem;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .navbar-title {
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+    }
+
+    /* Header Bar - ULTRA COMPACT */
+    .header-bar {
+        width: calc(100% - 20px);
+        margin: 50px auto 10px auto;
+        padding: 10px 8px;
+        background-color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        border-radius: 6px;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* Page Title - ULTRA COMPACT */
+    .page-title {
+        font-size: 1.1rem;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
+        order: 1;
+        letter-spacing: 0.3px;
+        font-weight: 600;
+    }
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background-color: #3b82f6;
+        border-radius: 2px;
+        transition: width 0.3s ease;
+    }
+
+    .page-title:hover::after {
+        width: 55px;
+    }
+
+    /* Search Wrapper - ULTRA COMPACT */
+    .search-wrapper {
+        width: 100%;
+        max-width: 100%;
+        justify-content: center;
+        order: 2;
+    }
+
+    .search-wrapper input[type="search"] {
+        width: 100%;
+        max-width: 220px;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.7rem 0.5rem 2rem;
+        border-radius: 5px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+    }
+
+    .search-wrapper input[type="search"]:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    /* Card - ULTRA COMPACT - MINIMAL STYLING */
+    .card {
+        margin: 8px auto;
+        width: calc(100% - 16px);
+        border-radius: 4px;
+        overflow: hidden;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .card-body {
+        padding: 0;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 0.6rem;
+        border-radius: 4px 4px 0 0;
+        background-color: transparent;
+        border-bottom: none;
+    }
+
+    /* Table Responsive Container - FIXED MARGIN ISSUE */
+    .table-responsive {
+        border-radius: 5px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        position: relative;
+        max-height: 55vh;
+        overflow-y: auto;
+        overflow-x: auto;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+        /* FIX: Remove any potential margin/padding causing blank space */
+        box-sizing: border-box;
+    }
+
+    /* Table - ULTRA COMPACT with NO MARGIN/PADDING ISSUES */
+    .table {
+        font-size: 0.7rem;
+        min-width: 520px; /* REDUCED from 600px to fit better */
+        margin-bottom: 0;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+        /* FIX: Ensure table takes full width without overflow */
+        table-layout: fixed;
+        box-sizing: border-box;
+    }
+
+    /* Table Header - ULTRA COMPACT */
+    .table thead th {
+        padding: 6px 3px; /* REDUCED padding */
+        font-size: 0.6rem; /* SMALLER font */
+        font-weight: 600;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #111827;
+        color: #fff;
+        border: none;
+        text-align: center;
+        vertical-align: middle;
+        /* FIX: Specific width allocation to prevent blank space */
+        box-sizing: border-box;
+    }
+
+    /* FIX: Specific column widths to eliminate blank space */
+    .table thead th:nth-child(1) { /* ID */
+        width: 12%;
+        min-width: 40px;
+    }
+
+    .table thead th:nth-child(2) { /* Name */
+        width: 28%;
+        min-width: 85px;
+    }
+
+    .table thead th:nth-child(3) { /* Payment */
+        width: 18%;
+        min-width: 60px;
+    }
+
+    .table thead th:nth-child(4) { /* Status */
+        width: 16%;
+        min-width: 55px;
+    }
+
+    .table thead th:nth-child(5) { /* Start Date */
+        width: 13%;
+        min-width: 70px;
+    }
+
+    .table thead th:nth-child(6) { /* End Date */
+        width: 13%;
+        min-width: 70px;
+        /* FIX: Ensure last column has no extra margin */
+        padding-right: 3px;
+        margin-right: 0;
+    }
+
+    .table thead th:first-child {
+        border-top-left-radius: 3px;
+        padding-left: 3px;
+    }
+
+    .table thead th:last-child {
+        border-top-right-radius: 3px;
+        /* FIX: No extra padding/margin on last column */
+        padding-right: 3px;
+        margin-right: 0;
+    }
+
+    /* Table Body - ULTRA COMPACT with FIXED SPACING */
+    .table tbody td {
+        padding: 6px 3px; /* REDUCED padding */
+        word-wrap: break-word;
+        border: none;
+        border-top: 1px solid #f3f4f6;
+        font-size: 0.65rem; /* SMALLER font */
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+        /* FIX: Ensure cells respect column widths */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* FIX: Apply same width constraints to body cells */
+    .table tbody td:nth-child(1) { /* ID */
+        width: 12%;
+        min-width: 40px;
+        font-weight: 600;
+        color: #374151;
+        padding-left: 3px;
+    }
+
+    .table tbody td:nth-child(2) { /* Name */
+        width: 28%;
+        min-width: 85px;
+        white-space: normal;
+        word-wrap: break-word;
+        text-align: left;
+        padding-left: 4px;
+        line-height: 1.2;
+    }
+
+    .table tbody td:nth-child(3) { /* Payment */
+        width: 18%;
+        min-width: 60px;
+        font-weight: 600;
+        color: #059669;
+        font-size: 0.65rem;
+    }
+
+    .table tbody td:nth-child(4) { /* Status */
+        width: 16%;
+        min-width: 55px;
+        padding: 6px 2px;
+    }
+
+    .table tbody td:nth-child(5) { /* Start Date */
+        width: 13%;
+        min-width: 70px;
+        font-size: 0.6rem;
+        color: #6b7280;
+        line-height: 1.1;
+    }
+
+    .table tbody td:nth-child(6) { /* End Date */
+        width: 13%;
+        min-width: 70px;
+        font-size: 0.6rem;
+        color: #6b7280;
+        line-height: 1.1;
+        /* FIX: Ensure no extra margin/padding on last column */
+        padding-right: 3px;
+        margin-right: 0;
+    }
+
+    .table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 3px;
+    }
+
+    .table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 3px;
+        /* FIX: No extra margin on last cell */
+        margin-right: 0;
+        padding-right: 3px;
+    }
+
+    /* Enhanced Hover Effects - SUBTLE */
+    .table tbody tr:hover {
+        background-color: #f8fafc;
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    /* Status Badges - ULTRA COMPACT */
+    .active-status,
+    .inactive-status {
+        padding: 1px 4px;
+        font-size: 0.55rem;
+        white-space: nowrap;
+        border-radius: 8px;
+        font-weight: 500;
+        display: inline-block;
+        line-height: 1.2;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .active-status {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .inactive-status {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    /* Enhanced Scrollbar - THINNER */
+    .table-responsive::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #9ca3af;
+        border-radius: 2px;
+        border: none;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f9fafb;
+        border-radius: 2px;
+    }
+
+    .table-responsive::-webkit-scrollbar-corner {
+        background: #f9fafb;
+    }
+
+    /* No Data Message - ULTRA COMPACT */
+    .no-customers {
+        padding: 1rem 0.5rem;
+        text-align: center;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        margin: 15px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .no-customers p {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* Main Container - ULTRA COMPACT */
+    .main {
+        padding: 0;
+        margin: 0;
+    }
+
+    /* FIX: Additional rules to prevent blank space */
+    .table-responsive,
+    .table-responsive * {
+        box-sizing: border-box;
+        margin-right: 0;
+        padding-right: 0;
+    }
+
+    /* FIX: Ensure no extra space in table container */
+    .table-responsive::after {
+        content: '';
+        display: block;
+        clear: both;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* ========== Medium Tablets (426px - 768px) - FIXED BLANK SPACE ========== */
+@media (min-width: 426px) and (max-width: 768px) {
+    body {
+        font-size: 15px;
+        background: #f8f9fa;
+    }
+
+    .container {
+        width: 95%;
+        max-width: 95%;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    /* Navbar - Tablet */
+    .navbar {
+        padding: 1rem 1.5rem;
+        justify-content: center;
+    }
+
+    .navbar-title {
+        font-size: 1.4rem;
+    }
+
+    /* Header Bar - Tablet */
+    .header-bar {
+        width: 90%;
+        margin: 80px auto 20px auto;
+        padding: 20px 16px;
+        background-color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* Page Title - Tablet */
+    .page-title {
+        font-size: 1.6rem;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto 10px auto;
+        order: 1;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+    }
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: #3b82f6;
+        border-radius: 2px;
+        transition: width 0.3s ease;
+    }
+
+    .page-title:hover::after {
+        width: 80px;
+    }
+
+    /* Search Wrapper - Tablet */
+    .search-wrapper {
+        width: 100%;
+        max-width: 500px;
+        justify-content: center;
+        order: 2;
+        margin: 0 auto;
+    }
+
+    .search-wrapper input[type="search"] {
+        width: 100%;
+        max-width: 350px;
+        font-size: 0.95rem;
+        padding: 0.8rem 1rem 0.8rem 2.5rem;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+    }
+
+    .search-wrapper input[type="search"]:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    /* Card - Tablet - MINIMAL STYLING */
+    .card {
+        margin: 15px auto;
+        width: 85%;
+        border-radius: 8px;
+        overflow: hidden;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .card-body {
+        padding: 0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 1.25rem;
+        border-radius: 10px 10px 0 0;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* FIX: Table Responsive Container - Tablet with proper containment */
+    .table-responsive {
+        border-radius: 10px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        position: relative;
+        max-height: 70vh;
+        overflow-y: auto;
+        overflow-x: auto;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* FIX: Table - Tablet with fixed layout to prevent blank space */
+    .table {
+        font-size: 0.9rem;
+        min-width: 700px; /* REDUCED from 750px */
+        margin-bottom: 0;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+        /* FIX: Use fixed table layout for better control */
+        table-layout: fixed;
+        box-sizing: border-box;
+    }
+
+    /* FIX: Table Header - Tablet with specific column widths */
+    .table thead th {
+        padding: 12px 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #111827;
+        color: #fff;
+        border: none;
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+    }
+
+    /* FIX: Specific column widths to eliminate blank space */
+    .table thead th:nth-child(1) { /* ID */
+        width: 10%;
+        min-width: 50px;
+    }
+    
+    .table thead th:nth-child(2) { /* Name */
+        width: 30%;
+        min-width: 120px;
+    }
+    
+    .table thead th:nth-child(3) { /* Payment */
+        width: 15%;
+        min-width: 80px;
+    }
+    
+    .table thead th:nth-child(4) { /* Status */
+        width: 15%;
+        min-width: 80px;
+    }
+    
+    .table thead th:nth-child(5) { /* Start Date */
+        width: 15%;
+        min-width: 100px;
+    }
+    
+    .table thead th:nth-child(6) { /* End Date */
+        width: 15%;
+        min-width: 100px;
+        /* FIX: Ensure last column has no extra margin */
+        padding-right: 8px;
+        margin-right: 0;
+    }
+
+    .table thead th:first-child {
+        border-top-left-radius: 8px;
+        padding-left: 8px;
+    }
+
+    .table thead th:last-child {
+        border-top-right-radius: 8px;
+        /* FIX: No extra padding/margin on last column */
+        padding-right: 8px;
+        margin-right: 0;
+    }
+
+    /* FIX: Table Body - Tablet with matching column widths */
+    .table tbody td {
+        padding: 12px 8px;
+        word-wrap: break-word;
+        border: none;
+        border-top: 1px solid #f3f4f6;
+        font-size: 0.85rem;
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* FIX: Apply same width constraints to body cells */
+    .table tbody td:nth-child(1) { /* ID */
+        width: 10%;
+        min-width: 50px;
+        font-weight: 600;
+        color: #374151;
+        padding-left: 8px;
+    }
+    
+    .table tbody td:nth-child(2) { /* Name */
+        width: 30%;
+        min-width: 120px;
+        white-space: normal;
+        word-wrap: break-word;
+        text-align: left;
+        padding-left: 12px;
+        line-height: 1.3;
+    }
+    
+    .table tbody td:nth-child(3) { /* Payment */
+        width: 15%;
+        min-width: 80px;
+        font-weight: 600;
+        color: #059669;
+        font-size: 0.9rem;
+    }
+    
+    .table tbody td:nth-child(4) { /* Status */
+        width: 15%;
+        min-width: 80px;
+        padding: 12px 6px;
+    }
+    
+    .table tbody td:nth-child(5) { /* Start Date */
+        width: 15%;
+        min-width: 100px;
+        font-size: 0.8rem;
+        color: #6b7280;
+        line-height: 1.2;
+    }
+    
+    .table tbody td:nth-child(6) { /* End Date */
+        width: 15%;
+        min-width: 100px;
+        font-size: 0.8rem;
+        color: #6b7280;
+        line-height: 1.2;
+        /* FIX: Ensure no extra margin/padding on last column */
+        padding-right: 8px;
+        margin-right: 0;
+    }
+
+    .table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+
+    .table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 8px;
+        /* FIX: No extra margin on last cell */
+        margin-right: 0;
+        padding-right: 8px;
+    }
+
+    /* Enhanced Hover Effects - Tablet */
+    .table tbody tr:hover {
+        background-color: #f8fafc;
+        transition: background-color 0.2s ease;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .table tbody tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    /* Column Specific Styles - Tablet */
+    .table tbody td:first-child { /* ID column */
+        min-width: 60px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .table tbody td:nth-child(2) { /* Name column */
+        min-width: 120px;
+        max-width: 120px;
+        white-space: normal;
+        word-wrap: break-word;
+        text-align: left;
+    }
+
+    .table tbody td:nth-child(3) { /* Payment Amount */
+        min-width: 80px;
+        font-weight: 600;
+        color: #059669;
+        font-size: 0.9rem;
+    }
+
+    .table tbody td:nth-child(4) { /* Status */
+        min-width: 80px;
+    }
+
+    .table tbody td:nth-child(5), 
+    .table tbody td:nth-child(6) { /* Date columns */
+        min-width: 100px;
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+
+    /* Status Badges - Tablet */
+    .active-status,
+    .inactive-status {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        border-radius: 14px;
+        font-weight: 500;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .active-status {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .inactive-status {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    /* Enhanced Scrollbar - Tablet */
+    .table-responsive::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #9ca3af, #6b7280);
+        border-radius: 4px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f9fafb;
+        border-radius: 4px;
+        margin: 0;
+    }
+
+    .table-responsive::-webkit-scrollbar-corner {
+        background: #f9fafb;
+    }
+
+    /* No Data Message - Tablet */
+    .no-customers {
+        padding: 2rem 1.5rem;
+        text-align: center;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        margin: 30px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .no-customers p {
+        font-size: 1rem;
+        color: #6b7280;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* Main Container - Tablet */
+    .main {
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Additional Button Styles - Tablet */
+    .btn {
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* FIX: Additional rules to prevent blank space */
+    .table-responsive,
+    .table-responsive * {
+        box-sizing: border-box;
+        margin-right: 0;
+    }
+    
+    /* FIX: Ensure no extra space in table container */
+    .table-responsive::after {
+        content: '';
+        display: block;
+        clear: both;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* ========== Large Tablets (769px - 1024px) ========== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    body {
+        font-size: 16px;
+        background: #f8f9fa;
+    }
+
+    .container {
+        width: 95%;
+        max-width: 95%;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Navbar - Large Tablet */
+    .navbar {
+        padding: 1.2rem 2rem;
+        justify-content: center;
+    }
+
+    .navbar-title {
+        font-size: 1.5rem;
+    }
+
+    /* Header Bar - Large Tablet */
+    .header-bar {
+        width: 85%;
+        margin: 80px auto 25px auto;
+        padding: 25px 20px;
+        background-color: #fff;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* Page Title - Large Tablet */
+    .page-title {
+        font-size: 1.8rem;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto 12px auto;
+        order: 1;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70px;
+        height: 4px;
+        background-color: #3b82f6;
+        border-radius: 2px;
+        transition: width 0.3s ease;
+    }
+
+    .page-title:hover::after {
+        width: 90px;
+    }
+
+    /* Search Wrapper - Large Tablet */
+    .search-wrapper {
+        width: 100%;
+        max-width: 600px;
+        justify-content: center;
+        order: 2;
+        margin: 0 auto;
+    }
+
+    .search-wrapper input[type="search"] {
+        width: 100%;
+        max-width: 400px;
+        font-size: 1rem;
+        padding: 1rem 1.2rem 1rem 2.8rem;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        background-color: #f9fafb;
+    }
+
+    .search-wrapper input[type="search"]:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    /* Card - Large Tablet - MINIMAL STYLING */
+    .card {
+        margin: 20px auto;
+        width: 80%;
+        border-radius: 10px;
+        overflow: hidden;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .card-body {
+        padding: 0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 1.5rem;
+        border-radius: 12px 12px 0 0;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* Table Responsive Container - Large Tablet */
+    .table-responsive {
+        border-radius: 12px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        position: relative;
+        max-height: 75vh;
+        overflow-y: auto;
+        overflow-x: auto;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Table - Large Tablet with fixed layout */
+    .table {
+        font-size: 1rem;
+        min-width: 900px;
+        margin-bottom: 0;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+        table-layout: fixed;
+        box-sizing: border-box;
+    }
+
+    /* Table Header - Large Tablet */
+    .table thead th {
+        padding: 15px 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #111827;
+        color: #fff;
+        border: none;
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+    }
+
+    /* Column widths for large tablets */
+    .table thead th:nth-child(1) { /* ID */
+        width: 8%;
+        min-width: 60px;
+    }
+    
+    .table thead th:nth-child(2) { /* Name */
+        width: 32%;
+        min-width: 150px;
+    }
+    
+    .table thead th:nth-child(3) { /* Payment */
+        width: 15%;
+        min-width: 100px;
+    }
+    
+    .table thead th:nth-child(4) { /* Status */
+        width: 15%;
+        min-width: 100px;
+    }
+    
+    .table thead th:nth-child(5) { /* Start Date */
+        width: 15%;
+        min-width: 120px;
+    }
+    
+    .table thead th:nth-child(6) { /* End Date */
+        width: 15%;
+        min-width: 120px;
+        padding-right: 12px;
+        margin-right: 0;
+    }
+
+    .table thead th:first-child {
+        border-top-left-radius: 10px;
+        padding-left: 12px;
+    }
+
+    .table thead th:last-child {
+        border-top-right-radius: 10px;
+        padding-right: 12px;
+        margin-right: 0;
+    }
+
+    /* Table Body - Large Tablet */
+    .table tbody td {
+        padding: 15px 12px;
+        word-wrap: break-word;
+        border: none;
+        border-top: 1px solid #f3f4f6;
+        font-size: 0.95rem;
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .table tbody td:nth-child(1) { /* ID */
+        width: 8%;
+        min-width: 60px;
+        font-weight: 600;
+        color: #374151;
+        padding-left: 12px;
+    }
+    
+    .table tbody td:nth-child(2) { /* Name */
+        width: 32%;
+        min-width: 150px;
+        white-space: normal;
+        word-wrap: break-word;
+        text-align: left;
+        padding-left: 15px;
+        line-height: 1.4;
+    }
+    
+    .table tbody td:nth-child(3) { /* Payment */
+        width: 15%;
+        min-width: 100px;
+        font-weight: 600;
+        color: #059669;
+        font-size: 1rem;
+    }
+    
+    .table tbody td:nth-child(4) { /* Status */
+        width: 15%;
+        min-width: 100px;
+        padding: 15px 10px;
+    }
+    
+    .table tbody td:nth-child(5) { /* Start Date */
+        width: 15%;
+        min-width: 120px;
+        font-size: 0.9rem;
+        color: #6b7280;
+        line-height: 1.3;
+    }
+    
+    .table tbody td:nth-child(6) { /* End Date */
+        width: 15%;
+        min-width: 120px;
+        font-size: 0.9rem;
+        color: #6b7280;
+        line-height: 1.3;
+        padding-right: 12px;
+        margin-right: 0;
+    }
+
+    .table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+
+    .table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+        margin-right: 0;
+        padding-right: 12px;
+    }
+
+    /* Enhanced Hover Effects - Large Tablet */
+    .table tbody tr:hover {
+        background-color: #f8fafc;
+        transition: background-color 0.2s ease;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .table tbody tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    /* Status Badges - Large Tablet */
+    .active-status,
+    .inactive-status {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        border-radius: 16px;
+        font-weight: 500;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .active-status {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .inactive-status {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    /* Enhanced Scrollbar - Large Tablet */
+    .table-responsive::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #9ca3af, #6b7280);
+        border-radius: 4px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f9fafb;
+        border-radius: 4px;
+        margin: 0;
+    }
+
+    .table-responsive::-webkit-scrollbar-corner {
+        background: #f9fafb;
+    }
+
+    /* No Data Message - Large Tablet */
+    .no-customers {
+        padding: 2.5rem 2rem;
+        text-align: center;
+        border-radius: 12px;
+        background-color: #f8f9fa;
+        margin: 40px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .no-customers p {
+        font-size: 1.1rem;
+        color: #6b7280;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* Main Container - Large Tablet */
+    .main {
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Additional Button Styles - Large Tablet */
+    .btn {
+        border-radius: 10px;
+        padding: 0.7rem 1.4rem;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Additional rules to prevent blank space */
+    .table-responsive,
+    .table-responsive * {
+        box-sizing: border-box;
+        margin-right: 0;
+    }
+    
+    .table-responsive::after {
+        content: '';
+        display: block;
+        clear: both;
+        margin: 0;
+        padding: 0;
     }
 }
 
