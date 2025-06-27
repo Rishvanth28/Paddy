@@ -1504,7 +1504,7 @@ button, .btn {
   .header-bar h1,
   h1:first-child,
   h2:first-child {
-    margin-top: 4rem !important;
+    /* margin-top: 4rem !important; */
     padding-left: 0 !important;
     text-align: left !important;
   }
