@@ -120,111 +120,7 @@
     user-select: none;
   }
 
-  /* Toast Notifications Styling */
-  .toast-container {
-    position: fixed;
-    top: 25px;
-    right: 25px;
-    z-index: 9999;
-    max-width: 350px;
-    width: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    pointer-events: none;
-  }
 
-  .toast {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    padding: 16px 40px 16px 24px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #000000;
-    font-weight: 500;
-    position: relative;
-    animation: slideInRight 0.5s forwards;
-    pointer-events: auto;
-    font-family: 'Inter', sans-serif;
-    color: #000000;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    display: flex;
-    align-items: center;
-    min-width: 300px;
-  }
-
-  .toast::before {
-    content: '';
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    margin-right: 12px;
-    background-color: #000000;
-    flex-shrink: 0;
-  }
-
-  .toast.success {
-    border-left-color: #000000 !important;
-  }
-
-  .toast.success::before {
-    background-color: #000000 !important;
-  }
-
-  .toast.error {
-    border-left-color: #e74c3c !important;
-  }
-
-  .toast.error::before {
-    background-color: #e74c3c !important;
-  }
-
-  .toast-close {
-    position: absolute;
-    top: 50%;
-    right: 16px;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: #999;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .toast-close:hover {
-    color: #333;
-  }
-
-  @keyframes slideInRight {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideOutRight {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-  }
 </style>
 
 <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
@@ -234,8 +130,7 @@
     </div>
 </div>
 
-<!-- Toast Container -->
-<div class="toast-container" id="toast-container"></div>
+
 
 {% if is_customer %}
   <!-- Already Customer Message -->
@@ -335,47 +230,9 @@
 <!-- Form Validation Script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Handle Django messages and convert to toasts
-        {% if messages %}
-            {% for message in messages %}
-                showToast('{{ message|escapejs }}', '{{ message.tags }}');
-            {% endfor %}
-        {% endif %}
+        // Django messages will be handled by the base template
 
-        // Toast notification function
-        function showToast(message, type = 'success') {
-            const toastContainer = document.getElementById('toast-container');
-            if (!toastContainer) return;
 
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-
-            // Add close button
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'toast-close';
-            closeBtn.innerHTML = '&times;';
-            closeBtn.onclick = () => removeToast(toast);
-            toast.appendChild(closeBtn);
-
-            toastContainer.appendChild(toast);
-
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                removeToast(toast);
-            }, 5000);
-        }
-
-        function removeToast(toast) {
-            if (toast && toast.parentNode) {
-                toast.style.animation = 'slideOutRight 0.5s forwards';
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
-                }, 500);
-            }
-        }
 
         // Form validation logic        
         const form = document.querySelector('.upgrade-form');
@@ -398,7 +255,10 @@
 
             if (!isValid) {
                 event.preventDefault();
-                showToast('Please fill in all required fields', 'error');
+                // Use the base template's showToast function
+                if (typeof showToast === 'function') {
+                    showToast('Please fill in all required fields', 'error');
+                }
             }
         });
 

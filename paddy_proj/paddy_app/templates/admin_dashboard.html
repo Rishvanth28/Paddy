@@ -6,21 +6,7 @@
 <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
 
 
-<div class="toast-container">
-  {% if messages %}
-    {% for message in messages %}
-      <div class="toast 
-                {% if message.tags == 'success' %}success
-                {% elif message.tags == 'info' %}info
-                {% elif message.tags == 'warning' %}warning
-                {% elif message.tags == 'error' %}error
-                {% endif %}">
-        {{ message }}
-        <button type="button" class="toast-close" aria-label="Close">&times;</button>
-      </div>
-    {% endfor %}
-  {% endif %}
-</div>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
