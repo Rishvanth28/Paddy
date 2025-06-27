@@ -150,8 +150,59 @@ function initializeReportsJS() {
         }
     });
     
-    // Dynamic table functionality is handled by template JavaScript
-    // Skip table header click handling to avoid conflicts
+    // Dynamic table functionality - sorting (only if AJAX not already handling it)
+    if (!document.body.hasAttribute('data-ajax-sorting')) {
+        const tableHeaders = document.querySelectorAll('.reports-table th[data-sort]');
+        tableHeaders.forEach(header => {
+            // Add sort indicator and styling
+            header.classList.add('sortable');
+            
+            // Check if this header is the currently sorted one
+            const currentSortField = new URLSearchParams(window.location.search).get('sort');
+            const currentSortDir = new URLSearchParams(window.location.search).get('direction') || 'asc';
+            
+            if (currentSortField === header.getAttribute('data-sort')) {
+                header.classList.add(currentSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+            }
+            
+            header.addEventListener('click', function(e) {
+                const sortField = this.getAttribute('data-sort');
+                const isAsc = this.classList.contains('sort-asc');
+                
+                // Clear sorting classes from all headers
+                tableHeaders.forEach(h => {
+                    h.classList.remove('sort-asc', 'sort-desc');
+                });
+                
+                // Set new sort direction
+                this.classList.add(isAsc ? 'sort-desc' : 'sort-asc');
+                
+                // Get current URL and update sort parameters
+                const url = new URL(window.location);
+                url.searchParams.set('sort', sortField);
+                url.searchParams.set('direction', isAsc ? 'desc' : 'asc');
+                
+                // Use AJAX instead of page navigation
+                fetch(url.toString(), { 
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' } 
+                })
+                .then(function(res) { return res.text(); })
+                .then(function(html) {
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(html, 'text/html');
+                    var rc = doc.querySelector('.reports-container');
+                    if (rc) {
+                        document.querySelector('.reports-container').innerHTML = rc.innerHTML;
+                        // Reinitialize after content update
+                        if (typeof window.initializeEventListeners === 'function') {
+                            window.initializeEventListeners();
+                        }
+                        initializeReportsJS();
+                    }
+                });
+            });
+        });
+    }
     
     // Add row highlighting on click
     const tableRows = document.querySelectorAll('.reports-table tbody tr');

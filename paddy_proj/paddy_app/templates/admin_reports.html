@@ -217,6 +217,36 @@
             white-space: nowrap;
         }
 
+        /* Sortable table headers styling */
+        .reports-table th[data-sort] {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .reports-table th[data-sort]:hover {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        .reports-table th[data-sort]::after {
+            content: " ↕";
+            font-size: 12px;
+            color: #6c757d;
+            margin-left: 5px;
+        }
+
+        .reports-table th[data-sort].sort-asc::after {
+            content: " ↑";
+            color: #007bff;
+        }
+
+        .reports-table th[data-sort].sort-desc::after {
+            content: " ↓";
+            color: #007bff;
+        }
+
         .reports-table td {
             padding: 12px;
             border-bottom: 1px solid #f1f3f4;
@@ -479,6 +509,7 @@
     <h2 class="page-title mb-0 me-3">Admin Reports</h2>
 </div>
 
+<div class="reports-container">
 <div class="filters-section">
     <h2>Filter Reports</h2>
     <form id="report-filter-form" method="get" action="{% url 'admin_reports' %}">
@@ -769,7 +800,7 @@
         {% endif %}
     </div>
 </div>
-</div>
+</div> <!-- Close reports-container -->
 
 <!-- Toast Auto-dismiss Script -->
 <script>
@@ -790,4 +821,232 @@
 </script>
 
 <script src="{% static 'js/reports.js' %}"></script>
+<script>
+  function initializeEventListeners() {
+    // Initialize form submit handler
+    var form = document.getElementById('report-filter-form');
+    if (form) {
+      // Remove any existing submit event listeners by cloning
+      var newForm = form.cloneNode(true);
+      form.parentNode.replaceChild(newForm, form);
+      form = newForm;
+      
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        var formData = new FormData(form);
+        var params = new URLSearchParams(formData).toString();
+        fetch(form.action + '?' + params, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) { return res.text(); })
+        .then(function(html) {
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(html, 'text/html');
+          var rc = doc.querySelector('.reports-container');
+          if (rc) {
+            document.querySelector('.reports-container').innerHTML = rc.innerHTML;
+            initializeEventListeners(); // Reinitialize after content update
+          }
+        });
+      });
+    }
+    
+    // Initialize reset button handler
+    var resetButton = document.getElementById('reset-filters');
+    if (resetButton) {
+      resetButton.addEventListener('click', function() {
+        // Clear all form fields
+        var form = document.getElementById('report-filter-form');
+        if (form) {
+          form.reset();
+          // Redirect to clear URL parameters
+          window.location.href = form.action;
+        }
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize event listeners
+    initializeEventListeners();
+    
+    // Make the function available globally
+    window.initializeEventListeners = initializeEventListeners;
+    
+    // Add initial styling to sortable headers
+    function initializeSortableHeaders() {
+      var headers = document.querySelectorAll('.reports-table th[data-sort]');
+      console.log('Found sortable headers:', headers.length); // Debug log
+      
+      headers.forEach(function(header) {
+        header.style.cursor = 'pointer';
+        header.style.userSelect = 'none';
+        
+        // Check if this header is currently sorted based on URL parameters
+        var params = new URLSearchParams(window.location.search);
+        var currentSort = params.get('sort');
+        var currentDir = params.get('dir') || 'asc';
+        var currentHeader = params.get('header');  // Track which frontend header was clicked
+        
+        var sortField = header.getAttribute('data-sort');
+        
+        // Map frontend sort fields to backend fields for comparison
+        // Admin backend supports: order_id, order_date, overall_amount, payment_status, delivery_status, product_category_id, quantity
+        var sortFieldMap = {
+          'id': 'order_id',
+          'customer_name': 'order_date',
+          'order_date': 'order_date',
+          'product_type': 'product_category_id',
+          'quantity': 'quantity',
+          'total_amount': 'overall_amount',
+          'pending_amount': 'overall_amount',
+          'status': 'delivery_status',
+          'payment_status': 'payment_status',
+          'product_name': 'product_category_id',
+          'batch_number': 'order_date',
+          'expiry_date': 'order_date',
+          'item_quantity': 'quantity',
+          'unit': 'product_category_id',
+          'price_per_unit': 'overall_amount',
+          'item_total': 'overall_amount'
+        };
+        
+        var backendSortField = sortFieldMap[sortField] || 'order_id';
+        
+        // Only apply sort styling if this is the exact header that was clicked
+        if (currentSort === backendSortField && currentHeader === sortField) {
+          header.classList.add(currentDir === 'asc' ? 'sort-asc' : 'sort-desc');
+        }
+      });
+    }
+    
+    // Initialize sortable headers on page load
+    initializeSortableHeaders();
+    
+    // Test function to check if headers are found
+    window.testHeaders = function() {
+      var headers = document.querySelectorAll('.reports-table th[data-sort]');
+      console.log('Found headers:', headers.length);
+      headers.forEach(function(h, i) {
+        console.log(i + ':', h.textContent, 'data-sort:', h.getAttribute('data-sort'));
+      });
+      return headers;
+    };
+    
+    console.log('Page loaded, running header test...');
+    window.testHeaders();
+    
+    // Handle table header clicks with event delegation
+    document.addEventListener('click', function(event) {
+      var th = event.target.closest('.reports-table th[data-sort]');
+      if (!th) return;
+      
+      console.log('Table header clicked:', th.getAttribute('data-sort')); // Debug log
+      
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+      
+      var sortField = th.getAttribute('data-sort');
+      
+      // Map frontend sort fields to backend fields
+      // Admin backend supports: order_id, order_date, overall_amount, payment_status, delivery_status, product_category_id, quantity
+      var sortFieldMap = {
+        'id': 'order_id',  // Now properly mapped to order_id
+        'customer_name': 'order_date',  // Fallback to order_date since customer sorting not supported
+        'order_date': 'order_date',
+        'product_type': 'product_category_id',
+        'quantity': 'quantity',
+        'total_amount': 'overall_amount',
+        'pending_amount': 'overall_amount',  // Same as total_amount
+        'status': 'delivery_status',
+        'payment_status': 'payment_status',
+        'product_name': 'product_category_id',  // Fallback to category
+        'batch_number': 'order_date',  // Fallback to order_date
+        'expiry_date': 'order_date',  // Fallback to order_date
+        'item_quantity': 'quantity',
+        'unit': 'product_category_id',  // Fallback to category
+        'price_per_unit': 'overall_amount',  // Fallback to overall_amount
+        'item_total': 'overall_amount'
+      };
+      
+      var backendSortField = sortFieldMap[sortField] || 'order_id';
+      console.log('Mapped sort field:', sortField, '->', backendSortField); // Debug log
+      
+      var params = new URLSearchParams(window.location.search);
+      var currentSort = params.get('sort');
+      var currentDir = params.get('dir');  // Use 'dir' not 'direction'
+      
+      console.log('Current sort:', currentSort, 'Current direction:', currentDir); // Debug log
+      
+      // Determine new direction - track by frontend header, not backend field
+      var newDir = 'asc'; // Default to ascending
+      var currentSortedHeader = document.querySelector('.reports-table th[data-sort].sort-asc, .reports-table th[data-sort].sort-desc');
+      
+      if (currentSortedHeader === th) {
+        // Same header clicked, toggle direction
+        if (th.classList.contains('sort-asc')) {
+          newDir = 'desc';
+        } else {
+          newDir = 'asc';
+        }
+      }
+      
+      console.log('New direction will be:', newDir); // Debug log
+      
+      // Clear all sort classes first
+      var allHeaders = document.querySelectorAll('.reports-table th[data-sort]');
+      allHeaders.forEach(function(h) {
+        h.classList.remove('sort-asc', 'sort-desc');
+      });
+      
+      // Add visual feedback immediately
+      th.classList.add(newDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      
+      // Set new parameters - use 'dir' not 'direction' and track which header was clicked
+      params.set('sort', backendSortField);
+      params.set('dir', newDir);
+      params.set('header', sortField);  // Track which frontend header was clicked
+      
+      // Remove any pagination parameters to avoid conflicts
+      params.delete('page');
+      
+      var newUrl = window.location.pathname + '?' + params.toString();
+      console.log('Fetching URL:', newUrl); // Debug log
+      
+      fetch(newUrl, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(function(response) { 
+        console.log('Response received:', response.status); // Debug log
+        return response.text(); 
+      })
+      .then(function(html) {
+        console.log('HTML received, length:', html.length); // Debug log
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        var rc = doc.querySelector('.reports-container');
+        if (rc) {
+          document.querySelector('.reports-container').innerHTML = rc.innerHTML;
+          initializeEventListeners(); // Reinitialize after content update
+          initializeSortableHeaders(); // Reinitialize sortable headers
+          console.log('Content updated successfully'); // Debug log
+          
+          // Update URL without page reload
+          window.history.replaceState({}, '', newUrl);
+        } else {
+          console.log('No .reports-container found in response'); // Debug log
+        }
+      })
+      .catch(function(error) {
+        console.error('Error during AJAX request:', error); // Debug log
+        // Restore original state on error
+        th.classList.remove('sort-asc', 'sort-desc');
+        if (currentSort === backendSortField && currentDir) {
+          th.classList.add(currentDir === 'asc' ? 'sort-asc' : 'sort-desc');
+        }
+      });
+      
+      return false;
+    }, true); // Use capture
+  });
+</script>
 {% endblock %}

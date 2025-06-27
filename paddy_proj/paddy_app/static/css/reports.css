@@ -241,32 +241,34 @@
     font-weight: 600;
 }
 
-/* Sortable headers */
-.reports-table th.sortable {
+/* Sortable table headers styling */
+.reports-table th[data-sort] {
     cursor: pointer;
     position: relative;
-    padding-right: 25px;
+    user-select: none;
+    transition: background-color 0.2s ease;
 }
 
-.reports-table th.sortable:hover {
-    background-color: #f0f0f0;
-}
-
-.reports-table th.sortable::after {
-    content: "↕";
-    position: absolute;
-    right: 8px;
-    color: #999;
-}
-
-.reports-table th.sort-asc::after {
-    content: "↑";
+.reports-table th[data-sort]:hover {
+    background-color: #e9ecef;
     color: #333;
 }
 
-.reports-table th.sort-desc::after {
-    content: "↓";
-    color: #333;
+.reports-table th[data-sort]::after {
+    content: " ↕";
+    font-size: 12px;
+    color: #6c757d;
+    margin-left: 5px;
+}
+
+.reports-table th[data-sort].sort-asc::after {
+    content: " ↑";
+    color: #007bff;
+}
+
+.reports-table th[data-sort].sort-desc::after {
+    content: " ↓";
+    color: #007bff;
 }
 
 /* Date fields */

@@ -92,12 +92,14 @@ def get_admin_report_data(request):
             pass
     
     # Apply sorting if specified
-    if sort_field and sort_field in ['order_date', 'overall_amount', 'payment_status', 'delivery_status', 'product_category_id', 'quantity']:
+    if sort_field and sort_field in ['order_id', 'order_date', 'overall_amount', 'payment_status', 'delivery_status', 'product_category_id', 'quantity']:
+        print(f"DEBUG: Applying sort - field: {sort_field}, direction: {sort_dir}")
         if sort_dir == 'desc':
             orders = orders.order_by(f'-{sort_field}')
         else:
             orders = orders.order_by(sort_field)
     else:
+        print(f"DEBUG: Using default sort by order_id desc")
         # Default sorting by order_id
         orders = orders.order_by('-order_id')
     
@@ -180,12 +182,14 @@ def get_superadmin_report_data(request):
             pass
     
     # Apply sorting if specified
-    if sort_field and sort_field in ['order_date', 'overall_amount', 'payment_status', 'delivery_status']:
+    if sort_field and sort_field in ['order_id', 'order_date', 'overall_amount', 'payment_status', 'delivery_status', 'product_category_id', 'quantity']:
+        print(f"DEBUG: Superadmin applying sort - field: {sort_field}, direction: {sort_dir}")
         if sort_dir == 'desc':
             orders = orders.order_by(f'-{sort_field}')
         else:
             orders = orders.order_by(sort_field)
     else:
+        print(f"DEBUG: Superadmin using default sort by order_id desc")
         # Default sorting by order_id
         orders = orders.order_by('-order_id')
     
@@ -1148,7 +1152,12 @@ def admin_reports(request):
     
     # Get filtered orders
     orders = get_admin_report_data(request)
-      # Format data for template
+    
+    # Debug: Print the first few order IDs to check sorting
+    print(f"DEBUG: First 5 order IDs after sorting: {[order.order_id for order in orders[:5]]}")
+    print(f"DEBUG: Sort parameters - sort: {request.GET.get('sort', '')}, dir: {request.GET.get('dir', '')}")
+    
+    # Format data for template
     rice_paddy_orders = []
     pesticide_orders = []
     
@@ -1240,7 +1249,12 @@ def superadmin_reports(request):
     
     # Get filtered orders
     orders = get_superadmin_report_data(request)
-      # Format data for template
+    
+    # Debug: Print the first few order IDs to check sorting
+    print(f"DEBUG: Superadmin First 5 order IDs after sorting: {[order.order_id for order in orders[:5]]}")
+    print(f"DEBUG: Superadmin Sort parameters - sort: {request.GET.get('sort', '')}, dir: {request.GET.get('dir', '')}")
+    
+    # Format data for template
     rice_paddy_orders = []
     pesticide_orders = []
     
