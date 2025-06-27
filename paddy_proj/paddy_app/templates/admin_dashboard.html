@@ -53,9 +53,10 @@
 
 
 <div class="admin-dashboard-container">
-    <div class="admin-dashboard-hero">
-        <h1>Welcome, Admin</h1>
-        <p>Monitor your business performance at a glance with key metrics and real-time data.</p>        <div class="admin-dashboard-summary">
+    <div class="header-bar">
+        <div class="title-group">
+            <h1 class="page-title mb-0 me-3">Welcome, Admin</h1>
+            <p class="upgrade-subtitle">Monitor your business performance at a glance with key metrics and real-time data.</p>
             <div class="summary-item">
                 <span class="summary-text">Business Overview</span>
             </div>
@@ -63,7 +64,9 @@
                 <span class="summary-text">{{ current_date|default:"Today" }}</span>
             </div>
         </div>
-    </div>    <div class="stats-row">
+    </div>
+    
+    <div class="stats-row">
         <div class="stat-card stat-blue">
             <span class="stat-label">Total Orders</span>
             <span class="stat-value">{{ total_orders|default:'0' }}</span>
@@ -89,7 +92,6 @@
             <span class="stat-value">{{ total_customers|default:'0' }}</span>
             <span class="stat-extra">Registered users</span>
         </div>
-    </div>    <div class="stats-row-2">
         <div class="stat-card stat-green">
             <span class="stat-label">Total Payments</span>
             <span class="stat-value">₹{{ total_payments|default:'0' }}</span>
@@ -132,9 +134,9 @@
         </div>
     </div>
     
-    <!-- Admin Actions Navigation - Quick Access -->
-    <div class="admin-navigation-section">
-        <h2 class="admin-navigation-title">Quick Admin Access</h2>
+    <!-- Dashboard Navigation Grid -->
+    <div class="dashboard-navigation-section">
+        <h2>Quick Admin Access</h2>
         <div class="admin-dashboard-grid">
             <a href="{% url 'admin_orders' %}" class="admin-dashboard-btn">
                 <span class="icon">📦</span>
@@ -168,27 +170,23 @@
             </a>
         </div>
     </div>
-    <div class="recent-activity-section">        <div class="recent-activity-list">
+
+    <div class="recent-activity-section">
+        <div class="recent-activity-list">
             <h3>Recent Activity</h3>
-            <ul>                {% for activity in recent_activity %}
+            <ul>
+                {% for activity in recent_activity %}
                 <li>
-                    <span class="activity-icon"></span>
-                    <div class="activity-details">
-                        <div class="activity-text">{{ activity.text }}</div>
-                        <div class="activity-time">{{ activity.time }}</div>
-                    </div>
+                    <span>{{ activity.text }}</span>
+                    <span style="color:#888888; font-size:0.95em; margin-left:auto;">{{ activity.time }}</span>
                 </li>
                 {% empty %}
-                <li>
-                    <span class="activity-icon"></span>
-                    <div class="activity-details">
-                        <div class="activity-text">No recent activity available</div>
-                        <div class="activity-time">Check back later for updates</div>
-                    </div>
-                </li>
+                <li>No recent activity.</li>
                 {% endfor %}
             </ul>
-        </div><div class="dashboard-chart-placeholder">
+        </div>
+        
+        <div class="dashboard-chart-placeholder">
             <div class="charts-container">
                 <div class="chart-section">
                     <h4>Monthly Orders & Revenue</h4>
@@ -196,12 +194,15 @@
                 </div>
             </div>
         </div>
-    </div>      <!-- Analytics Section -->
+    </div>
+    
+    <!-- Analytics Section -->
     <div class="analytics-section">
         <h2>Business Analytics</h2>
         <div class="analytics-grid">
-            <!-- Orders Overview Chart -->
-            <div class="chart-card">                <div class="chart-header">
+              <!-- Order Categories Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
                     <h3>Order Categories</h3>
                     <p>Distribution by product type</p>
                 </div>
@@ -209,8 +210,10 @@
                     <canvas id="categoryChart" width="300" height="300"></canvas>
                 </div>
             </div>
-              <!-- Payment Status Chart -->
-            <div class="chart-card">                <div class="chart-header">
+            
+            <!-- Payment Status Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
                     <h3>Payment Status</h3>
                     <p>Order payment completion</p>
                 </div>
@@ -219,10 +222,12 @@
                 </div>
             </div>
             
-            <!-- Monthly Trend Chart -->
-            <div class="chart-card wide">                <div class="chart-header">
+            <!-- Monthly Trend Chart - Full width row -->
+            <div class="chart-card wide">
+                <div class="chart-header">
                     <h3>Monthly Trends</h3>
-                    <p>Orders and revenue over time</p>                </div>
+                    <p>Orders and revenue over time</p>
+                </div>
                 <div class="chart-body">
                     <canvas id="trendChart" width="600" height="300"></canvas>
                 </div>
@@ -230,30 +235,33 @@
         </div>
     </div>
 </div>
-</div>
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Chart Scripts -->
 <script>
-// Chart.js configuration and data
-document.addEventListener('DOMContentLoaded', function() {    // Color scheme - modern minimalist with accent colors
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up Chart.js with enhanced color palette matching superadmin
     const colors = {
         primary: '#000000',
-        secondary: '#444444',
-        success: '#2D7738',
-        warning: '#BF8B30',
-        danger: '#A13030',
-        info: '#326789',
-        neutral: '#777777',
-        light: '#f8f8f8'
-    };// Data from Django template - properly JSON serialized
+        secondary: '#333333',
+        success: '#28a745',
+        danger: '#dc3545',
+        warning: '#ffc107',
+        info: '#17a2b8',
+        light: '#ffffff',
+        dark: '#000000',
+        accent: '#6f42c1'
+    };
+    
+    // Parse data from Django context
     const monthLabels = {{ month_labels|safe }};
     const monthlyOrders = {{ monthly_orders|safe }};
     const monthlyRevenue = {{ monthly_revenue|safe }};
     const orderCategories = {{ order_categories|safe }};
-    const categoryCounts = {{ category_counts|safe }};    // Monthly Orders & Revenue Chart (in recent activity section)
+    const categoryCounts = {{ category_counts|safe }};
+    
+    // Business Overview Chart (matching superadmin style)
     const ordersRevenueCtx = document.getElementById('ordersRevenueChart');
     if (ordersRevenueCtx) {
         const hasOrdersRevenueData = monthlyOrders.some(value => value > 0) || monthlyRevenue.some(value => value > 0);
@@ -415,15 +423,15 @@ document.addEventListener('DOMContentLoaded', function() {    // Color scheme - 
                 datasets: [{
                     data: categoryCounts,
                     backgroundColor: [
-                        colors.primary,
-                        colors.success,
-                        colors.warning,
-                        colors.info,
-                        colors.secondary,
-                        colors.danger,
-                        '#8b5cf6',
-                        '#14b8a6',
-                        '#f97316'
+                        '#000000',
+                        '#28a745',
+                        '#dc3545',
+                        '#ffc107',
+                        '#17a2b8',
+                        '#6f42c1',
+                        '#fd7e14',
+                        '#20c997',
+                        '#6c757d'
                     ],
                     borderWidth: 3,
                     borderColor: '#ffffff',
@@ -471,9 +479,10 @@ document.addEventListener('DOMContentLoaded', function() {    // Color scheme - 
             }
         });
     } else if (categoryCtx) {
-        // Show no data message
         categoryCtx.parentElement.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 280px; color: #888; font-size: 1.1rem; font-weight: 500;">📊 No category data available</div>';
-    }    // Payment Status Chart
+    }
+    
+    // Payment Status Chart (matching superadmin style)
     const paymentCtx = document.getElementById('paymentChart');
     if (paymentCtx) {
         const paymentData = [{{ payment_completed }}, {{ payment_partial }}, {{ payment_pending }}];
@@ -671,102 +680,6 @@ document.addEventListener('DOMContentLoaded', function() {    // Color scheme - 
     }
 });
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Modern Chart.js configuration with black/white theme and accent colors
-    if (typeof Chart !== 'undefined') {
-        Chart.defaults.font.family = "'Inter', sans-serif";
-        Chart.defaults.color = '#333333';
-        Chart.defaults.borderColor = 'rgba(0, 0, 0, 0.1)';
-        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        Chart.defaults.plugins.tooltip.titleColor = '#ffffff';
-        Chart.defaults.plugins.tooltip.bodyColor = '#ffffff';
-        Chart.defaults.plugins.tooltip.padding = 12;
-        Chart.defaults.plugins.tooltip.cornerRadius = 8;
-        Chart.defaults.plugins.tooltip.titleFont.weight = 'bold';
-        Chart.defaults.plugins.legend.labels.font = {
-            family: "'Inter', sans-serif",
-            weight: '600',
-            size: 12
-        };
-        
-        // Modern black/white theme with accent colors
-        const chartColors = {
-            primary: [
-                'rgba(0, 0, 0, 0.9)',
-                'rgba(50, 50, 50, 0.9)',
-                'rgba(100, 100, 100, 0.9)',
-                'rgba(150, 150, 150, 0.9)'
-            ],
-            status: [
-                'rgba(45, 119, 56, 0.9)',   // Success (green)
-                'rgba(191, 139, 48, 0.9)',   // Warning (yellow/orange)  
-                'rgba(161, 48, 48, 0.9)',    // Danger (red)
-                'rgba(50, 103, 137, 0.9)'    // Info (blue)
-            ],
-            statusLight: [
-                'rgba(45, 119, 56, 0.5)',   
-                'rgba(191, 139, 48, 0.5)',  
-                'rgba(161, 48, 48, 0.5)',   
-                'rgba(50, 103, 137, 0.5)'   
-            ]
-        };
-        
-        // Apply these colors to any existing chart instances
-        const updateChartColors = function(chartInstance) {
-            if (chartInstance.config.type === 'doughnut' || chartInstance.config.type === 'pie') {
-                chartInstance.data.datasets.forEach(dataset => {
-                    if (!dataset.backgroundColor || dataset.backgroundColor.length === 0) {
-                        dataset.backgroundColor = chartColors.status;
-                        dataset.borderColor = '#ffffff';
-                        dataset.borderWidth = 2;
-                    }
-                });
-            } else if (chartInstance.config.type === 'line') {
-                chartInstance.data.datasets.forEach((dataset, i) => {
-                    const colorIndex = i % chartColors.primary.length;
-                    dataset.borderColor = i === 0 ? chartColors.status[0] : chartColors.primary[colorIndex];
-                    dataset.backgroundColor = i === 0 ? chartColors.statusLight[0] : 'rgba(0, 0, 0, 0.1)';
-                    dataset.pointBackgroundColor = dataset.borderColor;
-                    dataset.pointBorderColor = '#ffffff';
-                    dataset.pointBorderWidth = 1;
-                    dataset.tension = 0.3;
-                });
-            } else if (chartInstance.config.type === 'bar') {
-                chartInstance.data.datasets.forEach((dataset, i) => {
-                    if (dataset.label && dataset.label.toLowerCase().includes('completed')) {
-                        dataset.backgroundColor = chartColors.status[0];
-                    } else if (dataset.label && dataset.label.toLowerCase().includes('pending')) {
-                        dataset.backgroundColor = chartColors.status[1];
-                    } else if (dataset.label && dataset.label.toLowerCase().includes('cancelled')) {
-                        dataset.backgroundColor = chartColors.status[2];
-                    } else {
-                        const colorIndex = i % chartColors.primary.length;
-                        dataset.backgroundColor = chartColors.primary[colorIndex];
-                    }
-                    dataset.borderColor = '#ffffff';
-                    dataset.borderWidth = 1;
-                    dataset.borderRadius = 4;
-                });
-            }
-            chartInstance.update();
-        };
-        
-        // Hook into ChartJS to apply our styles to all newly created charts
-        const originalInit = Chart.prototype.initialize;
-        Chart.prototype.initialize = function() {
-            originalInit.apply(this, arguments);
-            updateChartColors(this);
-        };
-        
-        // Apply to any existing charts
-        if (Chart.instances) {
-            Object.values(Chart.instances).forEach(chart => {
-                updateChartColors(chart);
-            });
-        }
-    }
-});
-</script>
+
 
 {% endblock %}

@@ -119,14 +119,24 @@
 
     <div class="recent-activity-section">
         <div class="recent-activity-list">
-            <h3>Recent Activity</h3>            <ul>
+            <h3>Recent Activity</h3>
+            <ul>
                 {% for activity in recent_activity %}
                 <li>
-                    <span>{{ activity.text }}</span>
-                    <span style="color:#888888; font-size:0.95em; margin-left:auto;">{{ activity.time }}</span>
+                    <span class="activity-icon"></span>
+                    <div class="activity-details">
+                        <div class="activity-text">{{ activity.text }}</div>
+                        <div class="activity-time">{{ activity.time }}</div>
+                    </div>
                 </li>
                 {% empty %}
-                <li>No recent activity.</li>
+                <li>
+                    <span class="activity-icon"></span>
+                    <div class="activity-details">
+                        <div class="activity-text">No recent activity available</div>
+                        <div class="activity-time">Check back later for updates</div>
+                    </div>
+                </li>
                 {% endfor %}
             </ul>
         </div>
