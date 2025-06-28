@@ -416,7 +416,7 @@ button:hover {
 }
 
 #signup button[type="submit"]:hover {
-  background: linear-gradient(135deg, #3b5bdb 0%, #7048e8 100%);
+  background: #333;
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(78, 110, 242, 0.3);
 }

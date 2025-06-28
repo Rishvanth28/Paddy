@@ -1,12 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle messages (existing functionality)
-    setTimeout(function () {
-        let messages = document.querySelectorAll('.messages');
-        messages.forEach((message) => {
-            message.style.opacity = '0';
-            setTimeout(() => message.remove(), 100); 
-        });
-    }, 5000);
+    // Toast messages are now handled in login.html directly
+    // Removed automatic message removal to avoid conflicts with toast system
 
     // Main tabs
     const tabButtons = document.querySelectorAll('.tab-btn');
