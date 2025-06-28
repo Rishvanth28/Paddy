@@ -1396,7 +1396,8 @@ def admin_add_subscription(request):
         if request.POST.get("submission_type") == '0':
             # Prevent new request if one is already active (pending approval or pending payment)
             if existing_subscription and existing_subscription.subscription_status in [0, 1]: # 0: Pending Approval, 1: Approved, Pending Payment
-                messages.warning(request, "You already have an active subscription upgrade request.")
+                # Don't add a Django message here - the status will be shown in the content section
+                pass
             else:
                 try:
                     subscription = UserIncreaseSubscription.objects.create(
@@ -1414,10 +1415,12 @@ def admin_add_subscription(request):
                         related_subscription_id=subscription.sid
                     )
                     
-                    messages.success(request, "Subscription upgrade request submitted successfully! It will be reviewed by the superadmin.")
+                    # Don't add a Django message here - the status will be shown in the content section
+                    pass
                 except Exception as e:
+                    # Only show error messages as toasts since these are exceptional cases
                     messages.error(request, f"Failed to submit subscription request. Error: {str(e)}")
-            return redirect('admin_add_subscription') # Redirect to show messages and prevent re-submission
+            return redirect('admin_add_subscription') # Redirect to show updated status in content section
 
     context = {
         "user_count": user_count,
@@ -1567,7 +1570,8 @@ def verify_admin_user_increase_payment(request):
             # Log this error, but don't necessarily fail the whole transaction if payment was successful
             # This depends on how critical the Payments record is for your immediate flow.
             print(f"Error creating payment record for admin subscription {subscription_sid}: {e}")
-            messages.warning(request, "Payment was successful, but there was an issue recording the payment details. Please contact support.")
+            # Don't show toast message here - status will be shown in content section
+            pass
 
 
         # Update subscription status to 'Paid and Processed' (e.g., status 3)
@@ -1603,7 +1607,7 @@ def verify_admin_user_increase_payment(request):
         if 'user_increase_payment_amount' in request.session: del request.session['user_increase_payment_amount']
         if 'user_increase_razorpay_order_id' in request.session: del request.session['user_increase_razorpay_order_id']
         
-        messages.success(request, "Payment successful! Your user limit has been increased by 50.")
+        # Don't show toast message here - status will be shown in content section when page reloads
         return JsonResponse({'success': True, 'message': 'Payment successful and subscription updated.'})
 
     except razorpay.errors.SignatureVerificationError:
