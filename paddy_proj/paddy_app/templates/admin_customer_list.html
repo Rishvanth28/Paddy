@@ -39,12 +39,21 @@
                 {% endfor %}
             </tbody>
         </table>
+        
+        <!-- No results found message for search -->
+        <div class="no-results-found d-none text-center py-4">
+            <div class="empty-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <p>No customers match your search criteria.</p>
+        </div>
+        
         {% else %}
         <div class="empty-state">
             <div class="empty-icon">
                 <i class="fas fa-user-friends"></i>
             </div>
-            <p >No customers found for this admin.</p>
+            <p>No customers found for this admin.</p>
         </div>
         {% endif %}
     </div>
@@ -170,5 +179,83 @@
   });
 </script>
 {% endif %}
+
+<!-- Customer Search Functionality -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector('input[name="q"]');
+    const tableRows = document.querySelectorAll(".customer-table tbody tr");
+    const emptyState = document.querySelector(".empty-state");
+    const noResultsFound = document.querySelector(".no-results-found");
+    const customerTable = document.querySelector(".customer-table");
+
+    if (searchInput && tableRows.length > 0) {
+        // Prevent form submission on Enter
+        searchInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault(); // Stops form submission
+            }
+        });
+
+        // Search logic
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase().trim();
+            let anyVisible = false;
+
+            tableRows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                
+                // Get text content from each cell
+                const customerID = cells[0] ? cells[0].textContent.toLowerCase() : '';
+                const fullName = cells[1] ? cells[1].textContent.toLowerCase() : '';
+                const email = cells[2] ? cells[2].textContent.toLowerCase() : '';
+                const phone = cells[3] ? cells[3].textContent.toLowerCase() : '';
+                const company = cells[4] ? cells[4].textContent.toLowerCase() : '';
+                const gst = cells[5] ? cells[5].textContent.toLowerCase() : '';
+
+                // Check if query matches any field
+                const matches = 
+                    customerID.includes(query) ||
+                    fullName.includes(query) ||
+                    email.includes(query) ||
+                    phone.includes(query) ||
+                    company.includes(query) ||
+                    gst.includes(query);
+
+                row.style.display = matches ? "" : "none";
+                if (matches) anyVisible = true;
+            });
+
+            // Handle the display logic
+            if (query === "") {
+                // When search is empty, show original state
+                if (emptyState) {
+                    emptyState.style.display = tableRows.length > 0 ? "none" : "";
+                }
+                if (noResultsFound) {
+                    noResultsFound.classList.add("d-none");
+                }
+                if (customerTable) {
+                    customerTable.style.display = "";
+                }
+            } else {
+                // When searching, hide the empty state and show no-results if needed
+                if (emptyState) {
+                    emptyState.style.display = "none";
+                }
+                if (noResultsFound) {
+                    if (!anyVisible) {
+                        noResultsFound.classList.remove("d-none");
+                        if (customerTable) customerTable.style.display = "none";
+                    } else {
+                        noResultsFound.classList.add("d-none");
+                        if (customerTable) customerTable.style.display = "";
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
 
 {% endblock %}

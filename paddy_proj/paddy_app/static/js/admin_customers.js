@@ -4,11 +4,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const noCustomersDiv = document.querySelector(".no-customers");
     const noResultsFoundDiv = document.querySelector(".no-results-found");
 
+    // Prevent form submission on Enter
+    searchInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault(); // Stops form submission
+        }
+    });
+
     searchInput.addEventListener("input", function () {
         const query = this.value.toLowerCase().trim();
         let anyVisible = false;
+        let hasCustomerRows = false;
 
         rows.forEach(row => {
+            // Skip the "no-customers" row - it's handled separately
+            if (row.classList.contains('no-customers')) {
+                return;
+            }
+            
+            hasCustomerRows = true;
             const cells = row.querySelectorAll("td");
 
             const customerID = cells[0].textContent.toLowerCase();
@@ -30,12 +44,23 @@ document.addEventListener("DOMContentLoaded", function () {
             if (matches) anyVisible = true;
         });
 
-        if (noCustomersDiv) {
-            noCustomersDiv.style.display = "none"; // always hide the default one during search
-        }
-
-        if (noResultsFoundDiv) {
-            noResultsFoundDiv.classList.toggle("d-none", anyVisible);
+        // Handle the display logic
+        if (query === "") {
+            // When search is empty, show original state
+            if (noCustomersDiv) {
+                noCustomersDiv.style.display = hasCustomerRows ? "none" : "";
+            }
+            if (noResultsFoundDiv) {
+                noResultsFoundDiv.classList.add("d-none");
+            }
+        } else {
+            // When searching, hide the no-customers message and show no-results if needed
+            if (noCustomersDiv) {
+                noCustomersDiv.style.display = "none";
+            }
+            if (noResultsFoundDiv) {
+                noResultsFoundDiv.classList.toggle("d-none", anyVisible);
+            }
         }
     });
 });
