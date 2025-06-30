@@ -1,10 +1,4 @@
-/* Reports Module Styles */
-
-/* Toast Notification Styles */
-.toast-container .toast {
-    min-width: 300px;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
+/* Reports CSS - Styles for both admin and superadmin reports pages */
 
 /* Enhanced responsive styles for reports */
 .reports-container {
@@ -25,449 +19,452 @@
 }
 
 .page-title {
+    color: #333;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 600;
     margin: 0;
-    letter-spacing: 1px;
-    color: #000000;
-    position: relative;
-    text-transform: uppercase;
-    padding-bottom: 0.6rem;
-    text-align: left;
 }
 
-.page-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background-color: #000000;
-    border-radius: 2px;
-    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
-
-.page-title:hover::after {
-    width: 110%;
-    transform: translateX(-50%);
-}
-
-.filters-section,
-.export-section,
-.reports-table-container {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e9ecef;
-}
-
-.filters-section h2,
-.export-section h2,
-.reports-table-container h2 {
-    font-size: 1.3rem;
-    color: #495057;
+/* Filters Section */
+.filters-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
     margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filters-section h2 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
     font-weight: 600;
 }
 
 .filter-row {
-    display: grid;
-    gap: 20px;
-    margin-bottom: 20px;
-    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
 }
 
 .filter-group {
     display: flex;
     flex-direction: column;
+    min-width: 200px;
+    flex: 1;
+}
+
+.filter-group.date-field {
+    min-width: 150px;
 }
 
 .filter-group label {
-    font-weight: 600;
-    color: #495057;
-    margin-bottom: 8px;
-    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #555;
 }
 
 .filter-group select,
 .filter-group input {
-    padding: 10px 12px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     font-size: 14px;
-    transition: all 0.3s ease;
+    background-color: white;
 }
 
 .filter-group select:focus,
 .filter-group input:focus {
     outline: none;
     border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+/* Filter Actions */
+.filter-actions-bar {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
 }
 
 .filter-actions {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
 }
 
-.btn-primary,
-.btn-secondary {
-    padding: 12px 24px;
+.filter-actions button,
+.filter-actions-bar button {
+    padding: 10px 20px;
     border: none;
-    border-radius: 8px;
-    font-weight: 600;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
     font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 .btn-primary {
-    background: #333;
+    background-color: #007bff;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #0056b3;
-    transform: translateY(-2px);
+    background-color: #0056b3;
 }
 
 .btn-secondary {
-    background: #6c757d;
+    background-color: #6c757d;
     color: white;
 }
 
 .btn-secondary:hover {
-    background: #545b62;
-    transform: translateY(-2px);
+    background-color: #545b62;
+}
+
+/* Export Section */
+.export-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.export-section h2 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: 600;
 }
 
 .export-buttons {
     display: flex;
-    gap: 15px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
 .btn-export {
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 10px 15px;
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .btn-export.excel {
-    background: #28a745;
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-export.excel:hover {
+    background-color: #1e7e34;
     color: white;
 }
 
 .btn-export.pdf {
-    background: #dc3545;
+    background-color: #dc3545;
     color: white;
 }
 
-.btn-export:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    text-decoration: none;
+.btn-export.pdf:hover {
+    background-color: #c82333;
     color: white;
+}
+
+/* Export Actions (legacy) */
+.export-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.export-actions .btn {
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #1e7e34;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    color: white;
+}
+
+/* Reports Table Container */
+.reports-table-container {
+    margin-bottom: 30px;
+}
+
+.reports-table-container h2 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+/* Data Tables */
+.data-section {
+    margin-bottom: 30px;
+}
+
+.data-section h3 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
 }
 
 .table-responsive {
     overflow-x: auto;
+    margin-bottom: 20px;
     border-radius: 8px;
-    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.data-table,
 .reports-table {
     width: 100%;
     border-collapse: collapse;
+    background-color: white;
     font-size: 14px;
 }
 
+.data-table th,
 .reports-table th {
-    background: #f8f9fa;
-    padding: 15px 12px;
-    text-align: left;
+    background-color: #f8f9fa;
+    color: #333;
     font-weight: 600;
-    color: #495057;
+    padding: 12px 8px;
+    text-align: left;
     border-bottom: 2px solid #dee2e6;
     white-space: nowrap;
 }
 
+.data-table td,
 .reports-table td {
-    padding: 12px;
-    border-bottom: 1px solid #f1f3f4;
+    padding: 10px 8px;
+    border-bottom: 1px solid #dee2e6;
     vertical-align: middle;
 }
 
+.data-table tbody tr:hover,
 .reports-table tbody tr:hover {
     background-color: #f8f9fa;
 }
 
-.no-data {
-    text-align: center;
-    color: #6c757d;
-    font-style: italic;
-    padding: 40px !important;
+.data-table tbody tr:nth-child(even),
+.reports-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
 }
 
 /* Status badges */
-.status-delivered,
+.status-delivered {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.status-pending {
+    color: #ffc107;
+    font-weight: 600;
+}
+
 .payment-paid {
-    background: #d4edda;
-    color: #155724;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+    color: #28a745;
     font-weight: 600;
 }
 
-.status-pending,
-.payment-unpaid,
 .payment-not-paid {
-    background: #f8d7da;
-    color: #721c24;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+    color: #dc3545;
     font-weight: 600;
 }
 
-/* Sortable table headers styling */
-.reports-table th[data-sort] {
-    cursor: pointer;
-    position: relative;
-    user-select: none;
-    transition: background-color 0.2s ease;
+/* Product type styling */
+.product-rice {
+    color: #28a745;
+    font-weight: 500;
 }
 
-.reports-table th[data-sort]:hover {
-    background-color: #e9ecef;
+.product-paddy {
+    color: #795548;
+    font-weight: 500;
+}
+
+.product-pesticide {
+    color: #ff5722;
+    font-weight: 500;
+}
+
+/* Summary section */
+.summary-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.summary-section h4 {
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    padding: 2px 0;
+}
+
+.summary-item strong {
     color: #333;
 }
 
-.reports-table th[data-sort]::after {
-    content: " ↕";
-    font-size: 12px;
+/* No data message */
+.no-data {
+    text-align: center;
+    padding: 40px;
     color: #6c757d;
-    margin-left: 5px;
+    font-style: italic;
 }
 
-.reports-table th[data-sort].sort-asc::after {
-    content: " ↑";
-    color: #007bff;
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
 }
 
-.reports-table th[data-sort].sort-desc::after {
-    content: " ↓";
-    color: #007bff;
-}
-
-/* Date fields */
-.date-field {
-    transition: all 0.3s ease;
-}
-
-/* Tablet styles */
-@media (max-width: 991.98px) {
+/* Responsive styles */
+@media (max-width: 768px) {
     .reports-container {
         padding: 15px 10px;
     }
-
-    .page-title {
-        font-size: 1.8rem;
-    }
-
-    .filters-section,
-    .export-section,
-    .reports-table-container {
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-    .filter-row {
-        grid-template-columns: 1fr 1fr;
+    
+    .header-bar {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 15px;
     }
-
-    .filter-actions {
-        grid-column: 1 / -1;
-        justify-content: center;
-    }
-}
-
-/* Mobile styles */
-@media (max-width: 767.98px) {
-    .reports-container {
-        padding: 10px 5px;
-    }
-
+    
     .page-title {
-        font-size: 1.6rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
     }
-
-    .filters-section,
-    .export-section,
-    .reports-table-container {
-        padding: 15px;
-        margin-bottom: 15px;
-        border-radius: 8px;
-    }
-
+    
     .filter-row {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        flex-direction: column;
     }
-
-    .filter-group select,
-    .filter-group input {
-        padding: 8px 10px;
-        font-size: 13px;
+    
+    .filter-group {
+        min-width: auto;
     }
-
-    .btn-primary,
-    .btn-secondary {
-        padding: 10px 20px;
-        font-size: 13px;
-    }
-
+    
+    .filter-actions,
+    .filter-actions-bar,
+    .export-actions,
     .export-buttons {
+        flex-direction: column;
+    }
+    
+    .filter-actions button,
+    .filter-actions-bar button,
+    .export-actions .btn,
+    .btn-export {
+        width: 100%;
         justify-content: center;
     }
-
-    .btn-export {
-        padding: 10px 16px;
-        font-size: 13px;
-    }
-
-    /* Mobile table: Hide less important columns and create mobile cards */
+    
+    .data-table,
     .reports-table {
-        display: none;
-    }
-
-    .mobile-report-cards {
-        display: block;
-    }
-
-    .report-card {
-        background: white;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        margin-bottom: 12px;
-        padding: 15px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .report-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #f1f3f4;
-    }
-
-    .report-card-id {
-        font-weight: 600;
-        color: #007bff;
-    }
-
-    .report-card-body {
-        display: grid;
-        gap: 6px;
-    }
-
-    .report-info-row {
-        display: grid;
-        grid-template-columns: 80px 1fr;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .report-info-label {
-        font-weight: 500;
-        color: #6c757d;
         font-size: 12px;
     }
-
-    .report-info-value {
-        font-weight: 500;
-        color: #495057;
-        font-size: 13px;
-    }
-
-    .toast-container {
-        padding: 10px !important;
-    }
-
-    .toast-container .toast {
-        min-width: 280px;
+    
+    .data-table th,
+    .data-table td,
+    .reports-table th,
+    .reports-table td {
+        padding: 8px 4px;
     }
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 480px) {
     .page-title {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
-
-    .report-card {
-        padding: 12px;
-    }
-
-    .filter-actions {
-        flex-direction: column;
-    }
-
-    .export-buttons {
-        flex-direction: column;
-        align-items: stretch;
-    }
-}
-
-/* Desktop styles */
-@media (min-width: 768px) {
-    .filter-row:first-child {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    .filter-row:nth-child(2) {
-        grid-template-columns: 1fr;
-    }
-
-    .filter-row:last-child {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
-
-    .mobile-report-cards {
-        display: none;
-    }
-
+    
+    .data-table,
     .reports-table {
-        display: table;
+        font-size: 11px;
+    }
+    
+    .data-table th,
+    .data-table td,
+    .reports-table th,
+    .reports-table td {
+        padding: 6px 3px;
     }
 }
 
-@media (min-width: 992px) {
-    .reports-container {
-        padding: 30px 20px;
-    }
-
-    .page-title {
-        font-size: 2.2rem;
-    }
-
+/* Print styles */
+@media print {
     .filters-section,
     .export-section,
-    .reports-table-container {
-        padding: 30px;
+    .export-actions,
+    .export-buttons,
+    .filter-actions,
+    .filter-actions-bar {
+        display: none;
+    }
+    
+    .reports-container {
+        padding: 0;
+        max-width: none;
+    }
+    
+    .data-table,
+    .reports-table {
+        font-size: 12px;
+    }
+    
+    .data-table th,
+    .data-table td,
+    .reports-table th,
+    .reports-table td {
+        padding: 4px;
+        border: 1px solid #333;
     }
 }

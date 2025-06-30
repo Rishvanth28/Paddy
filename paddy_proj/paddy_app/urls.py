@@ -1,6 +1,5 @@
 from django.urls import path
 from .views import *
-from .reports import admin_reports, superadmin_reports
 
 
 urlpatterns = [
@@ -54,9 +53,5 @@ urlpatterns = [
     path('admin-notifications/', admin_notifications, name='admin_notifications'),
     path('superadmin/notifications/', superadmin_notifications, name='superadmin_notifications'),    path('mark_notification_read/', mark_notification_read, name='mark_notification_read'),
     path('mark_all_notifications_read/', mark_all_notifications_read, name='mark_all_notifications_read'),    path('delete_notifications/', delete_notifications, name='delete_notifications'),
-    
-    # Reports URLs - using app-reports to avoid conflicts with Django's admin
-    path('app-admin-reports/', admin_reports, name='admin_reports'),
-    path('app-superadmin-reports/', superadmin_reports, name='superadmin_reports'),
 
 ]

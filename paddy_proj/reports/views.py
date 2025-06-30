@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .decorators import role_required
-from .models import Orders, CustomerTable, Payments, AdminTable, OrderItems
+from paddy_app.decorators import role_required
+from paddy_app.models import Orders, CustomerTable, Payments, AdminTable, OrderItems
 import pandas as pd
 import io
 from datetime import datetime, timedelta
