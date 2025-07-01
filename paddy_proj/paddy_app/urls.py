@@ -53,5 +53,6 @@ urlpatterns = [
     path('admin-notifications/', admin_notifications, name='admin_notifications'),
     path('superadmin/notifications/', superadmin_notifications, name='superadmin_notifications'),    path('mark_notification_read/', mark_notification_read, name='mark_notification_read'),
     path('mark_all_notifications_read/', mark_all_notifications_read, name='mark_all_notifications_read'),    path('delete_notifications/', delete_notifications, name='delete_notifications'),
-
+    path('request_cash_payment/', request_cash_payment, name='request_cash_payment'),
+    path('approve_cash_payment/<int:request_id>/', approve_cash_payment, name='approve_cash_payment'),
 ]

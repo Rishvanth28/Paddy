@@ -1159,7 +1159,7 @@ def payment(request):
     if order.product_category_id == 3:
         order_items = OrderItems.objects.filter(order=order)
         order_items = [{'quantity':item.quantity,'price_per_unit':item.price_per_unit,
-                        'total_amount':item.total_amount,'product_name':item.product_name} for item in order_items]
+                        'total_amount':item.total_amount,'product_name':item.product_name,'unit':item.unit} for item in order_items]
     else:
         order_items = [{'quantity':order.quantity,'price_per_unit':order.price_per_unit,
                         'total_amount':order.overall_amount,'product_name':'Paddy' if order.product_category_id == 2 else 'Rice'}]
@@ -1705,6 +1705,17 @@ def super_admin_orders(request):
         sort_by = request.GET.get('sort', '-order_id') # Default sort by latest order
         admin_filter = request.GET.get('admin', 'all')  # Get admin filter parameter
 
+        # Filter for orders with pending cash requests
+        if request.GET.get('pending_cash') == 'true':
+            # Superadmin should only see orders with pending cash requests
+            # where they're the admin (admin_id = 1000000)
+            orders_with_pending_cash = CashPaymentRequest.objects.filter(
+                status=0,  # Pending status
+                order__admin__admin_id=user_id  # Only orders where the superadmin is the admin
+            ).values_list('order_id', flat=True)
+            
+            orders_query = orders_query.filter(order_id__in=orders_with_pending_cash)
+
         if admin_filter != 'all':
             orders_query = orders_query.filter(admin__admin_id=admin_filter)
 
@@ -1752,7 +1763,7 @@ def super_admin_orders(request):
 
         # Apply sorting
         orders_query = orders_query.order_by(sort_by)
-# Use select_related to efficiently fetch related admin and customer data
+        # Use select_related to efficiently fetch related admin and customer data
         orders_query = orders_query.select_related('admin', 'customer')
         orders_data = []
         for order in orders_query:
@@ -1785,6 +1796,27 @@ def super_admin_orders(request):
  
             admin_name = f"{order.admin.first_name} {order.admin.last_name}" if order.admin else "N/A"
             admin_email = order.admin.email if order.admin else "N/A"
+            
+            # Get cash payment requests for this order
+            cash_payment_requests = []
+            for req in CashPaymentRequest.objects.filter(order=order).select_related('processed_by'):
+                cash_req_data = {
+                    'request_id': req.request_id,
+                    'amount': float(req.amount),
+                    'reference': req.reference,
+                    'notes': req.notes,
+                    'status': req.status,
+                    'created_at': req.created_at.isoformat(),
+                }
+                
+                if req.processed_at:
+                    cash_req_data['processed_at'] = req.processed_at.isoformat()
+                    
+                if req.processed_by:
+                    cash_req_data['processed_by_name'] = f"{req.processed_by.first_name} {req.processed_by.last_name}"
+                    
+                cash_payment_requests.append(cash_req_data)
+            
             orders_data.append({
                 'order_id': order.order_id,
                 'customer_id': order.customer.customer_id if order.customer else None,
@@ -1795,7 +1827,7 @@ def super_admin_orders(request):
                 'admin_email': admin_email,  # Add admin email
                 'payment_status': order.payment_status,
                 'delivery_status': order.delivery_status,
-                'delivery_date':order.delivery_date if order.delivery_status else None,
+                'delivery_date': order.delivery_date if order.delivery_status else None,
                 'product_category_id': order.product_category_id,
                 'category': order.category,
                 'quantity': float(order.quantity),
@@ -1809,6 +1841,7 @@ def super_admin_orders(request):
                 'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
                 'order_items': order_items_data,
                 'category': order.category,
+                'cash_payment_requests': cash_payment_requests,  # Add cash payment requests
             })
         return JsonResponse({'orders': orders_data})
     admins = []
@@ -1818,6 +1851,183 @@ def super_admin_orders(request):
         admins = [{'id': admin.admin_id, 'name': f"{admin.first_name} {admin.last_name}"} for admin in admin_objs]
     
     return render(request, "superadmin_orders.html", {'admins': admins})
+
+@csrf_exempt
+@require_POST
+def request_cash_payment(request):
+    """API endpoint to request cash payment approval"""
+    try:
+        data = json.loads(request.body)
+        order_id = data.get('order_id')
+        amount = float(data.get('amount'))
+        customer_id = data.get('customer_id')
+        reference = data.get('reference', '')
+        notes = data.get('notes', '')
+        
+        # Get the order
+        order = get_object_or_404(Orders, order_id=order_id)
+        customer = get_object_or_404(CustomerTable, customer_id=customer_id)
+        
+        # Validate amount
+        paid_amount = order.paid_amount or 0
+        balance_due = order.overall_amount - paid_amount
+        
+        if amount <= 0 or amount > balance_due:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Invalid payment amount'
+            })
+            
+        # Check if there's already a pending request
+        existing_request = CashPaymentRequest.objects.filter(
+            order=order,
+            status=0  # Pending
+        ).exists()
+        
+        if existing_request:
+            return JsonResponse({
+                'success': False,
+                'message': 'There is already a pending cash payment request for this order.'
+            })
+        
+        # Create the cash payment request
+        cash_request = CashPaymentRequest.objects.create(
+            order=order,
+            customer=customer,
+            amount=amount,
+            reference=reference,
+            notes=notes,
+            status=0  # Pending
+        )
+        
+        # Create notification for admin
+        admin_id = order.admin.admin_id if order.admin else None
+        if admin_id:
+            if admin_id == '1000000':  # Superadmin ID
+                create_notification(
+                    user_type='superadmin',
+                    user_id='1000000',
+                    notification_type='payment_request',
+                    title='Cash Payment Request',
+                    message=f'Customer {customer.first_name} {customer.last_name} has requested a cash payment of ₹{amount} for order #{order.order_id}.',
+                    related_order_id=order.order_id
+                )
+            else:
+                create_notification(
+                    user_type='admin',
+                    user_id=admin_id,
+                    notification_type='payment_request',
+                    title='Cash Payment Request',
+                    message=f'Customer {customer.first_name} {customer.last_name} has requested a cash payment of ₹{amount} for order #{order.order_id}.',
+                    related_order_id=order.order_id
+                )
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Cash payment request submitted successfully.'
+        })
+        
+    except Exception as e:
+        print(f"Error in request_cash_payment: {str(e)}")  # Log the error
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        }, status=500)
+
+@role_required(["admin", "superadmin"])
+def approve_cash_payment(request, request_id):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
+    
+    try:
+        cash_request = get_object_or_404(CashPaymentRequest, request_id=request_id)
+        
+        # Security check: Only allow admins to approve/reject their own orders
+        if request.session.get('role') == 'admin':
+            admin_id = request.session.get('user_id')
+            if cash_request.order.admin_id != admin_id:
+                return JsonResponse({
+                    'success': False, 
+                    'message': 'You can only process cash payment requests for your own orders.'
+                })
+        
+        action = request.POST.get('action')
+        
+        if action not in ['approve', 'reject']:
+            return JsonResponse({'success': False, 'message': 'Invalid action'})
+        
+        admin_id = request.session.get('user_id')
+        admin = get_object_or_404(AdminTable, admin_id=admin_id)
+        
+        if action == 'approve':
+            # Update request status
+            cash_request.status = 1  # Approved
+            cash_request.processed_at = timezone.now()
+            cash_request.processed_by = admin
+            cash_request.save()
+            
+            # Create payment record
+            order = cash_request.order
+            Payments.objects.create(
+                order=order,
+                amount=cash_request.amount,
+                date=timezone.now().date(),
+                reference=f"Cash Payment: {cash_request.reference}" if cash_request.reference else "Cash Payment",
+                proof_link="Cash Payment Approved by Admin",
+                payment_method="Cash"
+            )
+            
+            # Update order payment status
+            current_paid = order.paid_amount or 0
+            order.paid_amount = current_paid + cash_request.amount
+            
+            if order.paid_amount >= order.overall_amount:
+                order.payment_status = 2  # Fully paid
+                payment_status_text = "fully paid"
+            else:
+                order.payment_status = 1  # Partially paid
+                payment_status_text = "partially paid"
+            
+            order.save()
+            
+            # Create notification for customer
+            create_notification(
+                user_type='customer',
+                user_id=cash_request.customer.customer_id,
+                notification_type='payment_approved',
+                title='Cash Payment Approved',
+                message=f'Your cash payment of ₹{cash_request.amount} for order #{order.order_id} has been approved. Order is now {payment_status_text}.',
+                related_order_id=order.order_id
+            )
+            
+            return JsonResponse({
+                'success': True, 
+                'message': 'Cash payment has been approved and recorded.'
+            })
+        else:  # reject
+            # Update request status
+            cash_request.status = 2  # Rejected
+            cash_request.processed_at = timezone.now()
+            cash_request.processed_by = admin
+            cash_request.save()
+            
+            # Create notification for customer
+            create_notification(
+                user_type='customer',
+                user_id=cash_request.customer.customer_id,
+                notification_type='payment_rejected',
+                title='Cash Payment Rejected',
+                message=f'Your cash payment request of ₹{cash_request.amount} for order #{cash_request.order.order_id} has been rejected. Please contact support for more information.',
+                related_order_id=cash_request.order.order_id
+            )
+            
+            return JsonResponse({
+                'success': True, 
+                'message': 'Cash payment request has been rejected.'
+            })
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
 @role_required(["admin"])
 def admin_orders(request):
@@ -1890,9 +2100,17 @@ def admin_orders(request):
                 Q(customer__last_name__icontains=search_query)
             )
 
-        # Apply sorting
-        orders_query = orders_query.order_by(sort_by)
+        if request.GET.get('pending_cash') == 'true':
+            orders_with_pending_cash = CashPaymentRequest.objects.filter(
+                status=0  # Pending status
+            ).values_list('order_id', flat=True)
+            
+            orders_query = orders_query.filter(order_id__in=orders_with_pending_cash)
+                # Apply sorting
+            orders_query = orders_query.order_by(sort_by)
 
+        cash_payment_requests = []
+        
         orders_data = []
         for order in orders_query:
             order_items_data = []
@@ -1921,6 +2139,24 @@ def admin_orders(request):
                 })
 
             customer_full_name = f"{order.customer.first_name} {order.customer.last_name}" if order.customer else "N/A"
+            
+            for req in CashPaymentRequest.objects.filter(order=order).select_related('processed_by'):
+                cash_req_data = {
+                    'request_id': req.request_id,
+                    'amount': float(req.amount),
+                    'reference': req.reference,
+                    'notes': req.notes,
+                    'status': req.status,
+                    'created_at': req.created_at.isoformat(),
+                }
+                
+                if req.processed_at:
+                    cash_req_data['processed_at'] = req.processed_at.isoformat()
+                    
+                if req.processed_by:
+                    cash_req_data['processed_by_name'] = f"{req.processed_by.first_name} {req.processed_by.last_name}"
+                    
+                cash_payment_requests.append(cash_req_data)
 
             orders_data.append({
                 'order_id': order.order_id,
@@ -1942,6 +2178,7 @@ def admin_orders(request):
                 'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
                 'order_items': order_items_data,
                 'category': order.category,
+                'cash_payment_requests': cash_payment_requests,
             })
         return JsonResponse({'orders': orders_data})
 

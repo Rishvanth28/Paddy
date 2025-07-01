@@ -225,11 +225,7 @@
                                 <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
                                 <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
                                 <td>
-                                    <select name="unit[]" class="unit" required>
-                                        <option value="Nos">Nos</option>
-                                        <option value="Kg">Kg</option>
-                                        <option value="Ltr">Ltr</option>
-                                    </select>
+                                    <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required>
                                 </td>
                                 <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
                                 <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
@@ -485,11 +481,7 @@
                 <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
                 <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
                 <td>
-                    <select name="unit[]" class="unit" required>
-                        <option value="Nos">Nos</option>
-                        <option value="Kg">Kg</option>
-                        <option value="Ltr">Ltr</option>
-                    </select>
+                    <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required>
                 </td>
                 <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
                 <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>

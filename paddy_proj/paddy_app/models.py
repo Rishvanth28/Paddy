@@ -196,4 +196,19 @@ class Notification(models.Model):
     
     def __str__(self):
         return f"{self.user_type} - {self.title} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
-    
+
+class CashPaymentRequest(models.Model):
+    request_id = models.AutoField(primary_key=True)
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    customer = models.ForeignKey(CustomerTable, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=15, decimal_places=2)
+    reference = models.CharField(max_length=255, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+    status = models.IntegerField(default=0)  # 0: Pending, 1: Approved, 2: Rejected
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(null=True, blank=True)
+    processed_by = models.ForeignKey(AdminTable, on_delete=models.SET_NULL, null=True, blank=True, related_name='processed_requests')
+
+    def __str__(self):
+        return f"Cash Request #{self.request_id} - Order #{self.order.order_id}"
+
