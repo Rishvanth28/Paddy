@@ -301,7 +301,7 @@
 <!-- Create Customer Form -->
 <div class="form-container">
     <div class="form-card">
-        <form method="POST" action="{% url 'customer_onboard' %}">
+        <form method="POST" action="{% url 'onboarding:customer_onboard' %}">
             {% csrf_token %}
 
             <div class="form-row">

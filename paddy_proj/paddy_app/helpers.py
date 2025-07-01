@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import razorpay
 from datetime import datetime
 from .models import Notification
@@ -131,4 +132,8 @@ def get_unread_notification_count(user_type, user_id):
     ).count()
 
 
+def validate_gst(gst):
+    """Validate GST number format"""
+    gst_pattern = r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
+    return bool(re.match(gst_pattern, gst))
 

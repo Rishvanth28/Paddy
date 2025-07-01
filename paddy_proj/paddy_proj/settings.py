@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'paddy_app',
     'reports',
     'notifications',
+    'onboarding',
 ]
 
 MIDDLEWARE = [
