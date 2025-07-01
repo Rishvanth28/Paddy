@@ -764,7 +764,7 @@
 
 <script>
     function markAsRead(notificationId) {
-        fetch('/mark_notification_read/', {
+        fetch('/notifications/mark-read/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -791,7 +791,7 @@
     }
 
     function markAllAsRead() {
-        fetch('/mark_all_notifications_read/', {
+        fetch('/notifications/mark-all-read/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -982,7 +982,7 @@
         deleteBtn.disabled = true;
 
         // Send delete request
-        fetch('/delete_notifications/', {
+        fetch('/notifications/delete/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -640,7 +640,7 @@
 
         <!-- Notifications -->
         <li class="nav-item" id="notifications-menu-item">
-          <a href="{% url 'admin_notifications' %}" class="nav-link">
+          <a href="{% url 'notifications:admin_notifications' %}" class="nav-link">
             <i class="bi bi-bell nav-icon"></i>
             <span class="nav-text">Notifications</span>
             {% if unread_count > 0 %}

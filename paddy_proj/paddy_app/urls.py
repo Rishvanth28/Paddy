@@ -48,10 +48,6 @@ urlpatterns = [
     path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
     path('upgrade-to-customer/',upgrade_to_customer, name='upgrade_to_customer'),
     path("create-customer-signup/", create_customer_signup, name="create_customer_signup"),
-    path("create-admin-signup/", create_admin_signup, name="create_admin_signup"),    # Notification URLs
-    path('customer/notifications/', customer_notifications, name='customer_notifications'),
-    path('admin-notifications/', admin_notifications, name='admin_notifications'),
-    path('superadmin/notifications/', superadmin_notifications, name='superadmin_notifications'),    path('mark_notification_read/', mark_notification_read, name='mark_notification_read'),
-    path('mark_all_notifications_read/', mark_all_notifications_read, name='mark_all_notifications_read'),    path('delete_notifications/', delete_notifications, name='delete_notifications'),
+    path("create-admin-signup/", create_admin_signup, name="create_admin_signup"),
 
 ]

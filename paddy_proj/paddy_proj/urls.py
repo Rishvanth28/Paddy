@@ -6,4 +6,5 @@ urlpatterns = [
     path('api/', include('paddy_app.urls')),  # API routes for your app
     path('', include('paddy_app.urls')),  # Set paddy_app as the main app
     path('reports/', include('reports.urls')),  # Reports app URLs
+    path('notifications/', include('notifications.urls')),  # Notifications app URLs
 ]
