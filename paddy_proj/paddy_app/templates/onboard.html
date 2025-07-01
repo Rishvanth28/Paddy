@@ -19,7 +19,7 @@
 <div class="form-container">
     <!-- Create Admin Form -->
     <div id="admin-form" class="form-card">
-        <form method="POST" action="{% url 'create_admin' %}">
+        <form method="POST" action="{% url 'onboarding:create_admin' %}">
             {% csrf_token %}
             <div class="form-row">
                 <div class="form-group" style="margin-top: 10px;">
@@ -49,7 +49,7 @@
 
     <!-- Create Customer Form -->
     <div id="customer-form" class="form-card" style="display: none;">
-        <form method="POST" action="{% url 'create_customer' %}">
+        <form method="POST" action="{% url 'onboarding:create_customer' %}">
             {% csrf_token %}
             <div class="form-row">
                 <div class="form-group" style="margin-top: 10px;">

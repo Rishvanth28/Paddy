@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'paddy_app',
     'reports',
+    'notifications',
+    'onboarding',
 ]
 
 MIDDLEWARE = [
