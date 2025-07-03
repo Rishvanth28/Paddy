@@ -1,0 +1,75 @@
+{% extends 'superadmin_app/superadmin_base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user_type|capfirst }} Subscribers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/customer_subscribers.css' %}">
+</head>
+
+<body>
+    {% comment %} <div class="main py-5" style="padding: 40px 30px;"> {% endcomment %}
+        <div class="header-bar mb-5">
+            <h1 class="page-title mb-0 me-3">{{ user_type|capfirst }} Subscribers</h1>
+            <div class="search-wrapper mt-2 mt-md-0">
+                <form class="w-100 position-relative" style="max-width: 500px;" method="GET" action="">
+                    <i class="fas fa-search position-absolute"
+                       style="top: 41%; left: 16px; transform: translateY(-50%); color: #888;"></i>
+                    <input type="search" name="q" class="form-control ps-5" placeholder="Search subscribers..." aria-label="Search">
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-0">
+                {% if subscriptions %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>{{ user_type|capfirst }} Name</th>
+                                <th>Payment Amount (₹)</th>
+                                <th>Status</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in subscriptions %}
+                            <tr>
+                                <td>{{ item.subscription.sid }}</td>
+                                <td>
+                                    {{ item.subscription.customer_id.first_name }} {{ item.subscription.customer_id.last_name }}
+                                </td>
+                                <td>{{ item.subscription.payment_amount }}</td>
+                                <td>
+                                    {% if item.end_date_comparable and item.end_date_comparable > item.today_date %}
+                                        <span class="active-status">Active</span>
+                                    {% else %}
+                                        <span class="inactive-status">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.subscription.start_date }}</td>
+                                <td>{{ item.subscription.end_date|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="no-customers text-center py-5">
+                    <i class="fa-solid fa-circle-exclamation fa-2xl mb-3" style="color: #aaa;"></i>
+                    <p class="fs-5 mb-0">No {{ user_type }} subscribers found.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% comment %} </div> {% endcomment %}
+
+    <script src="{% static 'js/customer_subscribers.js' %}" defer></script>
+</body>
+
+{% endblock %}

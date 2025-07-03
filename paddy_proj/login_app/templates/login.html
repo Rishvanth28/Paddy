@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>    <link rel="stylesheet" href="{% static 'css/login_responsive.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toast.css' %}"> 
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-left">
+            
+
+            <div class="login-section">
+                <h1><span class="highlight">Hey !</span> <br> Welcome Back</h1>
+                
+                <!-- Main tabs -->
+                <div class="tab-container">
+                    <div class="tab-nav">
+                        <button class="login tab-btn active" data-tab="signin">Sign In</button>
+                        <button class="login tab-btn" data-tab="signup">Sign Up</button>
+                    </div>
+
+                    <!-- Sign In Tab -->
+                    <div class="tab-content active" id="signin">
+                        <form method="POST" action="{% url 'login_app:login' %}">
+                            {% csrf_token %}  <!-- Security Token -->
+
+                            <label class="text" for="role">SELECT ROLE</label>
+                            <select name="role" id="role">
+                                <option value="superadmin">Superadmin</option>
+                                <option value="admin">Admin</option>
+                                <option value="customer">Customer</option>
+                            </select>
+                        
+                            <label class="text" for="username">USERNAME</label>
+                            <input type="text" name="username" id="username">
+
+                            <label class="text" for="password">PASSWORD</label>
+                            <input type="password" name="password" id="password">
+
+                            <button class="login" type="submit">LOG IN</button>
+                        </form>
+                    </div>                    
+                    <!-- Sign Up Tab -->
+                    <div class="tab-content" id="signup">
+                        <!-- Role Selector -->
+                        <label class="text" for="signup-role">SELECT ROLE</label>
+                        <select id="signup-role">
+                            <option value="customer">Customer</option>
+                            <option value="admin">Admin</option>
+                        </select>
+
+                        <!-- Admin Signup Form -->
+                        <div id="admin-form" class="form-card" style="display: none;">
+                            <form method="POST" action="{% url 'onboarding_app:create_admin_signup' %}">
+                                {% csrf_token %}
+                                <div class="form-row">
+                                    <div class="form-group" style="margin-top: 10px;">
+                                        <label>First Name</label>
+                                        <input type="text" name="first_name" required pattern="[A-Za-z\s]+" minlength="2">
+                                    </div>
+                                    <div class="form-group" style="margin-top: 10px;">
+                                        <label>Last Name</label>
+                                        <input type="text" name="last_name" required pattern="[A-Za-z\s]+" minlength="1">
+                                    </div>
+                                </div>
+
+                                <label>Phone Number</label>
+                                <input type="tel" name="phone_number" required pattern="[0-9]{10}" maxlength="10">
+
+                                <label>Email</label>
+                                <input type="email" name="email" required>
+
+                                <label>Password</label>
+                                <input type="password" name="password" required minlength="6">
+
+                                <label>Confirm Password</label>
+                                <input type="password" name="confirm_password" required minlength="6">
+
+                                <input type="hidden" name="role" value="0">
+                                <button type="submit">Create Admin User</button>
+                            </form>
+                        </div>
+
+                        <!-- Customer Signup Form -->
+                        <div id="customer-form" class="form-card" style="display: none;">
+                            <form method="POST" action="{% url 'onboarding_app:create_customer_signup' %}">
+                                {% csrf_token %}
+                                <!-- First Row: Name Fields -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="first_name">First Name</label>
+                                        <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required pattern="[A-Za-z]+" minlength="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last_name">Last Name</label>
+                                        <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required pattern="[A-Za-z]+" minlength="1">
+                                    </div>
+                                </div>
+                                
+                                <!-- Second Row: Contact Fields -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="phone_number">Phone Number</label>
+                                        <input type="tel" id="phone_number" name="phone_number" placeholder="Enter phone number" required pattern="[0-9]{10}" maxlength="10">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                                    </div>
+                                </div>
+                                
+                                <!-- Third Row: Password Fields -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" id="password" name="password" placeholder="Enter password" required minlength="6">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirm_password">Confirm Password</label>
+                                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password" required minlength="6">
+                                    </div>
+                                </div>
+
+                                <!-- Fourth Row: Company Fields -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="company_name">Company Name</label>
+                                        <input type="text" id="company_name" name="company_name" placeholder="Enter company name" required minlength="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gst">GST Number (Optional)</label>
+                                        <input type="text" id="gst" name="gst" placeholder="Enter GST number" pattern="[0-9A-Z]{15}">
+                                    </div>
+                                </div>
+                                
+                                <!-- Full Width Address Field -->
+                                <div class="form-row">
+                                    <div class="form-group full-width">
+                                        <label for="address">Address</label>
+                                        <textarea id="address" name="address" placeholder="Enter your address" rows="3" required minlength="5"></textarea>
+                                    </div>
+                                </div>
+                            
+                                <input type="hidden" name="role" value="1">
+                                <button type="submit">Create Customer Account</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>                <!-- Toast Notification System -->
+                <div class="toast-container">
+                  {% if messages %}
+                    {% for message in messages %}
+                      <div class="toast 
+                                {% if message.tags == 'success' %}success
+                                {% elif message.tags == 'info' %}info
+                                {% elif message.tags == 'warning' %}warning
+                                {% elif message.tags == 'error' %}error
+                                {% endif %}">
+                        {{ message }}
+                        <button type="button" class="toast-close" aria-label="Close">&times;</button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                
+                <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    // Use event delegation for toast close buttons to handle dynamically added toasts
+                    document.addEventListener('click', function(e) {
+                      if (e.target.classList.contains('toast-close')) {
+                        const toast = e.target.closest('.toast');
+                        if (toast) {
+                          toast.style.animation = 'fadeOutToast 0.3s forwards';
+                          setTimeout(() => {
+                            if (toast.parentElement) {
+                              toast.remove();
+                            }
+                          }, 300);
+                        }
+                      }
+                    });
+                    
+                    // Auto-dismiss toasts after 5 seconds
+                    document.querySelectorAll('.toast').forEach(toast => {
+                      setTimeout(() => {
+                        if (toast && toast.parentElement) {
+                          toast.style.animation = 'fadeOutToast 0.3s forwards';
+                          setTimeout(() => {
+                            if (toast && toast.parentElement) {
+                              toast.remove();
+                            }
+                          }, 300);
+                        }
+                      }, 5000);
+                    });
+                    
+                    // Global function to create test toasts (for debugging)
+                    window.createTestToast = function(message, type = 'info') {
+                      const container = document.querySelector('.toast-container');
+                      if (container) {
+                        const toast = document.createElement('div');
+                        toast.className = `toast ${type}`;
+                        toast.innerHTML = `${message}<button type="button" class="toast-close" aria-label="Close">&times;</button>`;
+                        container.appendChild(toast);
+                        
+                        // Auto-dismiss after 5 seconds
+                        setTimeout(() => {
+                          if (toast && toast.parentElement) {
+                            toast.style.animation = 'fadeOutToast 0.3s forwards';
+                            setTimeout(() => {
+                              if (toast && toast.parentElement) {
+                                toast.remove();
+                              }
+                            }, 300);
+                          }
+                        }, 5000);
+                      }
+                    };
+                  });
+                </script>
+            </div>
+        </div>
+
+    <div class="auth-right">
+      <h2 class="logo">LOGO HERE</h2>
+            {% comment %} <div class="welcome-text">
+                <h1>Welcome <span>Back</span></h1>
+                <p>Sign in to access your dashboard or create an account</p>
+            </div> {% endcomment %}
+   </div>
+  </div>
+
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Handle initial visibility based on default selected role
+    const role = document.getElementById("signup-role").value;
+    document.getElementById("admin-form").style.display = role === "admin" ? "block" : "none";
+    document.getElementById("customer-form").style.display = role === "customer" ? "block" : "none";
+
+    // Tab switching logic
+    document.querySelectorAll('.tab-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Role-based form toggle
+    document.getElementById("signup-role").addEventListener("change", function () {
+      document.getElementById("admin-form").style.display = this.value === "admin" ? "block" : "none";
+      document.getElementById("customer-form").style.display = this.value === "customer" ? "block" : "none";
+    });
+  });
+</script>
+
+    <script src="{% static 'js/login.js' %}" defer></script>
+</body>
+</html>

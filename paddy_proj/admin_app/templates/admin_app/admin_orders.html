@@ -1,0 +1,2191 @@
+{% extends 'admin_app/admin_base.html' %} 
+{% load static %} 
+{% block content %}
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+<link rel="stylesheet" href="{% static 'css/admin_orders.css' %}" />
+<style>
+  :root {
+    /* Primary Colors - Black & White Theme */
+    --primary: #000000;
+    --primary-hover: #1a1a1a;
+    --secondary: #333333;
+    --accent: #666666;
+
+    /* Status Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+
+    /* Neutral Colors */
+    --white: #ffffff;
+    --black: #000000;
+    --gray-50: #fafafa;
+    --gray-100: #f5f5f5;
+    --gray-200: #e5e5e5;
+    --gray-300: #d4d4d4;
+    --gray-400: #a3a3a3;
+    --gray-500: #737373;
+    --gray-600: #525252;
+    --gray-700: #404040;
+    --gray-800: #262626;
+    --gray-900: #171717;
+
+    /* Surface Colors */
+    --surface-primary: #ffffff;
+    --surface-secondary: #fafafa;
+    --surface-elevated: #ffffff;
+    --surface-hover: #f5f5f5;
+
+    /* Border & Shadow */
+    --border-light: #e5e5e5;
+    --border-medium: #d4d4d4;
+    --border-dark: #a3a3a3;
+
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+    /* Text Colors */
+    --text-primary: #000000;
+    --text-secondary: #404040;
+    --text-tertiary: #737373;
+    --text-muted: #a3a3a3;
+    --text-inverse: #ffffff;
+
+    /* Transitions & Effects */
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --border-radius-sm: 6px;
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--gray-50);
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  .container-fluid {
+    min-height: 100vh !important;
+    color: #262626 !important;
+    background-color: #ffffff !important;
+  }
+
+  /* Add this to the style section in both files */
+
+  .cash-request-card {
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    padding: 1rem;
+    background-color: white;
+    transition: all 0.2s ease;
+  }
+
+  .cash-request-card.pending {
+    border-left: 4px solid var(--warning);
+    background-color: rgba(245, 158, 11, 0.05);
+  }
+
+  .cash-request-card.approved {
+    border-left: 4px solid var(--success);
+    background-color: rgba(16, 185, 129, 0.05);
+  }
+
+  .cash-request-card.rejected {
+    border-left: 4px solid var(--danger);
+    background-color: rgba(239, 68, 68, 0.05);
+  }
+
+  .cash-request-card:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -0.75rem;
+  }
+
+  .col-md-4 {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+    padding: 0.75rem;
+  }
+
+  .col-md-8 {
+    flex: 0 0 66.666667%;
+    max-width: 66.666667%;
+    padding: 0.75rem;
+  }
+
+  .col-md-2 {
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+    padding: 0.75rem;
+  }
+
+  .col-md-5 {
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+    padding: 0.75rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    .for-mobile {
+      flex-direction: column;
+    }
+  }
+
+  /* Header Bar */
+  .header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 0.5rem;
+    margin-top: -1rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 1px;
+    color: #000000;
+    position: relative;
+    text-transform: uppercase;
+    padding-bottom: 0.6rem;
+    text-align: left;
+    /* <-- Ensure left alignment */
+  }
+
+  .page-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    /* initial width */
+    height: 4px;
+    background-color: #000000;
+    border-radius: 2px;
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    /* added transition for both properties */
+  }
+
+  .page-title:hover::after {
+    width: 110%;
+    /* makes the underline grow */
+    transform: translateX(-50%);
+    /* keep it centered */
+  }
+
+  #order-count-text {
+    color: var(--text-tertiary) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  /* Cards */
+  .dashboard-card,
+  .customer-card {
+    background: var(--surface-primary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    color: var(--text-primary);
+    transition: var(--transition-normal);
+    position: relative;
+  }
+
+  .dashboard-card::before,
+  .customer-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--primary) 0%,
+      var(--secondary) 100%
+    );
+    opacity: 0;
+    transition: var(--transition-normal);
+  }
+
+  .dashboard-card:hover,
+  .customer-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-medium);
+  }
+
+  .dashboard-card:hover::before,
+  .customer-card:hover::before {
+    opacity: 1;
+  }
+
+  .card-header {
+    background: var(--surface-secondary);
+    border-bottom: 1px solid var(--border-light);
+    padding: 1.25rem 1.5rem;
+    position: relative;
+  }
+
+  .card-header h5 {
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.125rem;
+    letter-spacing: -0.015em;
+  }
+
+  /* Messages */
+  .alert {
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background: var(--surface-primary);
+    animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+  }
+
+  @keyframes slideInDown {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .alert-success {
+    background-color: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.2);
+    color: var(--success);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+  }
+
+  .alert-warning {
+    background-color: rgba(245, 158, 11, 0.05);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+  }
+
+  .alert-danger,
+  .alert-error {
+    background-color: rgba(239, 68, 68, 0.05);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: var(--danger);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+  }
+
+  .alert-info {
+    background-color: rgba(59, 130, 246, 0.05);
+    border-color: rgba(59, 130, 246, 0.2);
+    color: var(--info);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  }
+
+  .btn-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+    transition: var(--transition-fast);
+  }
+
+  .btn-close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--surface-primary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    margin: 0.125rem;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.025em;
+    white-space: nowrap;
+  }
+
+  .btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .btn:hover::before {
+    left: 100%;
+  }
+
+  .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-inverse);
+  }
+
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary1 {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-inverse);
+  }
+
+  .btn-primary1:hover,
+  .btn-primary1:focus {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background-color: var(--surface-secondary);
+    border-color: var(--border-medium);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary:hover,
+  .btn-secondary:focus {
+    background-color: var(--gray-200);
+    border-color: var(--border-dark);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+    background-color: transparent;
+  }
+
+  .btn-outline-primary:hover,
+  .btn-outline-primary:focus {
+    background-color: var(--primary);
+    color: var(--text-inverse);
+    transform: translateY(-1px);
+  }
+
+  .btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: var(--text-inverse);
+  }
+
+  .btn-success:hover,
+  .btn-success:focus {
+    background-color: #059669;
+    border-color: #059669;
+    color: var(--text-inverse);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline-success {
+    border-color: var(--success);
+    color: var(--success);
+    background-color: transparent;
+  }
+
+  .btn-outline-success:hover {
+    background-color: var(--success);
+    color: var(--text-inverse);
+  }
+
+  .btn-outline-warning {
+    border-color: var(--warning);
+    color: var(--warning);
+    background-color: transparent;
+  }
+
+  .btn-outline-warning:hover {
+    background-color: var(--warning);
+    color: var(--text-inverse);
+  }
+
+  .btn-outline-danger {
+    border-color: var(--danger);
+    color: var(--danger);
+    background-color: transparent;
+  }
+
+  .btn-outline-danger:hover {
+    background-color: var(--danger);
+    color: var(--text-inverse);
+  }
+
+  .btn-warning {
+    background-color: var(--warning);
+    border-color: var(--warning);
+    color: var(--text-inverse);
+  }
+
+  .btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    color: var(--text-inverse);
+  }
+
+  /* Payment button */
+  .payment-btn {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+  }
+
+  .payment-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Filter Section */
+  .filter-section {
+    background: var(--surface-primary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border: 1px solid var(--border-light);
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.025em;
+  }
+
+  .form-control,
+  .form-select {
+    border: 1px solid var(--border-medium);
+    border-radius: var(--border-radius-sm);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    background-color: var(--surface-primary);
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    outline: none;
+  }
+
+  /* Order List Items */
+  .order-item {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    background-color: var(--surface-primary);
+    border-left: 3px solid transparent;
+  }
+
+  .order-item:hover {
+    background-color: var(--surface-hover);
+    border-left-color: var(--gray-400);
+  }
+
+  .order-item.active {
+    background-color: var(--gray-100) !important;
+    border-left-color: var(--primary);
+  }
+
+  .order-item:last-child {
+    border-bottom: none;
+  }
+
+  /* Order Status Badges */
+  .order-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .order-status-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .status-completed {
+    background-color: var(--success);
+  }
+
+  .status-pending {
+    background-color: var(--warning);
+  }
+
+  /* Status badges */
+  .bg-danger {
+    background-color: var(--danger) !important;
+    color: var(--text-inverse) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .bg-success {
+    background-color: var(--success) !important;
+    color: var(--text-inverse) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .bg-secondary {
+    background-color: var(--gray-500) !important;
+    color: var(--text-inverse) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .orange-status {
+    background-color: var(--warning) !important;
+    color: var(--text-inverse) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Order Details */
+  .detail-header {
+    padding: 1.5rem;
+    background-color: var(--surface-secondary);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .detail-section {
+    padding: 1.5rem;
+  }
+
+  .detail-section:not(:last-child) {
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .detail-section h6 {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    letter-spacing: -0.015em;
+  }
+
+  .table {
+    margin-bottom: 0;
+  }
+
+  .table td {
+    padding: 0.5rem 0;
+    border: none;
+    vertical-align: top;
+  }
+
+  .table .text-muted {
+    color: var(--text-tertiary) !important;
+    font-weight: 500;
+  }
+
+  /* Text Colors */
+  .text-muted {
+    color: var(--text-muted) !important;
+  }
+
+  .text-success {
+    color: var(--success) !important;
+  }
+
+  .text-danger {
+    color: var(--danger) !important;
+  }
+
+  .fw-medium {
+    font-weight: 500;
+  }
+
+  .fw-bold {
+    font-weight: 600;
+  }
+
+  /* Highlight animation for order details */
+  @keyframes highlight {
+    0% {
+      background-color: var(--surface-primary);
+    }
+
+    50% {
+      background-color: var(--gray-100);
+    }
+
+    100% {
+      background-color: var(--surface-primary);
+    }
+  }
+
+  .highlight {
+    animation: highlight 1s ease-in-out;
+  }
+
+  /* Loading spinner */
+  .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.125rem;
+    border-color: var(--primary);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border 0.75s linear infinite;
+  }
+
+  @keyframes spinner-border {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .col-md-4,
+    .col-md-8,
+    .col-md-2,
+    .col-md-5 {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .container-fluid {
+      padding: 1rem 0.5rem;
+    }
+
+    .filter-section {
+      padding: 1rem;
+    }
+
+    .order-list-container {
+      max-height: 50vh;
+    }
+
+    .dashboard-card:hover,
+    .customer-card:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-title {
+      font-size: 1.75rem;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    .filter-section {
+      padding: 1rem;
+    }
+
+    .detail-section {
+      padding: 1rem;
+    }
+
+    .detail-header {
+      padding: 1rem;
+    }
+  }
+
+  /* Utility Classes */
+  .d-flex {
+    display: flex;
+  }
+
+  .align-items-center {
+    align-items: center;
+  }
+
+  .align-items-start {
+    align-items: flex-start;
+  }
+
+  .justify-content-between {
+    justify-content: space-between;
+  }
+
+  .justify-content-center {
+    justify-content: center;
+  }
+
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
+
+  .flex-grow-1 {
+    flex-grow: 1;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .text-end {
+    text-align: right;
+  }
+
+  .w-100 {
+    width: 100%;
+  }
+
+  .mb-0 {
+    margin-bottom: 0;
+  }
+
+  .mb-2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .mb-3 {
+    margin-bottom: 1rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+
+  .mt-3 {
+    margin-top: 1rem;
+  }
+
+  .me-2 {
+    margin-right: 0.5rem;
+  }
+
+  .me-3 {
+    margin-right: 1rem;
+  }
+
+  .ms-2 {
+    margin-left: 0.5rem;
+  }
+
+  .py-3 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .py-4 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .py-5 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .gap-2 {
+    gap: 0.5rem;
+  }
+
+  .d-none {
+    display: none;
+  }
+
+  .position-fixed {
+    position: fixed;
+  }
+
+  .top-0 {
+    top: 0;
+  }
+
+  .start-50 {
+    left: 50%;
+  }
+
+  .translate-middle-x {
+    transform: translateX(-50%);
+  }
+
+  .p-3 {
+    padding: 1rem;
+  }
+
+  .shadow-sm {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .fade {
+    opacity: 1;
+  }
+
+  .show {
+    display: block;
+  }
+
+  .my-4 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .g-3 > * {
+    padding: 0.75rem;
+  }
+
+  .list-group {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    border-radius: var(--border-radius);
+  }
+
+  .list-group-flush {
+    border-radius: 0;
+  }
+
+  .list-group-item {
+    position: relative;
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    background-color: var(--surface-primary);
+    border: 1px solid var(--border-light);
+  }
+
+  .list-group-item:first-child {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+  }
+
+  .list-group-item:last-child {
+    border-bottom-right-radius: inherit;
+    border-bottom-left-radius: inherit;
+  }
+
+  .list-group-flush .list-group-item {
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+  }
+
+  .list-group-flush .list-group-item:last-child {
+    border-bottom-width: 0;
+  }
+
+  .h-100 {
+    height: 100% !important;
+  }
+
+  /* Search input styling */
+  .search-container {
+    position: relative;
+  }
+
+  .search-container .bi-search {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    z-index: 1;
+  }
+
+  .search-input {
+    padding-left: 3rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--border-medium);
+    border-radius: var(--border-radius-sm);
+    transition: var(--transition-fast);
+  }
+
+  .search-input:focus {
+    background: white;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.querySelector(".toast-container");
+    if (!toastContainer) {
+      toastContainer = document.createElement("div");
+      toastContainer.classList.add("toast-container");
+      document.body.appendChild(toastContainer);
+    }
+
+    // Convert Django messages to toasts
+    const messages = document.querySelectorAll(".alert");
+    messages.forEach((message) => {
+      const toastType = message.classList.contains("alert-success")
+        ? "success"
+        : message.classList.contains("alert-info")
+        ? "info"
+        : message.classList.contains("alert-warning")
+        ? "warning"
+        : "error";
+
+      createToast(message.textContent.trim(), toastType);
+      message.remove();
+    });
+
+    // Initialize close functionality for existing toasts
+    initializeToastCloseButtons();
+
+    function initializeToastCloseButtons() {
+      // Handle close button for all toasts
+      const allToasts = document.querySelectorAll(".toast");
+      allToasts.forEach((toast) => {
+        const closeBtn = toast.querySelector(".toast-close");
+        if (closeBtn) {
+          // Remove any existing event listeners
+          closeBtn.removeEventListener("click", closeToastHandler);
+          // Add new event listener
+          closeBtn.addEventListener("click", closeToastHandler);
+        }
+      });
+    }
+
+    function closeToastHandler(e) {
+      const toast = this.closest(".toast");
+      if (toast) {
+        toast.classList.add("hide");
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }
+    }
+
+    function createToast(message, type) {
+      const toast = document.createElement("div");
+      toast.classList.add("toast", type);
+      toast.innerHTML = `
+       ${message}
+       <button type="button" class="toast-close" aria-label="Close">&times;</button>
+     `;
+
+      toastContainer.appendChild(toast);
+
+      // Auto dismiss after 5 seconds
+      setTimeout(() => {
+        toast.classList.add("hide");
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }, 5000);
+
+      // Add close button functionality
+      const closeBtn = toast.querySelector(".toast-close");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", closeToastHandler);
+      }
+    }
+  });
+</script>
+
+<div class="container-fluid my-4">
+  <div
+    class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3"
+  >
+    <h2 class="page-title mb-0 me-3">
+      {% if request.session.role == 'superadmin' %}
+        All Customer Orders
+      {% else %}
+        Customer Orders
+      {% endif %}
+    </h2>
+    <div
+      class="text-muted"
+      style="color: rgb(0, 0, 0) !important"
+      id="order-count-text"
+    >
+      0 orders found
+    </div>
+  </div>
+
+  <!-- Filters section -->
+  <div class="filter-section mb-4 customer-card">
+    <div class="row g-3">
+      <!-- Status filters -->
+      <div class="col-md-4">
+        <label class="form-label" style="cursor: pointer !important"
+          >Order Status</label
+        >
+        <div class="filter-buttons">
+          <button
+            type="button"
+            class="btn btn-sm status-filter active"
+            data-filter="all"
+          >
+            All
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm status-filter"
+            data-filter="recent"
+          >
+            Recent
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm status-filter"
+            data-filter="completed"
+          >
+            Completed
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm status-filter"
+            data-filter="ongoing"
+          >
+            Ongoing
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm status-filter"
+            data-filter="pending_payment"
+          >
+            Pending Payment
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm status-filter"
+            data-filter="pending_cash"
+          >
+            Pending Cash Requests
+          </button>
+        </div>
+      </div>
+
+      <!-- Date filters -->
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-5">
+            <label for="date_from" class="form-label" style="cursor: pointer"
+              >From Date</label
+            >
+            <input
+              type="date"
+              class="form-control form-control-sm"
+              style="cursor: pointer"
+              id="date_from"
+            />
+          </div>
+          <div class="col-md-5">
+            <label for="date_to" class="form-label">To Date</label>
+            <input
+              type="date"
+              class="form-control form-control-sm"
+              style="cursor: pointer"
+              id="date_to"
+            />
+          </div>
+          <div class="col-md-2 d-flex align-items-end justify-content-center">
+            <button
+              type="button"
+              class="btn btn-sm btn-primary"
+              style="
+                width: 100%;
+                margin-bottom: 8px;
+                border-radius: 50px;
+                background: linear-gradient(135deg, #000000, #333333);
+                color: white;
+                letter-spacing: 0.5px;
+                font-weight: 600;
+                box-shadow: var(--shadow-md);
+                padding: 0.625rem 2rem;
+                border: none;
+                position: relative;
+                overflow: hidden;
+                z-index: 1;
+                transition: all 0.3s ease;
+              "
+              id="apply-date-filter"
+              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)';"
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sorting options -->
+      <div class="col-md-2">
+        <label for="sort" class="form-label">Sort By</label>
+        <select
+          class="form-select form-select-sm"
+          style="cursor: pointer"
+          id="sort"
+        >
+          <option value="-order_date">Newest First</option>
+          <option value="order_date">Oldest First</option>
+          <option value="-overall_amount">Amount (High to Low)</option>
+          <option value="overall_amount">Amount (Low to High)</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label for="category-filter" class="form-label">Category</label>
+        <select
+          id="category-filter"
+          class="form-select form-select-sm"
+          style="cursor: pointer"
+        >
+          <option value="all">All Categories</option>
+          <option value="1">Rice</option>
+          <option value="2">Paddy</option>
+          <option value="3">Pesticide</option>
+        </select>
+      </div>
+
+      <!-- Search box -->
+      <div class="col-12">
+        <label class="form-label">Search Orders</label>
+        <div class="search-container">
+          <i class="bi bi-search"></i>
+          <input
+            type="text"
+            class="form-control search-input"
+            id="search-input"
+            placeholder="Search by order ID, customer name or customer ID..."
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content with two-panel layout -->
+  <div class="row">
+    <!-- Left panel: Order list -->
+    <div class="col-md-4">
+      <div class="dashboard-card order-list-container">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5>Order List</h5>
+          <div
+            class="spinner-border spinner-border-sm text-primary d-none"
+            id="loading-spinner"
+            role="status"
+          >
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        {% csrf_token %}
+        <div class="list-group list-group-flush" id="orders-list">
+          <div class="text-center py-4">
+            <div
+              class="spinner-border text-primary loading-spinner"
+              role="status"
+            >
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel: Order details -->
+    <div class="col-md-8">
+      <div class="dashboard-card h-100">
+        <div class="card-header">
+          <h5>Order Details</h5>
+        </div>
+        <div class="order-detail-section" id="order-details">
+          <div class="text-center py-5">
+            <i class="bi bi-box-seam text-muted" style="font-size: 2.5rem"></i>
+            <p class="mt-3">Select an order to view details</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+      document.addEventListener('DOMContentLoaded', function () {
+          // Global variables
+          let allOrders = [];
+          let filteredOrders = [];
+          let selectedOrderId = null;
+          let currentFilter = 'all';
+          let currentSort = '-order_id';
+          let dateFrom = '';
+          let dateTo = '';
+          let currentCategory = 'all';
+          let searchQuery = '';
+          let currentAdmin = 'all'; // For superadmin filtering
+          let isSuperadmin = {% if request.session.role == 'superadmin' %}true{% else %}false{% endif %};
+
+      // DOM Elements
+      const ordersList = document.getElementById('orders-list');
+      const orderDetails = document.getElementById('order-details');
+      const orderCountText = document.getElementById('order-count-text');
+      const statusFilters = document.querySelectorAll('.status-filter');
+      const dateFromInput = document.getElementById('date_from');
+      const dateToInput = document.getElementById('date_to');
+      const applyDateBtn = document.getElementById('apply-date-filter');
+      const sortSelect = document.getElementById('sort');
+      const categorySelect = document.getElementById('category-filter');
+      const searchInput = document.getElementById('search-input');
+      const loadingSpinner = document.getElementById('loading-spinner');
+      const adminSelect = isSuperadmin ? document.getElementById('admin-filter') : null;
+
+      // Set CSRF token for AJAX requests
+      const csrfToken = getCookie('csrftoken');
+
+      // Initialization
+      if (isSuperadmin) {
+          fetchAdmins();
+      }
+      fetchOrders();
+
+      // Event Listeners        // Initialize filter buttons with proper styling
+      statusFilters.forEach(btn => {
+          const filterType = btn.dataset.filter;
+          const btnType = getButtonType(filterType);
+
+          // Set initial styling - "All" button is active by default
+          if (filterType === 'all') {
+              btn.classList.add(`btn-${btnType}`);
+              btn.classList.remove(`btn-outline-${btnType}`);
+          } else {
+              btn.classList.add(`btn-outline-${btnType}`);
+              btn.classList.remove(`btn-${btnType}`);
+          }
+
+          btn.addEventListener('click', function () {
+              // Update UI for selected filter
+              statusFilters.forEach(b => {
+                  const filterType = b.dataset.filter;
+                  const btnType = getButtonType(filterType);
+                  b.classList.remove(`btn-${btnType}`);
+                  b.classList.add(`btn-outline-${btnType}`);
+              });
+
+              const filterType = this.dataset.filter;
+              const btnType = getButtonType(filterType);
+              this.classList.remove(`btn-outline-${btnType}`);
+              this.classList.add(`btn-${btnType}`);
+
+              // Apply filter
+              currentFilter = filterType;
+              applyFilters();
+          });
+      });
+
+      applyDateBtn.addEventListener('click', function () {
+          dateFrom = dateFromInput.value;
+          dateTo = dateToInput.value;
+          applyFilters();
+      });
+
+      sortSelect.addEventListener('change', function () {
+          currentSort = this.value;
+          applyFilters();
+      });
+
+      categorySelect.addEventListener('change', function () {
+          currentCategory = this.value;
+          applyFilters();
+      });
+
+      if (isSuperadmin && adminSelect) {
+          adminSelect.addEventListener('change', function () {
+              currentAdmin = this.value;
+              applyFilters();
+          });
+      }
+
+      // Debounce search input
+      let searchTimeout;
+      searchInput.addEventListener('input', function () {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+              searchQuery = this.value.trim();
+              applyFilters();
+          }, 500);
+      });
+
+      // Helper function to get button type based on filter
+      function getButtonType(filter) {
+          switch (filter) {
+              case 'completed': return 'success';
+              case 'ongoing': return 'warning';
+              case 'pending_payment': return 'danger';
+              case 'pending_cash': return 'info';
+              default: return 'primary';
+          }
+      }
+
+      // Functions
+      function fetchAdmins() {
+          if (!isSuperadmin) return;
+
+          fetch('/api/get-admins/', {
+              method: 'GET',
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRFToken': csrfToken
+              }
+          })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.error) {
+                      console.error('Error:', data.error);
+                      return;
+                  }
+
+                  let html = '<option value="all">All Admins</option>';
+                  data.admins.forEach(admin => {
+                      html += `<option value="${admin.admin_id}">${admin.first_name} ${admin.last_name}</option>`;
+                  });
+                  adminSelect.innerHTML = html;
+              })
+              .catch(error => {
+                  console.error('Error fetching admins:', error);
+              });
+      }
+
+      function fetchOrders() {
+          showLoading(true);
+
+          // Build URL with query parameters
+          const url = new URL(window.location.pathname, window.location.origin);
+          if (currentFilter !== 'all') url.searchParams.append('status', currentFilter);
+          if (dateFrom) url.searchParams.append('date_from', dateFrom);
+          if (dateTo) url.searchParams.append('date_to', dateTo);
+          if (currentCategory !== 'all') url.searchParams.append('category', currentCategory);
+          if (searchQuery) url.searchParams.append('search', searchQuery);
+          if (currentFilter === 'pending_cash') {
+              url.searchParams.append('pending_cash', 'true');
+          }
+          url.searchParams.append('sort', currentSort);
+
+          // Add admin filter for superadmin
+          if (isSuperadmin && currentAdmin !== 'all') {
+              url.searchParams.append('admin_id', currentAdmin);
+          }
+
+          fetch(url, {
+              method: 'GET',
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRFToken': csrfToken
+              }
+          })
+              .then(response => {
+                  if (!response.ok) throw new Error('Network response was not ok');
+                  return response.json();
+              })
+              .then(data => {
+                  if (data.error) {
+                      throw new Error(data.error);
+                  }
+
+                  allOrders = data.orders;
+
+                  // Convert string dates to Date objects for easier handling
+                  allOrders.forEach(order => {
+                      order.orderDateObj = new Date(order.order_date);
+                      if (order.delivery_date) {
+                          order.deliveryDateObj = new Date(order.delivery_date);
+                      }
+                  });
+
+                  // Set filtered orders to all orders initially
+                  filteredOrders = [...allOrders];
+
+                  // Update order count text
+                  updateOrderCountText();
+
+                  // Render the orders list
+                  renderOrdersList();
+
+                  // Update selected order if needed
+                  updateSelectedOrder();
+
+                  // Render order details
+                  renderOrderDetails();
+
+                  showLoading(false);
+              })
+              .catch(error => {
+                  console.error('Error fetching orders:', error);
+                  ordersList.innerHTML = `
+                     <div class="list-group-item">
+                         <div class="text-center text-danger py-3">
+                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                             Error loading orders: ${error.message}
+                         </div>
+                     </div>
+                 `;
+                  showLoading(false);
+              });
+      }
+
+      function applyFilters() {
+          showLoading(true);
+          fetchOrders();
+          updateURL();
+      }
+
+      function updateOrderCountText() {
+          const count = filteredOrders.length;
+          orderCountText.textContent = `${count} ${count === 1 ? 'order' : 'orders'} found`;
+      }
+
+      function renderOrdersList() {
+          if (filteredOrders.length === 0) {
+              ordersList.innerHTML = `
+                     <div class="list-group-item">
+                         <div class="text-center py-3">
+                             <i class="bi bi-search me-2"></i>
+                             No orders match your filters
+                         </div>
+                     </div>
+                 `;
+              return;
+          }
+
+          let html = '';
+          filteredOrders.forEach(order => {
+              const isActive = order.order_id === selectedOrderId;
+              const statusClass = order.delivery_status === 1 ? 'status-completed' : 'status-pending';
+              const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
+              const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
+
+              html += `
+                     <div class="list-group-item order-item ${isActive ? 'active' : ''}"
+                          data-order-id="${order.order_id}">
+                         <div class="d-flex justify-content-between align-items-start mb-2">
+                             <div>
+                                 <span class="fw-medium">Order #${order.order_id}</span>
+                                 <span class="order-status ms-2">
+                                     <span class="order-status-icon ${statusClass}"></span>
+                                     <small>${paymentStatusBadge}</small>
+                                 </span>
+                             </div>
+                             <small class="text-muted">${formatDate(order.order_date)}</small>
+                         </div>
+                         <div class="d-flex justify-content-between mb-1">
+                             <div>
+                                 <small class="text-muted">${getCategoryName(order.product_category_id)}</small>
+                                 <small class="d-block">${order.customer_full_name}</small>
+                                 ${isSuperadmin && order.admin_name ? `<small class="d-block text-muted">Admin: ${order.admin_name}</small>` : ''}
+                             </div>
+                             <div class="text-end">
+                                 <div class="fw-medium">₹${order.overall_amount.toLocaleString()}</div>
+                                 <small>${deliveryStatusBadge}</small>
+                             </div>
+                         </div>
+                     </div>
+                 `;
+          });
+
+          ordersList.innerHTML = html;
+
+          // Add click event listeners
+          document.querySelectorAll('#orders-list .order-item').forEach(item => {
+              item.addEventListener('click', function () {
+                  const orderId = parseInt(this.dataset.orderId);
+
+                  // Update selected order
+                  document.querySelectorAll('#orders-list .order-item').forEach(el => {
+                      el.classList.remove('active');
+                  });
+                  this.classList.add('active');
+
+                  selectedOrderId = orderId;
+                  renderOrderDetails();
+                  updateURL();
+              });
+          });
+      }
+
+      function updateSelectedOrder() {
+          if (!selectedOrderId || !filteredOrders.some(order => order.order_id === selectedOrderId)) {
+              selectedOrderId = filteredOrders.length > 0 ? filteredOrders[0].order_id : null;
+          }
+      }
+
+      function renderOrderDetails() {
+          if (!selectedOrderId) {
+              orderDetails.innerHTML = `
+                     <div class="text-center py-5">
+                         <i class="bi bi-box-seam text-muted" style="font-size: 2.5rem;"></i>
+                         <p class="mt-3">Select an order to view details</p>
+                     </div>
+                 `;
+              return;
+          }
+
+          const order = filteredOrders.find(o => o.order_id === selectedOrderId);
+          if (!order) {
+              orderDetails.innerHTML = `
+                     <div class="text-center py-5">
+                         <i class="bi bi-exclamation-triangle text-muted" style="font-size: 2.5rem;"></i>
+                         <p class="mt-3">Order not found</p>
+                     </div>
+                 `;
+              return;
+          }
+
+          const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
+          const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
+
+          // For superadmin, show admin information
+          let adminInfoHtml = '';
+          if (isSuperadmin && order.admin_id) {
+              adminInfoHtml = `
+                     <div class="detail-section">
+                         <h6>Admin Information</h6>
+                         <table class="table table-sm">
+                             <tr>
+                                 <td class="text-muted">Admin ID:</td>
+                                 <td>${order.admin_id}</td>
+                             </tr>
+                             <tr>
+                                 <td class="text-muted">Admin Name:</td>
+                                 <td>${order.admin_name || 'N/A'}</td>
+                             </tr>
+                             <tr>
+                                 <td class="text-muted">Admin Email:</td>
+                                 <td>${order.admin_email || 'N/A'}</td>
+                             </tr>
+                         </table>
+                     </div>
+                 `;
+          }
+
+          // Order items section
+          let orderItemsHtml = '';
+          if (order.product_category_id === 3) { // Multiple items (pesticides)
+              orderItemsHtml = `
+                     <div class="detail-section">
+                         <h6>Order Items</h6>
+                         <div class="table-responsive">
+                             <table class="table table-sm table-striped items-table">
+                                 <thead>
+                                     <tr>
+                                         <th>Product</th>
+                                         <th>Batch #</th>
+                                         <th>Expiry</th>
+                                         <th>Quantity</th>
+                                         <th>Price/Unit</th>
+                                         <th>Unit</th>
+                                         <th>Total</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     ${order.order_items.map(item => `
+                                         <tr>
+                                             <td>${item.product_name}</td>
+                                             <td>${item.batch_number}</td>
+                                             <td>${item.expiry_date !== 'N/A' ? formatDate(item.expiry_date) : 'N/A'}</td>
+                                             <td>${item.quantity}</td>
+                                             <td>₹${item.price_per_unit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                             <td>${item.unit}</td>
+                                             <td>₹${item.total_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                         </tr>
+                                     `).join('')}
+                                 </tbody>
+                                 <tfoot>
+                                     <tr class="fw-bold">
+                                         <td colspan="6" class="text-end">Total:</td>
+                                         <td>₹${order.overall_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                     </tr>
+                                 </tfoot>
+                             </table>
+                         </div>
+                     </div>
+                 `;
+          } else {
+              // For single item orders (rice or paddy)
+              const productName = order.product_category_id === 1 ? 'Rice' : 'Paddy';
+              orderItemsHtml = `
+                     <div class="detail-section">
+                         <h6>Order Items</h6>
+                         <table class="table table-sm">
+                             <tr>
+                                 <td class="text-muted">Product Type:</td>
+                                 <td>${productName}</td>
+                             </tr>
+                             <tr>
+                                 <td class="text-muted">Category:</td>
+                                 <td>${order.category}</td>
+                             </tr>
+                             <tr>
+                                 <td class="text-muted">Quantity:</td>
+                                 <td>${order.quantity || 'N/A'}</td>
+                             </tr>
+                             <tr>
+                                 <td class="text-muted">Price Per Unit:</td>
+                                 <td>₹${order.price_per_unit ? order.price_per_unit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</td>
+                             </tr>
+                             <tr>
+                                 <td class="text-muted">Total Amount:</td>
+                                 <td class="fw-medium">₹${order.overall_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                             </tr>
+                         </table>
+                     </div>
+                 `;
+          }
+
+          // Cash Payment Requests Section
+          let cashPaymentRequestsHtml = '';
+          if (order.cash_payment_requests && order.cash_payment_requests.length > 0) {
+              const pendingRequests = order.cash_payment_requests.filter(req => req.status === 0);
+              const approvedRequests = order.cash_payment_requests.filter(req => req.status === 1);
+              const rejectedRequests = order.cash_payment_requests.filter(req => req.status === 2);
+
+              cashPaymentRequestsHtml += `<div class="detail-section">
+                      <h6><i class="bi bi-cash-coin me-2"></i>Cash Payment Requests</h6>`;
+
+              if (pendingRequests.length > 0) {
+                  cashPaymentRequestsHtml += `
+                          <div class="alert alert-warning mb-3">
+                              <strong><i class="bi bi-exclamation-triangle me-2"></i>Pending Cash Payment Requests</strong>
+                              <p class="mb-0 mt-1">The following cash payment requests require your approval:</p>
+                          </div>
+                      `;
+
+                  pendingRequests.forEach(request => {
+                      cashPaymentRequestsHtml += `
+                              <div class="cash-request-card pending mb-3">
+                                  <div class="d-flex justify-content-between align-items-center mb-2">
+                                      <span class="fw-bold">Amount: ₹${request.amount.toLocaleString()}</span>
+                                      <span class="badge bg-warning text-dark">Pending Approval</span>
+                                  </div>
+                                  <div class="d-flex justify-content-between align-items-center mb-2">
+                                      <small class="text-muted">Requested on: ${formatDate(request.created_at)}</small>
+                                      <small class="text-muted">Request ID: #${request.request_id}</small>
+                                  </div>
+                                  ${request.reference ? `<div class="mb-2"><small class="text-muted">Reference: ${request.reference}</small></div>` : ''}
+                                  ${request.notes ? `<div class="mb-2"><small class="text-muted">Notes: ${request.notes}</small></div>` : ''}
+                                  <div class="d-flex justify-content-end gap-2 mt-3">
+                                      <button class="btn btn-sm btn-success" onclick="approveCashPayment(${request.request_id})">
+                                          <i class="bi bi-check-circle me-1"></i> Approve
+                                      </button>
+                                      <button class="btn btn-sm btn-danger" onclick="rejectCashPayment(${request.request_id})">
+                                          <i class="bi bi-x-circle me-1"></i> Reject
+                                      </button>
+                                  </div>
+                              </div>
+                          `;
+                  });
+              }
+
+              if (approvedRequests.length > 0 || rejectedRequests.length > 0) {
+                  cashPaymentRequestsHtml += `<h6 class="mt-4 mb-3">Payment Request History</h6>`;
+
+                  [...approvedRequests, ...rejectedRequests].sort((a, b) =>
+                      new Date(b.processed_at) - new Date(a.processed_at)
+                  ).forEach(request => {
+                      const isApproved = request.status === 1;
+                      cashPaymentRequestsHtml += `
+                              <div class="cash-request-card ${isApproved ? 'approved' : 'rejected'} mb-3">
+                                  <div class="d-flex justify-content-between align-items-center mb-2">
+                                      <span class="fw-bold">Amount: ₹${request.amount.toLocaleString()}</span>
+                                      <span class="badge ${isApproved ? 'bg-success' : 'bg-danger'}">
+                                          ${isApproved ? 'Approved' : 'Rejected'}
+                                      </span>
+                                  </div>
+                                  <div class="d-flex justify-content-between align-items-center mb-2">
+                                      <small class="text-muted">Requested on: ${formatDate(request.created_at)}</small>
+                                      <small class="text-muted">Processed on: ${formatDate(request.processed_at)}</small>
+                                  </div>
+                                  <div class="d-flex justify-content-between align-items-center mb-2">
+                                      <small class="text-muted">Request ID: #${request.request_id}</small>
+                                      <small class="text-muted">Processed by: ${request.processed_by_name || 'N/A'}</small>
+                                  </div>
+                                  ${request.reference ? `<div class="mb-2"><small class="text-muted">Reference: ${request.reference}</small></div>` : ''}
+                                  ${request.notes ? `<div class="mb-2"><small class="text-muted">Notes: ${request.notes}</small></div>` : ''}
+                              </div>
+                          `;
+                  });
+              }
+
+              cashPaymentRequestsHtml += `</div>`;
+          } else {
+              // No cash payment requests for this order
+          }
+
+          orderDetails.innerHTML = `
+                 <div class="detail-header">
+                     <div class="d-flex justify-content-between align-items-start">
+                         <div>
+                             <h5 class="fw-bold">Order #${order.order_id}</h5>
+                             <p class="text-muted mb-0">Placed on ${formatDate(order.order_date)}</p>
+                         </div>
+                         <div>
+                             ${paymentStatusBadge} ${deliveryStatusBadge}
+                         </div>
+                     </div>
+                 </div>
+
+                 ${adminInfoHtml}
+
+                 <div class="row">
+                     <div class="col-md-6">
+                         <div class="detail-section">
+                             <h6>Customer Information</h6>
+                             <table class="table table-sm">
+                                 <tr>
+                                     <td class="text-muted">Customer ID:</td>
+                                     <td>${order.customer_id}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Customer Name:</td>
+                                     <td>${order.customer_full_name}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Phone:</td>
+                                     <td>${order.customer_phone || 'N/A'}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">GST:</td>
+                                     <td>${order.GST || 'N/A'}</td>
+                                 </tr>
+                             </table>
+                         </div>
+                     </div>
+
+                     <div class="col-md-6">
+                         <div class="detail-section">
+                             <h6>Payment Information</h6>
+                             <table class="table table-sm">
+                                 <tr>
+                                     <td class="text-muted">Total Amount:</td>
+                                     <td>₹${order.overall_amount.toLocaleString()}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Paid Amount:</td>
+                                     <td>₹${order.paid_amount.toLocaleString()}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Balance:</td>
+                                     <td>₹${(order.overall_amount - order.paid_amount).toLocaleString()}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Payment Terms:</td>
+                                     <td>${order.payment_deadline || 0} days</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Status:</td>
+                                     <td>${paymentStatusBadge}</td>
+                                 </tr>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+
+                 ${orderItemsHtml}
+
+                  ${cashPaymentRequestsHtml}
+
+                 <div class="detail-section">
+                     <h6>Delivery Information</h6>
+                     <div class="row">
+                         <div class="col-md-6">
+                             <table class="table table-sm">
+                                 <tr>
+                                     <td class="text-muted">Delivery Date:</td>
+                                     <td>${formatDate(order.delivery_date) || 'Not scheduled'}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Status:</td>
+                                     <td>${deliveryStatusBadge}</td>
+                                 </tr>
+                             </table>
+                         </div>
+                         <div class="col-md-6">
+                             <table class="table table-sm">
+                                 <tr>
+                                     <td class="text-muted">Vehicle Number:</td>
+                                     <td>${order.lorry_number || 'N/A'}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Driver:</td>
+                                     <td>${order.driver_name || 'N/A'}</td>
+                                 </tr>
+                                 <tr>
+                                     <td class="text-muted">Driver Phone:</td>
+                                     <td>${order.driver_ph_no || 'N/A'}</td>
+                                 </tr>
+                             </table>
+                         </div>
+                     </div>
+                 </div>
+
+             `;
+
+          // Add highlight animation
+          orderDetails.classList.add('highlight');
+          setTimeout(() => {
+              orderDetails.classList.remove('highlight');
+          }, 1000);
+      }
+
+      // Helper Functions
+      function formatDate(dateString) {
+          if (!dateString) return 'N/A';
+          const options = { year: 'numeric', month: 'short', day: 'numeric' };
+          return new Date(dateString).toLocaleDateString(undefined, options);
+      }
+
+      function getCategoryName(categoryId) {
+          switch (parseInt(categoryId)) {
+              case 1: return 'Rice';
+              case 2: return 'Paddy';
+              case 3: return 'Pesticide';
+              default: return 'Other';
+          }
+      }
+
+      function getPaymentStatusBadge(status) {
+          switch (parseInt(status)) {
+              case 0: return '<span class="badge bg-danger">Unpaid</span>';
+              case 1: return '<span class="badge bg-warning text-dark">Partially Paid</span>';
+              case 2: return '<span class="badge bg-success">Fully Paid</span>';
+              default: return '<span class="badge bg-secondary">Unknown</span>';
+          }
+      }
+
+      function getDeliveryStatusBadge(status) {
+          return status === 1
+              ? '<span class="badge bg-success">Delivered</span>'
+              : '<span class="badge bg-warning text-dark">Processing</span>';
+      }
+
+      function showLoading(isLoading) {
+          loadingSpinner.classList.toggle('d-none', !isLoading);
+      }
+
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+
+      // URL handling for browser history and bookmarking
+      function updateURL() {
+          const url = new URL(window.location.href);
+
+          if (currentFilter !== 'all') url.searchParams.set('status', currentFilter);
+          else url.searchParams.delete('status');
+
+          if (dateFrom) url.searchParams.set('date_from', dateFrom);
+          else url.searchParams.delete('date_from');
+
+          if (dateTo) url.searchParams.set('date_to', dateTo);
+          else url.searchParams.delete('date_to');
+
+          url.searchParams.set('sort', currentSort);
+
+          if (selectedOrderId) url.searchParams.set('order_id', selectedOrderId);
+          else url.searchParams.delete('order_id');
+
+          if (currentCategory !== 'all') url.searchParams.set('category', currentCategory);
+          else url.searchParams.delete('category');
+
+          if (searchQuery) url.searchParams.set('search', searchQuery);
+          else url.searchParams.delete('search');
+
+          if (isSuperadmin && currentAdmin !== 'all') {
+              url.searchParams.set('admin_id', currentAdmin);
+          } else {
+              url.searchParams.delete('admin_id');
+          }
+
+          window.history.replaceState({}, '', url);
+      }
+
+      // Order status update functions (these would need backend endpoints)
+      window.updateOrderDeliveryStatus = function (orderId, status) {
+          if (confirm(`Are you sure you want to ${status === 1 ? 'mark this order as delivered' : 'change this order back to processing'}?`)) {
+              fetch('/api/update-order-delivery-status/', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': csrfToken
+                  },
+                  body: JSON.stringify({
+                      order_id: orderId,
+                      delivery_status: status
+                  })
+              })
+                  .then(response => response.json())
+                  .then(data => {
+                      if (data.error) {
+                          alert('Error: ' + data.error);
+                          return;
+                      }
+
+                      // Show success message
+                      alert('Order status updated successfully!');
+
+                      // Refresh orders to show updated status
+                      fetchOrders();
+                  })
+                  .catch(error => {
+                      console.error('Error:', error);
+                      alert('An error occurred while updating the order status.');
+                  });
+          }
+      };
+
+      window.recordPayment = function (orderId) {
+          // Implementation would depend on your system's payment recording functionality
+          alert('Payment recording functionality to be implemented');
+      };
+
+      window.viewPaymentHistory = function (orderId) {
+          // Implementation would depend on your system's payment history tracking
+          alert('Payment history functionality to be implemented');
+      };
+
+      window.sendPaymentReminder = function (orderId) {
+          // Implementation would depend on your system's notification functionality
+          alert('Payment reminder functionality to be implemented');
+      };
+
+      // Cash payment approval functions
+      window.approveCashPayment = function (requestId) {
+          if (confirm("Are you sure you want to approve this cash payment request?")) {
+              processCashPaymentRequest(requestId, 'approve');
+          }
+      };
+
+      window.rejectCashPayment = function (requestId) {
+          if (confirm("Are you sure you want to reject this cash payment request?")) {
+              processCashPaymentRequest(requestId, 'reject');
+          }
+      };
+
+      function processCashPaymentRequest(requestId, action) {
+          showLoading(true);
+
+          const formData = new FormData();
+          formData.append('action', action);
+          formData.append('csrfmiddlewaretoken', csrfToken);
+
+          fetch(`/approve_cash_payment/${requestId}/`, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest'
+              }
+          })
+              .then(response => response.json())
+              .then(data => {
+                  showLoading(false);
+
+                  if (data.success) {
+                      showAlert(data.message, 'success');
+                      // Refresh the orders to show updated status
+                      fetchOrders();
+                  } else {
+                      showAlert(data.message || 'An error occurred', 'error');
+                  }
+              })
+              .catch(error => {
+                  showLoading(false);
+                  console.error('Error:', error);
+                  showAlert('An error occurred while processing the request.', 'error');
+              });
+      }
+
+      // Alert display function if not already defined
+      function showAlert(message, type) {
+          const alertDiv = document.createElement('div');
+          alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x p-3`;
+          alertDiv.style.zIndex = 1100;
+          alertDiv.style.marginTop = '1rem';
+          alertDiv.innerHTML = `
+          <div class="d-flex align-items-center">
+              <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'x-circle'}-fill me-2"></i>
+              <div>${message}</div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      `;
+
+          document.body.appendChild(alertDiv);
+
+          // Auto-dismiss after 5 seconds
+          setTimeout(() => {
+              alertDiv.style.opacity = '0';
+              setTimeout(() => alertDiv.remove(), 300);
+          }, 5000);
+      }
+
+      // Initialize from URL parameters
+      function initFromURL() {
+          const urlParams = new URLSearchParams(window.location.search);
+
+          if (urlParams.has('status')) {
+              currentFilter = urlParams.get('status');
+
+              // Update status filter buttons
+              statusFilters.forEach(btn => {
+                  const filterType = btn.dataset.filter;
+                  const btnType = getButtonType(filterType);
+
+                  btn.classList.remove('btn-primary', 'btn-success', 'btn-warning', 'btn-danger');
+                  btn.classList.add(`btn-outline-${btnType}`);
+
+                  if (filterType === currentFilter) {
+                      btn.classList.remove(`btn-outline-${btnType}`);
+                      btn.classList.add(`btn-${btnType}`);
+                  }
+              });
+          }
+
+          if (urlParams.has('date_from')) {
+              dateFrom = urlParams.get('date_from');
+              dateFromInput.value = dateFrom;
+          }
+
+          if (urlParams.has('date_to')) {
+              dateTo = urlParams.get('date_to');
+              dateToInput.value = dateTo;
+          }
+
+          if (urlParams.has('sort')) {
+              currentSort = urlParams.get('sort');
+              sortSelect.value = currentSort;
+          }
+
+          if (urlParams.has('order_id')) {
+              selectedOrderId = parseInt(urlParams.get('order_id'));
+          }
+
+          if (urlParams.has('category')) {
+              currentCategory = urlParams.get('category');
+              categorySelect.value = currentCategory;
+          }
+
+          if (urlParams.has('search')) {
+              searchQuery = urlParams.get('search');
+              searchInput.value = searchQuery;
+          }
+
+          if (isSuperadmin && urlParams.has('admin_id')) {
+              currentAdmin = urlParams.get('admin_id');
+              // We'll set the adminSelect value after it's loaded
+          }
+      }
+
+      // Initialize from URL if parameters exist
+      initFromURL();
+
+      // Handle browser back/forward
+      window.addEventListener('popstate', function () {
+          initFromURL();
+          fetchOrders();
+      });
+  });
+</script>
+
+{% endblock content %}

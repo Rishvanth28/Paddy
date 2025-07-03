@@ -1,0 +1,277 @@
+{% extends 'admin_app/admin_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/admin_upgrade.css' %}">
+<style>
+  /* Customer status styling */
+  .customer-status {
+    text-align: center;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    max-width: 600px;
+    position: relative;
+  }
+
+  .customer-status::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #000000, rgba(0, 0, 0, 0.7), #000000);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 12px 12px 0 0;
+  }
+
+  .customer-icon {
+    margin: 0 auto 1.5rem;
+    width: 80px;
+    height: 80px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    animation: fadeIn 0.8s ease-in-out, pulse 2s infinite ease-in-out;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .customer-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #000000;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+  }
+  
+  .customer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #000000;
+  }
+  
+  .customer-info-box {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-left: 3px solid #000;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    text-align: left;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    animation: fadeIn 0.5s ease-in-out;
+    font-size: 0.95rem;
+    color: #000000;
+  }
+
+  .customer-description {
+    font-size: 0.9rem;
+    color: #333333;
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-top: 1rem;
+  }
+
+  /* Make form unusable when already a customer */
+  .upgrade-form.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .upgrade-card.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+  }
+
+
+</style>
+
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <div class="title-group">
+        <h1 class="page-title mb-0 me-3">Upgrade to Customer</h1>
+        <p class="upgrade-subtitle">Convert this admin account to a customer profile</p>
+    </div>
+</div>
+
+
+
+{% if is_customer %}
+  <!-- Already Customer Message -->
+  <div class="customer-status">
+    <div class="customer-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M8 12l2 2 6-6"></path>
+      </svg>
+    </div>
+    <h2 class="customer-title">You are already a Customer</h2>
+    <div class="customer-info-box">
+      <p><strong>You are already a customer!</strong> Your account doesn't need to be upgraded.</p>
+    </div>
+    <p class="customer-description">
+      As an existing customer, you already have access to all customer features including placing orders, managing subscriptions, and tracking deliveries. Your customer profile is active and ready to use.
+    </p>
+  </div>
+{% else %}
+<div class="upgrade-container">
+    <!-- Main Card -->
+    <div class="upgrade-card">
+        <!-- Card Header -->
+        <div class="card-header">
+            <h2>Customer Profile Setup</h2>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body">
+            <!-- Current Admin Information Section -->
+            <div class="current-info-section">
+                <h3 class="section-title">Current Admin Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">First Name</div>
+                        <div class="info-value">{{ admin.first_name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Name</div>
+                        <div class="info-value">{{ admin.last_name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ admin.email }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone</div>
+                        <div class="info-value">{{ admin.phone_number }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upgrade Form Section -->
+            <form method="POST" class="upgrade-form">
+                {% csrf_token %}
+                <h3 class="section-title">Business Information</h3>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="company_name" class="form-label required">Company Name</label>
+                        <input type="text" id="company_name" name="company_name" class="form-control" required>
+                        <small class="text-muted">This will be displayed on invoices and orders</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="GST" class="form-label">GST Number</label>
+                        <input type="text" id="GST" name="GST" class="form-control" placeholder="22AAAAA0000A1Z5">
+                        <small class="text-muted">Format: 22AAAAA0000A1Z5</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">Business Address</label>
+                    <textarea id="address" name="address" class="form-control" rows="4"
+                        placeholder="Full business address including city and postal code"></textarea>
+                    <small class="text-muted">This will be used for shipping and billing</small>
+                </div>
+
+                <!-- Important Note -->
+                <div class="alert-note">
+                    <div class="alert-title">Important Notice</div>
+                    <p>This action cannot be undone. After upgrading to a customer, admin privileges will be also
+                        ubgraded Please verify all information before proceeding.</p>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">
+                    Confirm Upgrade to Customer
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Form Validation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Django messages will be handled by the base template
+
+
+
+        // Form validation logic        
+        const form = document.querySelector('.upgrade-form');
+        
+        if (!form) return; // Exit if no form (already a customer)
+
+        form.addEventListener('submit', function (event) {
+            let isValid = true;
+
+            // Validate required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+                // Use the base template's showToast function
+                if (typeof showToast === 'function') {
+                    showToast('Please fill in all required fields', 'error');
+                }
+            }
+        });
+
+        // Real-time validation for required fields
+        const requiredFields = form.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            field.addEventListener('input', function () {
+                if (this.value.trim()) {
+                    this.style.borderColor = '#ddd';
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}
