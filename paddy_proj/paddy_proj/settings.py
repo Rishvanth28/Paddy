@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'paddy_app',
     'orders_app',
+    'payment_app',
     'reports',
     'notifications',
     'onboarding',

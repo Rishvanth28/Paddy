@@ -14,8 +14,8 @@ class SubscriptionMiddleware(MiddlewareMixin):
         # Allow access to these paths without subscription check
         exempt_paths = [
             "/login/", "/logout/",
-            "/admin_subscription_payment/", "/payment-success/",
-            "/customer-subscription/", "/customer-payment-success/",
+            "/payment/admin-subscription-payment/", "/payment/admin-payment-success/",
+            "/payment/customer-subscription-payment/", "/payment/customer-payment-success/",
             "/admin"
         ]
 
@@ -31,7 +31,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
             ).order_by("-end_date").first()
 
             if not latest or not latest.end_date or latest.end_date < now().date():
-                return redirect("admin_subscription_payment")
+                return redirect("payment_app:admin_subscription_payment")
 
         # Handle customer subscription
         elif role == "customer":
@@ -42,7 +42,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
             ).order_by("-end_date").first()
 
             if not latest or not latest.end_date or latest.end_date < now().date():
-                return redirect("customer_subscription_payment")
+                return redirect("payment_app:customer_subscription_payment")
 
         return None
 

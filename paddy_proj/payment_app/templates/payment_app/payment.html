@@ -1097,7 +1097,7 @@ document.getElementById('make-payment')?.addEventListener('click', function (e) 
     button.disabled = true;
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-    fetch('/orders/create-partial-payment-order/', {
+    fetch('/payment/create-partial-payment-order/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1153,7 +1153,7 @@ function verifyPayment(payment, razorpay_order_id, amount, localOrderId) {
     // Show processing message
     showAlert('Verifying payment...', 'info');
     
-    fetch('/orders/verify-partial-payment/', {
+    fetch('/payment/verify-partial-payment/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1396,7 +1396,7 @@ document.getElementById('request-cash-payment')?.addEventListener('click', funct
     button.disabled = true;
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-    fetch('/orders/request-cash-payment/', {
+    fetch('/payment/request-cash-payment/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

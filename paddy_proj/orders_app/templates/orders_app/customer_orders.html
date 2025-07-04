@@ -1433,7 +1433,7 @@
                 
                 <div class="d-flex gap-2 for-mobile">
                     ${order.paid_amount < order.overall_amount ? `
-                        <form method="post" action="payment/" class="flex-grow-1">
+                        <form method="post" action="/payment/invoice/" class="flex-grow-1">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
                             <input type="hidden" name="order_id" value="${order.order_id}">    
                             <button class="btn btn-primary1 payment-btn w-100"  type="submit">

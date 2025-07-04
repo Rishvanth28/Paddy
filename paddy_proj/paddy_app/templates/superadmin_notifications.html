@@ -853,7 +853,7 @@
                     // Redirect to payment page or receipt
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '{% url "orders_app:payment" %}';
+                    form.action = '{% url "payment_app:payment" %}';
                     form.target = '_blank';
 
                     const csrfInput = document.createElement('input');

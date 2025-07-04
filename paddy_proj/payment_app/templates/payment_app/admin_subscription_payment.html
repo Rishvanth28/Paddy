@@ -698,7 +698,7 @@
                             description: 'Admin Subscription',
                             order_id: razorpayData.order_id,
                             handler: function (response) {
-                                fetch("{% url 'payment_success' %}", {
+                                fetch("{% url 'payment_app:payment_success' %}", {
                                     method: "POST",
                                     headers: {
                                         "Content-Type": "application/json",

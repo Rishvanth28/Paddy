@@ -238,7 +238,7 @@
                 makePaymentButton.disabled = true;
                 makePaymentButton.innerHTML = '<span class="loading-spinner"></span>Processing...';
 
-                fetch("{% url 'create_admin_user_increase_order' %}", {
+                fetch("{% url 'payment_app:create_admin_user_increase_order' %}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -291,7 +291,7 @@
         }
 
         function verifyUserIncreasePayment(paymentResponse, serverRazorpayOrderId) {
-            fetch("{% url 'verify_admin_user_increase_payment' %}", {
+            fetch("{% url 'payment_app:verify_admin_user_increase_payment' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

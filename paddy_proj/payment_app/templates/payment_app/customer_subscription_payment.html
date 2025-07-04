@@ -366,7 +366,7 @@
                 description: 'Customer Subscription',
                 order_id: data.order_id,
                 handler: function (response) {
-                    fetch(data.success_url, {
+                    fetch(data.success_url,{
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

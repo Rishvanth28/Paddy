@@ -1034,7 +1034,7 @@ body { background: var(--bg); color: var(--text-main); }
                             {% endif %}
                         </td>
                         <td>
-                            <form action="{% url 'orders_app:payment' %}" method="post">
+                            <form action="{% url 'payment_app:payment' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="order_id" value="{{ order.order_id }}">
                                 <button type="submit" class="btn btn-primary btn-sm">Pay Now</button>
