@@ -737,7 +737,7 @@
                 {{ notification.message }}
             </div>
             {% if notification.related_order_id %} <div class="notification-actions">
-                <a href="{% url 'customer_orders' %}?order_id={{ notification.related_order_id }}"
+                <a href="{% url 'orders_app:customer_orders' %}?order_id={{ notification.related_order_id }}"
                     class="btn btn-sm btn-outline-primary"
                     style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem; transition: all 0.3s ease;">
                     <i class="bi bi-eye me-1"></i>View Order
@@ -853,7 +853,7 @@
                     // Redirect to payment page or receipt
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '{% url "payment" %}';
+                    form.action = '{% url "orders_app:payment" %}';
                     form.target = '_blank';
 
                     const csrfInput = document.createElement('input');

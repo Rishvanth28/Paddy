@@ -641,7 +641,7 @@
           </a>
         </li>        <!-- Place Order -->
         <li class="nav-item">
-          <a href="{% url 'place_order' %}" class="nav-link">
+          <a href="{% url 'orders_app:place_order' %}" class="nav-link">
             <i class="bi bi-cart-plus nav-icon"></i>
             <span class="nav-text">Place Order</span>
           </a>
@@ -656,7 +656,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'super_admin_orders' %}">
+          <a class="nav-link" href="{% url 'orders_app:super_admin_orders' %}">
             <i class="bi bi-box-seam nav-icon"></i>
             <span>Orders</span>
           </a>

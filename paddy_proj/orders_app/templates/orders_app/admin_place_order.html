@@ -1,7 +1,6 @@
-{% extends 'superadmin_base.html' %}
+{% extends 'admin_base.html' %}
 {% load static %}
 {% block content %}
-
 <head>
     <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -28,10 +27,8 @@
                 width: 100%;
                 margin-bottom: 5px;
             }
-            
         }
     </style>
-
 </head>
 
 <body>
@@ -220,20 +217,20 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                            <tbody id="pesticide-items-container">
-                                    <tr class="item-row">
-                                        <td><input type="text" name="product_name[]" class="product-name" required></td>
-                                        <td><input type="text" name="batch_number[]" class="batch-number" required></td>
-                                        <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
-                                        <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
-                                        <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
-                                        <td>
-                                            <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required>
-                                        </td>
-                                        <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
-                                        <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
-                                    </tr>
-                                </tbody>
+                        <tbody id="pesticide-items-container">
+                            <tr class="item-row">
+                                <td><input type="text" name="product_name[]" class="product-name" required></td>
+                                <td><input type="text" name="batch_number[]" class="batch-number" required></td>
+                                <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
+                                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
+                                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
+                                <td>
+                                    <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required>
+                                </td>
+                                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
+                                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
+                            </tr>
+                        </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="6" style="text-align: right;"><strong>Total:</strong></td>
@@ -301,19 +298,20 @@
             document.querySelectorAll(".row-total").forEach(input => {
                 grandTotal += parseFloat(input.value) || 0;
             });
+            console.log("Grand Total:", grandTotal);
             document.getElementById("grand-total").value = grandTotal.toFixed(2);
         }
     </script>
 
     <!-- Razorpay script -->
     <script>
-        // Razorpay integration
+        // Razorpay integration with Pay Later and all payment methods
         function submitOrderForm(formId, categoryId) {
             const form = document.getElementById(formId);
             const formData = new FormData(form);
             // Get CSRF token from the form
             const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]').value;
-            fetch("{% url 'place_order' %}", {
+            fetch("{% url 'orders_app:place_order' %}", {
                 method: "POST",
                 body: formData,
                 headers: {
@@ -336,7 +334,7 @@
                             // Create a form to submit payment details back to server
                             const paymentForm = document.createElement('form');
                             paymentForm.method = 'POST';
-                            paymentForm.action = "{% url 'place_order' %}";
+                            paymentForm.action = "{% url 'orders_app:place_order' %}";
                             // Add CSRF token
                             const csrfInput = document.createElement('input');
                             csrfInput.type = 'hidden';
@@ -426,7 +424,6 @@
                 });
             }
         });
-
     </script>
 
     <!-- Tab Switch Script -->
@@ -472,33 +469,32 @@
     <script>
         // Replace the existing addNewRow, removeRow, calculateRowTotal, and updateGrandTotal functions with these:
 
-    // Replace the existing addPesticideRow function with this one
-function addPesticideRow() {
-    const tableBody = document.getElementById("pesticide-items-container");
-    const newRow = document.createElement("tr");
-    newRow.classList.add("item-row");
+        function addPesticideRow() {
+            const tableBody = document.getElementById("pesticide-items-container");
+            const newRow = document.createElement("tr");
+            newRow.classList.add("item-row");
 
-    newRow.innerHTML = `
-        <td><input type="text" name="product_name[]" class="product-name" required></td>
-        <td><input type="text" name="batch_number[]" class="batch-number" required></td>
-        <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
-        <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
-        <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
-        <td>
-            <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required>
-        </td>
-        <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
-        <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
-    `;
+            newRow.innerHTML = `
+                <td><input type="text" name="product_name[]" class="product-name" required></td>
+                <td><input type="text" name="batch_number[]" class="batch-number" required></td>
+                <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
+                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
+                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
+                <td>
+                    <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required>
+                </td>
+                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
+                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
+            `;
 
-    tableBody.appendChild(newRow);
-    
-    // Initialize the row total
-    const quantityInput = newRow.querySelector(".quantity");
-    if (quantityInput) {
-        calculateRowTotal(quantityInput);
-    }
-}
+            tableBody.appendChild(newRow);
+            
+            // Initialize the row total
+            const quantityInput = newRow.querySelector(".quantity");
+            if (quantityInput) {
+                calculateRowTotal(quantityInput);
+            }
+        }
 
         function removeRow(button) {
             const row = button.closest("tr");

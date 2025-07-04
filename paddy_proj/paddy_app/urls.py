@@ -8,16 +8,9 @@ urlpatterns = [
     path("admin-dashboard/", admin_dashboard, name="admin_dashboard"),
     path("customer-dashboard/", customer_dashboard, name="customer_dashboard"),
     path("logout/", logout_view, name="logout"),
-    path('place_order/', place_order, name='place_order'),
-    path('customer_orders/', customer_orders, name='customer_orders'),
-    path('customer_orders/payment/', payment, name='payment'),
-    path('customer_orders/delivery/', customer_delivery_validation, name='delivery'),
-    path("admin-place-order/", place_order, name="admin_place_order"),
+
     path("admin-add-subscription/", admin_add_subscription, name="admin_add_subscription"),
     path("upgrade-plan/", upgrade_plan, name="upgrade_plan"),
-    
-    path('admin-orders/', admin_orders, name='admin_orders'),
-    path('super-admin-orders/', super_admin_orders, name='super_admin_orders'),
     
     path('customer/dashboard/',customer_dashboard, name='customer_dashboard'), 
     path('customer-list/',customers_under_admin, name='customer_list'),
@@ -37,12 +30,6 @@ urlpatterns = [
     path("swap-role/", swap_role, name="swap_role"),
     path('admin-subscribers/', view_admin_subscribers, name='admin_subscribers'),
     path('customer-subscribers/', view_customer_subscribers, name='customer_subscribers'),
-    path('create_partial_payment_order/', create_partial_payment_order, name='create_partial_payment_order'),
-    path('verify_partial_payment/', verify_partial_payment, name='verify_partial_payment'),
-    path('ajax/create_admin_user_increase_order/', create_admin_user_increase_order, name='create_admin_user_increase_order'),
-    path('ajax/verify_admin_user_increase_payment/', verify_admin_user_increase_payment, name='verify_admin_user_increase_payment'),    
     path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
     path('upgrade-to-customer/',upgrade_to_customer, name='upgrade_to_customer'),
-    path('request_cash_payment/', request_cash_payment, name='request_cash_payment'),
-    path('approve_cash_payment/<int:request_id>/', approve_cash_payment, name='approve_cash_payment'),
 ]

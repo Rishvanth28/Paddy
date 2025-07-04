@@ -737,7 +737,7 @@
                         {{ notification.message }}
                     </div>
                     {% if notification.related_order_id %}                        <div class="notification-actions">
-                            <a href="{% url 'admin_orders' %}?order_id={{ notification.related_order_id }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{% url 'orders_app:admin_orders' %}?order_id={{ notification.related_order_id }}" class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-eye me-2" style="margin-right: 8px;"></i>View Order
                             </a>
                         </div>
@@ -845,7 +845,7 @@
             case 'order_placed':
                 if (orderId) {
                     // Redirect to order details
-                    window.location.href = `/admin-orders/?order_id=${orderId}`;
+                    window.location.href = `/orders/admin-orders/?order_id=${orderId}`;
                     message = 'Opening order details...';
                     actionType = 'success';
                 } else {
@@ -855,7 +855,7 @@
 
             case 'payment_received':
                 if (orderId) {
-                    window.location.href = `/admin-orders/?order_id=${orderId}`;
+                    window.location.href = `/orders/admin-orders/?order_id=${orderId}`;
                     message = 'Opening payment details...';
                     actionType = 'success';
                 } else {

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'paddy_app',
+    'orders_app',
     'reports',
     'notifications',
     'onboarding',

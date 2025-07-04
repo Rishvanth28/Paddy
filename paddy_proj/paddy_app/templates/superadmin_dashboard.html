@@ -84,7 +84,7 @@
     <div class="dashboard-navigation-section">
         <h2>Quick Actions</h2>
         <div class="superadmin-dashboard-grid">
-            <a href="{% url 'super_admin_orders' %}" class="superadmin-dashboard-btn">
+            <a href="{% url 'orders_app:super_admin_orders' %}" class="superadmin-dashboard-btn">
                 <span class="icon">📦</span>
                 <span class="btn-label">Orders</span>
                 <span class="btn-desc">View and manage all orders</span>
@@ -109,7 +109,7 @@
                 <span class="btn-label">Onboarding</span>
                 <span class="btn-desc">Add new admins/customers</span>
             </a>
-            <a href="{% url 'place_order' %}" class="superadmin-dashboard-btn">
+            <a href="{% url 'orders_app:place_order' %}" class="superadmin-dashboard-btn">
                 <span class="icon">➕</span>
                 <span class="btn-label">Place Order</span>
                 <span class="btn-desc">Create a new order</span>
