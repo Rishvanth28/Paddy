@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from paddy_app.views import approve_cash_payment  # Proxy path for cash payment approvals
 
 app_name = 'admin_app'
 
@@ -26,4 +27,6 @@ urlpatterns = [
     path('payment-success/', views.payment_success, name='payment_success'),
     path('upgrade-plan/', views.upgrade_plan, name='upgrade_plan'),
     path('upgrade-success/', views.upgrade_success, name='upgrade_success'),
+    # Cash payment approval endpoint proxy to API
+    path('approve-cash-payment/<int:request_id>/', approve_cash_payment, name='approve_cash_payment'),
 ]

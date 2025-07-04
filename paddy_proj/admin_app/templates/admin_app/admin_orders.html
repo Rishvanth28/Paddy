@@ -2071,7 +2071,7 @@
           formData.append('action', action);
           formData.append('csrfmiddlewaretoken', csrfToken);
 
-          fetch(`/approve_cash_payment/${requestId}/`, {
+          fetch(`/admin-app/approve-cash-payment/${requestId}/`, {
               method: 'POST',
               body: formData,
               headers: {

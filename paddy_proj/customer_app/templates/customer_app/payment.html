@@ -1419,7 +1419,7 @@ document.getElementById('request-cash-payment')?.addEventListener('click', funct
     button.disabled = true;
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-    fetch('/request_cash_payment/', {
+    fetch('/api/request-cash-payment/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
