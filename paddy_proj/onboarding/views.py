@@ -10,7 +10,7 @@ from paddy_app.helpers import validate_gst, create_notification
 
 
 def onboard(request):
-    return render(request, "onboard.html")
+    return render(request, "superadmin_app/onboard.html")
 
 
 @role_required(["superadmin"])
@@ -47,7 +47,7 @@ def create_admin(request):
             messages.warning(request, "This email is already registered.")
             messages.info(request, "Please fill all required fields.")
             
-    return render(request, "onboard.html")
+    return render(request, "superadmin_app/onboard.html")
 
 
 @role_required(["superadmin", "admin"])
@@ -130,7 +130,7 @@ def create_customer(request):
         except IntegrityError:
             messages.error(request, "Failed to create customer. Please try again.")
 
-    return render(request, "onboard.html" if is_superadmin else "customer_onboard.html")
+    return render(request, "superadmin_app/onboard.html" if is_superadmin else "admin_app/customer_onboard.html")
 
 
 def create_admin_signup(request):
@@ -166,7 +166,7 @@ def create_admin_signup(request):
             messages.warning(request, "This email is already registered.")
             messages.info(request, "Please fill all required fields.")
             
-    return render(request, "login.html")
+    return render(request, "login_app/login.html")
 
 
 def create_customer_signup(request):
@@ -245,9 +245,9 @@ def create_customer_signup(request):
         except IntegrityError:
             messages.error(request, "Failed to create customer. Please try again.")
 
-    return render(request, "login.html")
+    return render(request, "login_app/login.html")
 
 
 @role_required(["admin"])
 def customer_onboard_view(request):
-    return render(request, "customer_onboard.html")
+    return render(request, "admin_app/customer_onboard.html")

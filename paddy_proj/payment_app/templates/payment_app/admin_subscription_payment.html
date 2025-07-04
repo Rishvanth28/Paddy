@@ -712,7 +712,7 @@
                                 }).then(res => res.json())
                                     .then(data => {
                                         if (data.success) {
-                                            window.location.href = "{% url 'admin_dashboard' %}";
+                                            window.location.href = "{% url 'admin_app:admin_dashboard' %}";
                                         } else {
                                             alert("Payment failed. Please try again.");
                                         }

@@ -1,4 +1,4 @@
-{% extends 'admin_base.html' %}
+{% extends 'admin_app/admin_base.html' %}
 {% load static %}
 {% block content %}
 
@@ -743,7 +743,7 @@
                         </div>
                     {% endif %}
                     {% if notification.notification_type == 'user_limit_reached' %}                        <div class="notification-actions">
-                            <a href="{% url 'admin_add_subscription' %}" class="btn btn-sm btn-outline-primary">
+                            <a href="{% url 'admin_app:admin_add_subscription' %}" class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-plus-circle me-2"></i>Upgrade User Limit
                             </a>
                         </div>
@@ -864,7 +864,7 @@
                 break;
 
             case 'user_limit_reached':
-                window.location.href = "{% url 'admin_add_subscription' %}";
+                window.location.href = "{% url 'admin_app:admin_add_subscription' %}";
                 message = 'Opening subscription management...';
                 actionType = 'warning';
                 break;

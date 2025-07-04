@@ -13,7 +13,7 @@ def customer_notifications(request):
     """Display notifications for customer"""
     customer_id = request.session.get("user_id")
     if not customer_id:
-        return redirect('login')
+        return redirect('login_app:login')
     
     notifications = get_user_notifications('customer', customer_id)
     unread_count = get_unread_notification_count('customer', customer_id)
@@ -22,7 +22,7 @@ def customer_notifications(request):
         'notifications': notifications,
         'unread_count': unread_count
     }
-    return render(request, 'customer_notifications.html', context)
+    return render(request, 'customer_app/customer_notifications.html', context)
 
 
 @role_required(["admin"])
@@ -30,7 +30,7 @@ def admin_notifications(request):
     """Display notifications for admin"""
     admin_id = request.session.get("user_id")
     if not admin_id:
-        return redirect('login')
+        return redirect('login_app:login')
     
     notifications = get_user_notifications('admin', admin_id)
     unread_count = get_unread_notification_count('admin', admin_id)
@@ -39,7 +39,7 @@ def admin_notifications(request):
         'notifications': notifications,
         'unread_count': unread_count
     }
-    return render(request, 'admin_notifications.html', context)
+    return render(request, 'admin_app/admin_notifications.html', context)
 
 
 @role_required(["superadmin"])

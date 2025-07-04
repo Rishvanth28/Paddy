@@ -1,4 +1,4 @@
-{% extends "customer_base.html" %}
+{% extends "customer_app/customer_base.html" %}
 
 {% block content %}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -367,7 +367,7 @@
           By upgrading, you’ll gain access to the admin dashboard, product management, order analytics, and much more. It's a one-time subscription to empower your business.
         </p>
 
-        <form action="{% url 'upgrade_to_admin' %}" method="post">{% csrf_token %}
+        <form action="{% url 'customer_app:upgrade_to_admin' %}" method="post">{% csrf_token %}
           <button type="submit" class="upgrade-btn" style="
             background: #000;
             color: #fff;

@@ -42,9 +42,9 @@ def login_view(request):
         if role == "superadmin":
             return redirect("superadmin_app:superadmin_dashboard")
         elif role == "admin":
-            return redirect("admin_dashboard")
+            return redirect("admin_app:admin_dashboard")
         elif role == "customer":
-            return redirect("customer_dashboard")
+            return redirect("customer_app:customer_dashboard")
 
     if request.method == "POST":
         phone_number = request.POST.get("username")
@@ -79,7 +79,7 @@ def login_view(request):
                     request.session["role"] = "admin"
                     sub = Subscription.objects.filter(admin_id=user, subscription_type="admin").order_by("-end_date").first()
                     if sub and sub.end_date and sub.end_date >= now().date():
-                        return redirect("admin_dashboard")
+                        return redirect("admin_app:admin_dashboard")
                     else:
                         return redirect("payment_app:admin_subscription_payment")
             except AdminTable.DoesNotExist:
@@ -97,7 +97,7 @@ def login_view(request):
                     
                     if sub:
                         if sub.end_date and sub.end_date >= now().date():
-                            return redirect("customer_dashboard")
+                            return redirect("customer_app:customer_dashboard")
                         else:
                             return redirect("payment_app:customer_subscription_payment")
                     else:
@@ -110,7 +110,7 @@ def login_view(request):
                             start_date=now().date(),
                             end_date=now().date() + timedelta(days=30)
                         )
-                        return redirect("customer_dashboard")
+                        return redirect("customer_app:customer_dashboard")
             except CustomerTable.DoesNotExist:
                 messages.error(request, "Customer not found.")
 
@@ -133,7 +133,7 @@ def admin_login_submit(request):
             admin = AdminTable.objects.get(email=email)
             if admin.check_password(password):
                 request.session['user_id'] = admin.admin_id
-                return redirect('customers_under_admin')
+                return redirect('superadmin_app:customers_under_admin')
         except AdminTable.DoesNotExist:
             pass
-    return render(request, 'login.html', {'error': 'Invalid credentials'})
+    return render(request, 'login_app/login.html', {'error': 'Invalid credentials'})

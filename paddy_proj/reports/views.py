@@ -1219,7 +1219,7 @@ def admin_reports(request):
         return generate_pdf(rice_paddy_orders, pesticide_orders, filename="admin_report.pdf")
     
     # Return template with context
-    return render(request, 'admin_reports.html', {
+    return render(request, 'admin_app/admin_reports.html', {
         'rice_paddy_orders': rice_paddy_orders,
         'pesticide_orders': pesticide_orders,
         'customers': customers,

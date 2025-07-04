@@ -12,4 +12,6 @@ urlpatterns = [
     path('reports/', include('reports.urls')),  # Reports app URLs
     path('notifications/', include('notifications.urls')),  # Notifications app URLs
     path('onboarding/', include('onboarding.urls')),  # Onboarding app URLs
+    path('', include('admin_app.urls')),  # Admin app URLs - include at root level
+    path('', include('customer_app.urls')),  # Customer app URLs - include at root level
 ]

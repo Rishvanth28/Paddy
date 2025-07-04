@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'reports',
     'notifications',
     'onboarding',
+    'admin_app',
+    'customer_app',
 ]
 
 MIDDLEWARE = [

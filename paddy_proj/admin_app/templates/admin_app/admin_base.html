@@ -602,7 +602,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="{% url 'admin_dashboard' %}" class="nav-link">
+          <a href="{% url 'admin_app:admin_dashboard' %}" class="nav-link">
             <i class="bi bi-speedometer2 nav-icon"></i>
             <span class="nav-text">Dashboard</span>
           </a>
@@ -617,7 +617,7 @@
 
         <!-- Customers -->
         <li class="nav-item">
-          <a href="{% url 'admin_customer_list' %}" class="nav-link">
+          <a href="{% url 'admin_app:admin_customer_list' %}" class="nav-link">
             <i class="bi bi-people nav-icon"></i>
             <span class="nav-text">Customers</span>
           </a>
@@ -651,7 +651,7 @@
 
         {% if request.user.role != 'customer' %}
         <li class="nav-item">
-          <a href="{% url 'upgrade_to_customer' %}" class="nav-link">
+          <a href="{% url 'admin_app:upgrade_to_customer' %}" class="nav-link">
             <i class="bi bi-arrow-up-circle nav-icon"></i>
             <span class="nav-text">Become Customer</span>
           </a>
@@ -660,7 +660,7 @@
 
         <!-- Subscription -->
         <li class="nav-item">
-          <a href="{% url 'admin_add_subscription' %}" class="nav-link">
+          <a href="{% url 'admin_app:admin_add_subscription' %}" class="nav-link">
             <i class="bi bi-credit-card nav-icon"></i>
             <span class="nav-text">Subscription</span>
           </a>

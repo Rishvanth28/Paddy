@@ -276,10 +276,10 @@ def superadmin_subscription_review(request):
         except Exception:
             messages.error(request, "Subscription request not found.")
         
-        return redirect('superadmin_subscription')
+        return redirect('superadmin_app:superadmin_subscription')
     
     # If not POST, redirect to the list view
-    return redirect('superadmin_subscription')
+    return redirect('superadmin_app:superadmin_subscription')
 
 @role_required(["superadmin"])
 def view_admins(request):
@@ -316,7 +316,7 @@ def customers_under_admin(request):
     role = request.session.get("role")  # adjust based on how role is stored in session
     is_superadmin = role == "superadmin"
     if not admin_id:
-        return redirect('admin_login')  # redirect if not logged in
+        return redirect('login_app:login')  # redirect if not logged in
 
     # Fetch customers for the current admin
     customers = CustomerTable.objects.filter(admin_id=admin_id)

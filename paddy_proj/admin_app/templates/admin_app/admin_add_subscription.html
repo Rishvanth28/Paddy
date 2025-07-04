@@ -1,4 +1,4 @@
-{% extends "admin_base.html" %}
+{% extends "admin_app/admin_base.html" %}
 {% load static %}
 {% block content %}
 
@@ -145,7 +145,7 @@
 
             {# Show appropriate action based on status #}
             {% if not existing_subscription_obj or existing_subscription_obj.subscription_status == 2 or existing_subscription_obj.subscription_status == 3 %}
-            <form id="subscriptionUpgradeRequestForm" method="post" action="{% url 'admin_add_subscription' %}">
+            <form id="subscriptionUpgradeRequestForm" method="post" action="{% url 'admin_app:admin_add_subscription' %}">
                 {% csrf_token %}
                 <input type="hidden" name="submission_type" value="0">
                 <div class="form-check">

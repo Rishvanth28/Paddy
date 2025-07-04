@@ -29,7 +29,7 @@ client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
 def customer_orders(request):
     customer_id = request.session.get("user_id")
     if not customer_id:
-        return redirect('login')
+        return redirect('login_app:login')
     
     # Check if it's an AJAX request asking for JSON data
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
