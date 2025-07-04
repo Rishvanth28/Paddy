@@ -374,7 +374,7 @@ def admin_subscription_payment(request):
 
         if not admin_id:
             messages.error(request, "Session expired. Please log in again.")
-            return redirect("login")
+            return redirect("login_app:login")
 
         amount = 100 if plan == "1month" else 200
         duration = 30 if plan == "1month" else 60
@@ -432,7 +432,7 @@ def customer_subscription_payment(request):
 
         if not customer_id:
             messages.error(request, "Session expired. Please log in again.")
-            return redirect("login")
+            return redirect("login_app:login")
 
         amount = 100 if plan == "1month" else 200
         duration = 30 if plan == "1month" else 60

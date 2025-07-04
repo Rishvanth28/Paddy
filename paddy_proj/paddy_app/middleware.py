@@ -13,7 +13,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
 
         # Allow access to these paths without subscription check
         exempt_paths = [
-            "/login/", "/logout/",
+            "/login/", "/login/logout/",
             "/payment/admin-subscription-payment/", "/payment/admin-payment-success/",
             "/payment/customer-subscription-payment/", "/payment/customer-payment-success/",
             "/admin"
@@ -21,6 +21,10 @@ class SubscriptionMiddleware(MiddlewareMixin):
 
         if path in exempt_paths or path.startswith("/static/"):
             return None
+
+        # If user is not logged in (no role or user_id), redirect to login
+        if not role or not user_id:
+            return redirect("login_app:login")
 
         # Handle admin subscription
         if role == "admin":

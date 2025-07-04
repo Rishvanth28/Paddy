@@ -68,13 +68,13 @@ def create_customer(request):
         admin_id = request.session.get("user_id")
         if not admin_id:
             messages.error(request, "Session expired. Please log in again.")
-            return redirect("login")
+            return redirect("login_app:login")
 
         try:
             admin = AdminTable.objects.get(admin_id=admin_id)
         except AdminTable.DoesNotExist:
             messages.error(request, "Admin not found. Please log in again.")
-            return redirect("login")
+            return redirect("login_app:login")
 
         current_customer_count = CustomerTable.objects.filter(admin=admin).count()
         if current_customer_count >= admin.user_count:
@@ -144,11 +144,11 @@ def create_admin_signup(request):
         # Check for existing email or phone number
         if AdminTable.objects.filter(email=email).exists():
             messages.error(request, "Email already exists for an admin!")
-            return redirect("login")
+            return redirect("login_app:login")
 
         if AdminTable.objects.filter(phone_number=phone_number).exists():
             messages.error(request, "Phone number already registered for an admin!")
-            return redirect("login")
+            return redirect("login_app:login")
 
         try:
             AdminTable.objects.create(
@@ -160,7 +160,7 @@ def create_admin_signup(request):
                 user_count=50
             )
             messages.success(request, "Admin created successfully!")
-            return redirect("login")
+            return redirect("login_app:login")
         except IntegrityError:
             messages.error(request, "Failed to create admin. Please try again.")
             messages.warning(request, "This email is already registered.")
@@ -183,13 +183,13 @@ def create_customer_signup(request):
         admin_id = 1000000
         if not admin_id:
             messages.error(request, "Session expired. Please log in again.")
-            return redirect("login")
+            return redirect("login_app:login")
 
         try:
             admin = AdminTable.objects.get(admin_id=admin_id)
         except AdminTable.DoesNotExist:
             messages.error(request, "Admin not found. Please log in again.")
-            return redirect("login")
+            return redirect("login_app:login")
 
         current_customer_count = CustomerTable.objects.filter(admin=admin).count()
         if current_customer_count >= admin.user_count:
@@ -202,19 +202,19 @@ def create_customer_signup(request):
                 message=f'You have reached your customer limit of {admin.user_count}. Please upgrade to add more customers.',
             )
             messages.error(request, "Customer limit reached for your account!")
-            return redirect("login")
+            return redirect("login_app:login")
 
         if CustomerTable.objects.filter(email=email).exists():
             messages.error(request, "Email already exists for a customer!")
-            return redirect("login")
+            return redirect("login_app:login")
 
         if CustomerTable.objects.filter(phone_number=phone_number).exists():
             messages.error(request, "Phone number already registered for a customer!")
-            return redirect("login")
+            return redirect("login_app:login")
 
         if gst and not validate_gst(gst):
             messages.error(request, "Invalid GST number format!")
-            return redirect("login")
+            return redirect("login_app:login")
 
         try:
             customer = CustomerTable.objects.create(
@@ -240,7 +240,7 @@ def create_customer_signup(request):
             )
 
             messages.success(request, "Customer created successfully!")
-            return redirect("login")
+            return redirect("login_app:login")
 
         except IntegrityError:
             messages.error(request, "Failed to create customer. Please try again.")

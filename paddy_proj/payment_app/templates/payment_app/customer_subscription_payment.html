@@ -247,7 +247,10 @@
     <div class="main-content">
         <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
             <h1 class="page-title mb-0 me-3">Subscription Payment</h1>
-            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+            <form action="{% url 'login_app:logout' %}" method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn" style="background: none; border: none; color: inherit; text-decoration: none; cursor: pointer;">Logout</button>
+            </form>
         </div>
         <div class="text-center">
             <h2 class="mb-4" style="color:#fff;font-weight:700;">Choose a Subscription Plan</h2>

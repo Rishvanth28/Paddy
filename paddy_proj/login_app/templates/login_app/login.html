@@ -26,7 +26,7 @@
 
                     <!-- Sign In Tab -->
                     <div class="tab-content active" id="signin">
-                        <form method="POST" action="{% url 'login' %}">
+                        <form method="POST" action="{% url 'login_app:login' %}">
                             {% csrf_token %}  <!-- Security Token -->
 
                             <label class="text" for="role">SELECT ROLE</label>

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'paddy_app',
     'orders_app',
     'payment_app',
+    'login_app',
     'reports',
     'notifications',
     'onboarding',
@@ -152,9 +153,9 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # Authentication settings
-LOGIN_URL = '/'  # Redirect to homepage (login view)
-LOGIN_REDIRECT_URL = '/'  # Where to go after login
-LOGOUT_REDIRECT_URL = '/'  # Where to go after logout
+LOGIN_URL = '/login/'  # Redirect to login app
+LOGIN_REDIRECT_URL = '/login/'  # Where to go after login
+LOGOUT_REDIRECT_URL = '/login/'  # Where to go after logout
 
 # Razorpay Settings
 RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"

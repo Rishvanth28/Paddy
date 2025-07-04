@@ -35,88 +35,6 @@ RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
 RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
 
 client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
-def login_view(request):
-    if request.session.get("user_id") and request.session.get("role"):
-        role = request.session["role"]
-        if role == "superadmin":
-            return redirect("superadmin_dashboard")
-        elif role == "admin":
-            return redirect("admin_dashboard")
-        elif role == "customer":
-            return redirect("customer_dashboard")
-
-    if request.method == "POST":
-        phone_number = request.POST.get("username")
-        password = request.POST.get("password")
-        role = request.POST.get("role")
-
-        if not phone_number or not password or not role:
-            messages.error(request, "All fields are required.")
-            return redirect("login")
-
-        if role == "superadmin":
-            try:
-                user = AdminTable.objects.get(phone_number=phone_number)
-                if user.admin_id > 1000000:
-                    messages.error(request, "Unauthorized access.")
-                    return redirect("login")
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.admin_id
-                    request.session["role"] = "superadmin"
-                    return redirect("superadmin_dashboard")
-            except AdminTable.DoesNotExist:
-                messages.error(request, "Super Admin not found.")
-
-        elif role == "admin":
-            try:
-                user = AdminTable.objects.get(phone_number=phone_number)
-                if user.admin_id == 1000000:
-                    messages.error(request, "Unauthorized access.")
-                    return redirect("login")
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.admin_id
-                    request.session["role"] = "admin"
-                    sub = Subscription.objects.filter(admin_id=user, subscription_type="admin").order_by("-end_date").first()
-                    if sub and sub.end_date and sub.end_date >= now().date():
-                        return redirect("admin_dashboard")
-                    else:
-                        return redirect("payment_app:admin_subscription_payment")
-            except AdminTable.DoesNotExist:
-                messages.error(request, "Admin not found.")
-
-        elif role == "customer":
-            try:
-                user = CustomerTable.objects.get(phone_number=phone_number)
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.customer_id
-                    request.session["role"] = "customer"
-
-                    # Subscription check
-                    sub = Subscription.objects.filter(customer_id=user, subscription_type="customer").order_by("-end_date").first()
-                    
-                    if sub:
-                        if sub.end_date and sub.end_date >= now().date():
-                            return redirect("customer_dashboard")
-                        else:
-                            return redirect("payment_app:customer_subscription_payment")
-                    else:
-                        # Free trial logic
-                        Subscription.objects.create(
-                            customer_id=user,
-                            subscription_type="customer",
-                            subscription_status=1,
-                            payment_amount=0,
-                            start_date=now().date(),
-                            end_date=now().date() + timedelta(days=30)
-                        )
-                        return redirect("customer_dashboard")
-            except CustomerTable.DoesNotExist:
-                messages.error(request, "Customer not found.")
-
-        else:
-            messages.error(request, "Invalid role selected.")
-
-    return render(request, "login.html")   
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
@@ -322,13 +240,13 @@ def admin_dashboard(request):
     admin_id = request.session.get('user_id')
     if not admin_id:
         messages.error(request, "Session expired. Please log in again.")
-        return redirect('login')
+        return redirect('login_app:login')
     
     try:
         admin = AdminTable.objects.get(admin_id=admin_id)
     except AdminTable.DoesNotExist:
         messages.error(request, "Admin not found. Please log in again.")
-        return redirect('login')
+        return redirect('login_app:login')
     
     # Calculate date ranges
     today = datetime.now().date()
@@ -504,13 +422,13 @@ def customer_dashboard(request):
     customer_id = request.session.get('user_id')
     if not customer_id:
         messages.error(request, "Session expired. Please log in again.")
-        return redirect('login')
+        return redirect('login_app:login')
     
     try:
         customer = CustomerTable.objects.get(customer_id=customer_id)
     except CustomerTable.DoesNotExist:
         messages.error(request, "Customer not found. Please log in again.")
-        return redirect('login')
+        return redirect('login_app:login')
     
     # Calculate date ranges
     today = datetime.now().date()
@@ -870,10 +788,7 @@ def delete_customer(request, customer_id):
             messages.error(request, "Customer not found.")
     return redirect(request.META.get("HTTP_REFERER", "view_admins"))
     
-def logout_view(request):
-    request.session.flush()  # Clears session data
-    messages.success(request, "Logged out successfully.")
-    return redirect("login")
+
 
 @role_required(["superadmin", "admin"])
 def customers_under_admin(request):
@@ -888,19 +803,7 @@ def customers_under_admin(request):
 
     return render(request, "customers_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
 
-def admin_login_submit(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        try:
-            admin = AdminTable.objects.get(email=email)
-            if admin.check_password(password):
-                request.session['user_id'] = admin.admin_id
-                return redirect('customers_under_admin')
-        except AdminTable.DoesNotExist:
-            pass
-    return render(request, 'login.html', {'error': 'Invalid credentials'})
+
 
 def profile(request):
     role = request.session.get('role')
@@ -908,7 +811,7 @@ def profile(request):
     
     if not role or not user_id:
         messages.error(request, "Please log in to view your profile.")
-        return redirect('login')
+        return redirect('login_app:login')
     
     # Determine base template and fetch user data based on role
     if role == 'superadmin':
@@ -928,7 +831,7 @@ def profile(request):
             }
         except AdminTable.DoesNotExist:
             messages.error(request, "User profile not found.")
-            return redirect('login')
+            return redirect('login_app:login')
             
     elif role == 'admin':
         base_template = 'admin_base.html'
@@ -954,7 +857,7 @@ def profile(request):
             }
         except AdminTable.DoesNotExist:
             messages.error(request, "User profile not found.")
-            return redirect('login')
+            return redirect('login_app:login')
             
     elif role == 'customer':
         base_template = 'customer_base.html'
@@ -983,10 +886,10 @@ def profile(request):
             }
         except CustomerTable.DoesNotExist:
             messages.error(request, "User profile not found.")
-            return redirect('login')
+            return redirect('login_app:login')
     else:
         messages.error(request, "Invalid role.")
-        return redirect('login')
+        return redirect('login_app:login')
     
     context = {
         'base_template': base_template,
@@ -1036,7 +939,7 @@ def swap_role(request):
             return redirect("customer_dashboard")
 
     messages.error(request, "Invalid session. Please log in again.")
-    return redirect("login")
+    return redirect("login_app:login")
 
 def view_admin_subscribers(request):
     admin_subscriptions = Subscription.objects.filter(subscription_type="admin") \

@@ -430,7 +430,7 @@ def place_order(request):
 
     admin_id = request.session.get("user_id")
     if not admin_id:
-        return redirect("login")
+        return redirect("login_app:login")
 
     customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
     

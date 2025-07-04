@@ -570,9 +570,9 @@
     </div>
     <div class="container">
         <div class="main-content">            <div class="mb-4" style="text-align: right;">
-                <form action="{% url 'logout' %}" method="post" style="display: inline-block;">
+                <form action="{% url 'login_app:logout' %}" method="post" style="display: inline-block;" id="logout-form">
                     {% csrf_token %}
-                    <button type="submit" class="logout-btn">
+                    <button type="submit" class="logout-btn" onclick="console.log('Logout button clicked');">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                             class="bi bi-box-arrow-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
