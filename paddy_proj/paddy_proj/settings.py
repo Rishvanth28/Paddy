@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'orders_app',
     'payment_app',
     'login_app',
+    'superadmin_app',
     'reports',
     'notifications',
     'onboarding',

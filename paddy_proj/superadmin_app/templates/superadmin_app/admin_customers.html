@@ -1,4 +1,4 @@
-{% extends 'superadmin_base.html' %}
+{% extends 'superadmin_app/superadmin_base.html' %}
 {% load static %}
 {% block content %}
 
@@ -46,7 +46,7 @@
                             <td>{{ customer.company_name }}</td>
                             <td>{{ customer.GST }}</td>
                             <td>
-                                <form method="POST" action="{% url 'delete_customer' customer.customer_id %}"
+                                <form method="POST" action="{% url 'superadmin_app:delete_customer' customer.customer_id %}"
                                     onsubmit="return confirm('Are you sure you want to delete this customer?');">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm btn-danger" title="Delete">
@@ -72,7 +72,7 @@
 
         </div>
         <div class="btn-back-wrapper">
-            <a href="/view-admins" class="btn-back " >
+            <a href="{% url 'superadmin_app:view_admins' %}" class="btn-back " >
                 <i class="fas fa-arrow-left me-2"></i> Back to Admin List
             </a>
         </div>

@@ -595,7 +595,7 @@
         </li>
 
         <li class="nav-item">
-          <a href="{% url 'superadmin_dashboard' %}" class="nav-link">
+          <a href="{% url 'superadmin_app:superadmin_dashboard' %}" class="nav-link">
             <i class="bi bi-speedometer2 nav-icon"></i>
             <span class="nav-text">Dashboard</span>
           </a>
@@ -617,17 +617,17 @@
           </div>
           <ul class="submenu">
             <li class="submenu-item">
-              <a href="{% url 'admin_subscribers' %}" class="submenu-link">Admin Subscribers</a>
+              <a href="{% url 'superadmin_app:view_admin_subscribers' %}" class="submenu-link">Admin Subscribers</a>
             </li>
             <li class="submenu-item">
-              <a href="{% url 'customer_subscribers' %}" class="submenu-link">Customer Subscribers</a>
+              <a href="{% url 'superadmin_app:view_customer_subscribers' %}" class="submenu-link">Customer Subscribers</a>
             </li>
           </ul>
         </li>
 
         <!-- Customers -->
         <li class="nav-item">
-          <a href="{% url 'customer_list' %}" class="nav-link">
+          <a href="{% url 'superadmin_app:customers_under_admin' %}" class="nav-link">
             <i class="bi bi-people nav-icon"></i>
             <span class="nav-text">Customers</span>
           </a>
@@ -635,7 +635,7 @@
 
         <!-- Admins -->
         <li class="nav-item">
-          <a href="{% url 'view_admins' %}" class="nav-link">
+          <a href="{% url 'superadmin_app:view_admins' %}" class="nav-link">
             <i class="bi bi-shield-check nav-icon"></i>
             <span class="nav-text">Admins</span>
           </a>
@@ -663,7 +663,7 @@
         </li>
         <!-- Subscription -->
         <li class="nav-item">
-          <a href="{% url 'superadmin_subscription' %}" class="nav-link">
+          <a href="{% url 'superadmin_app:superadmin_subscription' %}" class="nav-link">
             <i class="bi bi-credit-card nav-icon"></i>
             <span class="nav-text">Subscription</span>
           </a>

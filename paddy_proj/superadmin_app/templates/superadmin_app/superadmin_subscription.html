@@ -1,4 +1,4 @@
-{% extends "superadmin_base.html" %}
+{% extends "superadmin_app/superadmin_base.html" %}
 {% load static %}
 
 {% block content %}
@@ -190,7 +190,7 @@
                                         <p><strong>Additional Users:</strong> {{ subscription.additional_users|default:"50" }}</p>
                                     </div>
                                     
-                                    <form id="reviewForm{{ subscription.sid }}" method="post" action="{% url 'superadmin_subscription_review' %}">
+                                    <form id="reviewForm{{ subscription.sid }}" method="post" action="{% url 'superadmin_app:superadmin_subscription_review' %}">>
                                         {% csrf_token %}
                                         <input type="hidden" name="subscription_id" value="{{ subscription.sid }}">
                                         

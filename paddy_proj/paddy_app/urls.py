@@ -6,7 +6,6 @@ from .views import *
 urlpatterns = [
     path("", lambda request: redirect('/login/'), name="home"),  # Redirect root to login
     
-    path("superadmin-dashboard/", superadmin_dashboard, name="superadmin_dashboard"),
     path("admin-dashboard/", admin_dashboard, name="admin_dashboard"),
     path("customer-dashboard/", customer_dashboard, name="customer_dashboard"),
 
@@ -14,19 +13,9 @@ urlpatterns = [
     path("upgrade-plan/", upgrade_plan, name="upgrade_plan"),
     
     path('customer/dashboard/',customer_dashboard, name='customer_dashboard'), 
-    path('customer-list/',customers_under_admin, name='customer_list'),
-    path('admin_customer-list/',customers_under_admin, name='admin_customer_list'),
-    path('view-admins/', view_admins, name='view_admins'),
-    path("view-customers/<int:admin_id>/", view_customers_under_admin, name="admin_customers"),
-    path('superadmin/subscription-review/', superadmin_subscription, name='superadmin_subscription'),
-    path('superadmin/review-subscription/', superadmin_subscription_review, name='superadmin_subscription_review'),
 
     path('profile/', profile, name='profile'),
-    path("delete-admin/<int:admin_id>/", delete_admin, name="delete_admin"),
-    path("delete-customer/<str:customer_id>/", delete_customer, name="delete_customer"),
     path("swap-role/", swap_role, name="swap_role"),
-    path('admin-subscribers/', view_admin_subscribers, name='admin_subscribers'),
-    path('customer-subscribers/', view_customer_subscribers, name='customer_subscribers'),
     path('upgrade-to-admin/',upgrade_to_admin, name='upgrade_to_admin'),
     path('upgrade-to-customer/',upgrade_to_customer, name='upgrade_to_customer'),
 ]

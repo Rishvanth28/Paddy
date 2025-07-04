@@ -40,7 +40,7 @@ def login_view(request):
     if request.session.get("user_id") and request.session.get("role"):
         role = request.session["role"]
         if role == "superadmin":
-            return redirect("superadmin_dashboard")
+            return redirect("superadmin_app:superadmin_dashboard")
         elif role == "admin":
             return redirect("admin_dashboard")
         elif role == "customer":
@@ -64,7 +64,7 @@ def login_view(request):
                 if check_password(password, user.password):
                     request.session["user_id"] = user.admin_id
                     request.session["role"] = "superadmin"
-                    return redirect("superadmin_dashboard")
+                    return redirect("superadmin_app:superadmin_dashboard")
             except AdminTable.DoesNotExist:
                 messages.error(request, "Super Admin not found.")
 

@@ -1317,7 +1317,7 @@ def superadmin_reports(request):
         return generate_pdf(rice_paddy_orders, pesticide_orders, filename="superadmin_report.pdf", is_superadmin=True)
     
     # Return template with context
-    return render(request, 'superadmin_reports.html', {
+    return render(request, 'superadmin_app/superadmin_reports.html', {
         'rice_paddy_orders': rice_paddy_orders,
         'pesticide_orders': pesticide_orders,
         'admins': admins,

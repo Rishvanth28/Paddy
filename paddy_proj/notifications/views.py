@@ -63,7 +63,7 @@ def superadmin_notifications(request):
         'notifications': notifications,
         'unread_count': unread_count
     }
-    return render(request, 'superadmin_notifications.html', context)
+    return render(request, 'superadmin_app/superadmin_notifications.html', context)
 
 
 @require_POST
