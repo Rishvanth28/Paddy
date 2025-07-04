@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-fuf98q@4e!7lu+g4!i-id$!ia8sk^h@#-uz%f1jr=exups^nd+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -42,14 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'paddy_app',
-    'admin_app',
-    'customer_app', 
-    'superadmin_app',
-    'login_app',
-    'reports_app',
-    'notifications_app',
-    'profile_app',
-    'onboarding_app',
+    'reports',
+    'notifications',
+    'onboarding',
 ]
 
 MIDDLEWARE = [
@@ -137,13 +132,7 @@ USE_TZ = True
 import os
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "paddy_app/static"),
-    os.path.join(BASE_DIR, "admin_app/static"),
-    os.path.join(BASE_DIR, "customer_app/static"),
-    os.path.join(BASE_DIR, "superadmin_app/static"),
-    os.path.join(BASE_DIR, "login_app/static"),
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "paddy_app/static")]
 
 
 MEDIA_URL = '/media/'
@@ -168,27 +157,3 @@ LOGOUT_REDIRECT_URL = '/'  # Where to go after logout
 # Razorpay Settings
 RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
 RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"
-
-# Security Settings (Development - adjust for production)
-# For development, we'll set these to False/minimal values
-# In production, these should be properly configured
-
-# CSRF Settings
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
-CSRF_COOKIE_HTTPONLY = True
-
-# Session Settings  
-SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_AGE = 86400  # 24 hours
-
-# SSL/HTTPS Settings (for production)
-SECURE_SSL_REDIRECT = False  # Set to True in production
-SECURE_HSTS_SECONDS = 0  # Set to 31536000 (1 year) in production with HTTPS
-SECURE_HSTS_INCLUDE_SUBDOMAINS = False  # Set to True in production
-SECURE_HSTS_PRELOAD = False  # Set to True in production
-
-# Content Security
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_BROWSER_XSS_FILTER = True
-X_FRAME_OPTIONS = 'DENY'

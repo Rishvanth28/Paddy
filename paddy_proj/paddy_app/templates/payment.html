@@ -1,0 +1,1446 @@
+{% extends 'customer_base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Print-specific styles */
+    @media print {
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            font-size: 12pt;
+            line-height: 1.4;
+        }
+        
+        body * {
+            visibility: hidden;
+        }
+        
+        .invoice-container, .invoice-container * {
+            visibility: visible;
+        }
+        
+        .invoice-container {
+            position: static !important;
+            left: 0;
+            top: 0;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 15mm !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            background: white !important;
+        }
+        
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+        
+        header, footer, nav, .no-print, .print-button, .payment-section {
+            display: none !important;
+        }
+        
+        .invoice-header {
+            display: grid !important;
+            grid-template-columns: 1fr 2fr 1fr !important;
+            gap: 20px !important;
+            align-items: start !important;
+            margin-bottom: 20px !important;
+            page-break-inside: avoid;
+        }
+        
+        .invoice-center h1 {
+            font-size: 24pt !important;
+            margin: 0 !important;
+        }
+        
+        .invoice-center h2 {
+            font-size: 14pt !important;
+            margin: 0 0 8px 0 !important;
+        }
+        
+        .payment-terms {
+            border-bottom: 1px solid #000 !important;
+            margin-bottom: 15px !important;
+            padding-bottom: 10px !important;
+        }
+        
+        .invoice-table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            page-break-inside: avoid;
+            margin-bottom: 15px !important;
+        }
+        
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #000 !important;
+            padding: 6px 8px !important;
+            font-size: 10pt !important;
+            vertical-align: top;
+        }
+        
+        .invoice-table th {
+            background: #000 !important;
+            color: white !important;
+            font-weight: bold !important;
+        }
+        
+        .invoice-table tfoot td {
+            font-weight: bold !important;
+            border-top: 2px solid #000 !important;
+        }
+        
+        .amount-in-words {
+            border: 1px solid #000 !important;
+            padding: 10px !important;
+            margin: 15px 0 !important;
+            border-left: 4px solid #000 !important;
+            background: #f5f5f5 !important;
+        }
+        
+        .signatures {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 40px !important;
+            margin-top: 30px !important;
+            page-break-inside: avoid;
+        }
+        
+        .signatures div {
+            border-top: 1px solid #000 !important;
+            padding-top: 5px !important;
+            text-align: center !important;
+            min-height: 40px !important;
+        }
+        
+        .eoe-note {
+            text-align: right !important;
+            margin: 15px 0 !important;
+        }
+        
+        .invoice-note {
+            text-align: center !important;
+            margin-top: 20px !important;
+            font-style: italic !important;
+        }
+        
+        .nowrap {
+            white-space: nowrap !important;
+        }
+    }
+    
+    /* Container Styles */
+    .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+        min-height: 100vh;
+        background-color: #ffffff;
+    }
+    
+    .invoice-container {
+        font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        color: #000000;
+        position: relative;
+    }
+    
+    /* Header Styles */
+    .invoice-header {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 2rem;
+        align-items: start;
+        margin-bottom: 2rem;
+        padding-top: 1rem;
+    }
+    
+    .invoice-left, .invoice-right {
+        font-weight: 600;
+        color: #000000;
+    }
+    
+    .invoice-center {
+        text-align: center;
+        position: relative;
+    }
+    
+    .invoice-center h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+        font-weight: 700;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .invoice-center h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 800;
+        color: #000000;
+    }
+    
+    .customer-address {
+        margin-top: 1rem;
+        font-weight: 500;
+        color: #000000;
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+    
+    .print-button {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        padding: 0.75rem 1.5rem;
+        background: #000000;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+    
+    .print-button:hover {
+        background: #333333;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Payment Terms */
+    .payment-terms {
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        font-weight: 600;
+        color: #000000;
+        text-align: center;
+    }
+    
+    /* Table Styles */
+    .table-container {
+        overflow-x: auto;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-weight: 500;
+        color: #000000;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .invoice-table th {
+        background: #000000;
+        color: white;
+        padding: 1rem 0.75rem;
+        text-align: left;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .invoice-table td {
+        padding: 0.875rem 0.75rem;
+        border-bottom: 1px solid #e0e0e0;
+        transition: background-color 0.2s ease;
+    }
+    
+    .invoice-table tbody tr:hover {
+        background-color: #f8f8f8;
+    }
+    
+    .invoice-table td em {
+        font-size: 0.8rem;
+        color: #666666;
+        font-style: italic;
+    }
+    
+    .invoice-table tfoot td {
+        font-weight: 700;
+        border-top: 2px solid #000000;
+        background-color: #f8f8f8;
+        font-size: 1.05rem;
+    }
+    
+    /* Additional Sections */
+    .eoe-note {
+        text-align: right;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        color: #666666;
+        font-style: italic;
+    }
+    
+    .amount-in-words {
+        background: #f8f8f8;
+        padding: 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        border-left: 4px solid #000000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .amount-in-words p:first-child {
+        color: #666666;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .amount-in-words p:last-child {
+        color: #000000;
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    
+    /* Signatures */
+    .signatures {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 3rem;
+        font-weight: 600;
+        color: #000000;
+    }
+    
+    .signatures div {
+        border-top: 1px solid #e0e0e0;
+        text-align: center;
+        padding-top: 0.75rem;
+        font-size: 0.9rem;
+        min-height: 60px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+    
+    .invoice-note {
+        text-align: center;
+        margin-top: 2rem;
+        font-style: italic;
+        color: #666666;
+        font-size: 0.85rem;
+    }
+    
+    /* Payment Section */
+    .payment-section {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        color: #000000;
+        position: relative;
+    }
+    
+    .payment-section h2 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #000000;
+        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+        text-align: center;
+        padding-top: 0.5rem;
+    }
+    
+    .payment-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+    
+    .payment-info, .payment-summary {
+        background: #f8f8f8;
+        padding: 1rem;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .payment-info h3, .payment-summary h3 {
+        margin: 0 0 0.75rem 0;
+        color: #000000;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .payment-info p, .payment-summary p {
+        margin: 0.5rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+    }
+    
+    .payment-info p strong, .payment-summary p strong {
+        color: #000000;
+    }
+    
+    /* Payment Status */
+    .payment-status {
+        padding: 1rem;
+        border-radius: 6px;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border: 2px solid #000000;
+    }
+    
+    .status-paid {
+        background: #28a745;
+        color: white;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+    
+    .status-partial {
+        background: #ffc107;
+        color: #000000;
+        box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+    }
+    
+    .status-pending {
+        background: #dc3545;
+        color: white;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+    
+    /* Payment Form */
+    .payment-form {
+        background: #ffffff;
+        padding: 1rem;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #000000;
+        font-size: 0.9rem;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: #000000;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: #000000;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .pay-button {
+        width: 100%;
+        padding: 0.875rem;
+        background: #000000;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .pay-button:hover {
+        background: #333333;
+        transform: translateY(-2px);
+    }
+    
+    .pay-button:active {
+        transform: translateY(0);
+    }
+    
+    /* Payment Method Styles */
+    .payment-method-selector {
+        margin-bottom: 1.5rem;
+        background: #f8f8f8;
+        padding: 1rem;
+        border-radius: 6px;
+    }
+    
+    .payment-method-selector h4 {
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        color: #000000;
+    }
+    
+    .payment-methods {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .payment-method {
+        position: relative;
+    }
+    
+    .payment-method input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .payment-method label {
+        display: block;
+        padding: 1rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .payment-method label i {
+        margin-right: 0.5rem;
+    }
+    
+    .payment-method input[type="radio"]:checked + label {
+        border-color: #000000;
+        background: #f0f0f0;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .payment-method .method-desc {
+        font-size: 0.8rem;
+        color: #666666;
+        margin-top: 0.25rem;
+        font-weight: normal;
+    }
+    
+    .cash-button {
+        width: 100%;
+        padding: 0.875rem;
+        background: #28a745;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .cash-button:hover {
+        background: #218838;
+        transform: translateY(-2px);
+    }
+    
+    /* Cash Payment Details */
+    #cash-payment-details {
+        background: #f0f8ff;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        border-left: 4px solid #0066cc;
+    }
+    
+    #payment-notes {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid #e0e0e0;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: #000000;
+        min-height: 80px;
+        resize: vertical;
+    }
+    
+    #payment-notes:focus {
+        outline: none;
+        border-color: #000000;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Pending Cash Request */
+    .pending-cash-request {
+        margin-top: 1.5rem;
+        background: #fff3e0;
+        padding: 1rem;
+        border-radius: 6px;
+        border-left: 4px solid #ff9800;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .pending-cash-request h4 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        color: #e65100;
+        font-size: 0.95rem;
+    }
+    
+    .request-details {
+        background: white;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 0.75rem;
+    }
+    
+    .request-details p {
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+    }
+    
+    .status-pending {
+        color: #ff9800;
+        font-weight: bold;
+    }
+    
+    .note {
+        font-size: 0.85rem;
+        color: #666;
+        font-style: italic;
+        margin: 0.5rem 0 0;
+    }
+    
+    /* Disabled state for payment section */
+    .payment-section.disabled {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+    
+    /* Media query adjustments */
+    @media (max-width: 768px) {
+        .payment-method label {
+            padding: 0.75rem;
+        }
+        
+        .payment-method-selector {
+            padding: 0.75rem;
+        }
+        
+        #cash-payment-details {
+            padding: 0.75rem;
+        }
+    }
+    
+    /* Responsive Design */
+    
+    /* Tablet Styles */
+    @media (max-width: 1024px) {
+        .main-container {
+            padding: 0.75rem;
+        }
+        
+        .invoice-container, .payment-section {
+            padding: 1rem;
+        }
+        
+        .invoice-header {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            text-align: center;
+        }
+        
+        .invoice-left, .invoice-right {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .payment-details {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+        
+        .signatures {
+            gap: 1rem;
+        }
+        
+        .print-button {
+            position: static;
+            margin: 1rem auto 0;
+            display: block;
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+    }
+    
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 0.5rem;
+        }
+        
+        .invoice-container, .payment-section {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .invoice-header {
+            gap: 1rem;
+        }
+        
+        .invoice-left, .invoice-right {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .invoice-left p, .invoice-right p {
+            margin: 0.25rem 0;
+        }
+        
+        .table-container {
+            margin: 1rem -1rem;
+            border-radius: 0;
+        }
+        
+        .invoice-table th, .invoice-table td {
+            padding: 0.5rem 0.375rem;
+            font-size: 0.85rem;
+        }
+        
+        .invoice-table th {
+            font-size: 0.75rem;
+        }
+        
+        .signatures {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .payment-info, .payment-summary {
+            padding: 0.75rem;
+        }
+        
+        .payment-info p, .payment-summary p {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+            font-size: 0.85rem;
+        }
+        
+        .form-group input, .pay-button {
+            padding: 0.75rem;
+        }
+        
+        .amount-in-words {
+            padding: 1rem;
+            margin: 1rem -1rem 1rem -1rem;
+            border-radius: 0;
+        }
+    }
+    
+    /* Small Mobile Styles */
+    @media (max-width: 480px) {
+        .invoice-center h2 {
+            font-size: 1rem;
+        }
+        
+        .invoice-center h1 {
+            font-size: 1.4rem;
+        }
+        
+        .customer-address {
+            font-size: 0.85rem;
+        }
+        
+        .invoice-table th, .invoice-table td {
+            padding: 0.375rem 0.25rem;
+            font-size: 0.75rem;
+        }
+        
+        .invoice-table th {
+            font-size: 0.7rem;
+        }
+        
+        .payment-section h2 {
+            font-size: 1rem;
+        }
+        
+        .payment-status {
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+    }
+    
+    /* Utility Classes */
+    .nowrap {
+        white-space: nowrap;
+    }
+    
+    .text-center {
+        text-align: center;
+    }
+    
+    .mb-0 {
+        margin-bottom: 0 !important;
+    }
+    
+    .mt-0 {
+        margin-top: 0 !important;
+    }
+</style>
+
+<div class="main-container">
+    <div class="invoice-container">
+        <button class="print-button" onclick="printInvoice()">
+            <i class="fas fa-print"></i> Print Invoice
+        </button>
+        
+        <div class="invoice-header">
+            <div class="invoice-left">
+                <p class="nowrap"><strong>Invoice No:</strong> {{ invoice_number }}</p>
+                <p><strong>Ref. No:</strong> -</p>
+            </div>
+            <div class="invoice-center">
+                <h2>{{ business_year }} {{ order_name }} Sales</h2>
+                <h1>INVOICE</h1>
+                <div class="customer-address">
+                    <strong>Party:</strong> {{ customer.first_name }} {{ customer.last_name }}<br>
+                    {% if customer.address %}{{ customer.address }}{% endif %}
+                </div>
+            </div>
+            <div class="invoice-right">
+                <p class="nowrap"><strong>Dated:</strong> {{ invoice_date|date:"d-M-Y" }}</p>
+                <p><strong>GST:</strong> {% if customer.GST %}{{ customer.GST }}{% else %}N/A{% endif %}</p>
+            </div>
+        </div>
+
+        <div class="payment-terms">
+            <p><strong>Payment Terms:</strong> {{ payment_terms }} Days | <strong>Payment Deadline:</strong> {{ payment_deadline|date:"d-M-Y" }}</p>
+        </div>
+
+        <div class="table-container">
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Description of Goods</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Per</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                    <tr>
+                        <td><strong>{{ forloop.counter }}</strong></td>
+                        <td>
+                            <strong>{{ item.product_name }}</strong>
+                            {% if item.product_name == 'Fertilizer' %}
+                                <br><em>Batch: {{ item.batch_number }}</em>
+                                <br><em>Expiry: {{ item.expiry_date|date:"d-M-Y" }}</em>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ item.quantity }}</strong></td>
+                        <td>₹{{ item.price_per_unit }}</td>
+                        <td>{{ item.unit }}</td>
+                        <td><strong>₹{{ item.total_amount }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>TOTAL</strong></td>
+                        <td><strong>{{ total_items }} Nos</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>₹{{ total_amount }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="eoe-note">
+            <p><strong>E. & O.E</strong> (Errors and Omissions Excepted)</p>
+        </div>
+
+        <div class="amount-in-words">
+            <p>Amount Chargeable (in words)</p>
+            <p><strong>{{ amount_in_words }} INR Only</strong></p>
+        </div>
+
+        <div class="signatures">
+            <div><strong>Customer's Seal and Signature</strong></div>
+            <div><strong>for {{ business_year }}</strong><br>Authorised Signatory</div>
+        </div>
+
+        <div class="invoice-note">
+            <p><em>This is a Computer Generated Invoice</em></p>
+        </div>
+    </div>
+
+    <div class="payment-section">
+        <h2><i class="fas fa-credit-card"></i> Payment Details</h2>
+
+        <div class="payment-details">
+            <div class="payment-info">
+                <h3><i class="fas fa-info-circle"></i> Order Information</h3>
+                <p><strong>Order ID:</strong> <span>#{{ order.order_id }}</span></p>
+                <p><strong>Order Date:</strong> <span>{{ order.order_date|date:"d-M-Y" }}</span></p>
+                <p><strong>Payment Deadline:</strong> <span>{{ payment_deadline|date:"d-M-Y" }}</span></p>
+                {% if customer.GST %}
+                <p><strong>GST Number:</strong> <span>{{ customer.GST }}</span></p>
+                {% endif %}
+            </div>
+            <div class="payment-summary">
+                <h3><i class="fas fa-calculator"></i> Payment Summary</h3>
+                <p><strong>Total Amount:</strong> <span>₹{{ total_amount }}</span></p>
+                <p><strong>Paid Amount:</strong> <span>₹{{ order.paid_amount|default:"0" }}</span></p>
+                <p><strong>Balance Due:</strong> <span style="color: #e74c3c; font-size: 1.1em;">₹{{ balance_due }}</span></p>
+            </div>
+        </div>
+
+        {% if payment_status == 0 %}
+        <div class="payment-status status-pending">
+            <p><i class="fas fa-exclamation-triangle"></i> <strong>Payment Status:</strong> Pending Payment</p>
+        </div>
+        {% elif payment_status == 1 %}
+        <div class="payment-status status-partial">
+            <p><i class="fas fa-clock"></i> <strong>Payment Status:</strong> Partially Paid</p>
+        </div>
+        {% elif payment_status == 2 %}
+        <div class="payment-status status-paid">
+            <p><i class="fas fa-check-circle"></i> <strong>Payment Status:</strong> Fully Paid</p>
+        </div>
+        {% endif %}
+
+        {% if payment_status != 2 %}
+        <form id="payment-form" class="payment-form">
+            <h3 style="margin-bottom: 1rem; color: #000000; text-align: center; font-size: 0.95rem;">
+                <i class="fas fa-money-bill-wave"></i> Make Payment
+            </h3>
+            
+            <!-- Payment method selection -->
+            <div class="payment-method-selector">
+                <h4><i class="fas fa-money-bill-alt"></i> Select Payment Method</h4>
+                <div class="payment-methods">
+                    <div class="payment-method">
+                        <input type="radio" id="method-online" name="payment_method" value="online" checked>
+                        <label for="method-online">
+                            <i class="fas fa-credit-card"></i> Pay Online
+                            <span class="method-desc">Instant payment via credit/debit card, UPI, etc.</span>
+                        </label>
+                    </div>
+                    <div class="payment-method">
+                        <input type="radio" id="method-cash" name="payment_method" value="cash">
+                        <label for="method-cash">
+                            <i class="fas fa-money-bill-wave"></i> Pay by Cash
+                            <span class="method-desc">Request approval for cash payment</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="payment-details-section">
+                <div class="form-group">
+                    <label for="payment-amount">
+                        <i class="fas fa-rupee-sign"></i> Payment Amount (₹):
+                    </label>
+                    <input type="number" 
+                           id="payment-amount" 
+                           name="payment_amount" 
+                           min="1" 
+                           max="{{ balance_due }}" 
+                           value="{{ balance_due }}" 
+                           required
+                           placeholder="Enter amount to pay">
+                    <input type="hidden" id="order-id" name="order_id" value="{{ order.order_id }}">
+                    <input type="hidden" id="customer-id" name="customer_id" value="{{ customer.customer_id }}">
+                </div>
+                
+                <!-- Cash payment details section (initially hidden) -->
+                <div id="cash-payment-details" style="display: none;">
+                    <div class="form-group">
+                        <label for="payment-reference">
+                            <i class="fas fa-file-invoice"></i> Payment Reference:
+                        </label>
+                        <input type="text" 
+                               id="payment-reference" 
+                               name="payment_reference" 
+                               placeholder="Optional: Receipt number, transaction ID, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="payment-notes">
+                            <i class="fas fa-sticky-note"></i> Payment Notes:
+                        </label>
+                        <textarea 
+                            id="payment-notes" 
+                            name="payment_notes" 
+                            placeholder="Additional details about this cash payment"></textarea>
+                    </div>
+                </div>
+                
+                <button type="button" id="make-payment" class="pay-button">
+                    <i class="fas fa-credit-card"></i> Pay Now Securely
+                </button>
+                
+                <button type="button" id="request-cash-payment" class="cash-button" style="display: none;">
+                    <i class="fas fa-money-bill-wave"></i> Request Cash Payment Approval
+                </button>
+            </div>
+            
+            <!-- Pending cash request section -->
+            {% if pending_cash_request %}
+            <div class="pending-cash-request">
+                <h4><i class="fas fa-clock"></i> Pending Cash Payment Request</h4>
+                <div class="request-details">
+                    <p><strong>Amount:</strong> ₹{{ pending_cash_request.amount }}</p>
+                    <p><strong>Requested on:</strong> {{ pending_cash_request.created_at|date:"d-M-Y" }}</p>
+                    <p><strong>Status:</strong> <span class="status-pending">Awaiting Approval</span></p>
+                </div>
+                <p class="note"><i class="fas fa-info-circle"></i> Your cash payment request is being reviewed. You'll be notified once it's approved.</p>
+            </div>
+            {% endif %}
+        </form>
+        {% else %}
+        <div style="text-align: center; padding: 1rem; background: #28a745; border-radius: 6px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);">
+            <i class="fas fa-check-circle" style="font-size: 2rem; color: #ffffff; margin-bottom: 0.5rem;"></i>
+            <h3 style="color: #ffffff; margin: 0; font-size: 1rem;">Payment Completed Successfully!</h3>
+            <p style="color: #ffffff; margin: 0.25rem 0 0 0; font-size: 0.9rem;">Thank you for your payment. This order is fully paid.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script>
+function printInvoice() {
+    window.print();
+}
+
+// Print shortcut
+document.addEventListener('keydown', function(event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'p') {
+        event.preventDefault();
+        printInvoice();
+    }
+});
+
+// Payment functionality
+document.getElementById('make-payment')?.addEventListener('click', function (e) {
+    e.preventDefault();
+    
+    const button = this;
+    const originalText = button.innerHTML;
+    
+    const amount = parseFloat(document.getElementById('payment-amount').value);
+    const orderId = document.getElementById('order-id').value;
+    const customerId = document.getElementById('customer-id').value;
+    const balanceDue = parseFloat("{{ balance_due }}");
+
+    // Validate amount - MUST be first and exit immediately if invalid
+    if (!amount || amount <= 0) {
+        showAlert('Please enter a valid payment amount.', 'error');
+        return false; // Exit immediately
+    }
+    
+    // Check if amount exceeds balance due - STOP EVERYTHING if this fails
+    if (amount > balanceDue) {
+        showAlert('Payment amount cannot exceed the balance due of ₹' + balanceDue.toLocaleString(), 'error');
+        return false; // Exit immediately - NO further execution
+    }
+
+    // Only reach here if validation passes
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+    fetch('/create_partial_payment_order/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ order_id: orderId, amount: amount, customer_id: customerId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        
+        if (data.success) {
+            const options = {
+                key: data.key_id,
+                amount: data.amount,
+                currency: "INR",
+                name: "{{ business_year }}",
+                description: "Invoice Payment - Order #{{ order.order_id }}",
+                order_id: data.razorpay_order_id,
+                handler: function (response) {
+                    verifyPayment(response, data.razorpay_order_id, amount, orderId);
+                },
+                prefill: {
+                    name: "{{ customer.first_name }} {{ customer.last_name }}",
+                    email: "{{ customer.email }}",
+                    contact: "{{ customer.phone_number }}"
+                },
+                theme: {
+                    color: "#3498db"
+                },
+                modal: {
+                    ondismiss: function() {
+                        showAlert('Payment cancelled by user.', 'info');
+                    }
+                }
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            showAlert('Unable to initiate payment. Please try again.', 'error');
+        }
+    })
+    .catch(error => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        console.error('Error:', error);
+        showAlert('An error occurred while initiating payment.', 'error');
+    });
+});
+
+function verifyPayment(payment, razorpay_order_id, amount, localOrderId) {
+    // Show processing message
+    showAlert('Verifying payment...', 'info');
+    
+    fetch('/verify_partial_payment/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            razorpay_payment_id: payment.razorpay_payment_id,
+            razorpay_order_id: payment.razorpay_order_id,
+            razorpay_signature: payment.razorpay_signature,
+            order_id: localOrderId,
+            amount: amount
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('Payment successful! Refreshing page...', 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            showAlert('Payment verification failed. Please contact support.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('An error occurred during payment verification.', 'error');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Enhanced alert function with modern styling
+function showAlert(message, type = 'info') {
+    // Remove existing alerts
+    const existingAlerts = document.querySelectorAll('.custom-alert');
+    existingAlerts.forEach(alert => alert.remove());
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `custom-alert custom-alert-${type}`;
+    
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-info-circle'
+    };
+    
+    alertDiv.innerHTML = `
+        <i class="${icons[type] || icons.info}"></i>
+        <span>${message}</span>
+        <button class="alert-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    // Add styles
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        max-width: 400px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        animation: slideInAlert 0.3s ease-out;
+        backdrop-filter: blur(10px);
+    `;
+    
+    const colors = {
+        success: 'background: linear-gradient(135deg, #27ae60, #2ecc71);',
+        error: 'background: linear-gradient(135deg, #c0392b, #e74c3c);',
+        warning: 'background: linear-gradient(135deg, #e67e22, #f39c12);',
+        info: 'background: linear-gradient(135deg, #2980b9, #3498db);'
+    };
+    
+    alertDiv.style.cssText += colors[type] || colors.info;
+    
+    const closeButton = alertDiv.querySelector('.alert-close');
+    closeButton.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 4px;
+        margin-left: auto;
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentElement) {
+            alertDiv.style.animation = 'slideOutAlert 0.3s ease-out forwards';
+            setTimeout(() => alertDiv.remove(), 300);
+        }
+    }, 5000);
+}
+
+// Add keyframe animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInAlert {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutAlert {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+// Add smooth scrolling to payment section for mobile
+if (window.innerWidth <= 768) {
+    const paymentSection = document.querySelector('.payment-section');
+    if (paymentSection) {
+        setTimeout(() => {
+            paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 500);
+    }
+}
+
+// Input validation and formatting
+const paymentInput = document.getElementById('payment-amount');
+if (paymentInput) {
+    paymentInput.addEventListener('input', function() {
+        // Remove any non-numeric characters except decimal point
+        this.value = this.value.replace(/[^0-9.]/g, '');
+        
+        // Ensure only one decimal point
+        const parts = this.value.split('.');
+        if (parts.length > 2) {
+            this.value = parts[0] + '.' + parts.slice(1).join('');
+        }
+        
+        // Limit to 2 decimal places
+        if (parts[1] && parts[1].length > 2) {
+            this.value = parts[0] + '.' + parts[1].substring(0, 2);
+        }
+    });
+    
+    paymentInput.addEventListener('blur', function() {
+        const value = parseFloat(this.value);
+        const maxValue = parseFloat(this.getAttribute('max'));
+        
+        if (value > maxValue) {
+            this.value = maxValue;
+            showAlert(`Payment amount cannot exceed ₹${maxValue}`, 'warning');
+        }
+        
+        if (value <= 0 || isNaN(value)) {
+            this.value = '';
+            showAlert('Please enter a valid payment amount', 'warning');
+        }
+    });
+}
+
+// Payment method toggle
+const methodRadios = document.querySelectorAll('input[name="payment_method"]');
+const onlineButton = document.getElementById('make-payment');
+const cashButton = document.getElementById('request-cash-payment');
+const cashDetailsSection = document.getElementById('cash-payment-details');
+
+// Handle payment method change
+methodRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (this.value === 'online') {
+            onlineButton.style.display = 'block';
+            cashButton.style.display = 'none';
+            cashDetailsSection.style.display = 'none';
+        } else if (this.value === 'cash') {
+            onlineButton.style.display = 'none';
+            cashButton.style.display = 'block';
+            cashDetailsSection.style.display = 'block';
+        }
+    });
+});
+
+// Handle cash payment request
+document.getElementById('request-cash-payment')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const button = this;
+    const originalText = button.innerHTML;
+    
+    const amount = parseFloat(document.getElementById('payment-amount').value);
+    const orderId = document.getElementById('order-id').value;
+    const customerId = document.getElementById('customer-id').value;
+    const reference = document.getElementById('payment-reference')?.value || '';
+    const notes = document.getElementById('payment-notes')?.value || '';
+    const balanceDue = parseFloat("{{ balance_due }}");
+
+    // Validate amount - MUST be first and exit immediately if invalid
+    if (!amount || amount <= 0) {
+        showAlert('Please enter a valid payment amount.', 'error');
+        return false; // Exit immediately
+    }
+    
+    // Check if amount exceeds balance due - STOP EVERYTHING if this fails
+    if (amount > balanceDue) {
+        showAlert('Payment amount cannot exceed the balance due of ₹' + balanceDue.toLocaleString(), 'error');
+        return false; // Exit immediately - NO further execution
+    }
+
+    // Only reach here if validation passes
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+    fetch('/request_cash_payment/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            order_id: orderId,
+            amount: amount,
+            customer_id: customerId,
+            reference: reference,
+            notes: notes
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        
+        if (data.success) {
+            showAlert('Cash payment request submitted successfully!', 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            showAlert(data.message || 'Unable to submit cash payment request.', 'error');
+        }
+    })
+    .catch(error => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+        console.error('Error:', error);
+        showAlert('An error occurred while submitting your request.', 'error');
+    });
+});
+
+// Disable payment section if there's already a pending cash request
+const pendingCashRequest = document.querySelector('.pending-cash-request');
+const paymentDetailsSection = document.getElementById('payment-details-section');
+
+if (pendingCashRequest && paymentDetailsSection) {
+    paymentDetailsSection.classList.add('disabled');
+    
+    // Show message about pending request
+    showAlert('You have a pending cash payment request. Please wait for approval before making additional payments.', 'warning');
+}
+</script>
+{% endblock %}

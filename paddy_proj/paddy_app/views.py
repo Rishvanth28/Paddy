@@ -39,11 +39,11 @@ def login_view(request):
     if request.session.get("user_id") and request.session.get("role"):
         role = request.session["role"]
         if role == "superadmin":
-            return redirect("superadmin_app:superadmin_dashboard")
+            return redirect("superadmin_dashboard")
         elif role == "admin":
-            return redirect("admin_app:admin_dashboard")
+            return redirect("admin_dashboard")
         elif role == "customer":
-            return redirect("customer_app:customer_dashboard")
+            return redirect("customer_dashboard")
 
     if request.method == "POST":
         phone_number = request.POST.get("username")
@@ -63,7 +63,7 @@ def login_view(request):
                 if check_password(password, user.password):
                     request.session["user_id"] = user.admin_id
                     request.session["role"] = "superadmin"
-                    return redirect("superadmin_app:superadmin_dashboard")
+                    return redirect("superadmin_dashboard")
             except AdminTable.DoesNotExist:
                 messages.error(request, "Super Admin not found.")
 
@@ -489,7 +489,7 @@ def admin_dashboard(request):
         'payment_pending': payment_pending,
     }
     
-    return render(request, "admin_app/admin_dashboard.html", context)
+    return render(request, "admin_dashboard.html", context)
 
 def upgrade_plan(request):
     return render(request, "upgrade_plan.html")
@@ -615,6 +615,261 @@ def customer_dashboard(request):
     }
     
     return render(request, 'customer_dashboard.html', context)
+
+@role_required(["superadmin", "admin"])
+def place_order(request):
+    role = request.session.get("role")
+    is_superadmin = role == "superadmin"
+
+    admin_id = request.session.get("user_id")
+    if not admin_id:
+        return redirect("login")
+
+    customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
+    
+    # Handle Razorpay payment verification callback
+    if request.method == "POST" and request.POST.get("razorpay_payment_id"):
+        payment_id = request.POST.get("razorpay_payment_id")
+        order_id = request.POST.get("razorpay_order_id")
+        signature = request.POST.get("razorpay_signature")
+        temp_data_json = request.session.get("temp_order_data")
+        
+        if not temp_data_json:
+            messages.error(request, "Order data not found. Please try again.")
+            return redirect("place_order" if is_superadmin else "admin_place_order")
+        
+        temp_data = json.loads(temp_data_json)
+        
+        # Verify payment
+        try:
+            client.utility.verify_payment_signature({
+                'razorpay_order_id': order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            })
+            
+            # Create payment record for booking fee
+            payment = Payments.objects.create(
+                order=None,  # Will be updated after order creation
+                amount=10,
+                date=timezone.now().date(),
+                reference=payment_id,
+                proof_link=payment_id,  # Razorpay payment ID as proof
+                payment_method="Razorpay"
+            )
+            
+            # Now proceed with order creation
+            if temp_data["product_category_id"] != "3":                # Regular order flow
+                customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
+                gst = customer.GST
+
+                quantity = float(temp_data["quantity"]) if temp_data["quantity"] else 0
+                price_per_unit = float(temp_data["price_per_unit"]) if temp_data["price_per_unit"] else 0
+                overall_amount = quantity * price_per_unit
+
+                order = Orders.objects.create(
+                    customer=customer,
+                    admin=AdminTable.objects.get(admin_id=admin_id),
+                    payment_status=0,
+                    delivery_status=0,
+                    product_category_id=temp_data["product_category_id"],
+                    category=temp_data.get("category"),  # Add category field
+                    quantity=quantity,
+                    price_per_unit=price_per_unit,
+                    overall_amount=overall_amount,
+                    GST=gst,
+                    lorry_number=temp_data["lorry_number"],
+                    driver_name=temp_data["driver_name"],
+                    delivery_date=temp_data["delivery_date"],
+                    driver_ph_no=temp_data["driver_ph_no"],
+                    order_date=date.today()
+                )
+                  # Update payment with order ID
+                payment.order = order
+                payment.save()
+                
+                # Create notifications for order placement
+                product_name = "Rice" if temp_data["product_category_id"] == "1" else "Paddy"
+                
+                # Notification for customer
+                create_notification(
+                    user_type='customer',
+                    user_id=customer.customer_id,
+                    notification_type='order_placed',
+                    title=f'New {product_name} Order Placed',
+                    message=f'Your {product_name} order #{order.order_id} has been placed successfully. Quantity: {quantity}, Amount: ₹{overall_amount}',
+                    related_order_id=order.order_id
+                )
+                
+                # Notification for admin
+                create_notification(
+                    user_type='admin',
+                    user_id=admin_id,
+                    notification_type='order_placed',
+                    title=f'New {product_name} Order Received',
+                    message=f'New {product_name} order #{order.order_id} from {customer.first_name} {customer.last_name}. Amount: ₹{overall_amount}',
+                    related_order_id=order.order_id
+                )
+                
+                messages.success(request, "Order placed successfully after booking fee payment!")
+                
+            else:
+                # Multiple products order flow
+                customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
+                gst = customer.GST
+                  # Create order
+                order = Orders.objects.create(
+                    customer=customer,
+                    admin=AdminTable.objects.get(admin_id=admin_id),
+                    payment_status=0,
+                    quantity=0,
+                    product_category_id=temp_data["product_category_id"],
+                    category=temp_data.get("category"),  # Add category field
+                    GST=gst,
+                    lorry_number=temp_data["lorry_number"],
+                    driver_name=temp_data["driver_name"],
+                    delivery_date=temp_data["delivery_date"],
+                    delivery_status=0,
+                    driver_ph_no=temp_data["driver_ph_no"],
+                    order_date=date.today()
+                )
+                
+                # Update payment with order ID
+                payment.order = order
+                payment.save()
+                
+                # Process each order item
+                product_names = temp_data["product_names"]
+                batch_numbers = temp_data["batch_numbers"]
+                expiry_dates = temp_data["expiry_dates"]
+                quantities = temp_data["quantities"]
+                prices = temp_data["prices"]
+                units = temp_data["units"]
+                totals = temp_data["totals"]
+                
+                # Create order items
+                order_items = []
+                for i in range(len(product_names)):
+                    # Skip empty rows
+                    if not product_names[i].strip():
+                        continue
+                        
+                    item = OrderItems(
+                        order=order,
+                        product_name=product_names[i],
+                        batch_number=batch_numbers[i],
+                        expiry_date=expiry_dates[i],
+                        quantity=int(float(quantities[i])),
+                        price_per_unit=float(prices[i]),
+                        total_amount=float(totals[i]),
+                        unit=units[i]
+                    )
+                    order_items.append(item)
+                
+                order.overall_amount = sum(float(totals[i]) for i in range(len(totals)) if totals[i].strip())
+                order.save()
+                  # Bulk create items
+                OrderItems.objects.bulk_create(order_items)
+                
+                # Create notifications for pesticide order
+                create_notification(
+                    user_type='customer',
+                    user_id=customer.customer_id,
+                    notification_type='order_placed',
+                    title='New Pesticide Order Placed',
+                    message=f'Your pesticide order #{order.order_id} with multiple items has been placed successfully. Total Amount: ₹{order.overall_amount}',
+                    related_order_id=order.order_id
+                )
+                
+                # Notification for admin
+                create_notification(
+                    user_type='admin',
+                    user_id=admin_id,
+                    notification_type='order_placed',
+                    title='New Pesticide Order Received',
+                    message=f'New pesticide order #{order.order_id} from {customer.first_name} {customer.last_name} with {len(order_items)} items. Total Amount: ₹{order.overall_amount}',
+                    related_order_id=order.order_id
+                )
+                
+                messages.success(request, "Order with multiple items placed successfully after booking fee payment!")
+            
+            # Clear temporary data
+            if "temp_order_data" in request.session:
+                del request.session["temp_order_data"]
+                
+            return redirect("place_order" if is_superadmin else "admin_place_order")
+            
+        except Exception as e:
+            messages.error(request, f"Payment verification failed: {str(e)}")
+            return redirect("place_order" if is_superadmin else "admin_place_order")    # Handle AJAX request for creating Razorpay order
+    elif request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Store order data temporarily
+        temp_data = {}
+        
+        if str(request.POST.get("product_category_id")) != "3":
+            # Regular order
+            temp_data = {
+                "customer_id": request.POST.get("customer"),
+                "product_category_id": request.POST.get("product_category_id"),
+                "category": request.POST.get("category"),  # Add category field
+                "quantity": request.POST.get("quantity"),
+                "price_per_unit": request.POST.get("price_per_unit"),
+                "lorry_number": request.POST.get("vehicle_number"),
+                "driver_name": request.POST.get("driver_name"),
+                "driver_ph_no": request.POST.get("driver_ph_no"),
+                "delivery_date": request.POST.get("delivery_date")
+            }
+            
+        else:
+            # Multiple products order
+            temp_data = {
+                "customer_id": request.POST.get("customer"),
+                "product_category_id": request.POST.get("product_category_id"),
+                "category": request.POST.get("category"),  # Add category field
+                "lorry_number": request.POST.get("vehicle_number"),
+                "driver_name": request.POST.get("driver_name"),
+                "driver_ph_no": request.POST.get("driver_ph_no"),
+                "delivery_date": request.POST.get("delivery_date"),
+                "product_names": request.POST.getlist("product_name[]"),
+                "batch_numbers": request.POST.getlist("batch_number[]"),
+                "expiry_dates": request.POST.getlist("expiry_date[]"),
+                "quantities": request.POST.getlist("quantity[]"),
+                "prices": request.POST.getlist("price_per_unit[]"),
+                "units": request.POST.getlist("unit[]"),
+                "totals": request.POST.getlist("total_amount[]")
+            }
+        
+        # Store data in session
+        request.session["temp_order_data"] = json.dumps(temp_data)
+        
+        # Create Razorpay order for booking fee
+        try:
+            razorpay_order = client.order.create({
+                "amount": 1000,  # 10 Rs in paise
+                "currency": "INR",
+                "payment_capture": 1,  # Auto-capture
+                "notes": {
+                    "purpose": "Order booking fee",
+                    "admin_id": str(admin_id)
+                }
+            })
+            
+            # Return JSON response for AJAX
+            return JsonResponse({
+                "status": "success",
+                "razorpay_key": RAZORPAY_KEY_ID,
+                "order_id": razorpay_order["id"],
+                "amount": 10  # In Rs
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                "status": "error",
+                "message": f"Error creating payment: {str(e)}"
+            })
+    
+    # Render the initial form
+    return render(request, "place_order.html" if is_superadmin else "admin_place_order.html", {"customers": customers})
 
 @role_required(["customer"])
 def customer_orders(request):
@@ -1430,8 +1685,7 @@ def request_cash_payment(request):
             'message': str(e)
         }, status=500)
 
-@csrf_exempt  # Temporarily added for debugging
-# @role_required(["admin", "superadmin"])  # Temporarily commented for debugging
+@role_required(["admin", "superadmin"])
 def approve_cash_payment(request, request_id):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'message': 'Invalid request method'})
@@ -1442,22 +1696,19 @@ def approve_cash_payment(request, request_id):
         # Security check: Only allow admins to approve/reject their own orders
         if request.session.get('role') == 'admin':
             admin_id = request.session.get('user_id')
-            # Convert to string for comparison since session might store as string
-            if str(cash_request.order.admin.admin_id) != str(admin_id):
+            if cash_request.order.admin_id != admin_id:
                 return JsonResponse({
                     'success': False, 
                     'message': 'You can only process cash payment requests for your own orders.'
                 })
         
         action = request.POST.get('action')
-        print(f"Action: {action}")
         
         if action not in ['approve', 'reject']:
             return JsonResponse({'success': False, 'message': 'Invalid action'})
         
         admin_id = request.session.get('user_id')
         admin = get_object_or_404(AdminTable, admin_id=admin_id)
-        print(f"Admin found: {admin}")
         
         if action == 'approve':
             # Update request status
@@ -1526,10 +1777,6 @@ def approve_cash_payment(request, request_id):
                 'message': 'Cash payment request has been rejected.'
             })
             
-    except CashPaymentRequest.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Cash payment request not found'}, status=404)
-    except AdminTable.DoesNotExist:
-        return JsonResponse({'success': False, 'message': 'Admin not found'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
@@ -1728,7 +1975,7 @@ def upgrade_to_customer(request):
     if request.method == 'POST':
         if is_customer:
             messages.info(request, "You are already a customer.")
-            return redirect('admin_app:admin_dashboard')
+            return redirect('admin_dashboard')
 
         company_name = request.POST.get('company_name')
         gst = request.POST.get('GST')
@@ -1856,7 +2103,7 @@ def customers_under_admin(request):
     # Fetch customers for the current admin
     customers = CustomerTable.objects.filter(admin_id=admin_id)
 
-    return render(request, "superadmin_app/customers_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
+    return render(request, "customers_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
 
 def admin_login_submit(request):
     if request.method == 'POST':
@@ -1872,7 +2119,98 @@ def admin_login_submit(request):
             pass
     return render(request, 'login.html', {'error': 'Invalid credentials'})
 
-# Profile function moved to profile_app
+def profile(request):
+    role = request.session.get('role')
+    user_id = request.session.get('user_id')
+    
+    if not role or not user_id:
+        messages.error(request, "Please log in to view your profile.")
+        return redirect('login')
+    
+    # Determine base template and fetch user data based on role
+    if role == 'superadmin':
+        base_template = 'superadmin_base.html'
+        try:
+            user = AdminTable.objects.get(admin_id=user_id)
+            user_data = {
+                'user_type': 'Super Admin',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'admin_id': user.admin_id,
+                'user_count': user.user_count,
+                'created_at': user.created_at,
+                'is_superadmin': True,
+            }
+        except AdminTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
+            
+    elif role == 'admin':
+        base_template = 'admin_base.html'
+        try:
+            user = AdminTable.objects.get(admin_id=user_id)
+            # Get subscription info for admin
+            subscription = Subscription.objects.filter(
+                admin_id=user, 
+                subscription_type="admin"
+            ).order_by('-end_date').first()
+            
+            user_data = {
+                'user_type': 'Admin',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'admin_id': user.admin_id,
+                'user_count': user.user_count,
+                'created_at': user.created_at,
+                'subscription': subscription,
+                'is_admin': True,
+            }
+        except AdminTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
+            
+    elif role == 'customer':
+        base_template = 'customer_base.html'
+        try:
+            user = CustomerTable.objects.get(customer_id=user_id)
+            # Get subscription info for customer
+            subscription = Subscription.objects.filter(
+                customer_id=user, 
+                subscription_type="customer"
+            ).order_by('-end_date').first()
+            
+            user_data = {
+                'user_type': 'Customer',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'phone_number': user.phone_number,
+                'customer_id': user.customer_id,
+                'company_name': user.company_name,
+                'gst': user.GST,
+                'address': user.address,
+                'admin': user.admin,
+                'created_at': user.created_at,
+                'subscription': subscription,
+                'is_customer': True,
+            }
+        except CustomerTable.DoesNotExist:
+            messages.error(request, "User profile not found.")
+            return redirect('login')
+    else:
+        messages.error(request, "Invalid role.")
+        return redirect('login')
+    
+    context = {
+        'base_template': base_template,
+        'user_data': user_data,
+        'role': role,
+    }
+    return render(request, 'profile.html', context)
 
 def admin_subscription_payment(request):
     if request.method == "POST":
@@ -2160,7 +2498,7 @@ def swap_role(request):
 
         except CustomerTable.DoesNotExist:
             messages.warning(request, "You don’t have a Customer account linked. Please subscribe or contact support.")
-            return redirect("admin_app:admin_dashboard")
+            return redirect("admin_dashboard")
 
     elif current_role == "customer":
         try:
@@ -2174,7 +2512,7 @@ def swap_role(request):
             request.session["user_id"] = admin.admin_id
             request.session["role"] = "admin"
             messages.success(request, "Switched to Admin account.")
-            return redirect("admin_app:admin_dashboard")
+            return redirect("admin_dashboard")
 
         except AdminTable.DoesNotExist:
             messages.warning(request, "You don’t have an Admin account linked. Please subscribe or contact support.")
@@ -2207,3 +2545,24 @@ def view_admin_subscribers(request):
     })
 
 
+def view_customer_subscribers(request):
+    customer_subscriptions = Subscription.objects.filter(subscription_type="customer") \
+                                                 .select_related('customer_id') \
+                                                 .order_by('-start_date')
+
+    # Add comparable end_date and today's date for frontend comparison
+    today_date = timezone.now().date().isoformat()
+    # Prepare a list with comparable end_date and today's date
+    customer_subscriptions = [
+        {
+            "subscription": sub,
+            "end_date_comparable": sub.end_date.isoformat() if sub.end_date else None,
+            "today_date": today_date
+        }
+        for sub in customer_subscriptions
+    ]
+    
+    return render(request, "customer_subscribers.html", {
+        "subscriptions": customer_subscriptions,
+        "user_type": "customer",  # Added for dynamic display in HTML
+    })

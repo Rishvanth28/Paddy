@@ -1,0 +1,303 @@
+{% extends "superadmin_base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Include our custom CSS directly in the content block -->
+<link rel="stylesheet" href="{% static 'css/superadmin_subscription.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>body { font-family: 'Inter', sans-serif; }</style>
+
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <div class="title-group">
+        <h1 class="page-title mb-0 me-3 " >EXTRA USER REQUESTS</h1>
+    </div>
+</div>
+<div class="page-container">
+    <div class="main-card">
+        <div class="card-header">
+            <h4>Subscription Upgrade Requests</h4>
+            <p>Review and process pending subscription upgrade requests</p>
+        </div>        <div class="card-body">
+            <style>
+                /* Responsive Styles */
+                @media (max-width: 768px) {
+                    .header-bar {
+                        padding: 0 20px;
+                        margin-bottom: 20px;
+                    }
+
+                    .page-title {
+                        font-size: 1.5rem;
+                        text-align: center;
+                    }
+
+                    .page-container {
+                        padding: 0 20px;
+                    }
+
+                    .main-card {
+                        margin: 0;
+                        border-radius: 8px;
+                    }
+
+                    .card-header {
+                        padding: 20px;
+                        text-align: center;
+                    }
+
+                    .card-header h4 {
+                        font-size: 1.3rem;
+                    }
+
+                    .card-body {
+                        padding: 20px;
+                    }
+
+                    .table-responsive {
+                        overflow-x: auto;
+                        -webkit-overflow-scrolling: touch;
+                    }
+
+                    .table {
+                        min-width: 600px;
+                        font-size: 0.9rem;
+                    }
+
+                    .table th,
+                    .table td {
+                        padding: 8px;
+                        white-space: nowrap;
+                    }
+
+                    .btn {
+                        font-size: 0.8rem;
+                        padding: 6px 12px;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .header-bar {
+                        padding: 0 15px;
+                    }
+
+                    .page-title {
+                        font-size: 1.3rem;
+                    }
+
+                    .page-container {
+                        padding: 0 15px;
+                    }
+
+                    .card-header {
+                        padding: 15px;
+                    }
+
+                    .card-body {
+                        padding: 15px;
+                    }
+
+                    .table {
+                        font-size: 0.8rem;
+                    }
+
+                    .table th,
+                    .table td {
+                        padding: 6px;
+                    }
+
+
+                }
+            </style>
+              <div class="table-container">
+                <table class="subscription-table">
+                    <thead>
+                        <tr>
+                            <th>Admin</th>
+                            <th>Type</th>
+                            <th>Additional Users</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        <!-- Filter Row -->
+                        <tr class="filter-row">
+                            <td colspan="5">
+                                <div class="table-filter">
+                                    <form method="get" class="filter-group">
+                                        <div class="filter-controls">
+                                            <select name="status" class="form-select form-select-sm">
+                                                <option value="" {% if not request.GET.status %}selected{% endif %}>All Statuses</option>
+                                                <option value="0" {% if request.GET.status == '0' %}selected{% endif %}>Pending</option>
+                                                <option value="1" {% if request.GET.status == '1' %}selected{% endif %}>Approved</option>
+                                                <option value="2" {% if request.GET.status == '2' %}selected{% endif %}>Active</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subscription in subscriptions %}
+                        <tr>
+                            <td>
+                                <p class="cell-text">{{ subscription.admin_id.first_name}} {{subscription.admin_id.last_name }}</p>
+                            </td>
+                            <td>
+                                <p class="cell-text">
+                                    {% if subscription.subscription_type == '1' %}
+                                        User Upgrade
+                                    {% else %}
+                                        {{ subscription.subscription_type }}
+                                    {% endif %}
+                                </p>
+                            </td>
+                            <td>
+                                <p class="cell-text">{{ subscription.additional_users|default:"50" }}</p>
+                            </td>
+                            <td>
+                                <span class="status-badge {% if subscription.subscription_status == 0 %}status-pending{% elif subscription.subscription_status == 1 %}status-approved{% else %}status-rejected{% endif %}">
+                                    {% if subscription.subscription_status == 0 %}
+                                        Pending
+                                    {% elif subscription.subscription_status == 1 %}
+                                        Approved
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                {% if subscription.subscription_status == 0 %}
+                                <button type="button" class="btn btn-sm btn-primary" onclick="openModal('approveModal{{ subscription.sid }}')">
+                                    Review
+                                </button>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <!-- Approval Modal -->
+                        <div class="modal-overlay" id="approveModal{{ subscription.sid }}">
+                            <div class="modal-dialog">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Review Subscription Request</h5>
+                                    <button type="button" class="modal-close" onclick="closeModal('approveModal{{ subscription.sid }}')" aria-label="Close">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="request-details">
+                                        <h6>Request Details</h6>
+                                        <p><strong>Admin:</strong> {{ subscription.admin_id.first_name }} {{subscription.admin_id.last_name}}</p>
+                                        <p><strong>Type:</strong> User Upgrade</p>
+                                        <p><strong>Additional Users:</strong> {{ subscription.additional_users|default:"50" }}</p>
+                                    </div>
+                                    
+                                    <form id="reviewForm{{ subscription.sid }}" method="post" action="{% url 'superadmin_subscription_review' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="subscription_id" value="{{ subscription.sid }}">
+                                        
+                                        <div class="form-group">
+                                            <label for="paymentAmount" class="form-label">Payment Amount (₹)</label>
+                                            <input type="number" class="form-control" id="paymentAmount" name="payment_amount" required min="0">
+                                            <small class="form-text">Set the monthly payment amount for this upgrade</small>
+                                        </div>
+                                        
+                                        <input type="hidden" id="decision" name="subscription_status" value="1">
+                            
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" onclick="closeModal('approveModal{{ subscription.sid }}')">Close</button>
+                                    <button type="submit" form="reviewForm{{ subscription.sid }}" class="btn btn-primary">Submit Decision</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <p>No subscription requests found</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>    </div>
+    
+    <!-- Pagination Controls -->
+    <div class="pagination-section">
+        <div class="pagination-nav">
+            {% if subscriptions.has_other_pages %}
+            <ul class="pagination">
+                {% if subscriptions.has_previous %}
+                <li class="pagination-item">
+                    <a class="pagination-link" href="?page={{ subscriptions.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="pagination-item disabled">
+                    <span class="pagination-link" aria-hidden="true">&laquo;</span>
+                </li>
+                {% endif %}
+                
+                {% for i in subscriptions.paginator.page_range %}
+                    {% if subscriptions.number == i %}
+                    <li class="pagination-item active"><span class="pagination-link">{{ i }}</span></li>
+                    {% else %}
+                    <li class="pagination-item"><a class="pagination-link" href="?page={{ i }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if subscriptions.has_next %}
+                <li class="pagination-item">
+                    <a class="pagination-link" href="?page={{ subscriptions.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="pagination-item disabled">
+                    <span class="pagination-link" aria-hidden="true">&raquo;</span>
+                </li>
+                {% endif %}            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Modal functionality
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal-overlay')) {
+        closeModal(event.target.id);
+    }
+});
+
+// Close modal with escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const openModal = document.querySelector('.modal-overlay.show');
+        if (openModal) {
+            closeModal(openModal.id);
+        }
+    }
+});
+
+
+</script>
+{% endblock content %}

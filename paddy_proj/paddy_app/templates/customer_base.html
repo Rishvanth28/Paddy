@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/invoice.css' %}">
+  <title>Customer Dashboard</title>
+  <link rel="stylesheet" href="{% static 'css/superadmin_base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/customer_base.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* CSS Custom Properties for consistency */
+    :root {
+      --sidebar-width: 260px;
+      --sidebar-collapsed-width: 80px;
+      --sidebar-bg: #ffffff;
+      --sidebar-text: #333333;
+      --sidebar-hover: rgba(0, 0, 0, 0.05);
+      --sidebar-active: rgba(0, 0, 0, 0.1);
+      --sidebar-border: #e0e0e0;
+      --primary-color: #000000;
+      --transition-speed: 0.3s;
+      --smooth-easing: cubic-bezier(0.4, 0, 0.2, 1);
+      --nav-item-height: 48px;
+      --nav-icon-size: 20px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Performance optimizations for smooth animations */
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Enable hardware acceleration for smooth transforms */
+    .sidebar,
+    .main-content,
+    .hamburger {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+    
+    /* CUSTOMER BASE TEMPLATE STYLES - HIGH PRIORITY */
+    /* These styles ensure consistent sidebar appearance across all customer pages */
+    
+    /* Force consistent sidebar styling across all pages */
+    body.customer-page {
+      font-family: 'Inter', sans-serif !important;
+      background-color: #f4f6f8 !important;
+      color: #333 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    /* Ensure sidebar container has consistent styling */
+    body.customer-page .sidebar {
+      width: var(--sidebar-width, 260px) !important;
+      height: 100vh !important;
+      background-color: var(--sidebar-bg, #ffffff) !important;
+      color: var(--sidebar-text, #333333) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      transition: transform var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      z-index: 1000 !important;
+      box-shadow: var(--shadow, 0 4px 6px rgba(0, 0, 0, 0.1)) !important;
+      border-right: 1px solid var(--sidebar-border, #e0e0e0) !important;
+      overflow-y: auto !important;
+      scrollbar-width: thin !important;
+      scrollbar-color: #888 #f1f1f1 !important;
+      will-change: transform !important;
+      transform: translateX(0) !important;
+    }
+    
+    /* Sidebar header consistency */
+    body.customer-page .sidebar-header {
+      padding: 24px 20px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 12px !important;
+      border-bottom: 1px solid var(--sidebar-border, #e0e0e0) !important;
+      background-color: var(--sidebar-bg, #ffffff) !important;
+    }
+    
+    /* Logo icon styling */
+    body.customer-page .sidebar-logo {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: all 0.3s ease !important;
+    }
+    
+    body.customer-page .sidebar-logo {
+      transform: scale(1.1) !important;
+      color: #000000 !important;
+    }
+    
+    /* Sidebar navigation consistency */
+    body.customer-page .sidebar-nav {
+      flex: 1 1 auto !important;
+      padding: 20px 0 !important;
+      overflow-y: auto !important;
+      max-height: calc(100vh - 200px) !important;
+    }
+    
+    /* Navigation menu items */
+    body.customer-page .nav-menu {
+      list-style: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    
+    body.customer-page .nav-item {
+      position: relative !important;
+      margin: 4px 12px !important;
+    }
+      body.customer-page .nav-link,
+    body.customer-page .submenu-toggle {
+      display: flex !important;
+      align-items: center !important;
+      padding: 12px 16px !important;
+      text-decoration: none !important;
+      color: inherit !important;
+      border-radius: 6px !important;
+      transition: all var(--transition-speed, 0.3s) ease !important;
+      height: var(--nav-item-height, 48px) !important;
+      gap: 0.75rem !important;
+      cursor: pointer !important;
+      border: none !important;
+      background: none !important;
+      width: 100% !important;
+      text-align: left !important;
+      font-weight: normal !important;
+    }
+    
+    body.customer-page .nav-link:hover,
+    body.customer-page .submenu-toggle:hover {
+      background-color: var(--sidebar-hover, rgba(0, 0, 0, 0.05)) !important;
+      box-shadow: inset 4px 0 0 var(--primary-color, #000000) !important;
+      font-weight: normal !important;
+    }
+    
+    body.customer-page .nav-item.active .nav-link {
+      background-color: var(--sidebar-active, rgba(0, 0, 0, 0.1)) !important;
+      border-left: 3px solid var(--primary-color, #000000) !important;
+      font-weight: normal !important;
+      color: var(--primary-color, #000000) !important;
+    }
+    
+    /* Ensure all nav text has normal font weight */
+    body.customer-page .nav-text {
+      font-weight: normal !important;
+    }
+    
+    body.customer-page .sidebar-title {
+      /* font-weight: normal !important; */
+    }
+    
+    /* Sidebar footer consistency */
+    body.customer-page .sidebar-footer {
+      padding: 20px !important;
+      text-align: center !important;
+      border-top: 1px solid var(--sidebar-border, #e0e0e0) !important;
+      margin-top: auto !important;
+      position: sticky !important;
+      bottom: 0 !important;
+      background-color: var(--sidebar-bg, #ffffff) !important;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.05) !important;
+    }
+      body.customer-page .logout-button {
+      width: 100% !important;
+      padding: 12px !important;
+      background-color: var(--primary-color, #000000) !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 6px !important;
+      font-weight: normal !important;
+      cursor: pointer !important;
+      transition: background-color var(--transition-speed, 0.3s) ease !important;
+    }
+    
+    body.customer-page .logout-button:hover {
+      background-color: #1a1a1a !important;
+    }
+    
+    /* Main content positioning */
+    body.customer-page .main-content {
+      margin-left: var(--sidebar-width, 260px) !important;
+      min-height: 100vh !important;
+      transition: margin-left var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+      padding: 20px !important;
+      will-change: margin-left !important;
+    }
+      /* Notification Badge for Sidebar */
+    body.customer-page .notification-badge {
+      position: absolute !important;
+      right: 15px !important;
+      top: 40% !important;
+      transform: translateY(-50%) !important;
+      background-color: #000000 !important;
+      color: white !important;
+      border-radius: 50% !important;
+      min-width: 18px !important;
+      height: 18px !important;
+      font-size: 11px !important;
+      font-weight: normal !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 2px !important;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16) !important;
+      animation: pulse-badge 2s infinite !important;
+    }
+    
+    @keyframes pulse-badge {
+      0% {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        transform: translateY(-50%) scale(1);
+      }
+      50% {
+        box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+        transform: translateY(-50%) scale(1.1);
+      }
+      100% {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        transform: translateY(-50%) scale(1);
+      }
+    }
+    
+    /* Bootstrap Icons styling for navigation */
+    body.customer-page .nav-icon.bi {
+      font-size: 1.2rem !important;
+      width: 1.2rem !important;
+      height: 1.2rem !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+    }
+    
+    /* Submenu styles */
+    body.customer-page .submenu {
+      list-style: none !important;
+      padding-left: 16px !important;
+      margin-top: 4px !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+      transition: max-height var(--transition-speed, 0.3s) ease, padding var(--transition-speed, 0.3s) ease !important;
+    }
+    
+    body.customer-page .has-submenu.open .submenu {
+      max-height: 500px !important;
+      padding: 8px 0 !important;
+    }
+    
+    /* Chevron styling for submenu toggle */
+    body.customer-page .chevron {
+      margin-left: auto !important;
+      transition: transform var(--transition-speed, 0.3s) ease !important;
+      font-size: 14px !important;
+      color: var(--sidebar-text, #333333) !important;
+    }
+    
+    body.customer-page .has-submenu.open .chevron {
+      transform: rotate(360deg) !important;
+    }
+    
+    body.customer-page .submenu-link {
+      display: block !important;
+      padding: 10px 16px 10px 40px !important;
+      text-decoration: none !important;
+      color: var(--sidebar-text, #333333) !important;
+      border-radius: 6px !important;
+      font-size: 14px !important;
+      transition: all var(--transition-speed, 0.3s) ease !important;
+    }
+    
+    body.customer-page .submenu-link:hover {
+      background-color: var(--sidebar-hover, rgba(0, 0, 0, 0.05)) !important;
+      color: var(--primary-color, #000000) !important;
+      box-shadow: inset 4px 0 0 var(--primary-color, #000000) !important;
+    }
+    
+    /* Responsive styles with high priority */
+    @media (max-width: 1024px) {
+      body.customer-page .main-content {
+        margin-left: 0 !important;
+        padding: 70px 15px 20px 15px !important;
+        width: 100% !important;
+        transition: margin-left var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+      
+      body.customer-page .sidebar {
+        transform: translateX(-100%) !important;
+        width: 280px !important;
+        z-index: 1001 !important;
+        transition: transform var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+        will-change: transform !important;
+      }
+      
+      body.customer-page .sidebar.open {
+        transform: translateX(0) !important;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.2) !important;
+      }
+      
+      body.customer-page .hamburger {
+        display: flex !important;
+        position: fixed !important;
+        top: 25px !important;
+        left: 15px !important;
+        z-index: 1003 !important;
+        transition: all var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      body.customer-page .submenu-item {
+        margin: 2px 0 !important;
+      }
+      
+      body.customer-page .submenu-link {
+        padding: 8px 12px 8px 30px !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body.customer-page .sidebar-footer {
+        padding: 15px 10px !important;
+      }
+      
+      body.customer-page .logout-button {
+        font-size: 14px !important;
+        padding: 10px !important;
+      }
+    }
+    
+    /* Hamburger focus state */
+    body.customer-page .hamburger:focus {
+      outline: 2px solid var(--primary-color, #000000) !important;
+    }
+    
+    /* Add 'has-notifications' class styling */
+    body.customer-page .nav-item.has-notifications .nav-link {
+      position: relative !important;
+    }
+      /* For Chrome, Edge, Safari */
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f5f5f5; /* Light background track */
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #000000; /* Black scrollbar */
+      border-radius: 10px;        /* Rounded corners */
+      border: 3px solid #f5f5f5;  /* Creates padding effect */
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #1a1a1a;
+    }
+
+    /* For Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #000000 #f5f5f5;
+    }
+    
+    /* Additional font weight overrides to prevent bold text */
+    
+    body.customer-page .nav-menu *,
+    body.customer-page .nav-item *,
+    body.customer-page .nav-link *,
+    body.customer-page .nav-text,
+    body.customer-page,
+    body.customer-page .footer-logo {
+      font-weight: normal !important;
+    }
+    
+    /* Ensure no external CSS can override our font weights */
+    body.customer-page a,
+    body.customer-page span,
+   
+    body.customer-page h2,
+    body.customer-page h3,
+    body.customer-page h4,
+    body.customer-page h5,
+    body.customer-page h6 {
+      font-weight: normal !important;
+    }
+  </style>
+
+    
+    
+ 
+</head>
+
+<body class="customer-page">
+<style>
+  /* Toast Notifications Styling */
+  .toast-container {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+    max-width: 350px;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .toast {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 16px 40px 16px 24px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #000000;
+    font-weight: normal;
+    position: relative;
+    animation: slideInRight 0.5s forwards;
+    pointer-events: auto;
+    font-family: 'Inter', sans-serif;
+    color: #000000;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+  }
+
+  .toast::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-color: #000000;
+    flex-shrink: 0;
+  }
+
+  .toast.success {
+    border-left-color: #000000;
+  }
+
+  .toast.info {
+    border-left-color: #000000;
+  }
+
+  .toast.warning {
+    border-left-color: #000000;
+  }
+
+  .toast.error {
+    border-left-color: #000000;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .toast-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #000000;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+  }
+
+  .toast-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .toast.hide {
+    animation: slideOutRight 0.5s forwards;
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    to {
+      transform: translateX(110%);
+      opacity: 0;
+    }
+  }
+</style>  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <!-- Top section -->
+    <div class="sidebar-header">
+      <a href="{% url 'profile' %}" class="logo-link">
+        <i class="fas fa-user sidebar-logo" style="font-size: 2.5rem; color: #000000;"></i>
+      </a>
+      <h1 class="sidebar-title" style="font-weight: bold;">Customer</h1>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <!-- Profile -->
+        <li class="nav-item">
+          <a href="{% url 'profile' %}" class="nav-link">
+            <i class="bi bi-person-circle nav-icon"></i>
+            <span class="nav-text">Profile</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'customer_dashboard' %}" class="nav-link">
+            <i class="bi bi-speedometer2 nav-icon"></i>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'customer_orders' %}" class="nav-link">
+            <i class="bi bi-box-seam nav-icon"></i>
+            <span class="nav-text">View Orders</span>
+          </a>
+        </li>
+
+        <!-- Notifications -->
+        <li class="nav-item" id="notification-nav-item">
+          <a href="{% url 'notifications:customer_notifications' %}" class="nav-link">
+            <i class="bi bi-bell nav-icon"></i>
+            <span class="nav-text">Notifications</span>
+            {% if unread_count > 0 %}
+            <span class="notification-badge">{{ unread_count }}</span>
+            {% endif %}
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{% url 'upgrade_to_admin' %}" class="nav-link">
+            <i class="bi bi-arrow-up-circle nav-icon"></i>
+            <span class="nav-text">Upgrade to Admin</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <div class="switch-container">
+            <label class="switch">
+              <input type="checkbox" id="filter" onchange="window.location.href='{% url 'swap_role' %}'" {% if request.session.role == 'customer' %}checked{% endif %}>
+              <span>Admin</span>
+              <span>Customer</span>
+            </label>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="sidebar-footer">
+      <!-- <div class="footer-logo">Logo Here</div> -->
+      <form action="{% url 'logout' %}" method="post" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+      </form>
+    </footer>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Main content -->
+  <main class="main-content" id="main-content">
+    {% block content %}
+    {% endblock %}
+  </main>
+  <script src="{% static 'js/customer_base.js' %}"></script>    <!-- Additional script for sidebar scrolling -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      {% if unread_count > 0 %}
+      // Add the has-notifications class to the notifications menu item
+      const notificationMenuItem = document.getElementById('notification-nav-item');
+      if (notificationMenuItem) {
+        notificationMenuItem.classList.add('has-notifications');
+      }
+      {% endif %}
+      
+      // Handle active menu item highlighting
+      const currentPath = window.location.pathname;
+      const menuItems = document.querySelectorAll('.nav-menu .nav-item');
+      
+      menuItems.forEach(item => {
+        const link = item.querySelector('a');
+        if (link && link.getAttribute('href') === currentPath) {
+          item.classList.add('active');
+        }
+      });
+      
+      // Check if active menu item is out of view and scroll to it
+      const activeNavItem = document.querySelector('.nav-item.active, .nav-link.active');
+      if (activeNavItem) {
+        activeNavItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      // Make sure sidebar scroll works on mobile too
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) {
+        sidebar.style.overflowY = 'auto';
+        
+        // Set height of sidebar-nav to enable scrolling
+        const sidebarHeader = document.querySelector('.sidebar-header');
+        const sidebarFooter = document.querySelector('.sidebar-footer');
+        const sidebarNav = document.querySelector('.sidebar-nav');
+        
+        if (sidebarHeader && sidebarFooter && sidebarNav) {
+          const headerHeight = sidebarHeader.offsetHeight;
+          const footerHeight = sidebarFooter.offsetHeight;
+          const windowHeight = window.innerHeight;
+          
+          sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
+        }
+      }
+    });
+    
+    // Update sidebar nav height on window resize
+    window.addEventListener('resize', function() {
+      const sidebarHeader = document.querySelector('.sidebar-header');
+      const sidebarFooter = document.querySelector('.sidebar-footer');
+      const sidebarNav = document.querySelector('.sidebar-nav');
+      
+      if (sidebarHeader && sidebarFooter && sidebarNav) {
+        const headerHeight = sidebarHeader.offsetHeight;
+        const footerHeight = sidebarFooter.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
+      }
+    });
+  </script>
+
+  <div class="toast-container">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="toast 
+              {% if message.tags == 'success' %}success
+              {% elif message.tags == 'info' %}info
+              {% elif message.tags == 'warning' %}warning
+              {% elif message.tags == 'error' %}error
+              {% endif %}">
+      {{ message }}
+      <button type="button" class="toast-close" aria-label="Close">&times;</button>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Create toast container if it doesn't exist
+      let toastContainer = document.querySelector('.toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.classList.add('toast-container');
+        document.body.appendChild(toastContainer);
+      }
+
+      // Convert Django messages to toasts
+      const messages = document.querySelectorAll('.alert');
+      messages.forEach(message => {
+        const toastType = message.classList.contains('alert-success') ? 'success' :
+          message.classList.contains('alert-info') ? 'info' :
+            message.classList.contains('alert-warning') ? 'warning' : 'error';
+
+        createToast(message.textContent.trim(), toastType);
+        message.remove();
+      });
+
+      // Initialize close functionality for existing toasts
+      initializeToastCloseButtons();
+
+      function initializeToastCloseButtons() {
+        // Handle close button for all toasts
+        const allToasts = document.querySelectorAll('.toast');
+        allToasts.forEach(toast => {
+          const closeBtn = toast.querySelector('.toast-close');
+          if (closeBtn) {
+            // Remove any existing event listeners
+            closeBtn.removeEventListener('click', closeToastHandler);
+            // Add new event listener
+            closeBtn.addEventListener('click', closeToastHandler);
+          }
+        });
+      }
+
+      function closeToastHandler(e) {
+        const toast = this.closest('.toast');
+        if (toast) {
+          toast.classList.add('hide');
+          setTimeout(() => {
+            toast.remove();
+          }, 500);
+        }
+      }
+
+      function createToast(message, type) {
+        const toast = document.createElement('div');
+        toast.classList.add('toast', type);
+        toast.innerHTML = `
+          ${message}
+          <button type="button" class="toast-close" aria-label="Close">&times;</button>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        // Auto dismiss after 5 seconds
+        setTimeout(() => {
+          toast.classList.add('hide');
+          setTimeout(() => {
+            toast.remove();
+          }, 500);
+        }, 5000);        // Add close button functionality
+        const closeBtn = toast.querySelector('.toast-close');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', closeToastHandler);
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
