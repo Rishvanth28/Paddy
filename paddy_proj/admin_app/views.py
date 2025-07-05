@@ -6,6 +6,7 @@ from django.utils.timezone import now
 from datetime import datetime, timedelta
 from django.db.models import Sum, Count, Q, Avg, Case, When, F
 from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
+from django.db import IntegrityError
 from paddy_app.decorators import role_required
 from paddy_app.helpers import *
 from paddy_app.models import *
@@ -197,65 +198,100 @@ def upgrade_to_customer(request):
     admin_id = request.session.get('user_id')
     admin = AdminTable.objects.get(admin_id=admin_id)
     
-    # Check if admin is already a customer
-    is_customer = CustomerTable.objects.filter(email=admin.email).exists()
+    # Check if admin is already a customer by phone number or email
+    existing_customer = CustomerTable.objects.filter(
+        Q(email=admin.email) | Q(phone_number=admin.phone_number)
+    ).first()
 
     if request.method == 'POST':
-        if is_customer:
-            messages.info(request, "You are already a customer.")
+        if existing_customer:
+            if existing_customer.email == admin.email:
+                messages.info(request, "You are already a customer with this email address.")
+            else:
+                messages.info(request, "A customer account with this phone number already exists.")
             return redirect('admin_app:admin_dashboard')
 
         company_name = request.POST.get('company_name')
         gst = request.POST.get('GST')
         address = request.POST.get('address')
 
-        new_customer = CustomerTable(
-            admin_id=admin.admin_id,  # Linking the admin ID
-            first_name=admin.first_name,
-            last_name=admin.last_name,
-            phone_number=admin.phone_number,
-            email=admin.email,
-            password=admin.password,  # already hashed
-            company_name=company_name,
-            GST=gst,
-            address=address,
-        )
-        new_customer.save()
+        # Validate required fields
+        if not company_name or not address:
+            messages.error(request, "Company name and address are required.")
+            return render(request, 'admin_app/upgrade_to_customer.html', {
+                'admin': admin,
+                'is_customer': False
+            })
 
-        # ✅ Create default 1-month free subscription for upgraded customer
-        Subscription.objects.create(
-            customer_id=new_customer,
-            subscription_type="customer",
-            subscription_status=1,  # Active
-            payment_amount=0,  # Free subscription
-            start_date=now().date(),
-            end_date=now().date() + timedelta(days=30)  # 1 month free
-        )
+        try:
+            # Create new customer account
+            new_customer = CustomerTable.objects.create(
+                admin=admin,  # Link to admin instance, not admin_id
+                first_name=admin.first_name,
+                last_name=admin.last_name,
+                phone_number=admin.phone_number,
+                email=admin.email,
+                password=admin.password,  # already hashed
+                company_name=company_name,
+                GST=gst,
+                address=address,
+            )
 
-        # Create notification for successful upgrade
-        create_notification(
-            user_type='customer',
-            user_id=new_customer.customer_id,
-            notification_type='account_upgrade',
-            title='Account Upgraded Successfully',
-            message='Your admin account has been upgraded to customer with 1 month free subscription.',
-        )
+            # ✅ Create default 1-month free subscription for upgraded customer
+            Subscription.objects.create(
+                customer_id=new_customer,
+                subscription_type="customer",
+                subscription_status=1,  # Active
+                payment_amount=0,  # Free subscription
+                start_date=now().date(),
+                end_date=now().date() + timedelta(days=30)  # 1 month free
+            )
 
-        # Create notification for admin (since they're now also a customer)
-        create_notification(
-            user_type='admin',
-            user_id=admin.admin_id,
-            notification_type='account_upgrade',
-            title='Upgraded to Customer',
-            message='You have successfully upgraded to customer account with 1 month free subscription.',
-        )
+            # Create notification for successful upgrade
+            create_notification(
+                user_type='customer',
+                user_id=new_customer.customer_id,
+                notification_type='account_upgrade',
+                title='Account Upgraded Successfully',
+                message='Your admin account has been upgraded to customer with 1 month free subscription.',
+            )
 
-        messages.success(request, "You have been upgraded to customer successfully with 1 month free subscription!")
-        # Update is_customer to True after successful upgrade
-        is_customer = True
-        return render(request, 'admin_app/upgrade_to_customer.html', {'admin': admin, 'is_customer': is_customer})
+            # Create notification for admin (since they're now also a customer)
+            create_notification(
+                user_type='admin',
+                user_id=admin.admin_id,
+                notification_type='account_upgrade',
+                title='Upgraded to Customer',
+                message='You have successfully upgraded to customer account with 1 month free subscription.',
+            )
 
-    return render(request, 'admin_app/upgrade_to_customer.html', {'admin': admin, 'is_customer': is_customer})
+            messages.success(request, "Successfully upgraded to customer account with 1 month free subscription!")
+            return redirect('admin_app:admin_dashboard')
+
+        except IntegrityError as e:
+            if 'phone_number' in str(e):
+                messages.error(request, "A customer with this phone number already exists.")
+            elif 'email' in str(e):
+                messages.error(request, "A customer with this email already exists.")
+            else:
+                messages.error(request, f"Database error: {str(e)}")
+            return render(request, 'admin_app/upgrade_to_customer.html', {
+                'admin': admin,
+                'is_customer': False
+            })
+        except Exception as e:
+            messages.error(request, f"An error occurred while upgrading account: {str(e)}")
+            return render(request, 'admin_app/upgrade_to_customer.html', {
+                'admin': admin,
+                'is_customer': False
+            })
+
+    # For GET request, determine if user is already a customer
+    is_customer = existing_customer is not None
+    return render(request, 'admin_app/upgrade_to_customer.html', {
+        'admin': admin, 
+        'is_customer': is_customer
+    })
 
 @role_required(["admin"])
 def admin_add_subscription(request):
