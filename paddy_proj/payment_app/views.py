@@ -134,69 +134,141 @@ def create_partial_payment_order(request):
 def verify_partial_payment(request):
     """API endpoint to verify and process partial payment for customer orders"""
     try:
-        data = json.loads(request.body)
-        razorpay_payment_id = data.get('razorpay_payment_id')
-        razorpay_order_id = data.get('razorpay_order_id') # This is Razorpay's order_id
-        razorpay_signature = data.get('razorpay_signature')
+        # Parse request data
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON data provided.'}, status=400)
         
-        # Retrieve original order_id and amount from session or request as per your flow
-        # Assuming 'order_id' in data refers to your application's Order.order_id
-        # And 'amount' is the amount paid in this transaction.
-        application_order_id = data.get('order_id') 
-        amount_paid_this_transaction = float(data.get('amount'))
+        # Extract payment data
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        razorpay_order_id = data.get('razorpay_order_id')
+        razorpay_signature = data.get('razorpay_signature')
+        application_order_id = data.get('order_id')
+        amount_paid_this_transaction = data.get('amount')
 
-        if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature, application_order_id, amount_paid_this_transaction]):
-            return JsonResponse({'success': False, 'message': 'Missing payment verification data.'}, status=400)
+        # Validate required fields
+        if not razorpay_payment_id:
+            return JsonResponse({'success': False, 'message': 'Missing razorpay_payment_id.'}, status=400)
+        if not razorpay_order_id:
+            return JsonResponse({'success': False, 'message': 'Missing razorpay_order_id.'}, status=400)
+        if not razorpay_signature:
+            return JsonResponse({'success': False, 'message': 'Missing razorpay_signature.'}, status=400)
+        if not application_order_id:
+            return JsonResponse({'success': False, 'message': 'Missing order_id.'}, status=400)
+        if not amount_paid_this_transaction:
+            return JsonResponse({'success': False, 'message': 'Missing payment amount.'}, status=400)
 
+        # Convert amount to float
+        try:
+            amount_paid_this_transaction = float(amount_paid_this_transaction)
+        except (ValueError, TypeError):
+            return JsonResponse({'success': False, 'message': 'Invalid payment amount format.'}, status=400)
+
+        if amount_paid_this_transaction <= 0:
+            return JsonResponse({'success': False, 'message': 'Payment amount must be greater than zero.'}, status=400)
+
+        # Get the order
+        try:
+            order = Orders.objects.get(order_id=application_order_id)
+        except Orders.DoesNotExist:
+            return JsonResponse({'success': False, 'message': f'Order {application_order_id} not found.'}, status=404)
+
+        # Validate payment amount against order balance
+        current_paid_amount = order.paid_amount or 0
+        balance_due = order.overall_amount - current_paid_amount
+        
+        if amount_paid_this_transaction > balance_due:
+            return JsonResponse({
+                'success': False, 
+                'message': f'Payment amount (₹{amount_paid_this_transaction}) exceeds balance due (₹{balance_due}).'
+            }, status=400)
+
+        # Verify payment signature with Razorpay
         params_dict = {
             'razorpay_payment_id': razorpay_payment_id,
-            'razorpay_order_id': razorpay_order_id, # Use Razorpay's order_id for verification
+            'razorpay_order_id': razorpay_order_id,
             'razorpay_signature': razorpay_signature
         }
         
-        client.utility.verify_payment_signature(params_dict)
-        
-        order = get_object_or_404(Orders, order_id=application_order_id)
-          # --- Create Payment Record ---
         try:
-            Payments.objects.create(
+            client.utility.verify_payment_signature(params_dict)
+        except Exception as signature_error:
+            return JsonResponse({
+                'success': False, 
+                'message': f'Payment signature verification failed: {str(signature_error)}'
+            }, status=400)
+
+        # Create Payment Record
+        try:
+            payment_record = Payments.objects.create(
                 order=order,
                 amount=amount_paid_this_transaction,
                 date=timezone.now().date(),
-                reference=f"order_{application_order_id}_partial_{razorpay_payment_id}",
+                reference=f"partial_payment_{application_order_id}_{razorpay_payment_id[:10]}",
                 proof_link=razorpay_payment_id,
-                proof_ref=razorpay_payment_id
+                payment_method="Razorpay"
             )
         except Exception as payment_error:
-            return JsonResponse({'success': False, 'message': f'Payment record creation failed: {str(payment_error)}'}, status=500)
+            return JsonResponse({
+                'success': False, 
+                'message': f'Failed to create payment record: {str(payment_error)}'
+            }, status=500)
 
-        # --- Update Order paid_amount and payment_status ---
+        # Update Order paid_amount and payment_status
         try:
-            current_paid_amount = order.paid_amount or 0
             new_paid_amount = current_paid_amount + amount_paid_this_transaction
             order.paid_amount = new_paid_amount
             
             # Update payment status based on new paid amount
             if new_paid_amount >= order.overall_amount:
                 order.payment_status = 2  # Fully paid
+                status_text = "fully paid"
             else:
                 order.payment_status = 1  # Partially paid
+                status_text = "partially paid"
             
             order.save()
+            
+            # Create notification for customer about payment
+            create_notification(
+                user_type='customer',
+                user_id=order.customer.customer_id,
+                notification_type='payment_received',
+                title='Payment Received',
+                message=f'Your payment of ₹{amount_paid_this_transaction} for order #{order.order_id} has been processed. Order is now {status_text}.',
+                related_order_id=order.order_id
+            )
+            
         except Exception as order_update_error:
-            return JsonResponse({'success': False, 'message': f'Order update failed: {str(order_update_error)}'}, status=500)
+            return JsonResponse({
+                'success': False, 
+                'message': f'Failed to update order: {str(order_update_error)}'
+            }, status=500)
         
         return JsonResponse({
             'success': True,
             'message': 'Payment verified and processed successfully',
-            'new_balance': float(order.overall_amount - order.paid_amount)
+            'new_balance': float(order.overall_amount - order.paid_amount),
+            'payment_status': order.payment_status,
+            'paid_amount': float(order.paid_amount),
+            'total_amount': float(order.overall_amount)
         })
         
-    except Exception as e:
+    except razorpay.errors.SignatureVerificationError:
         return JsonResponse({
             'success': False,
-            'message': f'Payment verification failed: {str(e)}'
-        })
+            'message': 'Payment signature verification failed. Invalid signature.'
+        }, status=400)
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error in verify_partial_payment: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False,
+            'message': f'An unexpected error occurred: {str(e)}'
+        }, status=500)
 
 # Cash Payment Functions
 @csrf_exempt
@@ -854,7 +926,7 @@ def create_admin_user_increase_order(request):
         return JsonResponse({'success': False, 'message': f'An error occurred while creating payment order: {str(e)}'}, status=500)
 
 # Order Booking Fee Payment - COMMENTED OUT (No payment required for placing orders)
-# @role_required(["admin", "superadmin"])
+@role_required(["admin", "superadmin"])
 def order_booking_payment(request):
     """Handle order booking fee payment (₹10) - DISABLED"""
     # Booking fee payment is no longer required
@@ -954,3 +1026,60 @@ def order_booking_payment(request):
     }
     return render(request, 'payment_app/booking_payment.html', context)
     """
+
+# Debug endpoint for payment verification issues
+@csrf_exempt
+def debug_payment_verification(request):
+    """Debug endpoint to check payment verification data"""
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            
+            debug_info = {
+                'received_data': {
+                    'razorpay_payment_id': data.get('razorpay_payment_id'),
+                    'razorpay_order_id': data.get('razorpay_order_id'),
+                    'razorpay_signature': data.get('razorpay_signature'),
+                    'order_id': data.get('order_id'),
+                    'amount': data.get('amount'),
+                },
+                'razorpay_config': {
+                    'key_id_exists': bool(RAZORPAY_KEY_ID),
+                    'secret_exists': bool(RAZORPAY_SECRET),
+                    'client_initialized': bool(client),
+                }
+            }
+            
+            # Check if order exists
+            try:
+                order_id = data.get('order_id')
+                if order_id:
+                    order = Orders.objects.get(order_id=order_id)
+                    debug_info['order_info'] = {
+                        'exists': True,
+                        'order_id': order.order_id,
+                        'overall_amount': float(order.overall_amount),
+                        'paid_amount': float(order.paid_amount or 0),
+                        'balance_due': float(order.overall_amount - (order.paid_amount or 0)),
+                        'payment_status': order.payment_status,
+                    }
+                else:
+                    debug_info['order_info'] = {'exists': False, 'error': 'No order_id provided'}
+            except Orders.DoesNotExist:
+                debug_info['order_info'] = {'exists': False, 'error': f'Order {order_id} not found'}
+            except Exception as e:
+                debug_info['order_info'] = {'exists': False, 'error': str(e)}
+            
+            return JsonResponse({
+                'success': True,
+                'debug_info': debug_info
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e),
+                'raw_body': request.body.decode('utf-8') if request.body else 'No body'
+            })
+    
+    return JsonResponse({'error': 'Only POST method allowed'}, status=405)

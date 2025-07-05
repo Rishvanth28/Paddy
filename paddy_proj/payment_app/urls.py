@@ -13,6 +13,7 @@ urlpatterns = [
     # Partial Payment URLs
     path('create-partial-payment-order/', views.create_partial_payment_order, name='create_partial_payment_order'),
     path('verify-partial-payment/', views.verify_partial_payment, name='verify_partial_payment'),
+    path('debug-payment-verification/', views.debug_payment_verification, name='debug_payment_verification'),
     
     # Cash Payment URLs
     path('request-cash-payment/', views.request_cash_payment, name='request_cash_payment'),
