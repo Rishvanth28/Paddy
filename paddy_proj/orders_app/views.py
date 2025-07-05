@@ -160,13 +160,15 @@ def admin_orders(request):
             ).values_list('order_id', flat=True)
             
             orders_query = orders_query.filter(order_id__in=orders_with_pending_cash)
-                # Apply sorting
-            orders_query = orders_query.order_by(sort_by)
-
-        cash_payment_requests = []
+        
+        # Apply sorting
+        orders_query = orders_query.order_by(sort_by)
         
         orders_data = []
         for order in orders_query:
+            # Initialize cash payment requests for this specific order
+            cash_payment_requests = []
+            
             order_items_data = []
             if order.product_category_id == 3: # Assuming 3 is for multiple items
                 for item in order.items.all():

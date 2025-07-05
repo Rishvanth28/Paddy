@@ -1431,12 +1431,17 @@
                 const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
                 const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
                 
+                // Check for pending cash payment requests
+                const hasPendingCashRequests = order.cash_payment_requests && 
+                    order.cash_payment_requests.some(req => req.status === 0);
+                
                 html += `
                     <div class="list-group-item order-item ${isActive ? 'active' : ''}" 
                          data-order-id="${order.order_id}">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <div>
                                 <span class="fw-medium">Order #${order.order_id}</span>
+                                ${hasPendingCashRequests ? `<span class="badge bg-warning text-dark ms-2" title="Has pending cash payment requests"><i class="bi bi-cash-coin"></i> Cash Request</span>` : ''}
                                 <span class="order-status ms-2">
                                     <span class="order-status-icon ${statusClass}"></span>
                                     <small>${paymentStatusBadge}</small>
