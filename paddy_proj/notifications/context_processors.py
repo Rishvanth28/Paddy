@@ -1,4 +1,4 @@
-from .helpers import get_unread_notification_count
+from paddy_app.helpers import get_unread_notification_count
 
 def notification_context(request):
     """
