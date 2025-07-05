@@ -1434,7 +1434,7 @@ button, .btn {
   .main-content .profile-header h1,
   .main-content .upgrade-header h1 {
     margin-top: 10px !important;
-    padding-left: 0 !important;
+    padding-left: 80px !important;
     /* text-align: left !important; */
     position: relative !important;
     clear: both !important;
@@ -1452,7 +1452,7 @@ button, .btn {
     width: 60px;
     height: 3px;
     background-color: var(--primary-color, #333);
-    margin: 8px 0 0 0 !important;
+    /* margin: 8px 0 0 0 !important; */
     border-radius: 2px;
   }
   
@@ -1509,6 +1509,12 @@ button, .btn {
     padding-left: 0 !important;
     text-align: center !important;
   }
+
+  .analytics-section h2 {
+        text-align: center !important; /* Center align the Platform Analytics text */
+        margin: 0 auto; /* Ensure it is properly centered */
+        margin-bottom: 1rem !important; /* Add some space below the title */
+    }
 }
 
 /* ========== TABLET VIEW RESPONSIVE STYLES (1024px and below) ========== */
@@ -1712,5 +1718,63 @@ button, .btn {
   .switch {
     width: 100% !important;
     justify-content: center !important;
+  }
+}
+
+/* Additional styles for dashboard and reports */
+@media (max-width: 1024px) {
+
+    .dashboard-navigation-section h2::after {
+        display: block !important; /* Ensure the ::after element appears below the text */
+        content: ''; /* Add content if needed */
+        margin-top: 1rem !important; /* Force spacing below the Quick Actions text */
+        margin-left: 20px;
+        width: 80%; /* Make underline span the width of the text */
+        text-align: center; /* Align underline to the center */
+    }
+}
+
+/* Admin subscribers section responsive styles */
+@media (max-width: 576px) {
+  .admin-subscribers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .admin-subscribers .subscriber-item {
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .admin-subscribers .subscriber-item h3 {
+    font-size: 1.2rem;
+  }
+
+  .admin-subscribers .subscriber-item p {
+    font-size: 1rem;
+  }
+
+  .admin-subscribers-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: none; /* Remove background card effect */
+  }
+
+  .admin-subscribers-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .admin-subscribers-header .search-bar {
+    width: 100%;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
   }
 }

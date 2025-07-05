@@ -392,7 +392,7 @@ button[type="submit"]:hover {
 @media (max-width: 768px) {
     .header-bar { width: 100%;
     position: fixed;
-    top: 0;
+    top: 70px;
     left: 0;
      width: 100%;
     height: auto;
