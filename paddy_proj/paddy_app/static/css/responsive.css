@@ -793,6 +793,12 @@ button, .btn {
   .modal-body {
     padding: 15px !important;
   }
+  
+  /* Mobile override for customer onboarding page title margin */
+  .tab-title-margin {
+    margin-left: 0 !important;
+    text-align: center !important;
+  }
 }
 
 /* Mobile phone specific */
@@ -1372,10 +1378,10 @@ button, .btn {
         border-radius: 8px !important;
     }
     
-    .search-icon {
+    /* .search-icon {
         right: 15px !important;
         font-size: 16px !important;
-    }
+    } */
     
     /* Action buttons with better touch targets */
     .action-btn.responsive-action-btn {
@@ -1438,7 +1444,15 @@ button, .btn {
     /* text-align: left !important; */
     position: relative !important;
     clear: both !important;
-    margin-left: -2rem;
+  }
+    /* Customer onboarding page specific styles */
+  .customer-onboarding h1,
+  .customer-onboarding h2,
+  .customer-onboarding .page-title,
+  .customer-onboarding .customer-dashboard-hero h1,
+  .customer-onboarding .profile-header h1,
+  .customer-onboarding .upgrade-header h1 {
+    margin-left: -1rem !important;
   }
   
   /* Ensure underlines for page titles are always left-aligned */
@@ -1517,7 +1531,7 @@ button, .btn {
     }
 }
 
-/* ========== TABLET VIEW RESPONSIVE STYLES (1024px and below) ========== */
+/* ========== TABLET VIEW RESPONSIVE STYLES (769px - 1024px) ========== */
 @media (max-width: 1024px) and (min-width: 769px) {
   /* Tablet-specific header bar centering */
   .header-bar {
@@ -1531,7 +1545,7 @@ button, .btn {
     margin-bottom: 2rem !important;
   }
   
-  /* Tablet page title centering */
+  /* Tablet page title centering - GENERAL PAGES */
   .page-title,
   .main-content h1,
   .main-content h2,
@@ -1549,7 +1563,48 @@ button, .btn {
     font-size: 1.8rem !important;
   }
   
-  /* Tablet underline centering */
+  /* Customer onboarding page tablet title margin - SPECIFIC OVERRIDE */
+  .tab-title-margin {
+    margin-left: 9rem !important;
+    text-align: left !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Customer onboarding header bar adjustments for tablet */
+  .customer-onboarding .header-bar {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+  }
+  
+  /* Customer onboarding underline for tablet - left aligned */
+  .customer-onboarding .tab-title-margin::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -8px !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 80px !important;
+    height: 4px !important;
+    background-color: var(--primary-color, #333) !important;
+    border-radius: 2px !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+  
+  /* Customer onboarding page specific styles */
+  .customer-onboarding h1,
+  .customer-onboarding h2,
+  .customer-onboarding .page-title,
+  .customer-onboarding .customer-dashboard-hero h1,
+  .customer-onboarding .profile-header h1,
+  .customer-onboarding .upgrade-header h1 {
+    margin-left: -1rem !important;
+  }
+  
+  /* Tablet underline centering - GENERAL PAGES */
   .page-title::after,
   .main-content h1::after,
   .main-content h2::after,
@@ -1625,6 +1680,123 @@ button, .btn {
     justify-content: center !important;
     flex-wrap: wrap !important;
     gap: 1rem !important;
+  }
+}
+
+/* ========== MOBILE VIEW RESPONSIVE STYLES (≤768px) ========== */
+@media (max-width: 768px) {
+  /* Mobile-specific header bar centering */
+  .header-bar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 0.75rem !important;
+    padding: 15px 0 !important;
+    margin-bottom: 1.5rem !important;
+  }
+    /* Mobile page title centering - ALL PAGES */
+  .page-title,
+  .main-content h1,
+  .main-content h2,
+  .customer-dashboard-hero h1,
+  .profile-header h1,
+  .upgrade-header h1,
+  .header-bar h1 {
+    text-align: center !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    font-size: 1.5rem !important;
+  }
+  
+  /* Mobile override for customer onboarding page title - MOBILE SPECIFIC */
+  .tab-title-margin {
+    text-align: center !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    font-size: 1.5rem !important;
+  }
+    /* Mobile underline centering - ALL PAGES */
+  .page-title::after,
+  .main-content h1::after,
+  .main-content h2::after,
+  .customer-dashboard-hero h1::after,
+  .profile-header h1::after,
+  .upgrade-header h1::after,
+  .header-bar h1::after,
+  .page-title-underline,
+  .title-underline {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -8px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 60px !important;
+    height: 3px !important;
+    background-color: var(--primary-color, #333) !important;
+    border-radius: 2px !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+  
+  /* Mobile underline for customer onboarding - MOBILE SPECIFIC */
+  .tab-title-margin::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -8px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 60px !important;
+    height: 3px !important;
+    background-color: var(--primary-color, #333) !important;
+    border-radius: 2px !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+  
+  /* Mobile form container adjustments */
+  .form-container {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 15px !important;
+  }
+  
+  /* Mobile card adjustments */
+  .card,
+  .upgrade-card,
+  .form-card {
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    padding: 20px 15px !important;
+  }
+  
+  /* Mobile search wrapper */
+  .search-wrapper {
+    width: 100% !important;
+    max-width: 350px !important;
+    margin: 0 auto !important;
+  }
+  
+  /* Mobile typography adjustments */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2 {
+    font-size: 1.3rem !important;
+  }
+  
+  h3 {
+    font-size: 1.1rem !important;
   }
 }
 
