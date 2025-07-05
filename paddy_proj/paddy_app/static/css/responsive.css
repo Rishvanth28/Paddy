@@ -1438,6 +1438,7 @@ button, .btn {
     /* text-align: left !important; */
     position: relative !important;
     clear: both !important;
+    margin-left: -2rem;
   }
   
   /* Ensure underlines for page titles are always left-aligned */
@@ -1507,6 +1508,150 @@ button, .btn {
     /* margin-top: 4rem !important; */
     padding-left: 0 !important;
     text-align: center !important;
+  }
+}
+
+/* ========== TABLET VIEW RESPONSIVE STYLES (1024px and below) ========== */
+@media (max-width: 1024px) and (min-width: 769px) {
+  /* Tablet-specific header bar centering */
+  .header-bar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 1rem !important;
+    padding: 20px 0 !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  /* Tablet page title centering */
+  .page-title,
+  .main-content h1,
+  .main-content h2,
+  .customer-dashboard-hero h1,
+  .profile-header h1,
+  .upgrade-header h1,
+  .header-bar h1 {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    font-size: 1.8rem !important;
+  }
+  
+  /* Tablet underline centering */
+  .page-title::after,
+  .main-content h1::after,
+  .main-content h2::after,
+  .customer-dashboard-hero h1::after,
+  .profile-header h1::after,
+  .upgrade-header h1::after,
+  .header-bar h1::after,
+  .page-title-underline,
+  .title-underline {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -8px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 70px !important;
+    height: 4px !important;
+    background-color: var(--primary-color, #333) !important;
+    border-radius: 2px !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+  
+  /* Tablet title group centering */
+  .title-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+  
+  /* Tablet subtitle centering */
+  .upgrade-subtitle,
+  .page-subtitle,
+  .header-subtitle {
+    text-align: center !important;
+    margin-top: 0.5rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  /* Tablet search wrapper centering */
+  .search-wrapper {
+    width: 100% !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  
+  /* Tablet form container adjustments */
+  .form-container {
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+  }
+  
+  /* Tablet card adjustments */
+  .card,
+  .upgrade-card,
+  .form-card {
+    margin: 0 auto !important;
+    max-width: 100% !important;
+  }
+  
+  /* Tablet navigation adjustments */
+  .nav-container {
+    justify-content: center !important;
+  }
+  
+  /* Tablet button group centering */
+  .button-group,
+  .action-buttons {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+  }
+}
+
+/* ========== TABLET LANDSCAPE SPECIFIC (1024px width exactly) ========== */
+@media (max-width: 1024px) and (min-width: 1000px) and (orientation: landscape) {
+  .page-title,
+  .main-content h1 {
+    font-size: 2rem !important;
+  }
+  
+  .page-title::after,
+  .main-content h1::after {
+    width: 80px !important;
+  }
+  
+  .header-bar {
+    padding: 25px 0 !important;
+  }
+}
+
+/* ========== TABLET PORTRAIT SPECIFIC (768px - 1024px) ========== */
+@media (max-width: 1024px) and (min-width: 768px) and (orientation: portrait) {
+  .page-title,
+  .main-content h1 {
+    font-size: 1.7rem !important;
+  }
+  
+  .form-container {
+    padding: 0 15px !important;
+  }
+  
+  .header-bar {
+    padding: 18px 0 !important;
   }
 }
 
