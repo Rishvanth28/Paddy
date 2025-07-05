@@ -4,11 +4,10 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}" />
 <div class="customer-list-container">    <div class="customer-header">
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-            <h1 class="page-title mb-0 me-3 " >Customer List</h1>
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">            <h1 class="page-title mb-0 me-3 " >Customer List</h1>
             <form class="search-form" method="GET" action="">
-                <i class="fas fa-search search-icon"></i>
                 <input type="search" name="q" class="search-input" placeholder="Search customers...">
+                <i class="fas fa-search search-icon"></i>
             </form>
         </div>
     </div>
@@ -43,7 +42,19 @@
         <!-- No results found message for search -->
         <div class="no-results-found d-none text-center py-4">
             <div class="empty-icon">
-                <i class="fas fa-search"></i>
+                <i class="fas fa-search no-results-icon"></i>
+                <style>
+                @media (max-width: 767.98px) {
+                  .no-results-icon {
+                    margin-left: 16px;
+                  }
+                }
+                @media (min-width: 768px) and (max-width: 991.98px) {
+                  .no-results-icon {
+                    margin-left: 32px;
+                  }
+                }
+                </style>
             </div>
             <p>No customers match your search criteria.</p>
         </div>
