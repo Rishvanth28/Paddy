@@ -77,12 +77,14 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
   background: linear-gradient(to right, #000, #2d2d2d);
   padding: 1.5rem 2rem;
   color: #fff;
+  transition: padding 0.3s ease;
 }
 
 .card-header h2 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
+  transition: font-size 0.3s ease;
 }
 
 .card-body {
@@ -214,26 +216,283 @@ h1, h2, h3, h4, h5, h6, p, span, div, label {
     color: #856404;
     border: 1px solid #ffeaa7;
 }
-@media (max-width: 768px) {
-    .header-bar { width: 100%;
-    position: fixed;
-    top: 5rem;
-    left: 0;
-     width: 100%;
-    height: auto;
-    z-index: 1000;
-    margin: 0;
-    background-color: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    padding: 20px 65px;
-    border-bottom: 1px solid #e0e0e0;
+/* Responsive Breakpoints */
 
- }
+/* Large Tablets and Small Laptops (1024px and below) */
+@media (max-width: 1024px) {
+    .header-bar {
+        margin-left: 2rem;
+        margin-top: 2rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .page-title {
+        font-size: 1.8rem;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .page-title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
     .upgrade-container {
-    padding-top: 60px; /* adjust based on header height */
+        padding: 0 1rem;
+    }
+    
+    .card-header {
+        padding: 1.25rem 1.5rem;
+        text-align: center;
+    }
+    
+    .card-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 15px;
+    }
+    
+    .info-item {
+        padding: 0.875rem 1rem;
+    }
 }
-    .form-grid { grid-template-columns: 1fr; }
-    .card-body { padding: 1rem; }
+
+/* Standard Tablets (768px to 1024px) */
+@media (max-width: 768px) and (min-width: 481px) {
+    .header-bar {
+        position: static;
+        width: 100%;
+        margin: 1rem 0;
+        padding: 15px 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .upgrade-container {
+        padding: 0 0.75rem;
+    }
+    
+    .page-title {
+        font-size: 1.6rem;
+    }
+    
+    .upgrade-subtitle {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+    
+    .card-header {
+        padding: 1rem 1.25rem;
+        text-align: center;
+    }
+    
+    .card-header h2 {
+        font-size: 1.2rem;
+        line-height: 1.3;
+    }
+    
+    .card-body {
+        padding: 1.25rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+    }
+    
+    .info-item {
+        padding: 0.75rem 0.875rem;
+    }
+    
+    .info-label {
+        font-size: 0.8rem;
+    }
+    
+    .info-value {
+        font-size: 0.95rem;
+    }
+}
+
+/* Mobile Devices (480px and below) */
+@media (max-width: 480px) {
+    .header-bar {
+        position: static;
+        width: 100%;
+        margin: 0.5rem 0;
+        padding: 12px 15px;
+        background-color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        border-radius: 6px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .upgrade-container {
+        padding: 0 0.5rem;
+    }
+    
+    .page-title {
+        font-size: 1.4rem;
+        padding-bottom: 0.4rem;
+    }
+    
+    .page-title::after {
+        width: 60px;
+        height: 3px;
+    }
+    
+    .page-title:hover::after {
+        width: 80px;
+    }
+    
+    .upgrade-subtitle {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+    
+    .upgrade-card {
+        margin-top: 1rem;
+        border-radius: 8px;
+    }
+    
+    .card-header {
+        padding: 0.875rem 1rem;
+        text-align: center;
+    }
+    
+    .card-header h2 {
+        font-size: 1.1rem;
+        line-height: 1.2;
+        word-wrap: break-word;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .info-item {
+        padding: 0.625rem 0.75rem;
+    }
+    
+    .info-label {
+        font-size: 0.75rem;
+        margin-bottom: 3px;
+    }
+    
+    .info-value {
+        font-size: 0.9rem;
+        line-height: 1.3;
+        word-wrap: break-word;
+    }
+    
+    .subscription-status {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .submit-btn {
+        padding: 10px 25px;
+        font-size: 14px;
+        width: 100%;
+        margin-top: 15px;
+    }
+}
+
+/* Extra Small Mobile Devices (360px and below) */
+@media (max-width: 360px) {
+    .header-bar {
+        padding: 10px 12px;
+        margin: 0.25rem 0;
+    }
+    
+    .upgrade-container {
+        padding: 0 0.25rem;
+    }
+    
+    .page-title {
+        font-size: 1.2rem;
+    }
+    
+    .upgrade-subtitle {
+        font-size: 0.75rem;
+    }
+    
+    .card-header {
+        padding: 0.75rem 0.875rem;
+    }
+    
+    .card-header h2 {
+        font-size: 1rem;
+    }
+    
+    .card-body {
+        padding: 0.875rem;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+    }
+    
+    .info-item {
+        padding: 0.5rem 0.625rem;
+    }
+    
+    .info-label {
+        font-size: 0.7rem;
+    }
+    
+    .info-value {
+        font-size: 0.85rem;
+    }
+}
+
+/* Landscape Mobile Orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header-bar {
+        flex-direction: row;
+        justify-content: center;
+        padding: 8px 15px;
+    }
+    
+    .page-title {
+        font-size: 1.3rem;
+    }
+    
+    .upgrade-subtitle {
+        display: none;
+    }
+    
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .card-header h2 {
+        font-size: 1.1rem;
+    }
 }
 </style>
 
