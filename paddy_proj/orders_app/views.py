@@ -7,8 +7,6 @@ from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta, date
 import json
-import os
-import razorpay
 from django.contrib import messages
 
 # Import models from paddy_app
@@ -18,11 +16,6 @@ from paddy_app.models import (
 )
 from paddy_app.decorators import role_required
 from paddy_app.helpers import number_to_words_indian, create_notification
-
-# Razorpay configuration
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
-RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
-client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
 
 # Customer Orders Views
 @role_required(["customer"])
@@ -434,248 +427,165 @@ def place_order(request):
 
     customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
     
-    # Handle Razorpay payment verification callback
-    if request.method == "POST" and request.POST.get("razorpay_payment_id"):
-        payment_id = request.POST.get("razorpay_payment_id")
-        order_id = request.POST.get("razorpay_order_id")
-        signature = request.POST.get("razorpay_signature")
-        temp_data_json = request.session.get("temp_order_data")
+    # Handle order submission - create order and redirect to dashboard
+    if request.method == "POST":
+        # Prevent duplicate submissions using session token
+        form_token = request.POST.get('form_token')
+        session_token = request.session.get('last_order_token')
         
-        if not temp_data_json:
-            messages.error(request, "Order data not found. Please try again.")
-            return redirect("orders_app:place_order" if is_superadmin else "orders_app:admin_place_order")
+        if form_token and form_token == session_token:
+            # Duplicate submission detected
+            messages.warning(request, "Order already submitted. Redirecting to orders page.")
+            if is_superadmin:
+                return redirect('orders_app:super_admin_orders')
+            else:
+                return redirect('orders_app:admin_orders')
         
-        temp_data = json.loads(temp_data_json)
+        # Store the token to prevent duplicate submissions
+        if form_token:
+            request.session['last_order_token'] = form_token
         
-        # Verify payment
-        try:
-            client.utility.verify_payment_signature({
-                'razorpay_order_id': order_id,
-                'razorpay_payment_id': payment_id,
-                'razorpay_signature': signature
-            })
+        # Process order data
+        if str(request.POST.get("product_category_id")) != "3":
+            # Regular order (Rice/Paddy)
+            customer_id = request.POST.get("customer")
+            product_category_id = request.POST.get("product_category_id")
+            quantity = float(request.POST.get("quantity")) if request.POST.get("quantity") else 0
+            price_per_unit = float(request.POST.get("price_per_unit")) if request.POST.get("price_per_unit") else 0
+            overall_amount = quantity * price_per_unit
             
-            # Create payment record for booking fee
-            payment = Payments.objects.create(
-                order=None,  # Will be updated after order creation
-                amount=10,
-                date=timezone.now().date(),
-                reference=payment_id,
-                proof_link=payment_id,  # Razorpay payment ID as proof
-                payment_method="Razorpay"
+            customer = CustomerTable.objects.get(customer_id=customer_id)
+            gst = customer.GST
+
+            order = Orders.objects.create(
+                customer=customer,
+                admin=AdminTable.objects.get(admin_id=admin_id),
+                payment_status=0,
+                delivery_status=0,
+                product_category_id=product_category_id,
+                category=request.POST.get("category"),
+                quantity=quantity,
+                price_per_unit=price_per_unit,
+                overall_amount=overall_amount,
+                GST=gst,
+                lorry_number=request.POST.get("vehicle_number"),
+                driver_name=request.POST.get("driver_name"),
+                delivery_date=request.POST.get("delivery_date"),
+                driver_ph_no=request.POST.get("driver_ph_no"),
+                order_date=date.today()
             )
             
-            # Now proceed with order creation
-            if temp_data["product_category_id"] != "3":                # Regular order flow
-                customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
-                gst = customer.GST
-
-                quantity = float(temp_data["quantity"]) if temp_data["quantity"] else 0
-                price_per_unit = float(temp_data["price_per_unit"]) if temp_data["price_per_unit"] else 0
-                overall_amount = quantity * price_per_unit
-
-                order = Orders.objects.create(
-                    customer=customer,
-                    admin=AdminTable.objects.get(admin_id=admin_id),
-                    payment_status=0,
-                    delivery_status=0,
-                    product_category_id=temp_data["product_category_id"],
-                    category=temp_data.get("category"),  # Add category field
-                    quantity=quantity,
-                    price_per_unit=price_per_unit,
-                    overall_amount=overall_amount,
-                    GST=gst,
-                    lorry_number=temp_data["lorry_number"],
-                    driver_name=temp_data["driver_name"],
-                    delivery_date=temp_data["delivery_date"],
-                    driver_ph_no=temp_data["driver_ph_no"],
-                    order_date=date.today()
-                )
-                  # Update payment with order ID
-                payment.order = order
-                payment.save()
-                
-                # Create notifications for order placement
-                product_name = "Rice" if temp_data["product_category_id"] == "1" else "Paddy"
-                
-                # Notification for customer
-                create_notification(
-                    user_type='customer',
-                    user_id=customer.customer_id,
-                    notification_type='order_placed',
-                    title=f'New {product_name} Order Placed',
-                    message=f'Your {product_name} order #{order.order_id} has been placed successfully. Quantity: {quantity}, Amount: ₹{overall_amount}',
-                    related_order_id=order.order_id
-                )
-                
-                # Notification for admin
-                create_notification(
-                    user_type='admin',
-                    user_id=admin_id,
-                    notification_type='order_placed',
-                    title=f'New {product_name} Order Received',
-                    message=f'New {product_name} order #{order.order_id} from {customer.first_name} {customer.last_name}. Amount: ₹{overall_amount}',
-                    related_order_id=order.order_id
-                )
-                
-                messages.success(request, "Order placed successfully after booking fee payment!")
-                
-            else:
-                # Multiple products order flow
-                customer = CustomerTable.objects.get(customer_id=temp_data["customer_id"])
-                gst = customer.GST
-                  # Create order
-                order = Orders.objects.create(
-                    customer=customer,
-                    admin=AdminTable.objects.get(admin_id=admin_id),
-                    payment_status=0,
-                    quantity=0,
-                    product_category_id=temp_data["product_category_id"],
-                    category=temp_data.get("category"),  # Add category field
-                    GST=gst,
-                    lorry_number=temp_data["lorry_number"],
-                    driver_name=temp_data["driver_name"],
-                    delivery_date=temp_data["delivery_date"],
-                    delivery_status=0,
-                    driver_ph_no=temp_data["driver_ph_no"],
-                    order_date=date.today()
-                )
-                
-                # Update payment with order ID
-                payment.order = order
-                payment.save()
-                
-                # Process each order item
-                product_names = temp_data["product_names"]
-                batch_numbers = temp_data["batch_numbers"]
-                expiry_dates = temp_data["expiry_dates"]
-                quantities = temp_data["quantities"]
-                prices = temp_data["prices"]
-                units = temp_data["units"]
-                totals = temp_data["totals"]
-                
-                # Create order items
-                order_items = []
-                for i in range(len(product_names)):
-                    # Skip empty rows
-                    if not product_names[i].strip():
-                        continue
-                        
-                    item = OrderItems(
-                        order=order,
-                        product_name=product_names[i],
-                        batch_number=batch_numbers[i],
-                        expiry_date=expiry_dates[i],
-                        quantity=int(float(quantities[i])),
-                        price_per_unit=float(prices[i]),
-                        total_amount=float(totals[i]),
-                        unit=units[i]
-                    )
-                    order_items.append(item)
-                
-                order.overall_amount = sum(float(totals[i]) for i in range(len(totals)) if totals[i].strip())
-                order.save()
-                  # Bulk create items
-                OrderItems.objects.bulk_create(order_items)
-                
-                # Create notifications for pesticide order
-                create_notification(
-                    user_type='customer',
-                    user_id=customer.customer_id,
-                    notification_type='order_placed',
-                    title='New Pesticide Order Placed',
-                    message=f'Your pesticide order #{order.order_id} with multiple items has been placed successfully. Total Amount: ₹{order.overall_amount}',
-                    related_order_id=order.order_id
-                )
-                
-                # Notification for admin
-                create_notification(
-                    user_type='admin',
-                    user_id=admin_id,
-                    notification_type='order_placed',
-                    title='New Pesticide Order Received',
-                    message=f'New pesticide order #{order.order_id} from {customer.first_name} {customer.last_name} with {len(order_items)} items. Total Amount: ₹{order.overall_amount}',
-                    related_order_id=order.order_id
-                )
-                
-                messages.success(request, "Order with multiple items placed successfully after booking fee payment!")
+            # Create notifications for order placement
+            product_name = "Rice" if product_category_id == "1" else "Paddy"
             
-            # Clear temporary data
-            if "temp_order_data" in request.session:
-                del request.session["temp_order_data"]
+            # Notification for customer
+            create_notification(
+                user_type='customer',
+                user_id=customer.customer_id,
+                notification_type='order_placed',
+                title=f'New {product_name} Order Placed',
+                message=f'Your {product_name} order #{order.order_id} has been placed successfully. Quantity: {quantity}, Amount: ₹{overall_amount}',
+                related_order_id=order.order_id
+            )
+            
+            # Notification for admin
+            create_notification(
+                user_type='admin',
+                user_id=admin_id,
+                notification_type='order_placed',
+                title=f'New {product_name} Order Received',
+                message=f'New {product_name} order #{order.order_id} from {customer.first_name} {customer.last_name}. Amount: ₹{overall_amount}',
+                related_order_id=order.order_id
+            )
                 
-            return redirect("orders_app:place_order" if is_superadmin else "orders_app:admin_place_order")
-            
-        except Exception as e:
-            messages.error(request, f"Payment verification failed: {str(e)}")
-            return redirect("orders_app:place_order" if is_superadmin else "orders_app:admin_place_order")
-    
-    # Handle AJAX request for creating Razorpay order
-    elif request.method == "POST" and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Store order data temporarily
-        temp_data = {}
-        
-        if str(request.POST.get("product_category_id")) != "3":
-            # Regular order
-            temp_data = {
-                "customer_id": request.POST.get("customer"),
-                "product_category_id": request.POST.get("product_category_id"),
-                "category": request.POST.get("category"),  # Add category field
-                "quantity": request.POST.get("quantity"),
-                "price_per_unit": request.POST.get("price_per_unit"),
-                "lorry_number": request.POST.get("vehicle_number"),
-                "driver_name": request.POST.get("driver_name"),
-                "driver_ph_no": request.POST.get("driver_ph_no"),
-                "delivery_date": request.POST.get("delivery_date")
-            }
-            
         else:
-            # Multiple products order
-            temp_data = {
-                "customer_id": request.POST.get("customer"),
-                "product_category_id": request.POST.get("product_category_id"),
-                "category": request.POST.get("category"),  # Add category field
-                "lorry_number": request.POST.get("vehicle_number"),
-                "driver_name": request.POST.get("driver_name"),
-                "driver_ph_no": request.POST.get("driver_ph_no"),
-                "delivery_date": request.POST.get("delivery_date"),
-                "product_names": request.POST.getlist("product_name[]"),
-                "batch_numbers": request.POST.getlist("batch_number[]"),
-                "expiry_dates": request.POST.getlist("expiry_date[]"),
-                "quantities": request.POST.getlist("quantity[]"),
-                "prices": request.POST.getlist("price_per_unit[]"),
-                "units": request.POST.getlist("unit[]"),
-                "totals": request.POST.getlist("total_amount[]")
-            }
-        
-        # Store data in session
-        request.session["temp_order_data"] = json.dumps(temp_data)
-        
-        # Create Razorpay order for booking fee
-        try:
-            razorpay_order = client.order.create({
-                "amount": 1000,  # 10 Rs in paise
-                "currency": "INR",
-                "payment_capture": 1,  # Auto-capture
-                "notes": {
-                    "purpose": "Order booking fee",
-                    "admin_id": str(admin_id)
-                }
-            })
+            # Multiple products order (Pesticides)
+            customer_id = request.POST.get("customer")
+            customer = CustomerTable.objects.get(customer_id=customer_id)
+            gst = customer.GST
             
-            # Return JSON response for AJAX
-            return JsonResponse({
-                "status": "success",
-                "razorpay_key": RAZORPAY_KEY_ID,
-                "order_id": razorpay_order["id"],
-                "amount": 10  # In Rs
-            })
+            # Create order
+            order = Orders.objects.create(
+                customer=customer,
+                admin=AdminTable.objects.get(admin_id=admin_id),
+                payment_status=0,
+                quantity=0,
+                product_category_id=request.POST.get("product_category_id"),
+                category=request.POST.get("category"),
+                GST=gst,
+                lorry_number=request.POST.get("vehicle_number"),
+                driver_name=request.POST.get("driver_name"),
+                delivery_date=request.POST.get("delivery_date"),
+                delivery_status=0,
+                driver_ph_no=request.POST.get("driver_ph_no"),
+                order_date=date.today()
+            )
             
-        except Exception as e:
-            return JsonResponse({
-                "status": "error",
-                "message": f"Error creating payment: {str(e)}"
-            })
+            # Process each order item
+            product_names = request.POST.getlist("product_name[]")
+            batch_numbers = request.POST.getlist("batch_number[]")
+            expiry_dates = request.POST.getlist("expiry_date[]")
+            quantities = request.POST.getlist("quantity[]")
+            prices = request.POST.getlist("price_per_unit[]")
+            units = request.POST.getlist("unit[]")
+            totals = request.POST.getlist("total_amount[]")
+            
+            # Create order items
+            order_items = []
+            for i in range(len(product_names)):
+                # Skip empty rows
+                if not product_names[i].strip():
+                    continue
+                    
+                item = OrderItems(
+                    order=order,
+                    product_name=product_names[i],
+                    batch_number=batch_numbers[i],
+                    expiry_date=expiry_dates[i],
+                    quantity=int(float(quantities[i])),
+                    price_per_unit=float(prices[i]),
+                    total_amount=float(totals[i]),
+                    unit=units[i]
+                )
+                order_items.append(item)
+            
+            order.overall_amount = sum(float(totals[i]) for i in range(len(totals)) if totals[i].strip())
+            order.save()
+            
+            # Bulk create items
+            OrderItems.objects.bulk_create(order_items)
+            
+            # Create notifications for pesticide order
+            create_notification(
+                user_type='customer',
+                user_id=customer.customer_id,
+                notification_type='order_placed',
+                title='New Pesticide Order Placed',
+                message=f'Your pesticide order #{order.order_id} with multiple items has been placed successfully. Total Amount: ₹{order.overall_amount}',
+                related_order_id=order.order_id
+            )
+            
+            # Notification for admin
+            create_notification(
+                user_type='admin',
+                user_id=admin_id,
+                notification_type='order_placed',
+                title='New Pesticide Order Received',
+                message=f'New pesticide order #{order.order_id} from {customer.first_name} {customer.last_name} with {len(order_items)} items. Total Amount: ₹{order.overall_amount}',
+                related_order_id=order.order_id
+            )
+        
+        messages.success(request, f"Order #{order.order_id} placed successfully!")
+        
+        # Clear the form token to prevent reuse
+        if 'last_order_token' in request.session:
+            del request.session['last_order_token']
+        
+        # Redirect back to appropriate orders page based on role
+        if is_superadmin:
+            return redirect('orders_app:super_admin_orders')
+        else:
+            return redirect('orders_app:admin_orders')
     
     # Render the initial form
     return render(request, "orders_app/place_order.html" if is_superadmin else "orders_app/admin_place_order.html", {"customers": customers})

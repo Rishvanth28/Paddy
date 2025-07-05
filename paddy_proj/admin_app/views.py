@@ -1,38 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password, make_password
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from django.http import JsonResponse, HttpResponse
-from django.db import IntegrityError
-from datetime import date
-from django.core.paginator import Paginator
-from django.utils import timezone
+from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
+from django.utils.timezone import now
+from datetime import datetime, timedelta
+from django.db.models import Sum, Count, Q, Avg, Case, When, F
+from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
 from paddy_app.decorators import role_required
 from paddy_app.helpers import *
-import json
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.timezone import now
-import razorpay
-from django.conf import settings
-from datetime import timedelta
-from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
-from dotenv import load_dotenv
-import os
-from django.db.models import Case, When, Sum, Count, F
-from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
 from paddy_app.models import *
-import os
-from django.db.models import Q, Prefetch
-
-
-load_dotenv()
-
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
-RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
-
-client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
+import json
 
 @role_required(["admin"])
 def admin_dashboard(request):
@@ -327,7 +304,6 @@ def admin_add_subscription(request):
         "existing_subscription": 1 if existing_subscription else 0, 
         "payment_amount": existing_subscription.payment_amount if existing_subscription and existing_subscription.payment_amount else 0,
         "subscription_status": existing_subscription.subscription_status if existing_subscription else -1, # -1 for no subscription history
-        "RAZORPAY_KEY_ID": RAZORPAY_KEY_ID, # Pass Razorpay Key for JS in template
     }
     return render(request, "admin_app/admin_add_subscription.html", context)
 

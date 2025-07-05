@@ -1142,7 +1142,7 @@ def admin_reports(request):
     """View for admin reports"""
     # Check if user is logged in
     if not request.session.get("user_id") or not request.session.get("role"):
-        return redirect("/")
+        return redirect("login_app:login")
     
     # Get admin ID from session
     admin_id = request.session.get("user_id")
@@ -1241,7 +1241,7 @@ def superadmin_reports(request):
     """View for superadmin reports"""
     # Check if user is logged in
     if not request.session.get("user_id") or not request.session.get("role"):
-        return redirect("/")
+        return redirect("login_app:login")
     
     # Get all admins and customers for filter dropdowns
     admins = AdminTable.objects.all()

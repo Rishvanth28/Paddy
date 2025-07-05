@@ -88,7 +88,7 @@
 
                         <!-- Customer Signup Form -->
                         <div id="customer-form" class="form-card" style="display: none;">
-                            <form method="POST" action="{% url 'onboarding:create_customer_signup' %}">>
+                            <form method="POST" action="{% url 'onboarding:create_customer_signup' %}">
                                 {% csrf_token %}
                                 <!-- First Row: Name Fields -->
                                 <div class="form-row">

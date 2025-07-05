@@ -3,7 +3,6 @@
 {% block content %}
 <head>
     <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         @media (max-width:768px) {
             .form-container {
@@ -48,6 +47,7 @@
             <hr>
             <form method="POST" id="rice-order-form" class="order-form">
                 {% csrf_token %}
+                <input type="hidden" name="form_token" value="{{ request.session.session_key }}_rice_{{ now|date:'U' }}">
                 <input type="hidden" name="product_category_id" value="1">
                 <div class="form-row">
                     <div class="form-group">
@@ -111,6 +111,7 @@
             <hr>
             <form method="POST" id="paddy-order-form" class="order-form">
                 {% csrf_token %}
+                <input type="hidden" name="form_token" value="{{ request.session.session_key }}_paddy_{{ now|date:'U' }}">
                 <input type="hidden" name="product_category_id" value="2">
                 <div class="form-row">
                     <div class="form-group">
@@ -172,6 +173,7 @@
             <hr>
             <form method="POST" id="pesticide-order-form" class="order-form">
                 {% csrf_token %}
+                <input type="hidden" name="form_token" value="{{ request.session.session_key }}_pesticide_{{ now|date:'U' }}">
                 <input type="hidden" name="product_category_id" value="3">
                 <div class="form-row">
                     <div class="form-group">
@@ -303,102 +305,60 @@
         }
     </script>
 
-    <!-- Razorpay script -->
+    <!-- Order submission script -->
     <script>
-        // Razorpay integration with Pay Later and all payment methods
+        // Direct form submission for order creation
         function submitOrderForm(formId, categoryId) {
             const form = document.getElementById(formId);
-            const formData = new FormData(form);
-            // Get CSRF token from the form
-            const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]').value;
-            fetch("{% url 'orders_app:place_order' %}", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": csrfToken
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Launch Razorpay payment modal
-                    const options = {
-                        key: data.razorpay_key,
-                        amount: data.amount * 100, // Amount in paise
-                        currency: "INR",
-                        name: "Order Booking Fee",
-                        description: "Rs. 10 booking fee for placing an order",
-                        order_id: data.order_id,
-                        handler: function(response) {
-                            // Create a form to submit payment details back to server
-                            const paymentForm = document.createElement('form');
-                            paymentForm.method = 'POST';
-                            paymentForm.action = "{% url 'orders_app:place_order' %}";
-                            // Add CSRF token
-                            const csrfInput = document.createElement('input');
-                            csrfInput.type = 'hidden';
-                            csrfInput.name = 'csrfmiddlewaretoken';
-                            csrfInput.value = csrfToken;
-                            paymentForm.appendChild(csrfInput);
-                            // Add payment response fields
-                            const paymentId = document.createElement('input');
-                            paymentId.type = 'hidden';
-                            paymentId.name = 'razorpay_payment_id';
-                            paymentId.value = response.razorpay_payment_id;
-                            paymentForm.appendChild(paymentId);
-                            const orderId = document.createElement('input');
-                            orderId.type = 'hidden';
-                            orderId.name = 'razorpay_order_id';
-                            orderId.value = response.razorpay_order_id;
-                            paymentForm.appendChild(orderId);
-                            const signature = document.createElement('input');
-                            signature.type = 'hidden';
-                            signature.name = 'razorpay_signature';
-                            signature.value = response.razorpay_signature;
-                            paymentForm.appendChild(signature);
-                            // Add to DOM and submit
-                            document.body.appendChild(paymentForm);
-                            paymentForm.submit();
-                        },
-                        theme: {
-                            color: "#3399cc"
-                        },
-                        method: {
-                            netbanking: true,
-                            card: true,
-                            upi: true,
-                            wallet: true,
-                            paylater: true
-                        },
-                        config: {
-                            display: {
-                                blocks: {
-                                    paylater: {
-                                        name: "Pay Later",
-                                        instruments: [
-                                            { method: "paylater" }
-                                        ]
-                                    }
-                                },
-                                sequence: ["block.paylater", "block.cards", "block.netbanking", "block.upi", "block.wallet"],
-                                preferences: {
-                                    show_default_blocks: true
-                                }
-                            }
-                        }
-                    };
-                    const rzp = new Razorpay(options);
-                    rzp.open();
-                } else {
-                    alert(data.message || "An error occurred");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred while processing your request");
-            });
+            
+            // Validate form before submission
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return false;
+            }
+            
+            // Submit the form directly - backend will handle order creation and redirect to payment
+            form.submit();
         }
+
+        // Remove preventDefault and let forms submit naturally
+        document.addEventListener('DOMContentLoaded', function() {
+            const riceForm = document.getElementById('rice-order-form');
+            const paddyForm = document.getElementById('paddy-order-form');
+            const pesticideForm = document.getElementById('pesticide-order-form');
+            
+            // No preventDefault needed - forms will submit naturally
+            if (riceForm) {
+                riceForm.addEventListener('submit', function(e) {
+                    // Just validate - no preventDefault
+                    const form = e.target;
+                    if (!form.checkValidity()) {
+                        e.preventDefault();
+                        form.reportValidity();
+                    }
+                });
+            }
+            if (paddyForm) {
+                paddyForm.addEventListener('submit', function(e) {
+                    // Just validate - no preventDefault
+                    const form = e.target;
+                    if (!form.checkValidity()) {
+                        e.preventDefault();
+                        form.reportValidity();
+                    }
+                });
+            }
+            if (pesticideForm) {
+                pesticideForm.addEventListener('submit', function(e) {
+                    // Just validate - no preventDefault
+                    const form = e.target;
+                    if (!form.checkValidity()) {
+                        e.preventDefault();
+                        form.reportValidity();
+                    }
+                });
+            }
+        });
 
         // Attach submit event listeners to all forms
         document.addEventListener('DOMContentLoaded', function() {
@@ -780,5 +740,36 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
     </style>
+
+    <script>
+        // Prevent double form submissions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all order forms
+            const forms = document.querySelectorAll('.order-form');
+            
+            forms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    
+                    // Check if already submitted
+                    if (submitBtn.disabled) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    
+                    // Disable submit button and change text
+                    submitBtn.disabled = true;
+                    const originalText = submitBtn.textContent;
+                    submitBtn.textContent = 'Processing...';
+                    
+                    // Re-enable after a delay (fallback in case of errors)
+                    setTimeout(function() {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }, 5000);
+                });
+            });
+        });
+    </script>
 </body>
 {% endblock %}

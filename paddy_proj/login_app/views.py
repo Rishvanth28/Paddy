@@ -1,41 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password, make_password
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from django.http import JsonResponse, HttpResponse
-from .models import *
-from django.db import IntegrityError
-from datetime import date
-from django.core.paginator import Paginator
-from django.utils import timezone
-import json
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.hashers import check_password
 from django.utils.timezone import now
-import razorpay
-from django.conf import settings
 from datetime import timedelta
-from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
-from dotenv import load_dotenv
-import os
-from django.db.models import Case, When, Sum, Count, F
-from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
-from paddy_app.models import Orders, OrderItems, Payments, AdminTable, CustomerTable
-import os
-from django.db.models import Q, Prefetch
-from paddy_app.decorators import role_required
-from paddy_app.helpers import *
-from paddy_app.models import *
+from paddy_app.models import AdminTable, CustomerTable, Subscription
 
 
-load_dotenv()
-
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
-RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
-
-client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
-# Create your views here.
 def login_view(request):
     if request.session.get("user_id") and request.session.get("role"):
         role = request.session["role"]

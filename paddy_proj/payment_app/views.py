@@ -402,7 +402,7 @@ def admin_subscription_payment(request):
                 "amount": amount * 100,
                 "key_id": RAZORPAY_KEY_ID,
                 "success_url": "/payment/admin-payment-success/",
-                "redirect_url": "/admin-dashboard/"
+                "redirect_url": "/admin-panel/admin-dashboard/"
             })
 
         return render(request, "payment_app/admin_subscription_payment.html", {
@@ -460,7 +460,7 @@ def customer_subscription_payment(request):
                 "amount": amount * 100,
                 "key_id": RAZORPAY_KEY_ID,
                 "success_url": "/payment/customer-payment-success/",
-                "redirect_url": "/customer-dashboard/"
+                "redirect_url": "/customer/customer-dashboard/"
             })
 
         return render(request, "payment_app/customer_subscription_payment.html", {
@@ -852,3 +852,105 @@ def create_admin_user_increase_order(request):
     except Exception as e:
         print(f"Error in create_admin_user_increase_order: {e}") # Log the error for debugging
         return JsonResponse({'success': False, 'message': f'An error occurred while creating payment order: {str(e)}'}, status=500)
+
+# Order Booking Fee Payment - COMMENTED OUT (No payment required for placing orders)
+# @role_required(["admin", "superadmin"])
+def order_booking_payment(request):
+    """Handle order booking fee payment (₹10) - DISABLED"""
+    # Booking fee payment is no longer required
+    # Orders can be placed directly without payment
+    
+    user_id = request.session.get("user_id")
+    role = request.session.get("role")
+    
+    if not user_id or role not in ["admin", "superadmin"]:
+        return redirect('login_app:login')
+    
+    # Redirect directly to orders page since no payment is required
+    messages.info(request, "Order booking fee has been waived. Orders can be placed directly.")
+    
+    if role == "superadmin":
+        return redirect('orders_app:super_admin_orders')
+    else:
+        return redirect('orders_app:admin_orders')
+    
+    # COMMENTED OUT - Original payment logic
+    """
+    if request.method == "POST":
+        # Handle payment verification
+        if request.POST.get("razorpay_payment_id"):
+            payment_id = request.POST.get("razorpay_payment_id")
+            order_id = request.POST.get("razorpay_order_id")
+            signature = request.POST.get("razorpay_signature")
+            
+            try:
+                # Verify payment signature
+                client.utility.verify_payment_signature({
+                    'razorpay_order_id': order_id,
+                    'razorpay_payment_id': payment_id,
+                    'razorpay_signature': signature
+                })
+                
+                # Create payment record for booking fee
+                Payments.objects.create(
+                    order=None,  # Booking fee is not tied to specific order
+                    amount=10,
+                    date=timezone.now().date(),
+                    reference=payment_id,
+                    proof_link=payment_id,
+                    payment_method="Razorpay"
+                )
+                
+                messages.success(request, "Booking fee payment successful!")
+                
+                # Get pending order ID from session if it exists
+                pending_order_id = request.session.get('pending_order_id')
+                if pending_order_id:
+                    # Clear the session
+                    del request.session['pending_order_id']
+                
+                # Redirect based on role to orders page
+                if role == "superadmin":
+                    return redirect('orders_app:super_admin_orders')
+                else:
+                    return redirect('orders_app:admin_orders')
+                    
+            except Exception as e:
+                messages.error(request, f"Payment verification failed: {str(e)}")
+                
+        # Handle AJAX request to create Razorpay order
+        elif request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            try:
+                razorpay_order = client.order.create({
+                    "amount": 1000,  # ₹10 in paise
+                    "currency": "INR",
+                    "payment_capture": 1,
+                    "notes": {
+                        "purpose": "Order booking fee",
+                        "user_id": str(user_id),
+                        "role": role
+                    }
+                })
+                
+                return JsonResponse({
+                    "status": "success",
+                    "razorpay_key": RAZORPAY_KEY_ID,
+                    "order_id": razorpay_order["id"],
+                    "amount": 10
+                })
+                
+            except Exception as e:
+                return JsonResponse({
+                    "status": "error",
+                    "message": f"Error creating payment: {str(e)}"
+                })
+    
+    # Render payment page
+    context = {
+        'amount': 10,
+        'purpose': 'Order Booking Fee',
+        'description': 'One-time booking fee for placing orders',
+        'user_role': role
+    }
+    return render(request, 'payment_app/booking_payment.html', context)
+    """

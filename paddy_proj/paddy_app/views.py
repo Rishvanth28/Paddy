@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.views.decorators.csrf import csrf_exempt
@@ -6,35 +6,34 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse, HttpResponse
 from .models import *
 from django.db import IntegrityError
-from datetime import date
+from datetime import date, timedelta
 from django.core.paginator import Paginator
 from django.utils import timezone
+from django.utils.timezone import now
 from .decorators import role_required
 from .helpers import *
 from .helpers import create_notification
 import json
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.timezone import now
-import razorpay
-from django.conf import settings
-from datetime import timedelta
-from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
-from dotenv import load_dotenv
-import os
-from django.db.models import Case, When, Sum, Count, F
+from django.db.models import Q, Case, When, Sum, Count, F, Prefetch
 from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
-from .models import Orders, OrderItems, Payments, AdminTable, CustomerTable
-import os
-from django.db.models import Q, Prefetch
+from .models import Orders, OrderItems, Payments, AdminTable, CustomerTable, Subscription
 
 
-load_dotenv()
-
-RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
-RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
-
-client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
+def home(request):
+    """
+    Home page view - redirects users based on their session role
+    """
+    role = request.session.get('role')
+    
+    if role == 'superadmin':
+        return redirect('superadmin_app:superadmin_dashboard')
+    elif role == 'admin':
+        return redirect('admin_app:admin_dashboard')
+    elif role == 'customer':
+        return redirect('customer_app:customer_dashboard')
+    else:
+        # If no valid session, redirect to login
+        return redirect('login_app:login')
 
 
 def profile(request):

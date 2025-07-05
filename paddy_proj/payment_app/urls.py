@@ -4,6 +4,9 @@ from . import views
 app_name = 'payment_app'
 
 urlpatterns = [
+    # Order Booking Fee Payment URLs
+    path('order-booking-payment/', views.order_booking_payment, name='order_booking_payment'),
+    
     # Order Payment URLs
     path('invoice/', views.payment, name='payment'),
     
