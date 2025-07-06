@@ -204,7 +204,7 @@ body.admin-page {
 
 @media (max-width: 768px) {
     .dashboard-navigation-section {
-        margin: 7rem 0 2rem 0;
+        /* margin: 7rem 0 2rem 0; */
         padding: 0 1rem;
     }
     
@@ -1293,7 +1293,7 @@ body.admin-page {
 /* Medium screens optimization (tablets and small laptops) */
 @media (min-width: 426px) and (max-width: 1024px) {
     .admin-dashboard-container {
-        margin-top: 8vh;
+        margin-top: 18vh;
         padding: 0 1rem 0 1rem;
     }
     

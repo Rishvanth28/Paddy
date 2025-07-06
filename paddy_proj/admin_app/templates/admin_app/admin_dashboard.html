@@ -5,8 +5,44 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
 
+<style>
+/* Mobile and Tablet responsive styles for gap between header and stats */
+@media (max-width: 1024px) {
+    .stats-row {
+        margin-top: 3rem !important;
+    }
+}
 
+@media (max-width: 768px) {
+    .stats-row {
+        margin-top: 3.5rem !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.8rem !important;
+    }
+    
+    .stats-row .stat-card {
+        width: calc(50% - 0.4rem) !important;
+        min-width: calc(50% - 0.4rem) !important;
+        flex: none !important;
+    }
+}
 
+@media (max-width: 480px) {
+    .stats-row {
+        margin-top: 9rem !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.8rem !important;
+    }
+    
+    .stats-row .stat-card {
+        width: calc(50% - 0.4rem) !important;
+        min-width: calc(50% - 0.4rem) !important;
+        flex: none !important;
+    }
+}
+</style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -43,12 +79,6 @@
         <div class="title-group">
             <h1 class="page-title mb-0 me-3">Welcome, Admin</h1>
             <p class="upgrade-subtitle">Monitor your business performance at a glance with key metrics and real-time data.</p>
-            <div class="summary-item">
-                <span class="summary-text">Business Overview</span>
-            </div>
-            <div class="summary-item">
-                <span class="summary-text">{{ current_date|default:"Today" }}</span>
-            </div>
         </div>
     </div>
     
