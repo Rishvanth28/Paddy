@@ -18,9 +18,11 @@
                 gap: 12px;
                 margin-left: 0;
             }
-            
-            .page-title {
+              .page-title {
                 font-size: 1.8rem;
+            }            /* Adjust padding for tablet when badge is present */
+            .page-title:has(.badge) {
+                padding-left: 0.5rem;
             }
             
             .notification-card {
@@ -111,11 +113,13 @@
                 text-align: center;
                 padding: 10px 0 !important;
             }
-            
-            .page-title {
+              .page-title {
                 font-size: 1.6rem;
                 text-align: center;
                 margin-bottom: 10px !important;
+            }            /* Reset padding for mobile when badge is present */
+            .page-title:has(.badge) {
+                padding-left: 0 !important;
             }
             
             .page-title::after {
@@ -323,9 +327,11 @@
             .container-fluid {
                 padding: 0 10px !important;
             }
-            
-            .page-title {
+              .page-title {
                 font-size: 1.4rem;
+            }            /* Reset padding for smallest mobile when badge is present */
+            .page-title:has(.badge) {
+                padding-left: 1.2rem !important;
             }
             
             .page-title::after {
@@ -467,9 +473,7 @@
             gap: 1rem;
             margin-left: 0.5rem;
             margin-top: -1rem;
-        }
-
-        .page-title {
+        }        .page-title {
             font-size: 2rem;
             font-weight: 700;
             margin: 0;
@@ -492,9 +496,7 @@
             background-color: #000000;
             border-radius: 2px;
             transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-
-        .page-title:hover::after {
+        }        .page-title:hover::after {
             width: 110%;
             transform: translateX(-50%);
         }
