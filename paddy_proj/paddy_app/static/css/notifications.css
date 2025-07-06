@@ -158,6 +158,254 @@
     }
 }
 
+/* Tablet responsive styles for notification cards */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .notification-card {
+        padding: 18px !important;
+        margin-bottom: 14px !important;
+        border-radius: 12px !important;
+    }
+    
+    .notification-header {
+        gap: 10px !important;
+    }
+    
+    .notification-icon {
+        width: 38px !important;
+        height: 38px !important;
+    }
+    
+    .notification-icon i {
+        font-size: 1.1rem !important;
+    }
+    
+    .notification-title {
+        font-size: 1.05rem !important;
+    }
+    
+    .notification-time {
+        font-size: 0.85rem !important;
+    }
+    
+    .notification-message {
+        font-size: 0.92rem !important;
+        line-height: 1.5 !important;
+    }
+    
+    .btn-sm {
+        padding: 7px 14px !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* Enhanced mobile responsive styles for notification cards */
+@media (max-width: 768px) {
+    .notifications-container {
+        margin: 0 -8px !important;
+    }
+    
+    .notification-card {
+        padding: 15px !important;
+        margin: 0 8px 12px 8px !important;
+        border-radius: 10px !important;
+    }
+    
+    .notification-header {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        align-items: flex-start !important;
+    }
+    
+    .notification-icon {
+        width: 35px !important;
+        height: 35px !important;
+        margin-top: 2px !important;
+    }
+    
+    .notification-icon i {
+        font-size: 1rem !important;
+    }
+    
+    .notification-title {
+        font-size: 1rem !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+        word-wrap: break-word !important;
+    }
+    
+    .notification-time {
+        font-size: 0.8rem !important;
+        width: 100% !important;
+        margin-top: 5px !important;
+        order: 3 !important;
+    }
+    
+    .unread-indicator {
+        position: static !important;
+        margin-left: auto !important;
+        margin-top: 2px !important;
+        width: 10px !important;
+        height: 10px !important;
+    }
+    
+    .notification-message {
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+        margin-top: 8px !important;
+        margin-bottom: 12px !important;
+        word-wrap: break-word !important;
+    }
+    
+    .notification-actions {
+        margin-top: 10px !important;
+    }
+    
+    .notification-actions .btn {
+        width: 100% !important;
+        padding: 8px 16px !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 5px !important;
+        text-align: center !important;
+        justify-content: center !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .notification-actions .btn i {
+        margin-right: 8px !important;
+    }
+    
+    .btn-sm {
+        padding: 8px 16px !important;
+        font-size: 0.85rem !important;
+        width: 100% !important;
+    }
+}
+
+/* Small mobile specific adjustments */
+@media (max-width: 480px) {
+    .notification-card {
+        padding: 12px !important;
+        margin: 0 5px 10px 5px !important;
+        border-radius: 8px !important;
+    }
+    
+    .notification-header {
+        gap: 6px !important;
+    }
+    
+    .notification-icon {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .notification-icon i {
+        font-size: 0.9rem !important;
+    }
+    
+    .notification-title {
+        font-size: 0.95rem !important;
+    }
+    
+    .notification-time {
+        font-size: 0.75rem !important;
+    }
+    
+    .notification-message {
+        font-size: 0.85rem !important;
+        margin-top: 6px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .notification-actions .btn {
+        padding: 6px 12px !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Notification selection controls responsive styles */
+@media (max-width: 768px) {
+    .delete-controls {
+        flex-direction: column !important;
+        gap: 12px !important;
+        padding: 15px !important;
+        border-radius: 8px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .delete-controls > div:first-child {
+        order: 1 !important;
+    }
+    
+    .delete-controls > div:last-child {
+        order: 2 !important;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    
+    .selection-info {
+        text-align: center !important;
+        justify-content: center !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .btn-cancel-selection,
+    .btn-delete-selected {
+        width: 100% !important;
+        margin-right: 0 !important;
+        margin-bottom: 8px !important;
+        padding: 10px 16px !important;
+        font-size: 0.9rem !important;
+        justify-content: center !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .btn-delete-selected {
+        margin-bottom: 0 !important;
+        height: auto !important;
+        min-height: 44px !important;
+    }
+}
+
+/* Notification checkbox responsive positioning */
+@media (max-width: 768px) {
+    .notification-checkbox {
+        position: absolute !important;
+        top: 10px !important;
+        right: 10px !important;
+        width: 38px !important;
+        height: 38px !important;
+        opacity: 0 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .notification-card:hover .notification-checkbox {
+        opacity: 1 !important;
+    }
+    
+    .custom-checkbox {
+        width: 18px !important;
+        height: 18px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .notification-checkbox {
+        width: 35px !important;
+        height: 35px !important;
+        top: 8px !important;
+        right: 8px !important;
+    }
+    
+    .custom-checkbox {
+        width: 16px !important;
+        height: 16px !important;
+    }
+}
+
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     .notification-card {
@@ -231,4 +479,205 @@
 
 .notification-card[data-type="admin_payment"] {
     border-left-color: #17a2b8;
+}
+
+/* ========== TOAST NOTIFICATION RESPONSIVE STYLES ========== */
+/* These styles apply to all toast notifications across the application */
+
+/* Toast container responsive positioning */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .toast-container {
+        top: 20px !important;
+        right: 20px !important;
+        left: auto !important;
+        max-width: 320px !important;
+    }
+    
+    .toast {
+        padding: 14px 35px 14px 14px !important;
+        font-size: 13px !important;
+        border-radius: 8px !important;
+        min-height: 56px !important;
+        display: flex !important;
+        align-items: center !important;
+        word-wrap: break-word !important;
+    }
+    
+    .toast-close {
+        top: 10px !important;
+        right: 8px !important;
+        font-size: 16px !important;
+        width: 22px !important;
+        height: 22px !important;
+    }
+}
+
+/* Mobile responsive styles for toast notifications */
+@media (max-width: 768px) {
+    .toast-container {
+        top: 15px !important;
+        right: 15px !important;
+        left: 15px !important;
+        max-width: none !important;
+        width: auto !important;
+    }
+    
+    .toast {
+        padding: 12px 32px 12px 12px !important;
+        font-size: 13px !important;
+        border-radius: 8px !important;
+        margin-bottom: 8px !important;
+        min-width: auto !important;
+        min-height: 52px !important;
+        display: flex !important;
+        align-items: center !important;
+        word-break: break-word !important;
+        line-height: 1.4 !important;
+    }
+    
+    .toast::before {
+        width: 12px !important;
+        height: 12px !important;
+        margin-right: 8px !important;
+    }
+    
+    .toast-close {
+        top: 8px !important;
+        right: 8px !important;
+        font-size: 16px !important;
+        width: 20px !important;
+        height: 20px !important;
+        line-height: 20px !important;
+    }
+    
+    .toast-content {
+        flex: 1 !important;
+        word-wrap: break-word !important;
+    }
+    
+    .toast-icon {
+        font-size: 14px !important;
+        margin-right: 8px !important;
+    }
+    
+    .toast-message {
+        font-size: 13px !important;
+        line-height: 1.4 !important;
+    }
+}
+
+/* Small mobile responsive styles */
+@media (max-width: 480px) {
+    .toast-container {
+        top: 10px !important;
+        right: 10px !important;
+        left: 10px !important;
+    }
+    
+    .toast {
+        padding: 10px 28px 10px 10px !important;
+        font-size: 12px !important;
+        border-radius: 6px !important;
+        margin-bottom: 6px !important;
+        min-height: 48px !important;
+    }
+    
+    .toast::before {
+        width: 10px !important;
+        height: 10px !important;
+        margin-right: 6px !important;
+    }
+    
+    .toast-close {
+        top: 6px !important;
+        right: 6px !important;
+        font-size: 14px !important;
+        width: 18px !important;
+        height: 18px !important;
+        line-height: 18px !important;
+    }
+    
+    .toast-icon {
+        font-size: 12px !important;
+        margin-right: 6px !important;
+    }
+    
+    .toast-message {
+        font-size: 12px !important;
+    }
+}
+
+/* Landscape orientation adjustments for better mobile UX */
+@media (max-height: 600px) and (orientation: landscape) {
+    .toast-container {
+        top: 10px !important;
+        max-height: calc(100vh - 20px) !important;
+        overflow-y: auto !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    
+    .toast-container::-webkit-scrollbar {
+        display: none !important;
+    }
+    
+    .toast {
+        margin-bottom: 6px !important;
+        padding: 8px 26px 8px 8px !important;
+        font-size: 11px !important;
+        min-height: 40px !important;
+    }
+    
+    .toast::before {
+        width: 8px !important;
+        height: 8px !important;
+        margin-right: 6px !important;
+    }
+    
+    .toast-close {
+        top: 4px !important;
+        right: 4px !important;
+        font-size: 12px !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+}
+
+/* Ensure toast notifications don't interfere with sidebars on mobile */
+@media (max-width: 1024px) {
+    body.sidebar-open .toast-container {
+        z-index: 999 !important; /* Lower than sidebar but still visible */
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .toast {
+        border: 2px solid currentColor !important;
+        box-shadow: 0 0 0 1px currentColor !important;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .toast {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    .toast-close:hover {
+        transform: none !important;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .toast-close {
+        min-width: 44px !important;
+        min-height: 44px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
 }

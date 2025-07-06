@@ -334,8 +334,7 @@
   </style>
 </head>
 
-<body class="superadmin-page"><style>
-  /* Toast Notifications Styling */
+<body class="superadmin-page"><style>  /* Toast Notifications Styling */
   .toast-container {
     position: fixed;
     top: 25px;
@@ -367,6 +366,7 @@
     display: flex;
     align-items: center;
     min-width: 300px;
+    word-wrap: break-word;
   }
 
   .toast::before {
@@ -410,7 +410,7 @@
 
   .toast-close {
     position: absolute;
-    /* top: 12px; */
+    top: 12px;
     right: 12px;
     background: none;
     border: none;
@@ -419,7 +419,7 @@
     color: #000000;
     opacity: 0.7;
     transition: all 0.3s ease;
-    /* width: 24px; */
+    width: 24px;
     height: 24px;
     display: flex;
     align-items: center;
@@ -447,6 +447,132 @@
     to {
       transform: translateX(110%);
       opacity: 0;
+    }
+  }
+
+  /* ========== TABLET RESPONSIVE STYLES (768px - 1024px) ========== */
+  @media (max-width: 1024px) and (min-width: 769px) {
+    .toast-container {
+      top: 20px;
+      right: 20px;
+      left: auto;
+      max-width: 320px;
+    }
+    
+    .toast {
+      padding: 14px 38px 14px 20px;
+      font-size: 0.9rem;
+      border-radius: 10px;
+      min-width: 280px;
+      min-height: 56px;
+    }
+    
+    .toast::before {
+      width: 14px;
+      height: 14px;
+      margin-right: 10px;
+    }
+    
+    .toast-close {
+      top: 10px;
+      right: 10px;
+      font-size: 1.1rem;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  /* ========== MOBILE RESPONSIVE STYLES (≤768px) ========== */
+  @media (max-width: 768px) {
+    .toast-container {
+      top: 15px;
+      right: 15px;
+      left: 15px;
+      max-width: none;
+      width: auto;
+    }
+    
+    .toast {
+      padding: 12px 35px 12px 16px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      min-width: auto;
+      min-height: 52px;
+      word-break: break-word;
+    }
+    
+    .toast::before {
+      width: 12px;
+      height: 12px;
+      margin-right: 8px;
+    }
+    
+    .toast-close {
+      top: 8px;
+      right: 8px;
+      font-size: 1rem;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  /* ========== SMALL MOBILE RESPONSIVE STYLES (≤480px) ========== */
+  @media (max-width: 480px) {
+    .toast-container {
+      top: 10px;
+      right: 10px;
+      left: 10px;
+    }
+    
+    .toast {
+      padding: 10px 30px 10px 12px;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      min-height: 48px;
+    }
+    
+    .toast::before {
+      width: 10px;
+      height: 10px;
+      margin-right: 6px;
+    }
+    
+    .toast-close {
+      top: 6px;
+      right: 6px;
+      font-size: 0.9rem;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  /* ========== LANDSCAPE ORIENTATION ADJUSTMENTS ========== */
+  @media (max-height: 600px) and (orientation: landscape) {
+    .toast-container {
+      top: 10px;
+      max-height: calc(100vh - 20px);
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    
+    .toast-container::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .toast {
+      margin-bottom: 6px;
+      padding: 8px 28px 8px 12px;
+      font-size: 0.75rem;
+      min-height: 40px;
+    }
+    
+    .toast::before {
+      width: 8px;
+      height: 8px;
+      margin-right: 6px;
     }
   }
 
