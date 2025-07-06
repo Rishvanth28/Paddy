@@ -363,9 +363,7 @@
         .logout-btn:active {
             transform: translateY(0);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
-        }
-
-        /* Toast Notification Styles */
+        }        /* Toast Notification Styles */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -385,23 +383,24 @@
             align-items: center;
             justify-content: space-between;
             animation: slideIn 0.3s ease-out;
+            word-wrap: break-word;
         }
 
-  .toast.success {
-    border-left-color: #000000;
-  }
+        .toast.success {
+            border-left-color: #000000;
+        }
 
-  .toast.info {
-    border-left-color: #000000;
-  }
+        .toast.info {
+            border-left-color: #000000;
+        }
 
-  .toast.warning {
-    border-left-color: #000000;
-  }
+        .toast.warning {
+            border-left-color: #000000;
+        }
 
-  .toast.error {
-    border-left-color: #000000;
-  }
+        .toast.error {
+            border-left-color: #000000;
+        }
 
         .toast-content {
             display: flex;
@@ -417,6 +416,62 @@
 
         .toast-success .toast-icon {
             color: #28a745;
+        }
+
+        /* ========== TABLET RESPONSIVE STYLES (768px - 1024px) ========== */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .toast-container {
+                top: 20px;
+                right: 20px;
+                left: auto;
+                max-width: 350px;
+            }
+            
+            .toast {
+                padding: 14px;
+                font-size: 14px;
+            }
+        }
+
+        /* ========== MOBILE RESPONSIVE STYLES (≤768px) ========== */
+        @media (max-width: 768px) {
+            .toast-container {
+                top: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: none;
+            }
+            
+            .toast {
+                padding: 12px;
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            
+            .toast-icon {
+                font-size: 14px;
+                margin-right: 8px;
+            }
+        }
+
+        /* ========== SMALL MOBILE RESPONSIVE STYLES (≤480px) ========== */
+        @media (max-width: 480px) {
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            .toast {
+                padding: 10px;
+                font-size: 12px;
+                margin-bottom: 6px;
+            }
+            
+            .toast-icon {
+                font-size: 12px;
+                margin-right: 6px;
+            }
         }
 
         .toast-warning .toast-icon {
