@@ -8,84 +8,446 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
 
-        
+          /* Tablet responsive styles */
+        @media (max-width: 991.98px) and (min-width: 768px) {
+            .container-fluid {
+                padding: 0 20px !important;
+            }
+            
+            .header-bar {
+                gap: 12px;
+                margin-left: 0;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .notification-card {
+                padding: 18px !important;
+                margin-bottom: 14px !important;
+            }
+            
+            .notification-header {
+                gap: 10px !important;
+            }
+            
+            .notification-icon {
+                width: 38px !important;
+                height: 38px !important;
+            }
+            
+            .notification-icon i {
+                font-size: 1.1rem !important;
+            }
+            
+            .notification-title {
+                font-size: 1.05rem !important;
+            }
+            
+            .notification-time {
+                font-size: 0.85rem !important;
+            }
+            
+            .notification-message {
+                font-size: 0.92rem !important;
+            }
+            
+            .btn-sm {
+                padding: 7px 14px;
+                font-size: 0.85rem;
+            }
+              .delete-controls {
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 16px;
+                justify-content: space-between;
+            }
+            
+            .delete-controls > div:last-child {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .selection-info {
+                flex: 1;
+                min-width: 200px;
+            }
+            
+            .btn-cancel-selection,
+            .btn-delete-selected {
+                min-width: 120px;
+                padding: 8px 14px !important;
+                font-size: 0.85rem !important;
+            }
+            
+            .btn-delete-selected {
+                height: auto !important;
+            }
+            
+            .notification-checkbox {
+                width: 38px;
+                height: 38px;
+            }
+            
+            .custom-checkbox {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
         /* Enhanced mobile responsive styles */
         @media (max-width: 767.98px) {
+            .container-fluid {
+                padding: 0 15px !important;
+                margin: 0 !important;
+            }
+            
             .header-bar {
                 flex-direction: column;
                 align-items: stretch;
                 gap: 15px;
                 margin-left: 0;
                 text-align: center;
+                padding: 10px 0 !important;
             }
-              .page-title {
+            
+            .page-title {
                 font-size: 1.6rem;
                 text-align: center;
+                margin-bottom: 10px !important;
             }
             
             .page-title::after {
                 left: 50%;
                 transform: translateX(-50%);
+                width: 60px;
+            }
+            
+            .d-flex.align-items-center.gap-2 {
+                flex-direction: column !important;
+                gap: 10px !important;
+                width: 100%;
+            }
+            
+            .btn-select-all,
+            .btn-outline-primary {
+                width: 100% !important;
+                margin-right: 0 !important;
+                padding: 10px 16px !important;
+                font-size: 0.9rem !important;
+                justify-content: center !important;
             }
             
             .notification-card {
                 padding: 15px !important;
                 margin-bottom: 12px !important;
+                border-radius: 12px !important;
             }
             
             .notification-header {
                 flex-wrap: wrap;
                 gap: 8px !important;
+                align-items: flex-start !important;
+            }
+            
+            .notification-icon {
+                width: 35px !important;
+                height: 35px !important;
+                margin-top: 2px;
+            }
+            
+            .notification-icon i {
+                font-size: 1rem !important;
             }
             
             .notification-title {
                 font-size: 1rem !important;
+                flex: 1;
+                min-width: 0;
+                word-wrap: break-word;
             }
             
             .notification-time {
                 font-size: 0.8rem !important;
+                width: 100%;
+                margin-top: 5px;
+                order: 3;
+            }
+            
+            .unread-indicator {
+                position: static !important;
+                margin-left: auto;
+                margin-top: 2px;
+                width: 10px !important;
+                height: 10px !important;
             }
             
             .notification-message {
                 font-size: 0.9rem !important;
                 line-height: 1.4;
+                margin-top: 8px !important;
+                margin-bottom: 12px !important;
+            }
+            
+            .notification-actions {
+                margin-top: 10px;
+            }
+            
+            .notification-actions .btn {
+                width: 100% !important;
+                padding: 8px 16px !important;
+                font-size: 0.85rem !important;
+                margin-bottom: 5px;
             }
             
             .btn-sm {
-                padding: 6px 12px;
-                font-size: 0.8rem;
+                padding: 8px 16px !important;
+                font-size: 0.85rem !important;
+                width: 100% !important;
+            }
+              .delete-controls {
+                flex-direction: column;
+                gap: 12px;
+                padding: 15px;
+                border-radius: 8px !important;
+                margin-bottom: 15px !important;
             }
             
-            .delete-controls {
+            .delete-controls > div:first-child {
+                order: 1;
+            }
+            
+            .delete-controls > div:last-child {
+                order: 2;
+                width: 100%;
+                display: flex !important;
                 flex-direction: column;
-                gap: 10px;
-                padding: 15px;
+                gap: 8px;
             }
             
             .selection-info {
                 text-align: center;
+                justify-content: center !important;
+                margin-bottom: 4px;
             }
             
-
+            .delete-controls > div:last-child {
+                width: 100%;
+            }
+            
+            .btn-cancel-selection,
+            .btn-delete-selected {
+                width: 100% !important;
+                margin-right: 0 !important;
+                margin-bottom: 8px !important;
+                padding: 10px 16px !important;
+                font-size: 0.9rem !important;
+                justify-content: center !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+            
+            .btn-delete-selected {
+                margin-bottom: 0 !important;
+                height: auto !important;
+                min-height: 44px;
+            }
+            
+            .btn-cancel-selection {
+                order: 1;
+                background: #f8f8f8 !important;
+                border-color: #000000 !important;
+            }
+            
+            .btn-delete-selected {
+                order: 2;
+            }
+            
+            .notification-checkbox {
+                position: absolute !important;
+                top: 10px !important;
+                right: 10px !important;
+                width: 35px !important;
+                height: 35px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                background: rgba(255, 255, 255, 0.9) !important;
+                border-radius: 50% !important;
+                border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            .custom-checkbox {
+                width: 18px !important;
+                height: 18px !important;
+            }
+            
+            .notification-card:hover .notification-checkbox,
+            .notification-card.selected .notification-checkbox {
+                opacity: 1 !important;
+                background: rgba(255, 255, 255, 1) !important;
+                border-color: rgba(0, 0, 0, 0.2) !important;
+            }
+            
+            .empty-state {
+                padding: 40px 15px !important;
+                border-radius: 12px !important;
+            }
+            
+            .empty-icon {
+                font-size: 3rem !important;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.3rem !important;
+            }
+            
+            .empty-state p {
+                font-size: 0.9rem !important;
+            }
+            
+            .action-feedback {
+                left: 15px !important;
+                right: 15px !important;
+                top: 15px !important;
+                transform: translateY(-100px) !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .action-feedback.show {
+                transform: translateY(0) !important;
+            }
         }
-        
-        @media (max-width: 575.98px) {
+          @media (max-width: 575.98px) {
+            .container-fluid {
+                padding: 0 10px !important;
+            }
+            
             .page-title {
                 font-size: 1.4rem;
             }
             
+            .page-title::after {
+                width: 50px;
+            }
+            
             .notification-card {
                 padding: 12px !important;
+                margin-bottom: 10px !important;
+                border-radius: 10px !important;
+            }
+            
+            .notification-header {
+                gap: 6px !important;
+            }
+            
+            .notification-icon {
+                width: 32px !important;
+                height: 32px !important;
+            }
+            
+            .notification-icon i {
+                font-size: 0.9rem !important;
+            }
+            
+            .notification-title {
+                font-size: 0.95rem !important;
+            }
+            
+            .notification-time {
+                font-size: 0.75rem !important;
+            }
+            
+            .notification-message {
+                font-size: 0.85rem !important;
+                margin-top: 6px !important;
+                margin-bottom: 10px !important;
             }
             
             .notification-checkbox {
-                width: 35px;
-                height: 35px;
+                width: 32px !important;
+                height: 32px !important;
+                top: 8px !important;
+                right: 8px !important;
             }
             
             .custom-checkbox {
-                width: 16px;
-                height: 16px;
+                width: 16px !important;
+                height: 16px !important;
+            }
+            
+            .btn-select-all,
+            .btn-outline-primary,
+            .btn-cancel-selection,
+            .btn-delete-selected {
+                padding: 8px 12px !important;
+                font-size: 0.8rem !important;
+            }
+              .delete-controls {
+                padding: 12px;
+                gap: 10px;
+                border-radius: 6px !important;
+            }
+            
+            .delete-controls > div:last-child {
+                gap: 6px;
+            }
+            
+            .selection-info {
+                font-size: 0.85rem;
+                margin-bottom: 2px;
+            }
+            
+            .selection-count {
+                font-size: 0.7rem !important;
+                padding: 3px 6px !important;
+            }
+            
+            .btn-cancel-selection,
+            .btn-delete-selected {
+                padding: 8px 12px !important;
+                font-size: 0.8rem !important;
+                min-height: 40px;
+            }
+            
+            .btn-cancel-selection i,
+            .btn-delete-selected i {
+                margin-right: 6px !important;
+            }
+            
+            .notification-actions .btn {
+                padding: 6px 12px !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .empty-state {
+                padding: 30px 10px !important;
+            }
+            
+            .empty-icon {
+                font-size: 2.5rem !important;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.2rem !important;
+            }
+            
+            .empty-state p {
+                font-size: 0.85rem !important;
+            }
+            
+            .badge {
+                font-size: 0.7rem !important;
+                padding: 4px 8px !important;
+                min-width: 20px !important;
+            }
+            
+            .action-feedback {
+                padding: 10px 15px !important;
+                font-size: 0.85rem !important;
+                left: 10px !important;
+                right: 10px !important;
             }
         }
         
@@ -616,12 +978,10 @@
         /* Icon color customizations */
         .text-success, .text-primary, .text-info, .text-warning, .text-secondary {
             color: #000000 !important;
-        }
-
-        /* Responsive adjustments */
+        }        /* Responsive adjustments */
         @media (max-width: 768px) {
             .header-bar {
-                padding: 16px 20px !important;
+                padding: 16px 0 !important;
             }
             .page-title {
                 font-size: 1.5rem !important;
@@ -631,30 +991,45 @@
             }
             .notification-header {
                 flex-wrap: wrap !important;
-            }
-            /* Make delete-controls stack vertically on mobile */
+            }            /* Make delete-controls stack vertically on mobile */
             .delete-controls {
                 flex-direction: column !important;
                 align-items: stretch !important;
                 gap: 12px !important;
+                padding: 14px !important;
             }
+            
             .delete-controls > div {
                 width: 100% !important;
                 justify-content: flex-start !important;
             }
-            .delete-controls .selection-info {
-                justify-content: flex-start !important;
+            
+            .delete-controls > div:last-child {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 8px !important;
             }
+            
+            .delete-controls .selection-info {
+                justify-content: center !important;
+                text-align: center !important;
+                margin-bottom: 6px !important;
+            }
+            
             .delete-controls .btn-cancel-selection,
             .delete-controls .btn-delete-selected {
                 width: 100% !important;
                 margin-right: 0 !important;
-                margin-bottom: 8px !important;
+                margin-bottom: 6px !important;
+                padding: 10px 16px !important;
+                font-size: 0.875rem !important;
+                min-height: 42px !important;
+                justify-content: center !important;
             }
+            
             .delete-controls .btn-delete-selected {
                 margin-bottom: 0 !important;
-                padding: 8px 16px !important;
-                font-size: 0.775rem !important;
+                height: auto !important;
             }
         }
     </style>
@@ -934,18 +1309,18 @@
                 card.classList.remove('selected');
             }
         });
-    }
-
-    function toggleSelectAll() {
+    }    function toggleSelectAll() {
         const checkboxes = document.querySelectorAll('.notification-select');
         const selectAllBtn = document.querySelector('.btn-select-all');
         const allChecked = document.querySelectorAll('.notification-select:checked').length === checkboxes.length;
 
         checkboxes.forEach(checkbox => {
             checkbox.checked = !allChecked;
-        });        // Update button text
+        });
+
+        // Update button text with consistent spacing
         selectAllBtn.innerHTML = allChecked ?
-            '<i class="bi bi-check-square me-2"></i>Select All' :
+            '<i class="bi bi-check-square me-2" style="margin-right: 8px;"></i>Select All' :
             '<i class="bi bi-square me-2" style="margin-right: 8px;"></i>Deselect All';
 
         updateSelection();
@@ -959,7 +1334,8 @@
             checkbox.checked = false;
         });
 
-        selectAllBtn.innerHTML = '<i class="bi bi-check-square me-2"></i>Select All';
+        // Reset button text with consistent spacing
+        selectAllBtn.innerHTML = '<i class="bi bi-check-square me-2" style="margin-right: 8px;"></i>Select All';
         updateSelection();
     }
 
