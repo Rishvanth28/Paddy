@@ -2144,6 +2144,59 @@ button,
   }
 }
 
+/* ========== ADMIN REPORTS PAGE SPECIFIC STYLES ========== */
+
+/* Admin reports page title - reduce margin bottom for better spacing */
+.admin-reports .page-title,
+.reports-container .page-title {
+  margin-bottom: 5px !important;
+}
+
+.admin-reports .header-bar,
+.reports-container .header-bar {
+  margin-bottom: 5px !important;
+}
+
+/* Responsive styles for admin reports page title */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .admin-reports .page-title,
+  .reports-container .page-title {
+    font-size: 1.8rem !important;
+    margin-bottom: 3px !important;
+    text-align: center !important;
+  }
+  
+  .admin-reports .header-bar,
+  .reports-container .header-bar {
+    justify-content: center !important;
+    margin-bottom: 3px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-reports .page-title,
+  .reports-container .page-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 2px !important;
+    text-align: center !important;
+  }
+  
+  .admin-reports .header-bar,
+  .reports-container .header-bar {
+    flex-direction: column !important;
+    align-items: center !important;
+    margin-bottom: 2px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-reports .page-title,
+  .reports-container .page-title {
+    font-size: 1.3rem !important;
+    margin-bottom: 1px !important;
+  }
+}
+
 /* Page title and header protection from hamburger overlap */
 .main-content h1,
 .main-content h2,
@@ -2218,76 +2271,6 @@ button,
     margin-left: 0 !important;
     padding-left: 0.75rem !important;
   }
-  
-  /* Mobile specific centering for upgrade-customer page title */
-  .upgrade-customer .page-title,
-  .upgrade-customer .header-bar h1,
-  .upgrade-customer h1 {
-    margin-left: -6.5rem !important;
-    margin-right: auto !important;
-    text-align: center !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  
-  .upgrade-customer .header-bar {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-  }
-  
-  .upgrade-customer .title-group {
-    width: 100% !important;
-    text-align: center !important;
-    display: flex !important;
-    justify-content: center !important;
-  }
-}
-
-/* Tablet specific styles for upgrade-customer */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .upgrade-customer .page-title,
-  .upgrade-customer .header-bar h1,
-  .upgrade-customer h1 {
-    margin-left: auto !important;
-    margin-right: auto !important;
-    text-align: center !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    font-size: 1.6rem !important;
-    position: relative !important;
-    display: inline-block !important;
-  }
-  
-  /* Add underline effect for tablet view */
-  .upgrade-customer .page-title::after,
-  .upgrade-customer .header-bar h1::after,
-  .upgrade-customer h1::after {
-    content: '' !important;
-    display: block !important;
-    width: 60px !important;
-    height: 3px !important;
-    background-color: #000 !important;
-    margin: 8px auto 0 auto !important;
-    border-radius: 2px !important;
-    position: relative !important;
-  }
-  
-  .upgrade-customer .header-bar {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    text-align: center !important;
-    padding: 15px 20px !important;
-  }
-  
-  .upgrade-customer .title-group {
-    width: 100% !important;
-    text-align: center !important;
-    display: flex !important;
-    justify-content: center !important;
-  }
 }
 
 /* Upgrade to Customer - Single Line Text Alignment */
@@ -2312,15 +2295,6 @@ button,
     text-overflow: unset !important;
     line-height: 1.2 !important;
     word-wrap: break-word !important;
-    font-size: 1.3rem !important;
-    margin-left: -3.2rem !important;
-    margin-right: auto !important;
-    text-align: center !important;
-  }
-  
-  .upgrade-customer .header-bar {
-    flex-direction: column !important;
-    gap: 0.5rem !important;
   }
 }
 
