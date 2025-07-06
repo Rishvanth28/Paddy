@@ -1440,7 +1440,7 @@ button, .btn {
   .main-content .profile-header h1,
   .main-content .upgrade-header h1 {
     margin-top: 10px !important;
-    padding-left: 80px !important;
+    padding-left: 40px !important;
     /* text-align: left !important; */
     position: relative !important;
     clear: both !important;
