@@ -2201,6 +2201,49 @@ button,
   margin-top: 10px !important;
   margin-bottom: 25px !important;
 }
+/* Styles for upgrade-customer section with margin-left and padding-left */
+.upgrade-customer h1,
+.upgrade-customer h2,
+.upgrade-customer .page-title,
+.upgrade-customer .customer-dashboard-hero h1,
+.upgrade-customer .profile-header h1,
+.upgrade-customer .upgrade-header h1 {
+  margin-left: -2.2rem !important;
+  padding-left: 1.5rem !important;
+}
+
+/* Responsive adjustments for upgrade-customer */
+@media (max-width: 768px) {
+  .upgrade-customer {
+    margin-left: 0 !important;
+    padding-left: 0.75rem !important;
+  }
+}
+
+/* Upgrade to Customer - Single Line Text Alignment */
+.upgrade-customer .page-title,
+.upgrade-customer .header-bar h1,
+.upgrade-customer h1 {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+/* For smaller screens, allow text wrapping but maintain center alignment */
+@media (max-width: 480px) {
+  .upgrade-customer .page-title,
+  .upgrade-customer .header-bar h1,
+  .upgrade-customer h1 {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    line-height: 1.2 !important;
+    word-wrap: break-word !important;
+  }
+}
 
 /* Container adjustments for mobile */
 .container-fluid {
