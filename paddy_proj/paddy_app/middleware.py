@@ -18,13 +18,15 @@ class SubscriptionMiddleware(MiddlewareMixin):
             "/payment/customer-subscription-payment/", "/payment/customer-payment-success/",
         ]
 
-        # Check if path starts with /admin/ (Django admin)
+        # Check if path starts with /admin/ (Django admin) or is in exempt paths
         if path.startswith("/admin/") or path in exempt_paths or path.startswith("/static/"):
             return None
 
         # If user is not logged in (no role or user_id), redirect to login
+        # But allow access to Django admin
         if not role or not user_id:
-            return redirect("login_app:login")
+            if not path.startswith("/admin/"):
+                return redirect("login_app:login")
 
         # Handle admin subscription
         if role == "admin":
