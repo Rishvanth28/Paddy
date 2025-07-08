@@ -13,8 +13,7 @@
             .page-title {
                 white-space: nowrap;
             }
-        }
-        @media (max-width:768px) {
+        }        @media (max-width:768px) {
             .form-container {
                 padding: 10px;
             }
@@ -36,9 +35,22 @@
                 width: 100%;
                 margin-bottom: 5px;
             }
-            .page-title {
+            .header-bar h1, .header-bar .page-title {
+                font-size: 1.5rem !important;
+                margin-left: 0 !important;
+                text-align: center;
+                width: 100%;
+                margin-bottom: 1rem;
+                padding: 0 10px;
                 line-height: 1.2;
                 white-space: normal;
+            }
+            .header-bar {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin-top: 6rem !important;
+                padding: 0 15px;
             }
             .title-break::after {
                 content: "\A";
@@ -47,8 +59,8 @@
         }</style>
 </head>
 
-<body>    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3" style="margin-top: 6rem;">
-        <h1 class="page-title mb-0 me-3 " >Place New<span class="title-break"> </span>Order</h1>
+<body>    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3" style="margin-top: 3rem;">
+        <h1 class="page-title mb-0 me-3 " style="margin-left: -1rem;" >Place New<span class="title-break"> </span>Order</h1>
     </div>
     <!-- Tab Buttons -->
     <div class="tab-header">

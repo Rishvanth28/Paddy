@@ -3,8 +3,35 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}" />
+<style>
+/* Disable all page load animations */
+.customer-list-container {
+    animation: none !important;
+}
+
+.customer-header {
+    animation: none !important;
+}
+
+.customer-table-container {
+    animation: none !important;
+}
+
+.search-form {
+    animation: none !important;
+}
+
+.customer-table {
+    animation: none !important;
+}
+
+/* Disable any transform or opacity transitions that might cause fade effects */
+* {
+    transition: none !important;
+}
+</style>
 <div class="customer-list-container">    <div class="customer-header">
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">            <h1 class="page-title mb-0 me-3 " >Customer List</h1>
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">            <h1 class="page-title mb-0 me-3 " style="margin-left: -1rem;" >Customer List</h1>
             <form class="search-form" method="GET" action="">
                 <input type="search" name="q" class="search-input" placeholder="Search customers...">
                 <i class="fas fa-search search-icon"></i>
@@ -83,8 +110,7 @@
     gap: 10px;
     max-width: 350px;
   }
-  
-  .toast {
+    .toast {
     padding: 15px 40px 15px 15px;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -94,7 +120,6 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 10px;
-    animation: slideIn 0.3s ease-out forwards;
     border-left: 4px solid #ccc;
     word-wrap: break-word;
   }
@@ -131,46 +156,19 @@
     line-height: 20px;
     text-align: center;
   }
-  
-  .toast-close:hover {
+    .toast-close:hover {
     color: #333;
-  }
-  
-  @keyframes slideIn {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-  
-  @keyframes fadeOut {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(100%);
-      opacity: 0;
-    }
   }
 </style>
 
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Add click event to close buttons
+  document.addEventListener('DOMContentLoaded', function() {    // Add click event to close buttons
     document.querySelectorAll('.toast-close').forEach(button => {
       button.addEventListener('click', function() {
         const toast = this.parentElement;
-        toast.style.animation = 'fadeOut 0.3s forwards';
-        setTimeout(() => {
-          toast.remove();
-        }, 300);
+        toast.remove();
       });
     });
     
@@ -178,12 +176,7 @@
     document.querySelectorAll('.toast').forEach(toast => {
       setTimeout(() => {
         if (toast && toast.parentElement) {
-          toast.style.animation = 'fadeOut 0.3s forwards';
-          setTimeout(() => {
-            if (toast && toast.parentElement) {
-              toast.remove();
-            }
-          }, 300);
+          toast.remove();
         }
       }, 5000);
     });
