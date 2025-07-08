@@ -1558,10 +1558,15 @@ button,
   .submenu-toggle,
   .btn,
   button,
-  input[type="checkbox"],
   input[type="radio"],
   select {
     min-height: 44px !important;
+    /* Apple's recommended minimum touch target size */
+  }
+
+  /* Improved touch targets */
+  input[type="checkbox"] {
+    min-height: 10px !important;
     /* Apple's recommended minimum touch target size */
   }
 

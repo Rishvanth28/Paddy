@@ -5,6 +5,456 @@
 <head>
     <link rel="stylesheet" href="{% static 'css/notifications.css' %}">
     <style>
+
+          /* Tablet responsive styles */
+        @media (max-width: 991.98px) and (min-width: 768px) {
+            .container-fluid {
+                padding: 0 20px !important;
+            }
+            
+            .header-bar {
+                gap: 12px;
+                margin-left: 0;
+            }
+              .page-title {
+                font-size: 1.8rem;
+            }            /* Adjust padding for tablet when badge is present */
+            .page-title:has(.badge) {
+                padding-left: 0.5rem;
+            }
+            
+            .notification-card {
+                padding: 18px !important;
+                margin-bottom: 14px !important;
+            }
+            
+            .notification-header {
+                gap: 10px !important;
+            }
+            
+            .notification-icon {
+                width: 38px !important;
+                height: 38px !important;
+            }
+            
+            .notification-icon i {
+                font-size: 1.1rem !important;
+            }
+            
+            .notification-title {
+                font-size: 1.05rem !important;
+            }
+            
+            .notification-time {
+                font-size: 0.85rem !important;
+            }
+            
+            .notification-message {
+                font-size: 0.92rem !important;
+            }
+            
+            .btn-sm {
+                padding: 7px 14px;
+                font-size: 0.85rem;
+            }
+              .delete-controls {
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 16px;
+                justify-content: space-between;
+            }
+            
+            .delete-controls > div:last-child {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .selection-info {
+                flex: 1;
+                min-width: 200px;
+            }
+            
+            .btn-cancel-selection,
+            .btn-delete-selected {
+                min-width: 120px;
+                padding: 8px 14px !important;
+                font-size: 0.85rem !important;
+            }
+            
+            .btn-delete-selected {
+                height: auto !important;
+            }
+            
+            .notification-checkbox {
+                width: 38px;
+                height: 38px;
+            }
+            
+            .custom-checkbox {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        /* Enhanced mobile responsive styles */
+        @media (max-width: 767.98px) {
+            .container-fluid {
+                padding: 0 15px !important;
+                margin: 0 !important;
+            }
+            
+            .header-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                margin-left: 0;
+                text-align: center;
+                padding: 10px 0 !important;
+            }
+              .page-title {
+                font-size: 1.6rem;
+                text-align: center;
+                margin-bottom: 10px !important;
+            }            /* Reset padding for mobile when badge is present */
+            .page-title:has(.badge) {
+                padding-left: 0 !important;
+            }
+            
+            .page-title::after {
+                left: 50%;
+                transform: translateX(-50%);
+                width: 60px;
+            }
+            
+            .d-flex.align-items-center.gap-2 {
+                flex-direction: column !important;
+                gap: 10px !important;
+                width: 100%;
+            }
+            
+            .btn-select-all,
+            .btn-outline-primary {
+                width: 100% !important;
+                margin-right: 0 !important;
+                padding: 10px 16px !important;
+                font-size: 0.9rem !important;
+                justify-content: center !important;
+            }
+            
+            .notification-card {
+                padding: 15px !important;
+                margin-bottom: 12px !important;
+                border-radius: 12px !important;
+            }
+            
+            .notification-header {
+                flex-wrap: wrap;
+                gap: 8px !important;
+                align-items: flex-start !important;
+            }
+            
+            .notification-icon {
+                width: 35px !important;
+                height: 35px !important;
+                margin-top: 2px;
+            }
+            
+            .notification-icon i {
+                font-size: 1rem !important;
+            }
+            
+            .notification-title {
+                font-size: 1rem !important;
+                flex: 1;
+                min-width: 0;
+                word-wrap: break-word;
+            }
+            
+            .notification-time {
+                font-size: 0.8rem !important;
+                width: 100%;
+                margin-top: 5px;
+                order: 3;
+            }
+            
+            .unread-indicator {
+                position: static !important;
+                margin-left: auto;
+                margin-top: 2px;
+                width: 10px !important;
+                height: 10px !important;
+            }
+            
+            .notification-message {
+                font-size: 0.9rem !important;
+                line-height: 1.4;
+                margin-top: 8px !important;
+                margin-bottom: 12px !important;
+            }
+            
+            .notification-actions {
+                margin-top: 10px;
+            }
+            
+            .notification-actions .btn {
+                width: 100% !important;
+                padding: 8px 16px !important;
+                font-size: 0.85rem !important;
+                margin-bottom: 5px;
+            }
+            
+            .btn-sm {
+                padding: 8px 16px !important;
+                font-size: 0.85rem !important;
+                width: 100% !important;
+            }
+              .delete-controls {
+                flex-direction: column;
+                gap: 12px;
+                padding: 15px;
+                border-radius: 8px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            .delete-controls > div:first-child {
+                order: 1;
+            }
+            
+            .delete-controls > div:last-child {
+                order: 2;
+                width: 100%;
+                display: flex !important;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .selection-info {
+                text-align: center;
+                justify-content: center !important;
+                margin-bottom: 4px;
+            }
+            
+            .delete-controls > div:last-child {
+                width: 100%;
+            }
+            
+            .btn-cancel-selection,
+            .btn-delete-selected {
+                width: 100% !important;
+                margin-right: 0 !important;
+                margin-bottom: 8px !important;
+                padding: 10px 16px !important;
+                font-size: 0.9rem !important;
+                justify-content: center !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+            
+            .btn-delete-selected {
+                margin-bottom: 0 !important;
+                height: auto !important;
+                min-height: 44px;
+            }
+            
+            .btn-cancel-selection {
+                order: 1;
+                background: #f8f8f8 !important;
+                border-color: #000000 !important;
+            }
+            
+            .btn-delete-selected {
+                order: 2;
+            }
+            
+            .notification-checkbox {
+                position: absolute !important;
+                top: 10px !important;
+                right: 10px !important;
+                width: 35px !important;
+                height: 35px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                background: rgba(255, 255, 255, 0.9) !important;
+                border-radius: 50% !important;
+                border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            .custom-checkbox {
+                width: 18px !important;
+                height: 18px !important;
+            }
+            
+            .notification-card:hover .notification-checkbox,
+            .notification-card.selected .notification-checkbox {
+                opacity: 1 !important;
+                background: rgba(255, 255, 255, 1) !important;
+                border-color: rgba(0, 0, 0, 0.2) !important;
+            }
+            
+            .empty-state {
+                padding: 40px 15px !important;
+                border-radius: 12px !important;
+            }
+            
+            .empty-icon {
+                font-size: 3rem !important;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.3rem !important;
+            }
+            
+            .empty-state p {
+                font-size: 0.9rem !important;
+            }
+            
+            .action-feedback {
+                left: 15px !important;
+                right: 15px !important;
+                top: 15px !important;
+                transform: translateY(-100px) !important;
+                font-size: 0.9rem !important;
+            }
+            
+            .action-feedback.show {
+                transform: translateY(0) !important;
+            }
+        }
+          @media (max-width: 575.98px) {
+            .container-fluid {
+                padding: 0 10px !important;
+            }
+              .page-title {
+                font-size: 1.4rem;
+            }            /* Reset padding for smallest mobile when badge is present */
+            .page-title:has(.badge) {
+                padding-left: 1.2rem !important;
+            }
+            
+            .page-title::after {
+                width: 50px;
+            }
+            
+            .notification-card {
+                padding: 12px !important;
+                margin-bottom: 10px !important;
+                border-radius: 10px !important;
+            }
+            
+            .notification-header {
+                gap: 6px !important;
+            }
+            
+            .notification-icon {
+                width: 32px !important;
+                height: 32px !important;
+            }
+            
+            .notification-icon i {
+                font-size: 0.9rem !important;
+            }
+            
+            .notification-title {
+                font-size: 0.95rem !important;
+            }
+            
+            .notification-time {
+                font-size: 0.75rem !important;
+            }
+            
+            .notification-message {
+                font-size: 0.85rem !important;
+                margin-top: 6px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .notification-checkbox {
+                width: 32px !important;
+                height: 32px !important;
+                top: 8px !important;
+                right: 8px !important;
+            }
+            
+            .custom-checkbox {
+                width: 16px !important;
+                height: 16px !important;
+            }
+            
+            .btn-select-all,
+            .btn-outline-primary,
+            .btn-cancel-selection,
+            .btn-delete-selected {
+                padding: 8px 12px !important;
+                font-size: 0.8rem !important;
+            }
+              .delete-controls {
+                padding: 12px;
+                gap: 10px;
+                border-radius: 6px !important;
+            }
+            
+            .delete-controls > div:last-child {
+                gap: 6px;
+            }
+            
+            .selection-info {
+                font-size: 0.85rem;
+                margin-bottom: 2px;
+            }
+            
+            .selection-count {
+                font-size: 0.7rem !important;
+                padding: 3px 6px !important;
+            }
+            
+            .btn-cancel-selection,
+            .btn-delete-selected {
+                padding: 8px 12px !important;
+                font-size: 0.8rem !important;
+                min-height: 40px;
+            }
+            
+            .btn-cancel-selection i,
+            .btn-delete-selected i {
+                margin-right: 6px !important;
+            }
+            
+            .notification-actions .btn {
+                padding: 6px 12px !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .empty-state {
+                padding: 30px 10px !important;
+            }
+            
+            .empty-icon {
+                font-size: 2.5rem !important;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.2rem !important;
+            }
+            
+            .empty-state p {
+                font-size: 0.85rem !important;
+            }
+            
+            .badge {
+                font-size: 0.7rem !important;
+                padding: 4px 8px !important;
+                min-width: 20px !important;
+            }
+            
+            .action-feedback {
+                padding: 10px 15px !important;
+                font-size: 0.85rem !important;
+                left: 10px !important;
+                right: 10px !important;
+            }
+        }
+        
         /* Black & White Theme with White Predominance */
         .container-fluid {
             min-height: 100vh !important;
@@ -21,9 +471,7 @@
             gap: 1rem;
             margin-left: 0.5rem;
             margin-top: -1rem;
-        }
-
-        .page-title {
+        }        .page-title {
             font-size: 2rem;
             font-weight: 700;
             margin: 0;
@@ -33,9 +481,7 @@
             text-transform: uppercase;
             padding-bottom: 0.6rem;
             text-align: left;
-            /* <-- Ensure left alignment */
         }
-
 
         .page-title::after {
             content: '';
@@ -44,19 +490,13 @@
             left: 50%;
             transform: translateX(-50%);
             width: 80px;
-            /* initial width */
             height: 4px;
             background-color: #000000;
             border-radius: 2px;
             transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-            /* added transition for both properties */
-        }
-
-        .page-title:hover::after {
+        }        .page-title:hover::after {
             width: 110%;
-            /* makes the underline grow */
             transform: translateX(-50%);
-            /* keep it centered */
         }
 
         .btn-outline-primary {
@@ -77,7 +517,6 @@
         }
 
         .notifications-container {
-            /* max-width: 800px !important; */
             margin: 0 auto !important;
         }
 
@@ -239,21 +678,6 @@
             }
         }
 
-        /* Enhanced confirmation dialog styles */
-        .swal2-popup {
-            background: #ffffff !important;
-            color: #000000 !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .swal2-title {
-            color: #000000 !important;
-        }
-
-        .swal2-content {
-            color: #333333 !important;
-        }
-
         .notification-icon i {
             font-size: 1.2rem !important;
             color: #000000 !important;
@@ -310,6 +734,7 @@
             border-radius: 8px !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
+            text-decoration: none;
         }
 
         .notification-actions .btn:hover {
@@ -379,6 +804,7 @@
             cursor: pointer !important;
             transition: all 0.3s ease !important;
             position: relative !important;
+            margin-top:10px;
         }
 
         .custom-checkbox:checked {
@@ -422,7 +848,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
         }
 
-        /* Professional Delete Button Styles */
+        /* Delete Controls */
         .delete-controls {
             background: #ffffff !important;
             border-radius: 12px !important;
@@ -516,7 +942,7 @@
             border-color: #000000 !important;
         }
 
-        /* Notification Badge Styles */
+        /* Badge Styles */
         .badge {
             background: #000000 !important;
             font-weight: 700 !important;
@@ -535,22 +961,15 @@
             transform: translateY(-5px) !important;
         }
 
-        .page-title .badge {
-            vertical-align: middle !important;
-            margin-top: -5px !important;
-        }
-
         @keyframes pulse-badge {
             0% {
                 box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
                 transform: translateY(-5px) scale(1);
             }
-
             50% {
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
                 transform: translateY(-5px) scale(1.1);
             }
-
             100% {
                 box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
                 transform: translateY(-5px) scale(1);
@@ -558,108 +977,61 @@
         }
 
         /* Icon color customizations */
-        .text-success {
+        .text-success, .text-primary, .text-info, .text-warning, .text-secondary {
             color: #000000 !important;
-        }
-
-        .text-primary {
-            color: #000000 !important;
-        }
-
-        .text-info {
-            color: #000000 !important;
-        }
-
-        .text-warning {
-            color: #000000 !important;
-        }
-
-        .text-secondary {
-            color: #000000 !important;
-        }
-
-        /* Scrollbar styling - using standardized style from base templates */
-
-        /* Responsive adjustments */
+        }        /* Responsive adjustments */
         @media (max-width: 768px) {
             .header-bar {
-                padding: 16px 20px !important;
+                padding: 16px 0 !important;
             }
-
             .page-title {
                 font-size: 1.5rem !important;
             }
-
             .notification-card {
                 padding: 16px !important;
             }
-
             .notification-header {
                 flex-wrap: wrap !important;
-            }
-
-            /* Make delete-controls stack vertically on mobile */
+            }            /* Make delete-controls stack vertically on mobile */
             .delete-controls {
                 flex-direction: column !important;
                 align-items: stretch !important;
                 gap: 12px !important;
+                padding: 14px !important;
             }
-
-            .delete-controls>div {
+            
+            .delete-controls > div {
                 width: 100% !important;
                 justify-content: flex-start !important;
             }
-
-            .delete-controls .selection-info {
-                justify-content: flex-start !important;
+            
+            .delete-controls > div:last-child {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 8px !important;
             }
-
+            
+            .delete-controls .selection-info {
+                justify-content: center !important;
+                text-align: center !important;
+                margin-bottom: 6px !important;
+            }
+            
             .delete-controls .btn-cancel-selection,
             .delete-controls .btn-delete-selected {
                 width: 100% !important;
                 margin-right: 0 !important;
-                margin-bottom: 8px !important;
+                margin-bottom: 6px !important;
+                padding: 10px 16px !important;
+                font-size: 0.875rem !important;
+                min-height: 42px !important;
+                justify-content: center !important;
             }
-
+            
             .delete-controls .btn-delete-selected {
                 margin-bottom: 0 !important;
-                padding: 8px 16px !important;
-                font-size: 0.775rem !important;
+                height: auto !important;
             }
-
-            /* Responsive Styles */
-            .toast-container {
-                left: 20px;
-                right: 20px;
-                max-width: none;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header-bar {
-                padding: 0 15px;
-            }
-
-            .page-title {
-                font-size: 1.3rem;
-            }
-
-            .notification-card {
-                margin: 8px 15px;
-                padding: 12px;
-            }
-
-            .d-flex.align-items-center.gap-4 {
-                flex-direction: row;
-                gap: 8px !important;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 200px;
-            }
-
-
         }
     </style>
 </head>
