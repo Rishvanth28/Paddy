@@ -1372,7 +1372,7 @@ button,
   }
 
   .hamburger.active .hamburger-line:nth-child(1) {
-    transform: translateY(13px) rotate(45deg);
+    transform: translateY(10px) rotate(45deg);
   }
 
   .hamburger.active .hamburger-line:nth-child(2) {
