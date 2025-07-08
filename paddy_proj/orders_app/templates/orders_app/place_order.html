@@ -3,8 +3,20 @@
 {% block content %}
 
 <head>
-    <link rel="stylesheet" href="{% static 'css/place_order.css' %}">
-    <style>
+    <link rel="stylesheet" href="{% static 'css/place_order.css' %}">    <style>
+        /* Disable all page load animations */
+        * {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+        }
+        
+        /* Re-enable only necessary transitions for user interactions */
+        button:hover, .tab-button:hover, .remove-row-btn:hover, 
+        .add-item-btn:hover, .submit-btn:hover {
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
+        }
+        
         @media (max-width:768px) {
             .form-container {
                 padding: 10px;
