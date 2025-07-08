@@ -491,6 +491,79 @@ body { background: var(--bg); color: var(--text-main); }
     display: flex;
     justify-content: center;
  }
+
+/* Enhanced Chart Mobile Responsiveness */
+@media (max-width: 768px) {
+    .chart-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .chart-card {
+        margin-bottom: 1.5rem !important;
+        padding: 1rem !important;
+    }
+    
+    .chart-container {
+        height: 280px !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0.5rem !important;
+    }
+    
+    .chart-container canvas {
+        max-height: 220px !important;
+        width: 100% !important;
+        max-width: 300px !important;
+        margin: 0 auto !important;
+    }
+    
+    .chart-title {
+        font-size: 1rem !important;
+        margin-bottom: 1rem !important;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-container {
+        height: 250px !important;
+        padding: 0.25rem !important;
+    }
+    
+    .chart-container canvas {
+        max-height: 200px !important;
+        max-width: 280px !important;
+    }
+    
+    .chart-card {
+        padding: 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .chart-title {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .chart-container {
+        height: 220px !important;
+    }
+    
+    .chart-container canvas {
+        max-height: 180px !important;
+        max-width: 240px !important;
+    }
+    
+    .chart-card {
+        padding: 0.5rem !important;
+    }
+}
+
 .table-section {
     background: var(--glass);
     border-radius: var(--radius);
@@ -1122,16 +1195,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     hoverOffset: 15,
                     hoverBorderWidth: 3,
                     hoverBorderColor: '#ffffff'
-                }]
-            },            options: {
+                }]            },            options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: { 
                         position: 'bottom', 
                         labels: { 
-                            font: { size: 13, family: 'Inter, sans-serif' }, 
+                            font: { 
+                                size: window.innerWidth <= 480 ? 10 : 13, 
+                                family: 'Inter, sans-serif' 
+                            }, 
                             color: '#1a1a1a',
-                            padding: 20,
+                            padding: window.innerWidth <= 480 ? 10 : 20,
                             usePointStyle: true,
                             pointStyle: 'circle'
                         }
@@ -1169,17 +1245,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     hoverOffset: 15,
                     hoverBorderWidth: 3,
                     hoverBorderColor: '#ffffff'
-                }]
-            },            options: {
+                }]            },            options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 cutout: '65%',
                 plugins: {
                     legend: { 
                         position: 'bottom', 
                         labels: { 
-                            font: { size: 13, family: 'Inter, sans-serif' }, 
+                            font: { 
+                                size: window.innerWidth <= 480 ? 10 : 13, 
+                                family: 'Inter, sans-serif' 
+                            }, 
                             color: '#1a1a1a',
-                            padding: 20,
+                            padding: window.innerWidth <= 480 ? 10 : 20,
                             usePointStyle: true,
                             pointStyle: 'circle'
                         }
