@@ -16,6 +16,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
             "/login/", "/login/logout/",
             "/payment/admin-subscription-payment/", "/payment/admin-payment-success/",
             "/payment/customer-subscription-payment/", "/payment/customer-payment-success/",
+            "/onboarding/create-admin-signup/", "/onboarding/create-customer-signup/"
         ]
 
         # Check if path starts with /admin/ (Django admin) or is in exempt paths
