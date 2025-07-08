@@ -7,17 +7,23 @@
 <style>
 /* CSS Variables */
 .superadmin-orders-page {
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --primary-light: #e0e7ff;
+    --primary: #000000;
+    --primary-hover: #1a1a1a;
+    --primary-light: #f5f5f5;
+    --secondary: #8b5cf6;
+    --secondary-hover: #7c3aed;
+    --secondary-light: #f3e8ff;
+    --blue: #3b82f6;
+    --blue-hover: #2563eb;
+    --blue-light: #dbeafe;
     --success: #10b981;
     --success-light: #d1fae5;
     --warning: #f59e0b;
     --warning-light: #fef3c7;
     --danger: #ef4444;
     --danger-light: #fee2e2;
-    --info: #3b82f6;
-    --info-light: #dbeafe;
+    --info: #64748b;
+    --info-light: #f1f5f9;
     --light: #f8fafc;
     --dark: #0f172a;
     --gray: #64748b;
@@ -111,6 +117,44 @@ body {
     color: #fff;
     background-color: var(--info);
     border-color: var(--info);
+}
+
+/* Secondary (Purple) Button Styles */
+.superadmin-orders-page .btn-secondary {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+.superadmin-orders-page .btn-outline-secondary {
+    color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    background-color: transparent !important;
+}
+
+.superadmin-orders-page .btn-outline-secondary:hover {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+/* Blue Button Styles */
+.superadmin-orders-page .btn-blue {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+}
+
+.superadmin-orders-page .btn-outline-blue {
+    color: var(--blue) !important;
+    border-color: var(--blue) !important;
+    background-color: transparent !important;
+}
+
+.superadmin-orders-page .btn-outline-blue:hover {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
 }
 /* Page Header */
 .superadmin-orders-page .page-header {
@@ -747,7 +791,6 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
-    overflow: hidden;
 }
 
 .superadmin-orders-page .list-group-item::before {
@@ -799,7 +842,6 @@ body {
 /* Order Panels - Default Mobile Stacked */
 .superadmin-orders-page .order-list-panel,
 .superadmin-orders-page .order-details-panel {
-    padding: 0 0.75rem;
     margin-bottom: 1.5rem;
     width: 100%;
 }
@@ -812,8 +854,19 @@ body {
     
     .superadmin-orders-page .order-list-panel,
     .superadmin-orders-page .order-details-panel {
-        padding: 0 0.5rem;
+        padding: 0 0.75rem;
         margin-bottom: 1rem;
+    }
+    .superadmin-orders-page .card-header {
+ display: flex;
+ flex-direction: column;
+    align-items: flex-start !important;
+    justify-content: space-between;}
+
+    .superadmin-orders-page .button-group {
+        flex-wrap: nowrap;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 }
 
@@ -825,9 +878,10 @@ body {
     
     .superadmin-orders-page .order-list-panel,
     .superadmin-orders-page .order-details-panel {
-        padding: 0 1rem;
+        padding: 0 ;
         margin-bottom: 2rem;
     }
+    
 }
 
 /* Desktop (992px and up) - Side by Side Layout */
@@ -843,7 +897,6 @@ body {
         display: table-cell;
         width: 35%;
         vertical-align: top;
-        padding-right: 1rem;
         margin-bottom: 0;
     }
     
@@ -860,12 +913,10 @@ body {
 @media (min-width: 1200px) {
     .superadmin-orders-page .order-list-panel {
         width: 32%;
-        padding-right: 1.5rem;
     }
     
     .superadmin-orders-page .order-details-panel {
         width: 68%;
-        padding-left: 1.5rem;
     }
 }
 
@@ -873,12 +924,10 @@ body {
 @media (min-width: 1400px) {
     .superadmin-orders-page .order-list-panel {
         width: 30%;
-        padding-right: 2rem;
     }
     
     .superadmin-orders-page .order-details-panel {
         width: 70%;
-        padding-left: 2rem;
     }
 }
 
@@ -909,18 +958,22 @@ body {
 /* Modern Order List Container */
 .superadmin-orders-page .order-list-container {
     height: auto;
-    min-height: 400px;
-    max-height: none;
+    min-height: 300px;
+    max-height: 80vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .superadmin-orders-page .order-list-container .list-group {
     flex: 1;
-    max-height: 60vh;
+    min-height: 250px;
+    max-height: 80vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--primary) transparent;
+    padding: 0.75rem;
+    gap: 0.5rem;
 }
 
 .superadmin-orders-page .order-list-container .list-group::-webkit-scrollbar {
@@ -998,19 +1051,23 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     padding: 0;
-    min-height: 80px;
+    height: auto;
     display: flex;
     align-items: stretch;
     overflow: hidden;
     border-radius: var(--border-radius-sm);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .superadmin-orders-page .order-item-content {
-    padding: 1.25rem;
+    padding: 10px;
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    box-sizing: border-box;
+    min-height: 100%;
+    justify-content: space-between;
 }
 
 .superadmin-orders-page .order-item:hover {
@@ -1148,37 +1205,156 @@ body {
     }
     
     .superadmin-orders-page .order-list-container .list-group {
-        max-height: 45vh;
+        max-height: 60vh;
         padding: 0.5rem;
         gap: 0.5rem;
     }
     
     .superadmin-orders-page .order-detail-section {
-        padding: 1rem;
+        padding: 0.75rem;
         min-height: 300px;
-        gap: 1rem;
+        gap: 0.75rem;
+        font-size: 0.875rem;
+        overflow-x: hidden;
+        word-wrap: break-word;
     }
     
     .superadmin-orders-page .detail-section {
-        padding: 1rem;
-        margin-bottom: 1rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        overflow: hidden;
     }
     
     .superadmin-orders-page .detail-section h6 {
-        font-size: 1rem;
-        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+        word-break: break-word;
     }
     
-    .superadmin-orders-page .order-item-content {
-        padding: 1rem;
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.25rem;
+        font-size: 0.8rem;
+        line-height: 1.2;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:first-child {
+        font-size: 0.75rem;
+        width: 35%;
+        min-width: 80px;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:last-child {
+        font-size: 0.8rem;
+        width: 65%;
     }
     
     .superadmin-orders-page .card-header {
-        padding: 1rem 1.25rem;
+        padding: 0.75rem 1rem;
+        overflow: hidden;
     }
     
     .superadmin-orders-page .card-header h5 {
-        font-size: 1.1rem;
+        font-size: 1rem;
+        line-height: 1.2;
+        word-break: break-word;
+    }
+    
+    .superadmin-orders-page .card-header .subtitle {
+        font-size: 0.75rem;
+        line-height: 1.2;
+    }
+    
+    /* Mobile specific order-item responsive height */
+    .superadmin-orders-page .order-item {
+        height: auto;
+        min-height: fit-content;
+        padding: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .superadmin-orders-page .order-item-content {
+        padding: 0.5rem;
+        min-height: auto;
+        height: auto;
+        flex-shrink: 0;
+    }
+    
+    .superadmin-orders-page .order-item-header {
+        margin-bottom: 0.3rem;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0.15rem;
+    }
+    
+    .superadmin-orders-page .order-item-title {
+        gap: 0.4rem;
+        width: 100%;
+    }
+    
+    .superadmin-orders-page .order-item-title .order-number {
+        font-size: 0.85rem;
+    }
+    
+    .superadmin-orders-page .order-date {
+        font-size: 0.7rem;
+    }
+    
+    .superadmin-orders-page .order-item-body {
+        flex-direction: row;
+        gap: 0.3rem;
+        align-items: flex-start;
+    }
+    
+    .superadmin-orders-page .order-item-details {
+        gap: 0.2rem;
+        width: 100%;
+    }
+    
+    .superadmin-orders-page .order-category {
+        font-size: 0.7rem;
+    }
+    
+    .superadmin-orders-page .customer-name {
+        font-size: 0.75rem;
+        line-height: 1.2;
+    }
+    
+    .superadmin-orders-page .admin-info {
+        font-size: 0.7rem;
+    }
+    
+    .superadmin-orders-page .order-item-amount {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 0.2rem;
+    }
+    
+    .superadmin-orders-page .order-amount {
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .superadmin-orders-page .order-status-badges {
+        gap: 0.15rem;
+        flex-wrap: wrap;
+    }
+    
+    .superadmin-orders-page .order-item .badge {
+        font-size: 0.6rem;
+        padding: 0.1rem 0.3rem;
+        line-height: 1.1;
+    }
+    .superadmin-orders-page .flex-between{
+        display: flex;
+        flex-direction:column;
+        justify-content: space-between;
+        align-items: center;
     }
 }
 
@@ -1193,20 +1369,127 @@ body {
     }
     
     .superadmin-orders-page .order-detail-section {
-        padding: 1.25rem;
+        padding: 1rem;
         min-height: 350px;
+        font-size: 0.9rem;
+        overflow-x: hidden;
     }
     
     .superadmin-orders-page .detail-section {
-        padding: 1.25rem;
+        padding: 1rem;
+        overflow: hidden;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.3rem;
+        font-size: 0.85rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .superadmin-orders-page .detail-section .table td:first-child {
+        font-size: 0.8rem;
+        width: 38%;
     }
     
     .superadmin-orders-page .card-header {
-        padding: 1.25rem 1.5rem;
+        padding: 1rem 1.25rem;
+    }
+    
+    .superadmin-orders-page .card-header h5 {
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+    
+    /* Small tablet specific order-item responsive height */
+    .superadmin-orders-page .order-item {
+        height: auto;
+        min-height: fit-content;
+        padding: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .superadmin-orders-page .order-item-content {
+        padding: 0.625rem;
+        min-height: auto;
+        height: auto;
+        flex-shrink: 0;
+    }
+    
+    .superadmin-orders-page .order-item-header {
+        margin-bottom: 0.4rem;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+    
+    .superadmin-orders-page .order-item-title {
+        gap: 0.5rem;
+    }
+    
+    .superadmin-orders-page .order-item-title .order-number {
+        font-size: 0.9rem;
+    }
+    
+    .superadmin-orders-page .order-date {
+        font-size: 0.75rem;
+    }
+    
+    .superadmin-orders-page .order-item-body {
+        flex-direction: row;
+        gap: 0.4rem;
+        align-items: flex-start;
+    }
+    
+    .superadmin-orders-page .order-item-details {
+        gap: 0.25rem;
+        width: 100%;
+    }
+    
+    .superadmin-orders-page .order-category {
+        font-size: 0.75rem;
+    }
+    
+    .superadmin-orders-page .customer-name {
+        font-size: 0.8rem;
+    }
+    
+    .superadmin-orders-page .admin-info {
+        font-size: 0.75rem;
+    }
+    
+    .superadmin-orders-page .order-item-amount {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+    
+    .superadmin-orders-page .order-amount {
+        font-size: 0.9rem;
+    }
+    
+    .superadmin-orders-page .order-status-badges {
+        gap: 0.2rem;
+        flex-wrap: wrap;
+    }
+    
+    .superadmin-orders-page .order-item .badge {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.4rem;
+    }
+    .superadmin-orders-page .flex-between{
+        display: flex;
+        flex-direction:column;
+        justify-content: space-between;
+        align-items: center;
     }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
+    .superadmin-orders-page .page-header h2 {
+        text-align: left !important;
+    }
     .superadmin-orders-page .dashboard-card {
         min-height: 450px;
     }
@@ -1217,12 +1500,70 @@ body {
     }
     
     .superadmin-orders-page .order-detail-section {
-        padding: 1.5rem;
+        padding: 1.25rem;
         min-height: 400px;
+        overflow-x: hidden;
     }
     
     .superadmin-orders-page .detail-section {
-        padding: 1.5rem;
+        padding: 1.25rem;
+        overflow: hidden;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.35rem;
+        font-size: 0.9rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    /* Tablet specific order-item responsive height */
+    .superadmin-orders-page .order-item {
+        height: auto;
+        min-height: fit-content;
+        padding: 0;
+        margin-bottom: 0.75rem;
+    }
+    
+    .superadmin-orders-page .order-item-content {
+        padding: 0.75rem;
+        min-height: auto;
+        height: auto;
+        flex-shrink: 0;
+    }
+    
+    .superadmin-orders-page .order-item-header {
+        margin-bottom: 0.5rem;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    
+    .superadmin-orders-page .order-item-body {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    
+    .superadmin-orders-page .order-item-details {
+        gap: 0.3rem;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .superadmin-orders-page .order-item-amount {
+        flex-shrink: 0;
+        align-self: flex-end;
+    }
+    
+    .superadmin-orders-page .order-status-badges {
+        gap: 0.25rem;
+        flex-wrap: wrap;
+    }
+    
+    .superadmin-orders-page .order-item .badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        white-space: nowrap;
     }
 }
 
@@ -1279,7 +1620,7 @@ body {
 
 @media (min-width: 1400px) {
     .superadmin-orders-page .dashboard-card {
-        min-height: 82vh;
+        min-height: 83vh;
     }
     
     .superadmin-orders-page .order-list-container .list-group {
@@ -1294,13 +1635,113 @@ body {
 
 /* Modern Order Detail Elements */
 .superadmin-orders-page .detail-header {
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+     /* margin-bottom: 2rem; */
+    padding: 2rem 0.5rem 1.5rem 0.5rem;
+    /* background: linear-gradient(120deg, #f8fafc 60%, #e0e7ef 100%); */
     border-radius: var(--border-radius);
-    border: 1px solid rgba(99, 102, 241, 0.1);
+    /* border: 1.5px solid var(--border-light); */
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    /* min-height: 0; */
+    max-height: none;
+    box-sizing: border-box;
+    /* box-shadow: 0 4px 24px 0 rgba(99, 102, 241, 0.06); */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 2;
+    transition: box-shadow 0.2s;
+}
+{% comment %} .superadmin-orders-page .detail-header:hover {
+    box-shadow: 0 8px 32px 0 rgba(99, 102, 241, 0.12);
+} {% endcomment %}
+.superadmin-orders-page .detail-header-div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+.superadmin-orders-page .detail-header h5 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.superadmin-orders-page .detail-header p {
+    font-size: 1rem;
+    color: var(--gray);
+    margin-bottom: 0;
+    font-weight: 500;
+}
+.superadmin-orders-page .detail-header .order-status-badges {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.superadmin-orders-page .detail-header .badge {
+    font-size: 0.85em;
+    padding: 0.4em 1em;
+    border-radius: 16px;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(99,102,241,0.08);
+}
+@media (max-width: 991.98px) {
+    .superadmin-orders-page .detail-header {
+        padding: 1rem 0.75rem 0.75rem 0.75rem;
+        overflow: hidden;
+    }
+    .superadmin-orders-page .detail-header-div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .superadmin-orders-page .detail-header h5 {
+        font-size: 1rem;
+        line-height: 1.2;
+        word-break: break-word;
+    }
+    .superadmin-orders-page .detail-header p {
+        font-size: 0.85rem;
+        line-height: 1.3;
+        word-break: break-word;
+    }
+    .superadmin-orders-page .detail-header .badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.7rem;
+    }
+}
+@media (max-width: 575.98px) {
+    .superadmin-orders-page .detail-header {
+        padding: 0.75rem 0.5rem 0.5rem 0.5rem;
+        margin-bottom: 0.75rem;
+        border-radius: var(--border-radius-sm);
+    }
+    .superadmin-orders-page .detail-header h5 {
+        font-size: 0.9rem;
+        line-height: 1.2;
+    }
+    .superadmin-orders-page .detail-header p {
+        font-size: 0.8rem;
+        line-height: 1.2;
+    }
+    .superadmin-orders-page .detail-header .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.6rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+    }
+    .superadmin-orders-page .detail-header .order-status-badges {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
 }
 
 .superadmin-orders-page .detail-header::before {
@@ -1311,11 +1752,11 @@ body {
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, var(--primary) 0%, var(--info) 100%);
+    border-radius: inherit;
 }
 
 .superadmin-orders-page .detail-section {
-    margin-bottom: 1.5rem;
-    padding: 1.5rem;
+    padding: 10px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
     border-radius: var(--border-radius);
     border: 1px solid rgba(99, 102, 241, 0.08);
@@ -1366,7 +1807,7 @@ body {
 }
 
 .superadmin-orders-page .detail-section .table td {
-    padding: 0.75rem 0;
+    padding: 0.4rem;
     border-bottom: 1px solid rgba(99, 102, 241, 0.1);
     vertical-align: middle;
 }
@@ -1388,6 +1829,7 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -1396,11 +1838,19 @@ body {
     }
 }
 
+/* Mobile specific grid adjustments */
+@media (max-width: 575.98px) {
+    .superadmin-orders-page .order-details-grid {
+        gap: 0.75rem;
+    }
+}
+
 /* Delivery Info Grid */
 .superadmin-orders-page .delivery-info-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    width: 100%;
+    overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -1409,12 +1859,16 @@ body {
     }
 }
 
+
+
 /* Items Table */
 .superadmin-orders-page .items-table {
     margin-top: 1.5rem;
     border-radius: var(--border-radius-sm);
     overflow: hidden;
     box-shadow: var(--shadow-md);
+    width: 100%;
+    table-layout: fixed;
 }
 
 .superadmin-orders-page .items-table th {
@@ -1425,15 +1879,58 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-size: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .superadmin-orders-page .items-table td {
     background: rgba(255, 255, 255, 0.9);
     border-color: var(--border-light);
+    padding: 0.5rem 0.25rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .superadmin-orders-page .items-table tbody tr:nth-child(even) {
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(255, 255, 255, 0.9) 100%);
+}
+
+/* Mobile specific table adjustments */
+@media (max-width: 575.98px) {
+    .superadmin-orders-page .items-table {
+        margin-top: 1rem;
+        font-size: 0.75rem;
+    }
+    
+    .superadmin-orders-page .items-table th {
+        font-size: 0.65rem;
+        padding: 0.4rem 0.2rem;
+    }
+    
+    .superadmin-orders-page .items-table td {
+        padding: 0.3rem 0.2rem;
+        font-size: 0.7rem;
+        line-height: 1.2;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .superadmin-orders-page .items-table {
+        font-size: 0.8rem;
+    }
+    
+    .superadmin-orders-page .items-table th {
+        font-size: 0.7rem;
+        padding: 0.45rem 0.25rem;
+    }
+    
+    .superadmin-orders-page .items-table td {
+        padding: 0.35rem 0.25rem;
+        font-size: 0.75rem;
+    }
 }
 
 /* Search Input */
@@ -1602,138 +2099,112 @@ body {
     }
 }
 
-/* Enhanced Responsive Layout for Flexbox */
-
-/* Extra Small Mobile (Portrait phones) */
-@media (max-width: 575.98px) {
-    .superadmin-orders-page .page-header {
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .superadmin-orders-page .page-header h2 {
-        font-size: 1.25rem;
-    }
-    
-    .superadmin-orders-page .flex-between {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-    
-    .superadmin-orders-page .filter-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+/* Enhanced mobile text handling and overflow prevention */
+@media (max-width: 991.98px) {
+    .superadmin-orders-page .order-details-panel .dashboard-card {
+        overflow: hidden;
     }
     
     .superadmin-orders-page .order-detail-section {
-        padding: 1rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        word-wrap: break-word;
+        hyphens: auto;
     }
     
-    .superadmin-orders-page .container-fluid {
-        padding: 0.75rem;
+    .superadmin-orders-page .detail-section {
+        overflow: hidden;
+        word-wrap: break-word;
+    }
+    
+    .superadmin-orders-page .detail-section .table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
 }
 
-/* Small Mobile (Landscape phones) */
-@media (min-width: 576px) and (max-width: 767.98px) {
-    .superadmin-orders-page .page-header {
-        padding: 1.25rem;
-    }
-    
-    .superadmin-orders-page .page-header h2 {
-        font-size: 1.5rem;
-    }
-    
-    .superadmin-orders-page .flex-between {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .superadmin-orders-page .filter-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
+/* Ultra-small screens (320px and below) */
+@media (max-width: 320px) {
     .superadmin-orders-page .order-detail-section {
-        padding: 1.25rem;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .superadmin-orders-page .detail-section {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .superadmin-orders-page .detail-section h6 {
+        font-size: 0.8rem;
+        padding-left: 0.75rem;
+    }
+    
+    .superadmin-orders-page .detail-section .table td {
+        padding: 0.2rem;
+        font-size: 0.7rem;
+    }
+    
+    .superadmin-orders-page .card-header {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .superadmin-orders-page .card-header h5 {
+        font-size: 0.85rem;
+    }
+    
+    .superadmin-orders-page .card-header .subtitle {
+        font-size: 0.7rem;
     }
 }
 
-/* Tablet (768px to 991px) */
-@media (min-width: 768px) and (max-width: 991.98px) {
-    .superadmin-orders-page .page-header {
-        padding: 1.5rem;
-    }
-    
-    .superadmin-orders-page .page-header h2 {
-        font-size: 1.75rem;
-    }
-    
-    .superadmin-orders-page .flex-between {
-        flex-direction: row;
-        align-items: center;
-    }
-    
-    .superadmin-orders-page .filter-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-    }
-    
-    .superadmin-orders-page .order-detail-section {
-        padding: 1.5rem;
-    }
-    
-    .superadmin-orders-page .date-range-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-    }
-    
-    .superadmin-orders-page .button-group {
-        justify-content: flex-start;
-    }
-    
-    .superadmin-orders-page .order-details-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .superadmin-orders-page .delivery-info-grid {
-        grid-template-columns: 1fr;
-    }
+/* Additional specificity for button styles */
+.superadmin-orders-page .status-filter.btn-outline-secondary {
+    color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    background-color: transparent !important;
 }
 
-/* Additional Responsive Utilities */
-@media (max-width: 575.98px) {
-    .superadmin-orders-page .date-range-grid {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
+.superadmin-orders-page .status-filter.btn-outline-secondary:hover,
+.superadmin-orders-page .status-filter.btn-outline-secondary:focus,
+.superadmin-orders-page .status-filter.btn-outline-secondary:active {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
 }
 
-@media (min-width: 576px) and (max-width: 767.98px) {
-    .superadmin-orders-page .date-range-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-    }
+.superadmin-orders-page .status-filter.btn-outline-blue {
+    color: var(--blue) !important;
+    border-color: var(--blue) !important;
+    background-color: transparent !important;
 }
 
-@media (min-width: 768px) {
-    .superadmin-orders-page .order-details-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .superadmin-orders-page .delivery-info-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.superadmin-orders-page .status-filter.btn-outline-blue:hover,
+.superadmin-orders-page .status-filter.btn-outline-blue:focus,
+.superadmin-orders-page .status-filter.btn-outline-blue:active {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
 }
 
-/* Large screen adjustments */
-@media (min-width: 1200px) {
-    .superadmin-orders-page .container-fluid {
-        max-width: 1400px;
-        margin: 0 auto;
-    }
+/* Active states for custom buttons */
+.superadmin-orders-page .status-filter.btn-secondary {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+.superadmin-orders-page .status-filter.btn-blue {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
 }
 </style>
 
@@ -1799,11 +2270,11 @@ setTimeout(() => alert.remove(), 300);
                 <label class="form-label"><i class="bi bi-check-circle mr-1"></i>Order Status</label>
                 <div class="button-group">
                     <button type="button" class="btn btn-sm btn-primary status-filter" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary status-filter" data-filter="recent">Recent</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary status-filter" data-filter="recent">Recent</button>
                     <button type="button" class="btn btn-sm btn-outline-success status-filter" data-filter="completed">Completed</button>
-                    <button type="button" class="btn btn-sm btn-outline-warning status-filter" data-filter="ongoing">Processing</button>
+                    <button type="button" class="btn btn-sm btn-outline-blue status-filter" data-filter="ongoing">Processing</button>
                     <button type="button" class="btn btn-sm btn-outline-danger status-filter" data-filter="pending_payment">Pending Payment</button>
-                    <button type="button" class="btn btn-sm btn-outline-info status-filter" data-filter="pending_cash">Pending Cash Requests</button>
+                    <button type="button" class="btn btn-sm btn-outline-warning status-filter" data-filter="pending_cash">Pending Cash Requests</button>
                 </div>
             </div>
             <!-- Date filters -->
@@ -1855,7 +2326,7 @@ setTimeout(() => alert.remove(), 300);
             </div>
             <!-- Search box -->
             <div>
-                <label class="form-label"><i class="bi bi-search mr-1"></i>Search Orders</label>
+                <label class="form-label">Search Orders</label>
                 <div class="search-container">
                     <i class="bi bi-search"></i>
                     <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
@@ -1999,10 +2470,12 @@ setTimeout(() => alert.remove(), 300);
         // Helper function to get button type based on filter
         function getButtonType(filter) {
             switch(filter) {
-                case 'completed': return 'success';
-                case 'ongoing': return 'warning';
-                case 'pending_payment': return 'danger';
-                case 'pending_cash': return 'info'; // Add this line
+                case 'all': return 'primary';        // Black
+                case 'recent': return 'secondary';    // Purple
+                case 'completed': return 'success';   // Green
+                case 'ongoing': return 'blue';        // Blue
+                case 'pending_payment': return 'danger'; // Red
+                case 'pending_cash': return 'warning';   // Orange
                 default: return 'primary';
             }
         }

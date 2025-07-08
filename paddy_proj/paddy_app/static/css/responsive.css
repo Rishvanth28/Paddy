@@ -2503,12 +2503,12 @@ button,
   }
 
   /* Tablet button group centering */
-  .button-group,
+  /* .button-group,
   .action-buttons {
     justify-content: center !important;
     flex-wrap: wrap !important;
     gap: 1rem !important;
-  }
+  } */
 }
 
 /* ========== MOBILE VIEW RESPONSIVE STYLES (≤768px) ========== */
