@@ -29,8 +29,7 @@
       --nav-icon-size: 20px;
       --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Performance optimizations for smooth animations */
+      /* Performance optimizations for smooth animations */
     * {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -43,6 +42,29 @@
       transform: translateZ(0);
       backface-visibility: hidden;
       perspective: 1000px;
+    }      /* ========== HAMBURGER MENU STYLES - MATCHING ADMIN EXACTLY ========== */
+    /* Hamburger Menu - matches admin_base.css exactly */
+    .hamburger {
+      display: none;
+      /* Other styles are inherited from responsive.css */
+    }
+    
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+      display: block;
+      opacity: 1;
     }
     
     /* CUSTOMER BASE TEMPLATE STYLES - HIGH PRIORITY */
@@ -287,9 +309,7 @@
       background-color: var(--sidebar-hover, rgba(0, 0, 0, 0.05)) !important;
       color: var(--primary-color, #000000) !important;
       box-shadow: inset 4px 0 0 var(--primary-color, #000000) !important;
-    }
-    
-    /* Responsive styles with high priority */
+    }    /* Responsive styles with high priority - MATCHING ADMIN EXACTLY */
     @media (max-width: 1024px) {
       body.customer-page .main-content {
         margin-left: 0 !important;
@@ -310,18 +330,56 @@
         transform: translateX(0) !important;
         box-shadow: 4px 0 15px rgba(0,0,0,0.2) !important;
       }
-      
+
+      /* Enhanced hamburger button with proper X transformation - EXACT ADMIN COPY */
       body.customer-page .hamburger {
         display: flex !important;
-        position: fixed !important;
-        top: 25px !important;
-        left: 15px !important;
-        z-index: 1003 !important;
-        transition: all var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: fixed;
+        top: 25px;
+        left: 15px;
+        z-index: 1003;
+        /* Higher than sidebar to ensure it stays clickable */
+        flex-direction: column;
+        justify-content: space-between;
+        height: 40px;
+        width: 40px;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
-    }
-    
-    @media (max-width: 768px) {
+
+      body.customer-page .hamburger:hover {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+      }
+
+      body.customer-page .hamburger-line {
+        display: block;
+        height: 3px;
+        width: 100%;
+        background-color: var(--primary-color, #000);
+        border-radius: 3px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body.customer-page .hamburger.active .hamburger-line:nth-child(1) {
+        transform: translateY(13px) rotate(45deg);
+      }
+
+      body.customer-page .hamburger.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+
+      body.customer-page .hamburger.active .hamburger-line:nth-child(3) {
+        transform: translateY(-13px) rotate(-45deg);
+      }
+    }      @media (max-width: 768px) {
       body.customer-page .submenu-item {
         margin: 2px 0 !important;
       }
@@ -340,9 +398,33 @@
         font-size: 14px !important;
         padding: 10px !important;
       }
+    }    
+    /* Enhanced hamburger positioning and mobile content adjustments - ADMIN COPY */
+    @media (max-width: 1024px) {
+      /* Ensure hamburger is properly positioned - EXACT ADMIN COPY */
+      body.customer-page .hamburger {
+        display: flex !important;
+        position: fixed;
+        top: 25px;
+        left: 15px;
+        z-index: 1002;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      /* Ensure main content doesn't overlap hamburger - ADMIN COPY */
+      body.customer-page .main-content {
+        margin-left: 0 !important;
+        padding-top: 70px !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+      }
     }
     
-    /* Hamburger focus state */
+    /* Hamburger focus state - MATCHING ADMIN */
     body.customer-page .hamburger:focus {
       outline: 2px solid var(--primary-color, #000000) !important;
     }
@@ -734,10 +816,109 @@
   <main class="main-content" id="main-content">
     {% block content %}
     {% endblock %}
-  </main>
-  <script src="{% static 'js/customer_base.js' %}"></script>    <!-- Additional script for sidebar scrolling -->
+  </main>  <script src="{% static 'js/customer_base.js' %}"></script>
+  
+  <!-- Enhanced Hamburger Menu and Sidebar Script -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // ========== HAMBURGER MENU FUNCTIONALITY ==========
+      const hamburger = document.getElementById('hamburger');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      const mainContent = document.getElementById('main-content');
+
+      // Create overlay if it doesn't exist
+      if (!sidebarOverlay) {
+        const overlay = document.createElement('div');
+        overlay.classList.add('sidebar-overlay');
+        overlay.id = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+      }
+
+      // Toggle sidebar function
+      function toggleSidebar() {
+        const isOpen = sidebar.classList.contains('open');
+        
+        if (isOpen) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      }
+
+      // Open sidebar function
+      function openSidebar() {
+        sidebar.classList.add('open');
+        hamburger.classList.add('active');
+        document.getElementById('sidebar-overlay').classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      }
+
+      // Close sidebar function
+      function closeSidebar() {
+        sidebar.classList.remove('open');
+        hamburger.classList.remove('active');
+        document.getElementById('sidebar-overlay').classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+      }
+
+      // Event listeners for hamburger menu
+      if (hamburger) {
+        hamburger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleSidebar();
+        });
+      }
+
+      // Close sidebar when clicking overlay
+      document.addEventListener('click', function(e) {
+        const overlay = document.getElementById('sidebar-overlay');
+        if (overlay && e.target === overlay) {
+          closeSidebar();
+        }
+      });
+
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(e) {
+        if (window.innerWidth <= 1024) {
+          const isClickInsideSidebar = sidebar && sidebar.contains(e.target);
+          const isClickOnHamburger = hamburger && hamburger.contains(e.target);
+          
+          if (!isClickInsideSidebar && !isClickOnHamburger && sidebar.classList.contains('open')) {
+            closeSidebar();
+          }
+        }
+      });
+
+      // Handle ESC key to close sidebar
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+          closeSidebar();
+        }
+      });
+
+      // Handle window resize
+      let resizeTimeout;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+          if (window.innerWidth > 1024) {
+            // Desktop view - ensure sidebar is visible and reset mobile states
+            sidebar.classList.remove('open');
+            hamburger.classList.remove('active');
+            document.getElementById('sidebar-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+          } else {
+            // Mobile/tablet view - ensure sidebar is hidden
+            if (!sidebar.classList.contains('open')) {
+              sidebar.classList.remove('open');
+            }
+          }
+        }, 250);
+      });
+
+      // ========== ORIGINAL CUSTOMER BASE FUNCTIONALITY ==========
       {% if unread_count > 0 %}
       // Add the has-notifications class to the notifications menu item
       const notificationMenuItem = document.getElementById('notification-nav-item');
@@ -764,7 +945,6 @@
       }
       
       // Make sure sidebar scroll works on mobile too
-      const sidebar = document.getElementById('sidebar');
       if (sidebar) {
         sidebar.style.overflowY = 'auto';
         
