@@ -380,7 +380,7 @@ button[type="submit"]:hover {
     .header-bar {
         width: 100%;
         position: fixed;
-        top: 0;
+        top: 100px;
         left: 0;
         height: auto;
         z-index: 1000;
