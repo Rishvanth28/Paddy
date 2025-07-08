@@ -1,92 +1,294 @@
 {% extends 'superadmin_app/superadmin_base.html' %}
 {% load static %}
+
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/admin_customer_list.css' %}" />
+<style>
+/* Disable all page load animations */
+.customer-list-container {
+    animation: none !important;
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customers Under You</title>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/customers_list.css' %}">
-</head>
+.customer-header {
+    animation: none !important;
+}
 
-<body>
-    {% comment %} <div class="main py-5" style="padding: 40px 30px;"> {% endcomment %}
-        <!-- Header Row with Title and Search -->
-        <div class="header-bar mb-5">
-            <h1 class="page-title mb-0 me-3">Customer List</h1>
+.customer-table-container {
+    animation: none !important;
+}
 
-            <div class="search-wrapper mt-2 mt-md-0">
-                <form class="w-100 position-relative" style="max-width: 500px;" role="search" method="GET" action="">
-                    <i class="fas fa-search position-absolute"
-                        style="top: 41%; left: 16px; transform: translateY(-50%); color: #888;"></i>
-                    <input type="search" name="q" class="form-control ps-5" placeholder="Search customers..."
-                        aria-label="Search">
-                </form>
-            </div>
+.search-form {
+    animation: none !important;
+}
 
+.customer-table {
+    animation: none !important;
+}
+
+/* Disable any transform or opacity transitions that might cause fade effects */
+* {
+    transition: none !important;
+}
+
+/* Action button styling */
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    margin-left: 1rem;
+}
+</style>
+<div class="customer-list-container">
+    <div class="customer-header">
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+            <h1 class="page-title mb-0 me-3" style="margin-left: -1rem;">Customer List</h1>
+            <form class="search-form" method="GET" action="">
+                <input type="search" name="q" class="search-input" placeholder="Search customers...">
+                <i class="fas fa-search search-icon"></i>
+            </form>
         </div>
-        <div class="card">
+    </div>
 
-            <div class="card-body p-0">
-                {% if customers %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Customer ID</th>
-                                <th>Full Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Company</th>
-                                <th>GST</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for customer in customers %}
-                            <tr>
-                                <td>{{ customer.customer_id }}</td>
-                                <td>{{ customer.first_name }} {{ customer.last_name }}</td>
-                                <td>{{ customer.email }}</td>
-                                <td>{{ customer.phone_number }}</td>
-                                <td>{{ customer.company_name }}</td>
-                                <td>{{ customer.GST }}</td>
-                                <td>
-                                    <form method="POST" action="{% url 'superadmin_app:delete_customer' customer.customer_id %}"
-                                        onsubmit="return confirm('Are you sure you want to delete this customer?');">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    <!-- This div is hidden by default -->
-                    <div class="no-results-found d-none text-center py-4 fs-5 text-muted">
-                        <i class="fas fa-user-slash fa-2x mb-3 text-secondary"></i>
-                        <p>No customers match your search.</p>
-                    </div>
-                </div>
-                {% else %}
-                <div class="no-customers">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
-                        class="bi bi-people mb-3" viewBox="0 0 16 16">
-                        <path
-                            d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
-                    </svg>
-                    <p class="fs-5 mb-0">No customers found for this admin.</p>
-                </div>
-                {% endif %}
+    <div class="customer-table-container">
+        {% if customers %}        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Company</th>
+                    <th>GST</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.customer_id }}</td>
+                    <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.phone_number }}</td>
+                    <td>{{ customer.company_name }}</td>
+                    <td>{{ customer.GST }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'superadmin_app:delete_customer' customer.customer_id %}"
+                            onsubmit="return confirm('Are you sure you want to delete this customer?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- No results found message for search -->
+        <div class="no-results-found d-none text-center py-4">
+            <div class="empty-icon">
+                <i class="fas fa-search no-results-icon"></i>
+                <style>
+                @media (max-width: 767.98px) {
+                  .no-results-icon {
+                    margin-left: 16px;
+                  }
+                }
+                @media (min-width: 768px) and (max-width: 991.98px) {
+                  .no-results-icon {
+                    margin-left: 32px;
+                  }
+                }
+                </style>
             </div>
+            <p>No customers match your search criteria.</p>
         </div>
-    {% comment %} </div> {% endcomment %}
+        
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-user-friends"></i>
+            </div>
+            <p>No customers found for this admin.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>{% if messages %}
+<!-- Toast Notification System -->
+<style>
+  .toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+  }
+    .toast {
+    padding: 15px 40px 15px 15px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border-left: 4px solid #ccc;
+    word-wrap: break-word;
+  }
+  
+  .toast.success {
+    border-left-color: #000000;
+  }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/customers_list.js' %}" defer></script>
-</body>
+  .toast.info {
+    border-left-color: #000000;
+  }
+
+  .toast.warning {
+    border-left-color: #000000;
+  }
+
+  .toast.error {
+    border-left-color: #000000;
+  }
+  
+  .toast-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0;
+    /* width: 20px; */
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+  }
+    .toast-close:hover {
+    color: #333;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {    // Add click event to close buttons
+    document.querySelectorAll('.toast-close').forEach(button => {
+      button.addEventListener('click', function() {
+        const toast = this.parentElement;
+        toast.remove();
+      });
+    });
+    
+    // Auto-dismiss toasts after 5 seconds
+    document.querySelectorAll('.toast').forEach(toast => {
+      setTimeout(() => {
+        if (toast && toast.parentElement) {
+          toast.remove();
+        }
+      }, 5000);
+    });
+  });
+</script>
+{% endif %}
+
+<!-- Customer Search Functionality -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector('input[name="q"]');
+    const tableRows = document.querySelectorAll(".customer-table tbody tr");
+    const emptyState = document.querySelector(".empty-state");
+    const noResultsFound = document.querySelector(".no-results-found");
+    const customerTable = document.querySelector(".customer-table");
+
+    if (searchInput && tableRows.length > 0) {
+        // Prevent form submission on Enter
+        searchInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault(); // Stops form submission
+            }
+        });
+
+        // Search logic
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase().trim();
+            let anyVisible = false;
+
+            tableRows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                
+                // Get text content from each cell (excluding the action column)
+                const customerID = cells[0] ? cells[0].textContent.toLowerCase() : '';
+                const fullName = cells[1] ? cells[1].textContent.toLowerCase() : '';
+                const email = cells[2] ? cells[2].textContent.toLowerCase() : '';
+                const phone = cells[3] ? cells[3].textContent.toLowerCase() : '';
+                const company = cells[4] ? cells[4].textContent.toLowerCase() : '';
+                const gst = cells[5] ? cells[5].textContent.toLowerCase() : '';
+
+                // Check if query matches any field
+                const matches = 
+                    customerID.includes(query) ||
+                    fullName.includes(query) ||
+                    email.includes(query) ||
+                    phone.includes(query) ||
+                    company.includes(query) ||
+                    gst.includes(query);
+
+                row.style.display = matches ? "" : "none";
+                if (matches) anyVisible = true;
+            });
+
+            // Handle the display logic
+            if (query === "") {
+                // When search is empty, show original state
+                if (emptyState) {
+                    emptyState.style.display = tableRows.length > 0 ? "none" : "";
+                }
+                if (noResultsFound) {
+                    noResultsFound.classList.add("d-none");
+                }
+                if (customerTable) {
+                    customerTable.style.display = "";
+                }
+            } else {
+                // When searching, hide the empty state and show no-results if needed
+                if (emptyState) {
+                    emptyState.style.display = "none";
+                }
+                if (noResultsFound) {
+                    if (!anyVisible) {
+                        noResultsFound.classList.remove("d-none");
+                        if (customerTable) customerTable.style.display = "none";
+                    } else {
+                        noResultsFound.classList.add("d-none");
+                        if (customerTable) customerTable.style.display = "";
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+
 {% endblock %}
