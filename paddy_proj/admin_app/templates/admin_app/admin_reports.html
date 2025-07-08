@@ -626,7 +626,7 @@
     <div class="mobile-report-cards d-md-none">
         {% if rice_paddy_orders %}
         {% for order in rice_paddy_orders %}
-        <div class="report-card">
+        <!-- <div class="report-card">
             <div class="report-card-header">
                 <span class="report-card-id">Order #{{ order.id }}</span>
                 <span class="status-{{ order.status|lower }}">{{ order.status }}</span>
@@ -660,7 +660,7 @@
                     <span class="report-info-label">Payment:</span>
                     <span class="payment-{{ order.payment_status|lower }}">{{ order.payment_status }}</span>
                 </div>
-            </div>
+            </div> -->
         </div>
         {% endfor %}
         {% else %}
@@ -723,7 +723,7 @@
     <div class="mobile-report-cards d-md-none">
         {% if pesticide_orders %}
         {% for order in pesticide_orders %}
-        <div class="report-card">
+        <!-- <div class="report-card">
             <div class="report-card-header">
                 <span class="report-card-id">Order #{{ order.id }}</span>
                 <span class="status-{{ order.status|lower }}">{{ order.status }}</span>
@@ -766,7 +766,7 @@
                     <span class="payment-{{ order.payment_status|lower }}">{{ order.payment_status }}</span>
                 </div>
             </div>
-        </div>
+        </div> -->
         {% endfor %}
         {% else %}
         <div class="no-data">No pesticide orders found matching your criteria.</div>
