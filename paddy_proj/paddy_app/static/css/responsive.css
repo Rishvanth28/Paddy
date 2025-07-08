@@ -2268,7 +2268,7 @@ button,
 /* Responsive adjustments for upgrade-customer */
 @media (max-width: 768px) {
   .upgrade-customer {
-    margin-left: 0 !important;
+    margin-left: -45px !important;
     padding-left: 0.75rem !important;
   }
 }

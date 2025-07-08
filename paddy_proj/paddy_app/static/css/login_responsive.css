@@ -851,7 +851,7 @@ input:focus, select:focus, textarea:focus, button:focus {
 
 .toast-close {
   position: absolute;
-  top: 50%;
+  /* top: 50%; */
   right: 12px;
   transform: translateY(-50%);
   background: transparent;
