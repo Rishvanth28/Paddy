@@ -1431,7 +1431,6 @@ body {
 }
 
 .customer-orders-page .search-input {
-    padding-left: 3rem !important;
     width: 100%;
     height: 38px;
 }
@@ -3765,7 +3764,7 @@ body {
                 <div>
                     <label class="form-label"><i class="bi bi-search me-1"></i>Search Orders</label>
                     <div class="search-container">
-                        <i class="bi bi-search"></i>
+                        
                         <input type="text" class="form-control form-control-sm search-input" id="search-input" placeholder="Search by order ID, customer name...">
                     </div>
                 </div>
@@ -3909,9 +3908,13 @@ body {
             applyFilters();
         });
         
-        // Add search input event listener
+        // Add search input event listener with debounce
+        let searchTimeout;
         searchInput.addEventListener('input', function() {
-            applyFilters();
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                applyFilters();
+            }, 300);
         });
 
         // Functions
