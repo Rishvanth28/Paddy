@@ -156,12 +156,8 @@
                                 <p class="cell-text">{{ subscription.additional_users|default:"50" }}</p>
                             </td>
                             <td>
-                                <span class="status-badge {% if subscription.subscription_status == 0 %}status-pending{% elif subscription.subscription_status == 1 %}status-approved{% else %}status-rejected{% endif %}">
-                                    {% if subscription.subscription_status == 0 %}
-                                        Pending
-                                    {% elif subscription.subscription_status == 1 %}
-                                        Approved
-                                    {% endif %}
+                                <span class="status-badge {% if subscription.status_label == 'Pending' %}status-pending{% elif subscription.status_label == 'Approved' %}status-approved{% elif subscription.status_label == 'Active' %}status-active{% else %}status-unknown{% endif %}">
+                                    {{ subscription.status_label }}
                                 </span>
                             </td>
                             <td>
