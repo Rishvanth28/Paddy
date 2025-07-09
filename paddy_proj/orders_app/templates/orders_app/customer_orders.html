@@ -1654,7 +1654,7 @@ body {
 }
 
 .customer-orders-page .detail-section {
-    padding: 1.25rem;
+    padding: 1.5rem;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
     border-radius: var(--border-radius);
     border: 1px solid rgba(99, 102, 241, 0.08);
@@ -1662,6 +1662,10 @@ body {
     position: relative;
     transition: all 0.3s ease;
     margin-bottom: 1rem;
+}
+
+.customer-orders-page .detail-section.last {
+    margin-bottom: 5rem;
 }
 
 .customer-orders-page .detail-section:hover {
@@ -1703,6 +1707,8 @@ body {
     background: transparent;
     border: none;
     box-shadow: none;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .customer-orders-page .detail-section .table td {
@@ -1948,6 +1954,9 @@ body {
         padding: 0.75rem;
         margin-bottom: 0.75rem;
     }
+    .customer-orders-page .detail-section .last {
+        margin-bottom: 9rem !important;
+    }
     
     .customer-orders-page .detail-section h6 {
         font-size: 0.9rem;
@@ -1957,9 +1966,9 @@ body {
     }
     
     .customer-orders-page .detail-section .table td {
-        padding: 0.25rem;
-        font-size: 0.8rem;
-        line-height: 1.2;
+        padding: 0.5rem 0.25rem;
+        font-size: 0.875rem;
+        line-height: 1.3;
         word-break: break-word;
         overflow-wrap: break-word;
         border-bottom: 1px solid rgba(99, 102, 241, 0.1);
@@ -1969,17 +1978,19 @@ body {
     .customer-orders-page .detail-section .table td:first-child {
         font-weight: 500;
         color: var(--gray);
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         width: 35%;
-        min-width: 80px;
+        min-width: 90px;
+        padding-right: 0.5rem;
     }
     
     .customer-orders-page .detail-section .table td:last-child {
         color: var(--dark);
         font-weight: 600;
-        font-size: 0.8rem;
+        font-size: 0.875rem;
         width: 65%;
         word-break: break-word;
+        padding-left: 0.5rem;
     }
     
     .customer-orders-page .card-header {
@@ -2343,13 +2354,35 @@ body {
     padding-bottom: 5rem;
 }
 
+/* Responsive handling for fixed action buttons */
 @media (max-width: 767.98px) {
     .fixed-action-buttons {
         padding: 0.75rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .fixed-action-buttons .btn {
+        margin-bottom: 0.25rem;
     }
     
     .customer-orders-page .order-detail-section {
-        padding-bottom: 7rem; /* More padding for mobile due to stacked buttons */
+        padding-bottom: 9rem; /* More padding for mobile due to stacked buttons */
+    }
+    
+    .customer-orders-page .detail-section.last {
+        margin-bottom: 7rem; /* Ensure the last detail section has enough bottom margin */
+    }
+}
+
+@media (min-width: 768px) {
+    .fixed-action-buttons {
+        flex-direction: row;
+        gap: 1rem;
+    }
+    
+    .fixed-action-buttons .btn {
+        min-width: 150px;
     }
 }
 
@@ -3070,6 +3103,15 @@ body {
         gap: 1rem;
         max-height: 70vh;
     }
+    
+    .customer-orders-page .detail-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .customer-orders-page .detail-section.last {
+        margin-bottom:9rem; /* Extra space to ensure content isn't hidden behind buttons */
+    }
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
@@ -3317,6 +3359,14 @@ body {
         font-size: 0.8rem;
         margin-top: 0.125rem;
     }
+    .detail-section .last{
+       margin-bottom: 5rem !important;
+    }
+    .fixed-action-buttons{
+        display: flex;
+        flex-direction: column !important;
+        gap: 0.5rem;
+    }
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
@@ -3389,9 +3439,15 @@ body {
     color: var(--dark);
     letter-spacing: -0.025em;
 }
-.admin-orders-page .text-muted{
+.customer-orders-page .text-muted{
     font-weight: 400 !important;
 }
+.fixed-action-buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  
+} 
 
 </style>
 
@@ -3976,7 +4032,7 @@ body {
                 
                 <div class="detail-section">
                     <div class="row">
-                        <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="col-md-6 mb-3 mb-md-0 p-2">
                             <h6>Order Summary</h6>
                             <table class="table table-sm">
                                 <tr>
@@ -4000,7 +4056,7 @@ body {
                             </table>
                         </div>
                         
-                        <div class="col-md-6">
+                        <div class="col-md-6 p-2">
                             <h6>Payment Information</h6>
                             <table class="table table-sm">
                                 <tr>
@@ -4020,9 +4076,7 @@ body {
                     </div>
                 </div>
                 
-                <div class="detail-section" style="
-    margin-bottom: 9rem;
-">
+                <div class="detail-section last">
                     <h6>Delivery Information</h6>
                     <table class="table table-sm">
                         <tr>
@@ -4050,7 +4104,7 @@ body {
                     </table>
                 </div>
                 
-                <div class="fixed-action-buttons d-flex gap-2 for-mobile flex-column flex-md-row">
+                <div class="fixed-action-buttons ">
                     ${order.paid_amount < order.overall_amount ? `
                         <form method="post" action="/payment/invoice/" class="flex-grow-1">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
