@@ -65,7 +65,6 @@
     background: transparent;
     min-height: 100vh !important;
     color: #262626 !important;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
 }
 
 /* Badges */
@@ -1172,6 +1171,12 @@ body {
     border-color: var(--secondary) !important;
 }
 
+.customer-orders-page .btn-primary.status-filter.active {
+    background-color: var(--primary) !important;
+    color: var(--text-inverse) !important;
+    border-color: var(--primary) !important;
+}
+
 .customer-orders-page .btn-outline-primary.status-filter.active {
     background-color: var(--primary) !important;
     color: var(--text-inverse) !important;
@@ -1265,6 +1270,7 @@ body {
 }
 
 .customer-orders-page .search-input {
+    padding-left: 3rem !important;
     width: 100%;
     height: 38px;
 }
@@ -2708,7 +2714,7 @@ body {
                 <div>
                     <label class="form-label"><i class="bi bi-search me-1"></i>Search Orders</label>
                     <div class="search-container">
-                        
+                        <i class="bi bi-search"></i>
                         <input type="text" class="form-control form-control-sm search-input" id="search-input" placeholder="Search by order ID, customer name...">
                     </div>
                 </div>
@@ -2717,35 +2723,38 @@ body {
     </div>
 
     <!-- Main content with two-panel layout -->
-    <div class="row">
+    <div class="order-layout">
         <!-- Left panel: Order list -->
-        <div class="col-md-4">
-            <div class="dashboard-card order-list-container customer-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>Order List</h5>
-                    <div class=" spinner-border-sm text-primary d-none" id="loading-spinner" role="status">
-
-                    </div>
+        <div class="order-list-panel">
+            <div class="dashboard-card order-list-container">
+            <div class="card-header">
+                <h5><i class="bi bi-list-ul mr-2"></i>Order List</h5>
+                <div class="spinner-border text-primary hidden" id="loading-spinner" role="status">
+                <span class="sr-only">Loading...</span>
                 </div>
-                {% csrf_token %}
-                <div class="list-group list-group-flush" id="orders-list">
-                    <div class="text-center py-4">
-
-                    </div>
+            </div>
+            {% csrf_token %}
+            <div class="list-group" id="orders-list">
+                <div class="empty-state">
+                <div class="spinner-border text-primary loading-spinner" role="status">
+                    <span class="sr-only">Loading...</span>
                 </div>
+                </div>
+            </div>
             </div>
         </div>
 
         <!-- Right panel: Order details -->
-        <div class="col-md-8">
-            <div class="dashboard-card h-100 customer-card">
-                <div class="card-header">
-                    <h5>Order Details</h5>
+        <div class="order-details-panel">
+            <div class="dashboard-card">
+            <div class="card-header">
+                    <h5><i class="bi bi-receipt mr-2"></i>Order Details</h5>
+                    <div class="subtitle">View comprehensive order information</div>
                 </div>
                 <div class="order-detail-section" id="order-details">
-                    <div class="text-center py-5">
-                        <i class="bi bi-box-seam text-muted" style="font-size: 2.5rem;"></i>
-                        <p class="mt-3">Select an order to view details</p>
+                    <div class="empty-state">
+                    <i class="bi bi-box-seam"></i>
+                    <p>Select an order to view details</p>
                     </div>
                 </div>
             </div>
@@ -2788,23 +2797,25 @@ body {
         // Initialization
         fetchOrders();
         
-        // Set default active class and update UI elements
+        // Set default active class
         function updateUI() {
-            // Update active status filter button
+            // First, remove active class from all buttons
             statusFilters.forEach(btn => {
-                const filterType = btn.dataset.filter;
                 btn.classList.remove('active');
-                
-                if (filterType === currentFilter) {
+            });
+            
+            // Then add active class only to the button matching the current filter
+            statusFilters.forEach(btn => {
+                if (btn.dataset.filter === currentFilter) {
                     btn.classList.add('active');
                 }
             });
-
+            
             // Update form controls
-            if (dateFromInput) dateFromInput.value = dateFrom;
-            if (dateToInput) dateToInput.value = dateTo;
-            if (sortSelect) sortSelect.value = currentSort;
-            if (categorySelect) categorySelect.value = currentCategory;
+            dateFromInput.value = dateFrom;
+            dateToInput.value = dateTo;
+            sortSelect.value = currentSort;
+            categorySelect.value = currentCategory;
         }
         
         // Initial UI update
@@ -2812,7 +2823,9 @@ body {
         
         // Event Listeners
         statusFilters.forEach(btn => {
-            btn.addEventListener('click', function () {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
                 // First, remove active class from all buttons
                 statusFilters.forEach(b => {
                     b.classList.remove('active');
@@ -2972,9 +2985,6 @@ body {
 
             // Update URL for bookmarking
             updateURL();
-
-            // Update UI to ensure active state on buttons is correct
-            updateUI();
 
             showLoading(false);
         }
@@ -3309,6 +3319,22 @@ body {
             if (urlParams.has('category')) currentCategory = urlParams.get('category');
 
             updateUI();
+        }        function updateUI() {
+            // Update status filter buttons
+            statusFilters.forEach(btn => {
+                const filterType = btn.dataset.filter;
+                btn.classList.remove('active');
+                
+                if (filterType === currentFilter) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update form controls
+            dateFromInput.value = dateFrom;
+            dateToInput.value = dateTo;
+            sortSelect.value = currentSort;
+            categorySelect.value = currentCategory;
         }
 
         // Initialize from URL if parameters exist
