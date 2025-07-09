@@ -1597,10 +1597,13 @@ button,
   .sidebar-header {
     padding: 5px;
   }
-
   .sidebar-logo {
-    width: 30px;
-    height: 30px;
+    width: auto !important;
+    height: auto !important;
+    font-size: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .sidebar-nav {
