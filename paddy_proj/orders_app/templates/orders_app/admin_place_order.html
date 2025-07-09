@@ -2,7 +2,10 @@
 {% load static %}
 {% block content %}
 <head>
-    <link rel="stylesheet" href="{% static 'css/place_order.css' %}">    <style>        @media (min-width: 769px) and (max-width: 1024px) {
+    <link rel="stylesheet" href="{% static 'css/place_order.css' %}">    
+    <style>        
+    
+        @media (min-width: 769px) and (max-width: 1024px) {
             .title-break {
                 display: inline;
             }
@@ -13,7 +16,9 @@
             .page-title {
                 white-space: nowrap;
             }
-        }        @media (max-width:768px) {
+        }        
+        
+        @media (max-width:768px) {
             .form-container {
                 padding: 10px;
             }
@@ -49,17 +54,25 @@
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                margin-top: 6rem !important;
+                /* margin-top: 6rem !important; */
                 padding: 0 15px;
             }
             .title-break::after {
                 content: "\A";
                 white-space: pre;
             }
-        }</style>
+        }
+
+        @media (min-height:570px) and (max-height: 740px) {
+            .tab-header {
+                margin-top: 25vh !important;
+            }
+        }
+
+        </style>
 </head>
 
-<body>    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3" style="margin-top: 3rem;">
+<body>    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h1 class="page-title mb-0 me-3 " style="margin-left: -1rem;" >Place New<span class="title-break"> </span>Order</h1>
     </div>
     <!-- Tab Buttons -->

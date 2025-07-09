@@ -12,7 +12,7 @@ class CustomerTableAdmin(admin.ModelAdmin):
     ordering = ("customer_id",)
 
 
-for model in [AdminTable, CustomerTable, Orders, Payments, Subscription,UserIncreaseSubscription,OrderItems]:
+for model in [AdminTable, CustomerTable, Orders, Payments, Subscription,UserIncreaseSubscription,OrderItems,CashPaymentRequest]:
     if model not in admin.site._registry:
         admin.site.register(model)
 

@@ -20,7 +20,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
         ]
 
         # Check if path starts with /admin/ (Django admin) or is in exempt paths
-        if path.startswith("/admin/") or path in exempt_paths or path.startswith("/static/"):
+        if path in exempt_paths or path.startswith("/static/"):
             return None
 
         # If user is not logged in (no role or user_id), redirect to login

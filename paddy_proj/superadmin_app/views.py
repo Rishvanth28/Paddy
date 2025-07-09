@@ -22,6 +22,7 @@ from django.db.models.functions import ExtractMonth, ExtractYear, Coalesce
 from paddy_app.models import *
 import os
 from django.db.models import Q, Prefetch
+from django.db.models import Value, CharField
 
 @role_required(["superadmin"])
 def superadmin_dashboard(request):
@@ -222,10 +223,18 @@ def superadmin_dashboard(request):
 def superadmin_subscription(request):
     # Get filter parameters
     status_filter = request.GET.get('status', '')
-    
-    # Base queryset
-    subscriptions_queryset = UserIncreaseSubscription.objects.filter().order_by('-sid')
-    
+
+    # Base queryset with annotated status labels
+    subscriptions_queryset = UserIncreaseSubscription.objects.annotate(
+        status_label=Case(
+            When(subscription_status=0, then=Value('Pending')),
+            When(subscription_status=1, then=Value('Approved')),
+            When(subscription_status=3, then=Value('Active')),
+            default=Value('Unknown'),
+            output_field=CharField()
+        )
+    ).order_by('-sid')
+
     # Apply status filter if provided
     if status_filter != '':
         subscriptions_queryset = subscriptions_queryset.filter(subscription_status=status_filter)
