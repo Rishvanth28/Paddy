@@ -23,6 +23,175 @@
     --danger: #ef4444;
     --danger-light: #fee2e2;
     --info: #64748b;
+    --info-light: #dbeafe;
+    --gray: #6b7280;
+    --gray-500: #6b7280;
+    --dark: #111827;
+    --light: #f9fafb;
+    --text-inverse: #ffffff;
+    --border: #e5e7eb;
+    --border-radius: 0.5rem;
+    --border-radius-sm: 0.375rem;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.2s ease-in-out;
+}
+
+/* Badges */
+.customer-orders-page .badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.customer-orders-page .bg-primary {
+    background-color: var(--primary) !important;
+}
+
+.customer-orders-page .bg-success {
+    background-color: var(--success) !important;
+    color: var(--text-inverse) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.customer-orders-page .bg-warning {
+    background-color: var(--warning) !important;
+    color: var(--dark) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.customer-orders-page .bg-danger {
+    background-color: var(--danger) !important;
+    color: var(--text-inverse) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.customer-orders-page .bg-secondary {
+    background-color: var(--gray-500) !important;
+    color: var(--text-inverse) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Order Status Badges Container */
+.customer-orders-page .order-status-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+/* Mobile responsive status badges */
+@media (max-width: 575.98px) {
+    .customer-orders-page .order-status-badges {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375rem;
+        justify-content: flex-end;
+    }
+    
+    .customer-orders-page .order-status-badges .badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+        white-space: nowrap;
+    }
+}
+
+/* Detail Header Styling */
+.customer-orders-page .detail-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.customer-orders-page .detail-header .order-status-badges {
+    display: flex;
+    flex-direction: row;
+    gap: 0.375rem;
+    align-items: flex-end;
+}
+
+/* Mobile responsive detail header */
+@media (max-width: 575.98px) {
+    .customer-orders-page .detail-header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .customer-orders-page .detail-header .order-status-badges {
+        margin-top: 0.75rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: flex-start;
+        width: 100%;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .customer-orders-page .order-status-badges {
+        gap: 0.4375rem;
+    }
+    
+    .customer-orders-page .order-status-badges .badge {
+        font-size: 0.75rem;
+        padding: 0.22rem 0.65rem;
+    }
+}
+
+/* Order item badge styling */
+.customer-orders-page .order-item .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.25rem;
+    display: inline-block;
+}
+
+/* Mobile responsive badge display */
+@media (max-width: 767.98px) {
+    .customer-orders-page .order-item .badge {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .customer-orders-page .order-item .badge {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.35rem;
+    }
+}
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --info: #64748b;
     --info-light: #f1f5f9;
     --light: #f8fafc;
     --dark: #0f172a;
@@ -1595,7 +1764,7 @@ body {
     max-height: none;
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
     z-index: 2;
     transition: box-shadow 0.2s;
@@ -3918,8 +4087,8 @@ body {
             filteredOrders.forEach(order => {
                 const isActive = order.order_id === selectedOrderId;
                 const statusClass = order.delivery_status === 1 ? 'status-completed' : 'status-pending';
-                const paymentStatus = order.payment_status === 1 ? 'Paid' : 'Pending';
                 const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
+                const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
 
                 html += `
     <div class="list-group-item order-item ${isActive ? 'active' : ''}" 
@@ -3928,10 +4097,6 @@ body {
             <div class="order-item-header d-flex justify-content-between align-items-start mb-2">
                 <div>
                     <span class="fw-medium order-number">Order #${order.order_id}</span>
-                    <span class="order-status ms-2">
-                        <span class="order-status-icon ${statusClass}"></span>
-                        <large>${paymentStatusBadge}</large>
-                    </span>
                 </div>
                 <small class="text-muted order-date">${formatDate(order.order_date)}</small>
             </div>
@@ -3940,13 +4105,9 @@ body {
                     <small class="text-muted order-category">${getCategoryName(order.product_category_id)}</small>
                     <small class="d-block">${order.quantity} item(s)</small>
                 </div>
-                <div>
-                    <small class="text-muted">${getCategoryName(order.category)}</small>
-                    <small class="d-block">${order.quantity} item(s)</small>
-                </div>
-                <div class="text-end order-item-amount">
-                    <div class="fw-medium order-amount">₹${order.overall_amount.toLocaleString()}</div>
-                    <small class="text-muted">${order.delivery_status === 1 ? 'Delivered' : 'Processing'}</small>
+                <div class="order-status-badges">
+                    ${paymentStatusBadge}
+                    ${deliveryStatusBadge}
                 </div>
             </div>
         </div>
@@ -3982,12 +4143,18 @@ body {
         }
 
         function getPaymentStatusBadge(status) {
-            switch (parseInt(status)) {
-                case 0: return '<span style="color: red;" class="bg-danger">Unpaid</span>';
-                case 1: return '<span style="color: orange;" class="orange-status text-dark">Partially Paid</span>';
-                case 2: return '<span style="color: green;" class="bg-success">Fully Paid</span>';
-                default: return '<span style="color: white;" class="bg-secondary">Unknown</span>';
+            switch(parseInt(status)) {
+                case 0: return '<span class="badge bg-danger">Unpaid</span>';
+                case 1: return '<span class="badge bg-warning text-dark">Partially Paid</span>';
+                case 2: return '<span class="badge bg-success">Fully Paid</span>';
+                default: return '<span class="badge bg-secondary">Unknown</span>';
             }
+        }
+        
+        function getDeliveryStatusBadge(status) {
+            return status === 1 
+                ? '<span class="badge bg-success">Delivered</span>' 
+                : '<span class="badge bg-warning text-dark">Processing</span>';
         }
 
         function renderOrderDetails() {
@@ -4015,18 +4182,17 @@ body {
             const statusClass = order.delivery_status === 1 ? 'status-completed' : 'status-pending';
             const paymentStatusClass = order.payment_status === 1 ? 'text-success' : 'text-danger';
             const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
+            const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
 
             orderDetails.innerHTML = `
                 <div class="detail-header">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <span class="fw-bold">Order #${order.order_id}</span>
-                            <p class="text-muted mb-0">Placed on ${formatDate(order.order_date)}</p>
-                        </div>
-                        <div class="order-status">
-                            <span class="order-status-icon ${statusClass}"></span>
-                            <span class="fw-medium">${order.delivery_status === 1 ? 'Completed' : 'Processing'}</span>
-                        </div>
+                    <div>
+                        <span class="fw-bold">Order #${order.order_id}</span>
+                        <p class="text-muted mb-0">Placed on ${formatDate(order.order_date)}</p>
+                    </div>
+                    <div class="order-status-badges">
+                        ${paymentStatusBadge}
+                        ${deliveryStatusBadge}
                     </div>
                 </div>
                 
@@ -4061,7 +4227,7 @@ body {
                             <table class="table table-sm">
                                 <tr>
                                     <td class="text-muted">Status:</td>
-                                    <td><span class="${paymentStatusClass}">${paymentStatusBadge}</span></td>
+                                    <td>${paymentStatusBadge}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">Paid Amount:</td>
@@ -4081,7 +4247,7 @@ body {
                     <table class="table table-sm">
                         <tr>
                             <td class="text-muted">Status:</td>
-                            <td>${order.delivery_status === 1 ? 'Delivered' : 'In Transit'}</td>
+                            <td>${deliveryStatusBadge}</td>
                         </tr>
                         ${order.delivery_date ? `
                         <tr>
