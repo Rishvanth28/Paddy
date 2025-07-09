@@ -2708,7 +2708,7 @@ body {
 }
 
 .page-header h2 {
-    font-weight: 700;
+    font-weight: 700 !important;
     font-size: 2rem;
     margin-bottom: 0.5rem;
     letter-spacing: -0.025em;
@@ -3697,7 +3697,7 @@ body {
     <div class="page-header">
         <div class="flex-between">
             <div>
-                <h2 class="mb-0">{% if request.session.role == 'superadmin' %}My Orders{% else %}Customer Orders{% endif %}</h2>
+                <h2 class="mb-0">My Orders</h2>
                 <p class="subtitle mb-0">Manage and track order status, payments, and deliveries</p>
             </div>
             <div class="text-white-50" id="order-count-text">
