@@ -2663,28 +2663,32 @@ body {
     }
 
     /* Search input styling */
-    .search-container {
+    .admin-orders-page .search-container {
         position: relative;
+        display: flex;
+        align-items: center;
     }
 
-    .search-container .bi-search {
+    .admin-orders-page .search-container .bi-search {
         position: absolute;
         left: 1rem;
         top: 50%;
         transform: translateY(-50%);
-        color: var(--text-tertiary);
+        color: var(--gray);
         z-index: 1;
+        pointer-events: none;
     }
 
-    .search-input {
-        padding-left: 3rem;
+    .admin-orders-page .search-input {
+        width: 100%;
+        height: 38px;
         background: rgba(255, 255, 255, 0.9);
-        border: 2px solid var(--border-medium);
+        border: 1px solid var(--border);
         border-radius: var(--border-radius-sm);
-        transition: var(--transition-fast);
+        transition: var(--transition);
     }
 
-    .search-input:focus {
+    .admin-orders-page .search-input:focus {
         background: white;
         border-color: var(--primary);
         box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
@@ -3374,10 +3378,9 @@ body {
             </div>
             <!-- Search box -->
             <div>
-                <label class="form-label">Search Orders</label>
+                <label class="form-label"><i class="bi bi-search me-1" style="padding-right: 10px;"></i>Search Orders</label>
                 <div class="search-container">
-                    <i class="bi bi-search"></i>
-                    <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
+                    <input type="text" class="form-control form-control-sm search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
                 </div>
             </div>
         </div>
