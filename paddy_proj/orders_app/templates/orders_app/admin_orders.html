@@ -2,70 +2,577 @@
 {% load static %}
 {% block content %}
 {% block head %}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/admin_orders.css' %}" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 <style>
-    :root {
-        /* Primary Colors - Black & White Theme */
-        --primary: #000000;
-        --primary-hover: #1a1a1a;
-        --secondary: #333333;
-        --accent: #666666;
+/* CSS Variables */
+.admin-orders-page {
+    --primary: #000000;
+    --primary-hover: #1a1a1a;
+    --primary-light: #f5f5f5;
+    --secondary: #8b5cf6;
+    --secondary-hover: #7c3aed;
+    --secondary-light: #f3e8ff;
+    --blue: #3b82f6;
+    --blue-hover: #2563eb;
+    --blue-light: #dbeafe;
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --info: #64748b;
+    --info-light: #f1f5f9;
+    --light: #f8fafc;
+    --dark: #0f172a;
+    --gray: #64748b;
+    --gray-light: #f1f5f9;
+    --border: #e2e8f0;
+    --border-light: #f1f5f9;
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --text-inverse: #fff;
+}
 
-        /* Status Colors */
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --info: #3b82f6;
+/* Base styles for admin orders page only */
+.admin-orders-page {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #0f172a;
+    line-height: 1.6;
+    font-weight: 400;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+}
 
-        /* Neutral Colors */
-        --white: #ffffff;
-        --black: #000000;
-        --gray-50: #fafafa;
-        --gray-100: #f5f5f5;
-        --gray-200: #e5e5e5;
-        --gray-300: #d4d4d4;
-        --gray-400: #a3a3a3;
-        --gray-500: #737373;
-        --gray-600: #525252;
-        --gray-700: #404040;
-        --gray-800: #262626;
-        --gray-900: #171717;
+.admin-orders-page *,
+.admin-orders-page *::before,
+.admin-orders-page *::after {
+    box-sizing: border-box;
+}
 
-        /* Surface Colors */
-        --surface-primary: #ffffff;
-        --surface-secondary: #fafafa;
-        --surface-elevated: #ffffff;
-        --surface-hover: #f5f5f5;
+/* Container */
+.admin-orders-page .container-fluid {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem;
+    margin: 0 auto;
+    background: transparent;
+}
 
-        /* Border & Shadow */
-        --border-light: #e5e5e5;
-        --border-medium: #d4d4d4;
-        --border-dark: #a3a3a3;
+/* Page body override */
+.admin-orders-page body,
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: var(--dark);
+    line-height: 1.6;
+    font-weight: 400;
+    min-height: 100vh;
+}
 
-        --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+/* Badges */
+.admin-orders-page .badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
 
-        /* Text Colors */
-        --text-primary: #000000;
-        --text-secondary: #404040;
-        --text-tertiary: #737373;
-        --text-muted: #a3a3a3;
-        --text-inverse: #ffffff;
+.admin-orders-page .bg-primary {
+    background-color: var(--primary) !important;
+}
 
-        /* Transitions & Effects */
-        --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+.admin-orders-page .bg-success {
+    background-color: var(--success) !important;
+}
 
-        --border-radius-sm: 6px;
-        --border-radius: 8px;
-        --border-radius-lg: 12px;
-        --border-radius-xl: 16px;
+.admin-orders-page .bg-warning {
+    background-color: var(--warning) !important;
+    color: #000 !important;
+}
+
+.admin-orders-page .bg-danger {
+    background-color: var(--danger) !important;
+}
+
+.admin-orders-page .bg-secondary {
+    background-color: #6c757d !important;
+}
+
+.admin-orders-page .text-dark {
+    color: #000 !important;
+}
+
+/* Loading Spinner */
+.admin-orders-page .spinner-border {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    vertical-align: text-bottom;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+    to {
+        transform: rotate(360deg);
     }
+}
+
+.admin-orders-page .text-primary {
+    color: var(--primary) !important;
+}
+
+/* Position utilities */
+.admin-orders-page .position-relative {
+    position: relative !important;
+}
+
+.admin-orders-page .position-absolute {
+    position: absolute !important;
+}
+
+.admin-orders-page .top-50 {
+    top: 50% !important;
+}
+
+.admin-orders-page .start-50 {
+    left: 50% !important;
+}
+
+.admin-orders-page .translate-middle-x {
+    transform: translateX(-50%) !important;
+}
+
+.admin-orders-page .relative {
+    position: relative;
+}
+
+.admin-orders-page .absolute {
+    position: absolute;
+}
+
+/* Modern List Group */
+.admin-orders-page .list-group {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    border-radius: var(--border-radius-sm);
+    gap: 0.5rem;
+    padding: 0.75rem;
+}
+
+.admin-orders-page .list-group-item {
+    position: relative;
+    display: block;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+.admin-orders-page .list-group-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.admin-orders-page .list-group-item:hover::before {
+    opacity: 1;
+}
+
+.admin-orders-page .list-group-item:first-child {
+    border-top-left-radius: var(--border-radius-sm);
+    border-top-right-radius: var(--border-radius-sm);
+}
+
+.admin-orders-page .list-group-item:last-child {
+    border-bottom-right-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--border-radius-sm);
+}
+
+.admin-orders-page .list-group-item.active {
+    z-index: 2;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+}
+
+.admin-orders-page .list-group-item.active::before {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+}
+.admin-orders-page .d-flex {
+    display: flex !important;
+}
+
+.admin-orders-page .flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-orders-page .flex-center {
+    display: flex;
+    align-items: center;
+}
+
+.admin-orders-page .flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-orders-page .flex-wrap {
+    flex-wrap: wrap;
+}
+
+.admin-orders-page .hidden {
+    display: none !important;
+}
+
+.admin-orders-page .block {
+    display: block !important;
+}
+
+/* Size utilities */
+.admin-orders-page .w-25 {
+    width: 25% !important;
+}
+
+.admin-orders-page .w-50 {
+    width: 50% !important;
+}
+
+.admin-orders-page .w-75 {
+    width: 75% !important;
+}
+
+.admin-orders-page .w-100 {
+    width: 100% !important;
+}
+
+/* Background utilities */
+.admin-orders-page .bg-light {
+    background-color: var(--light) !important;
+}
+
+.admin-orders-page .bg-white {
+    background-color: #ffffff !important;
+}
+
+.admin-orders-page .bg-transparent {
+    background-color: transparent !important;
+}
+
+/* Display utilities */
+.admin-orders-page .d-none {
+    display: none !important;
+}
+
+.admin-orders-page .d-block {
+    display: block !important;
+}
+
+.admin-orders-page .d-inline {
+    display: inline !important;
+}
+
+.admin-orders-page .d-inline-block {
+    display: inline-block !important;
+}
+
+/* Responsive utilities */
+@media (max-width: 575.98px) {
+    .admin-orders-page .d-sm-none {
+        display: none !important;
+    }
+    .admin-orders-page .d-sm-block {
+        display: block !important;
+    }
+}
+
+@media (min-width: 576px) {
+    .admin-orders-page .d-sm-block {
+        display: block !important;
+    }
+    .admin-orders-page .d-sm-none {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .admin-orders-page .d-md-none {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .admin-orders-page .d-md-block {
+        display: block !important;
+    }
+    .admin-orders-page .d-md-flex {
+        display: flex !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .admin-orders-page .d-lg-none {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .admin-orders-page .d-lg-block {
+        display: block !important;
+    }
+    .admin-orders-page .d-lg-flex {
+        display: flex !important;
+    }
+}
+
+.admin-orders-page .w-full {
+    width: 100%;
+}
+
+.admin-orders-page .h-full {
+    height: 100%;
+}
+
+.admin-orders-page .align-items-center {
+    align-items: center;
+}
+
+.admin-orders-page .justify-content-between {
+    justify-content: space-between;
+}
+
+.admin-orders-page .justify-content-center {
+    justify-content: center;
+}
+
+.admin-orders-page .justify-content-end {
+    justify-content: flex-end;
+}
+
+.admin-orders-page .justify-content-start {
+    justify-content: flex-start;
+}
+
+/* Spacing utilities */
+.admin-orders-page .m-0 {
+    margin: 0;
+}
+
+.admin-orders-page .mb-0 {
+    margin-bottom: 0;
+}
+
+.admin-orders-page .mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.admin-orders-page .mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.admin-orders-page .mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.admin-orders-page .mt-3 {
+    margin-top: 1rem;
+}
+
+.admin-orders-page .mr-1,
+.admin-orders-page .me-2 {
+    margin-right: 0.5rem;
+}
+
+.admin-orders-page .mr-2 {
+    margin-right: 0.5rem;
+}
+
+.admin-orders-page .ml-2 {
+    margin-left: 0.5rem;
+}
+
+.admin-orders-page .my-4 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-orders-page .p-3 {
+    padding: 1rem;
+}
+
+.admin-orders-page .py-3 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.admin-orders-page .py-4 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+/* Text utilities */
+.admin-orders-page .text-center {
+    text-align: center;
+}
+
+.admin-orders-page .text-right {
+    text-align: right;
+}
+
+.admin-orders-page .text-left {
+    text-align: left;
+}
+
+.admin-orders-page .text-white-50 {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.admin-orders-page .text-muted {
+    color: #64748b;
+    font-weight: 400;
+}
+
+.admin-orders-page .text-danger {
+    color: #ef4444;
+}
+
+.admin-orders-page .font-bold,
+.admin-orders-page .fw-bold {
+    font-weight: 700;
+}
+
+.admin-orders-page .font-medium,
+.admin-orders-page .fw-medium {
+    font-weight: 500;
+}
+
+.admin-orders-page .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.admin-orders-page .cash-request-card {
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius-sm);
+    padding: 1rem;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.admin-orders-page .cash-request-card.pending {
+    border-left: 4px solid var(--warning);
+    background-color: rgba(245, 158, 11, 0.05);
+}
+
+.admin-orders-page .cash-request-card.approved {
+    border-left: 4px solid var(--success);
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+.admin-orders-page .cash-request-card.rejected {
+    border-left: 4px solid var(--danger);
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.admin-orders-page .cash-request-card:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+}
+
+.admin-orders-page .btn-info {
+    color: #fff;
+    background-color: var(--info);
+    border-color: var(--info);
+}
+
+.admin-orders-page .btn-outline-info {
+    color: var(--info);
+    border-color: var(--info);
+}
+
+.admin-orders-page .btn-outline-info:hover {
+    color: #fff;
+    background-color: var(--info);
+    border-color: var(--info);
+}
+
+/* Secondary (Purple) Button Styles */
+.admin-orders-page .btn-secondary {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+.admin-orders-page .btn-outline-secondary {
+    color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    background-color: transparent !important;
+}
+
+.admin-orders-page .btn-outline-secondary:hover {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+/* Blue Button Styles */
+.admin-orders-page .btn-blue {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+}
+
+.admin-orders-page .btn-outline-blue {
+    color: var(--blue) !important;
+    border-color: var(--blue) !important;
+    background-color: transparent !important;
+}
+
+.admin-orders-page .btn-outline-blue:hover {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+}
 
     * {
         box-sizing: border-box;
@@ -117,6 +624,7 @@
         display: flex;
         flex-wrap: wrap;
         margin: -0.75rem;
+        gap:inherit;
     }
 
     .col-md-4 {
@@ -615,43 +1123,538 @@
         font-weight: 600;
     }
 
-    /* Order Details */
-    .detail-header {
-        padding: 1.5rem;
-        background-color: var(--surface-secondary);
-        border-bottom: 1px solid var(--border-light);
-    }
+    /* Modern Order Detail Elements */
+.detail-header {
+    padding: 2rem 0.5rem 1.5rem 0.5rem;
+    border-radius: var(--border-radius);
+    position: relative;
+    overflow: visible;
+    max-height: none;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 2;
+    transition: box-shadow 0.2s;
+}
 
-    .detail-section {
-        padding: 1.5rem;
-    }
+.detail-header-div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
 
-    .detail-section:not(:last-child) {
-        border-bottom: 1px solid var(--border-light);
-    }
+.detail-header h5 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
-    .detail-section h6 {
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 1rem;
+.detail-header p {
+    font-size: 1rem;
+    color: var(--gray);
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.detail-header .order-status-badges {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.detail-header .badge {
+    font-size: 0.85em;
+    padding: 0.4em 1em;
+    border-radius: 16px;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(99,102,241,0.08);
+}
+
+@media (max-width: 991.98px) {
+    
+    .detail-header-div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .detail-header h5 {
         font-size: 1rem;
-        letter-spacing: -0.015em;
+        line-height: 1.2;
+        word-break: break-word;
     }
-
-    .table {
-        margin-bottom: 0;
+    .detail-header p {
+        font-size: 0.85rem;
+        line-height: 1.3;
+        word-break: break-word;
     }
-
-    .table td {
-        padding: 0.5rem 0;
-        border: none;
-        vertical-align: top;
+    .detail-header .badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.7rem;
     }
+}
 
-    .table .text-muted {
-        color: var(--text-tertiary) !important;
+@media (max-width: 575.98px) {
+    .detail-header {
+        margin-bottom: 0.75rem;
+        border-radius: var(--border-radius-sm);
+    }
+    .detail-header h5 {
+        font-size: 0.9rem;
+        line-height: 1.2;
+    }
+    .detail-header p {
+        font-size: 0.8rem;
+        line-height: 1.2;
+    }
+    .detail-header .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.6rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+    }
+    .detail-header .order-status-badges {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+}
+
+.detail-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--info) 100%);
+    border-radius: inherit;
+}
+
+.detail-section {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(99, 102, 241, 0.08);
+    backdrop-filter: blur(10px);
+    position: relative;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.detail-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border-color: rgba(99, 102, 241, 0.15);
+}
+
+.detail-section h6 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dark);
+    font-size: 1.1rem;
+    letter-spacing: -0.025em;
+    text-transform: none;
+    position: relative;
+    padding-left: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Mobile responsive detail section */
+@media (max-width: 575.98px) {
+    .detail-section {
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .detail-section h6 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        padding-left: 1.25rem;
+        gap: 0.5rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .detail-section {
+        padding: 1.125rem;
+        margin-bottom: 0.875rem;
+    }
+    
+    .detail-section h6 {
+        font-size: 1.05rem;
+        margin-bottom: 0.875rem;
+        padding-left: 1.375rem;
+        gap: 0.625rem;
+    }
+}
+
+.detail-section h6::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-radius: 3px;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* Modern Table Styles */
+.detail-section .table {
+    margin-bottom: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.detail-section .table td {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    vertical-align: middle;
+    line-height: 1.4;
+}
+
+.detail-section .table td:first-child {
+    font-weight: 500;
+    color: var(--gray);
+    font-size: 0.9rem;
+    width: 40%;
+}
+
+.detail-section .table td:last-child {
+    color: var(--dark);
+    font-weight: 600;
+    word-break: break-word;
+}
+
+/* Table responsive wrapper for horizontal scrolling */
+.detail-section .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0;
+    border: none;
+    border-radius: var(--border-radius-sm);
+}
+
+/* Mobile responsive table styles - Keep tables horizontal */
+@media (max-width: 575.98px) {
+    .detail-section {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .detail-section h6 {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+        word-break: break-word;
+    }
+    
+    .detail-section .table td {
+        padding: 0.25rem;
+        font-size: 0.8rem;
+        line-height: 1.2;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        vertical-align: middle;
+    }
+    
+    .detail-section .table td:first-child {
         font-weight: 500;
+        color: var(--gray);
+        font-size: 0.75rem;
+        width: 35%;
+        min-width: 80px;
     }
+    
+    .detail-section .table td:last-child {
+        color: var(--dark);
+        font-weight: 600;
+        font-size: 0.8rem;
+        width: 65%;
+        word-break: break-word;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .detail-section {
+        padding: 1rem;
+        overflow: hidden;
+    }
+    
+    .detail-section .table td {
+        padding: 0.3rem;
+        font-size: 0.85rem;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .detail-section .table td:first-child {
+        font-size: 0.8rem;
+        width: 38%;
+    }
+}
+
+/* Order Details Grid */
+.order-details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .order-details-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
+}
+
+/* Mobile specific grid adjustments */
+@media (max-width: 575.98px) {
+    .order-details-grid {
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order-details-grid {
+        gap: 1.25rem;
+    }
+}
+
+/* Delivery Info Grid */
+.delivery-info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .delivery-info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Items Table */
+.items-table {
+    margin-top: 1.5rem;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    table-layout: fixed;
+}
+
+.items-table th {
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    color: white;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.25rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.items-table td {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--border-light);
+    padding: 0.5rem 0.25rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.items-table tbody tr:nth-child(even) {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(255, 255, 255, 0.9) 100%);
+}
+
+/* Mobile specific table adjustments */
+@media (max-width: 575.98px) {
+    .items-table {
+        margin-top: 1rem;
+        font-size: 0.75rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .items-table th {
+        font-size: 0.65rem;
+        padding: 0.4rem 0.2rem;
+        white-space: nowrap;
+    }
+    
+    .items-table td {
+        padding: 0.3rem 0.2rem;
+        font-size: 0.7rem;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .items-table {
+        font-size: 0.8rem;
+    }
+    
+    .items-table th {
+        font-size: 0.7rem;
+        padding: 0.45rem 0.25rem;
+    }
+    
+    .items-table td {
+        padding: 0.35rem 0.25rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Form Controls */
+.form-label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--dark);
+    display: block;
+}
+
+.form-control,
+.form-select {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--dark);
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius-sm);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus,
+.form-select:focus {
+    color: var(--dark);
+    background-color: #fff;
+    border-color: var(--primary);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+}
+
+.form-control-sm,
+.form-select-sm {
+    min-height: calc(1.5em + 0.5rem + 2px);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: var(--border-radius-sm);
+}
+
+/* Enhanced button hover effects from superadmin */
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-outline-blue:hover,
+.btn-outline-blue:focus,
+.btn-outline-blue:active {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+}
+
+/* Active states for custom buttons */
+.status-filter.btn-secondary {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+.status-filter.btn-blue {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+}
+@media (max-width: 991.98px) {
+    .order-details-panel .dashboard-card {
+        overflow: hidden;
+    }
+    
+    .order-detail-section {
+        overflow-x: hidden;
+        overflow-y: auto;
+        word-wrap: break-word;
+        hyphens: auto;
+    }
+    
+    
+    .detail-section .table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    
+    .detail-section .table td {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+}
+
+/* Ultra-small screens (320px and below) */
+@media (max-width: 320px) {
+    .order-detail-section {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .detail-section {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .detail-section h6 {
+        font-size: 0.8rem;
+        padding-left: 0.75rem;
+    }
+    
+    .detail-section .table td {
+        padding: 0.2rem;
+        font-size: 0.7rem;
+    }
+    
+    .card-header {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .card-header h5 {
+        font-size: 0.85rem;
+    }
+    
+    .card-header .subtitle {
+        font-size: 0.7rem;
+    }
+}
 
     /* Text Colors */
     .text-muted {
@@ -712,7 +1715,10 @@
 
     /* Responsive Design */
     @media (max-width: 768px) {
-
+.row{
+        flex-wrap: nowrap !important;
+        flex-direction: column !important;
+    }
         .col-md-4,
         .col-md-8,
         .col-md-2,
@@ -734,7 +1740,13 @@
         }
 
         .order-list-container {
-            max-height: 50vh;
+            max-height: 60vh !important;
+        }
+
+        .order-list-container .list-group {
+            max-height: 60vh !important;
+            padding: 0.5rem !important;
+            gap: 0.5rem !important;
         }
 
         .dashboard-card:hover,
@@ -763,6 +1775,21 @@
 
         .detail-header {
             padding: 1rem;
+        }
+        
+        .order-list-container {
+            max-height: 55vh !important;
+        }
+
+        .order-list-container .list-group {
+            max-height: 55vh !important;
+            padding: 0.375rem !important;
+            gap: 0.5rem !important;
+        }
+        
+        .order-item-content {
+            padding: 0.875rem !important;
+            gap: 0.5rem !important;
         }
     }
 
@@ -903,47 +1930,735 @@
         padding: 0.75rem;
     }
 
-    .list-group {
-        display: flex;
+/* Modern List Group */
+.admin-orders-page .list-group {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    border-radius: var(--border-radius-sm);
+    gap: 0.5rem;
+    padding: 0.75rem;
+}
+
+.admin-orders-page .list-group-item {
+    position: relative;
+    display: block;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+.admin-orders-page .list-group-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.admin-orders-page .list-group-item:hover::before {
+    opacity: 1;
+}
+
+.admin-orders-page .list-group-item:first-child {
+    border-top-left-radius: var(--border-radius-sm);
+    border-top-right-radius: var(--border-radius-sm);
+}
+
+.admin-orders-page .list-group-item:last-child {
+    border-bottom-right-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--border-radius-sm);
+}
+
+.admin-orders-page .list-group-item.active {
+    z-index: 2;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+}
+
+.admin-orders-page .list-group-item.active::before {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Alert System */
+.admin-orders-page .alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-sm);
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.admin-orders-page .alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.admin-orders-page .alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+}
+
+.admin-orders-page .alert-error,
+.admin-orders-page .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.admin-orders-page .alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.admin-orders-page .alert-dismissible {
+    padding-right: 4rem;
+}
+
+.admin-orders-page .btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: 0.625rem 0.625rem;
+    background: transparent;
+    border: 0;
+    border-radius: 0.25rem;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.admin-orders-page .btn-close:hover {
+    opacity: 0.75;
+}
+
+.admin-orders-page .btn-close:before {
+    content: "×";
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.admin-orders-page .fade {
+    transition: opacity 0.15s linear;
+}
+
+.admin-orders-page .show {
+    opacity: 1;
+}
+
+/* Positioning and Effects */
+.admin-orders-page .shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.admin-orders-page .position-fixed {
+    position: fixed !important;
+}
+
+.admin-orders-page .top-0 {
+    top: 0 !important;
+}
+
+.admin-orders-page .start-50 {
+    left: 50% !important;
+}
+
+.admin-orders-page .translate-middle-x {
+    transform: translateX(-50%) !important;
+}
+
+.admin-orders-page .relative {
+    position: relative;
+}
+
+.admin-orders-page .absolute {
+    position: absolute;
+}
+
+/* Table System */
+.admin-orders-page .table {
+    width: 100%;
+    color: var(--dark);
+    vertical-align: top;
+    border-color: var(--border);
+    border-collapse: collapse;
+    border-radius: var(--border-radius-sm);
+    overflow: scroll;
+    /* box-shadow: var(--shadow); */
+    /* background: rgba(255, 255, 255, 0.9); */
+    backdrop-filter: blur(10px);
+}
+
+.admin-orders-page .table > :not(caption) > * > * {
+    padding: 0.5rem 0.5rem;
+    background-color: var(--bs-table-bg);
+    border-bottom-width: 1px;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+
+.admin-orders-page .table-sm > :not(caption) > * > * {
+    padding: 0.4rem;
+    border-color: var(--border-light);
+    font-size: 0.875rem;
+}
+
+.admin-orders-page .table > thead {
+    vertical-align: bottom;
+}
+
+.admin-orders-page .table > thead > tr > th {
+    background: linear-gradient(135deg, var(--gray-light) 0%, var(--border-light) 100%);
+    font-weight: 600;
+    color: var(--dark);
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.admin-orders-page .table > tbody > tr:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(255, 255, 255, 0.9) 100%);
+}
+
+.admin-orders-page .table-striped > tbody > tr:nth-of-type(odd) > td,
+.admin-orders-page .table-striped > tbody > tr:nth-of-type(odd) > th {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.admin-orders-page .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Modern Order Item Styles - Auto Height */
+.order-item {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    padding: 0;
+    height: auto;
+    display: block;
+    overflow: visible;
+    border-radius: var(--border-radius-sm);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.order-item-content {
+    padding: 1.25rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    gap: 1rem;
+    overflow: visible;
+    height: auto;
+    min-height: auto;
+}
+
+/* Mobile optimizations for order items */
+@media (max-width: 575.98px) {
+    .order-item-content {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order-item-content {
+        padding: 1.125rem;
+        gap: 0.875rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .order-item-content {
+        padding: 1.1875rem;
+        gap: 0.9375rem;
+    }
+}
+
+.order-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+    border-color: var(--primary);
+}
+
+.order-item.active {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(99, 102, 241, 0.3);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    color: white;
+}
+
+.order-item .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+/* Mobile responsive badges */
+@media (max-width: 575.98px) {
+    .order-item .badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 16px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order-item .badge {
+        font-size: 0.72rem;
+        padding: 0.22rem 0.65rem;
+        border-radius: 18px;
+    }
+}
+
+/* Order Item Header */
+.order-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+    overflow: visible;
+    flex-shrink: 0;
+}
+
+.order-item-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+    overflow: visible;
+}
+
+.order-item-title .order-number {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--dark);
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Mobile responsive font sizes */
+@media (max-width: 575.98px) {
+    .order-item-header {
+        margin-bottom: 0.625rem;
+        gap: 0.75rem;
+    }
+    
+    .order-item-title {
+        gap: 0.625rem;
+    }
+    
+    .order-item-title .order-number {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order-item-header {
+        margin-bottom: 0.6875rem;
+        gap: 0.875rem;
+    }
+    
+    .order-item-title .order-number {
+        font-size: 1.05rem;
+    }
+}
+
+.order-item.active .order-item-title .order-number {
+    color: white;
+}
+
+.order-date {
+    font-size: 0.9rem;
+    color: var(--gray);
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+    overflow: visible;
+}
+
+/* Mobile responsive date styles */
+@media (max-width: 575.98px) {
+    .order-date {
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order-date {
+        font-size: 0.85rem;
+    }
+}
+
+.order-item.active .order-date {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Order Item Body */
+.order-item-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex: 1;
+    overflow: visible;
+    min-height: auto;
+}
+
+.order-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+    overflow: visible;
+}
+
+.order-category {
+    font-size: 0.85rem;
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Mobile responsive body styles */
+@media (max-width: 575.98px) {
+    .order-item-body {
+        gap: 0.75rem;
         flex-direction: column;
-        padding-left: 0;
-        margin-bottom: 0;
-        border-radius: var(--border-radius);
+        align-items: stretch;
     }
-
-    .list-group-flush {
-        border-radius: 0;
+    
+    .order-item-details {
+        gap: 0.375rem;
     }
-
-    .list-group-item {
-        position: relative;
-        display: block;
-        padding: 0.5rem 1rem;
-        color: var(--text-primary);
-        text-decoration: none;
-        background-color: var(--surface-primary);
-        border: 1px solid var(--border-light);
+    
+    .order-category {
+        font-size: 0.8rem;
     }
+}
 
-    .list-group-item:first-child {
-        border-top-left-radius: inherit;
-        border-top-right-radius: inherit;
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order-item-body {
+        gap: 0.875rem;
     }
-
-    .list-group-item:last-child {
-        border-bottom-right-radius: inherit;
-        border-bottom-left-radius: inherit;
+    
+    .order-item-details {
+        gap: 0.4375rem;
     }
-
-    .list-group-flush .list-group-item {
-        border-right: 0;
-        border-left: 0;
-        border-radius: 0;
+    
+    .order-category {
+        font-size: 0.82rem;
     }
+}
 
-    .list-group-flush .list-group-item:last-child {
-        border-bottom-width: 0;
-    }    .h-100 {
+.order-item.active .order-category {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.customer-name {
+    font-size: 0.95rem;
+    color: var(--dark);
+    font-weight: 500;
+    line-height: 1.3;
+    overflow: visible;
+    word-wrap: break-word;
+}
+
+/* Mobile responsive customer name */
+@media (max-width: 575.98px) {
+    .customer-name {
+        font-size: 0.9rem;
+        line-height: 1.25;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .customer-name {
+        font-size: 0.92rem;
+        line-height: 1.27;
+    }
+}
+
+.order-item.active .customer-name {
+    color: white;
+}
+
+.admin-info {
+    font-size: 0.8rem;
+    color: var(--gray);
+    font-weight: 400;
+}
+
+.order-item.active .admin-info {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Order Item Amount & Status */
+.order-item-amount {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.625rem;
+    flex-shrink: 0;
+    min-width: 0;
+    justify-content: flex-start;
+}
+
+.order-amount {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark);
+    white-space: nowrap;
+    overflow: visible;
+}
+
+/* Mobile responsive amount styles */
+@media (max-width: 575.98px) {
+    .order-item-amount {
+        align-items: stretch;
+        text-align: left;
+        gap: 0.5rem;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .order-amount {
+        font-size: 1rem;
+        flex: 1;
+        text-align: left;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order-amount {
+        font-size: 1.05rem;
+    }
+    
+    .order-item-amount {
+        gap: 0.5625rem;
+    }
+}
+
+.order-item.active .order-amount {
+    color: white;
+}
+
+.order-status-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+/* Mobile responsive status badges */
+@media (max-width: 575.98px) {
+    .order-status-badges {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375rem;
+        justify-content: flex-end;
+    }
+    
+    .order-status-badges .badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+        white-space: nowrap;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .order-status-badges {
+        gap: 0.4375rem;
+    }
+    
+    .order-status-badges .badge {
+        font-size: 0.75rem;
+        padding: 0.22rem 0.65rem;
+    }
+}
+
+/* Modern Order Status Indicators */
+.order-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.order-status-icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
+    animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.status-completed {
+    background-color: var(--success);
+}
+
+.status-pending {
+    background-color: var(--warning);
+}
+
+/* Modern Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--gray);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(59, 130, 246, 0.02) 100%);
+    border-radius: var(--border-radius);
+    border: 1px dashed rgba(99, 102, 241, 0.2);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1.25rem;
+    opacity: 0.6;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    margin-bottom: 0;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Mobile responsive empty state */
+@media (max-width: 575.98px) {
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+    
+    .empty-state i {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .empty-state {
+        padding: 2.5rem 1.5rem;
+    }
+    
+    .empty-state i {
+        font-size: 2.75rem;
+        margin-bottom: 1.125rem;
+    }
+    
+    .empty-state p {
+        font-size: 0.95rem;
+    }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border: 0.25em solid rgba(99, 102, 241, 0.2);
+    border-right-color: var(--primary);
+    border-radius: 50%;
+    animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+    to { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none;
+}
+
+/* Secondary (Purple) Button Styles */
+.btn-secondary {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+.btn-outline-secondary {
+    color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-secondary:hover {
+    color: #fff !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+/* Blue Button Styles */
+.btn-blue {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+}
+
+.btn-outline-blue {
+    color: var(--blue) !important;
+    border-color: var(--blue) !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-blue:hover {
+    color: #fff !important;
+    background-color: var(--blue) !important;
+    border-color: var(--blue) !important;
+}    .h-100 {
         height: 100% !important;
     }
 
@@ -974,6 +2689,549 @@
         border-color: var(--primary);
         box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
+
+/* Modern Layout System (matching superadmin) */
+/* Flex utility for page header */
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Order Layout - Traditional Responsive Design */
+.admin-orders-page .order-layout {
+    display: block;
+    margin: 0 -0.75rem;
+}
+
+/* Order Panels - Default Mobile Stacked */
+.admin-orders-page .order-list-panel,
+.admin-orders-page .order-details-panel {
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+/* Small Mobile (Portrait) */
+@media (max-width: 575.98px) {
+    .admin-orders-page .order-layout {
+        margin: 0 -0.5rem;
+    }
+    
+    .admin-orders-page .order-list-panel,
+    .admin-orders-page .order-details-panel {
+        padding: 0 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .admin-orders-page .card-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start !important;
+        justify-content: space-between;
+    }
+
+    .admin-orders-page .button-group {
+        flex-wrap: nowrap;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Tablet (768px and up) - Still stacked but better spacing */
+@media (min-width: 768px) {
+    .admin-orders-page .order-layout {
+        margin: 0 -1rem;
+    }
+    
+    .admin-orders-page .order-list-panel,
+    .admin-orders-page .order-details-panel {
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Desktop (992px and up) - Side by Side Layout */
+@media (min-width: 992px) {
+    .admin-orders-page .order-layout {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        margin: 0;
+    }
+    
+    .admin-orders-page .order-list-panel {
+        display: table-cell;
+        width: 35%;
+        vertical-align: top;
+        margin-bottom: 0;
+    }
+    
+    .admin-orders-page .order-details-panel {
+        display: table-cell;
+        width: 65%;
+        vertical-align: top;
+        padding-left: 1rem;
+        margin-bottom: 0;
+    }
+}
+
+/* Large Desktop (1200px and up) - Optimized proportions */
+@media (min-width: 1200px) {
+    .admin-orders-page .order-list-panel {
+        width: 32%;
+    }
+    
+    .admin-orders-page .order-details-panel {
+        width: 68%;
+    }
+}
+
+/* Extra Large Desktop (1400px and up) - Maximum width and spacing */
+@media (min-width: 1400px) {
+    .admin-orders-page .order-list-panel {
+        width: 30%;
+    }
+    
+    .admin-orders-page .order-details-panel {
+        width: 70%;
+    }
+}
+
+/* Modern Dashboard Cards */
+.admin-orders-page .dashboard-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    height: auto;
+    min-height: 400px;
+    backdrop-filter: blur(20px);
+    position: relative;
+}
+
+.admin-orders-page .dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--info) 50%, var(--success) 100%);
+    z-index: 1;
+}
+
+/* Modern Order List Container - Improved Heights */
+.admin-orders-page .order-list-container {
+    height: auto;
+    min-height: 400px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.admin-orders-page .order-list-container .list-group {
+    flex: 1;
+    min-height: 350px;
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) transparent;
+    padding: 0.75rem;
+    gap: 0.75rem;
+}
+
+/* Mobile responsive order list */
+@media (max-width: 575.98px) {
+    .admin-orders-page .order-list-container {
+        max-height: 60vh;
+        min-height: 250px;
+    }
+    
+    .admin-orders-page .order-list-container .list-group {
+        max-height: 60vh;
+        min-height: 220px;
+        padding: 0.625rem;
+        gap: 0.625rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .admin-orders-page .order-list-container {
+        max-height: 70vh;
+        min-height: 300px;
+    }
+    
+    .admin-orders-page .order-list-container .list-group {
+        max-height: 70vh;
+        min-height: 270px;
+        padding: 0.6875rem;
+        gap: 0.6875rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .admin-orders-page .order-list-container {
+        max-height: 75vh;
+        min-height: 350px;
+    }
+    
+    .admin-orders-page .order-list-container .list-group {
+        max-height: 75vh;
+        min-height: 320px;
+        padding: 0.71875rem;
+        gap: 0.71875rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .admin-orders-page .order-list-container {
+        max-height: 80vh;
+        min-height: 400px;
+    }
+    
+    .admin-orders-page .order-list-container .list-group {
+        max-height: 80vh;
+        min-height: 370px;
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+}
+
+.admin-orders-page .order-list-container .list-group::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-orders-page .order-list-container .list-group::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.admin-orders-page .order-list-container .list-group::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.admin-orders-page .order-list-container .list-group::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+}
+
+/* Modern Order Details Container */
+.admin-orders-page .order-details-panel .dashboard-card {
+    min-height: 400px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+}
+
+.admin-orders-page .order-detail-section {
+    padding: 2rem;
+    background: transparent;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) transparent;
+}
+
+.admin-orders-page .order-detail-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-orders-page .order-detail-section::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.admin-orders-page .order-detail-section::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+/* Mobile responsive order details */
+@media (max-width: 575.98px) {
+    .admin-orders-page .order-detail-section {
+        padding: 1rem;
+        gap: 1rem;
+        max-height: 70vh;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .admin-orders-page .order-detail-section {
+        padding: 1.5rem;
+        gap: 1.25rem;
+        max-height: 75vh;
+    }
+}
+
+/* Modern Card Header */
+.admin-orders-page .card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.admin-orders-page .card-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.admin-orders-page .card-header h5 i {
+    font-size: 1.1rem;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.admin-orders-page .subtitle {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+/* Mobile responsive card header */
+@media (max-width: 575.98px) {
+    .admin-orders-page .card-header {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .admin-orders-page .card-header h5 {
+        font-size: 1.125rem;
+        gap: 0.5rem;
+    }
+    
+    .admin-orders-page .card-header h5 i {
+        font-size: 1rem;
+    }
+    
+    .admin-orders-page .subtitle {
+        font-size: 0.8rem;
+        margin-top: 0.125rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .admin-orders-page .card-header {
+        padding: 1.25rem 1.5rem;
+        gap: 0.875rem;
+    }
+    
+    .admin-orders-page .card-header h5 {
+        font-size: 1.1875rem;
+        gap: 0.625rem;
+    }
+    
+    .admin-orders-page .card-header h5 i {
+        font-size: 1.05rem;
+    }
+    
+    .admin-orders-page .subtitle {
+        font-size: 0.8375rem;
+        margin-top: 0.1875rem;
+    }
+}
+
+/* Modern Card Header */
+.card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-header h5 i {
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.subtitle {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+    font-weight: 400;
+}
+
+/* Page Header */
+.page-header {
+    background: linear-gradient(120deg, #000000 0%, #2a2a2a 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.page-header h2 {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+}
+
+.page-header .subtitle {
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+/* Filter Section */
+.filter-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    position: relative;
+}
+
+.filter-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--info) 100%);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.filter-section h5 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+    letter-spacing: -0.025em;
+}
+
+/* Filter Grid Layout using CSS Grid */
+.filter-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .filter-grid {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+@media (min-width: 992px) {
+    .filter-grid {
+        align-items: end;
+    }
+}
+
+/* Date Range Grid */
+.date-range-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+}
+
+@media (min-width: 576px) {
+    .date-range-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+/* Button Group Layout using Flexbox */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Responsive Design Updates */
+@media (max-width: 991.98px) {
+    .order-layout {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .dashboard-card {
+        min-height: 60vh;
+    }
+    
+    .order-list-container .list-group {
+        max-height: 50vh;
+    }
+    
+    .order-detail-section {
+        min-height: 50vh;
+        max-height: 50vh;
+    }
+}
+
+@media (min-width: 1200px) {
+    .dashboard-card {
+        min-height: 80vh;
+    }
+    
+    .order-list-container .list-group {
+        max-height: 72vh;
+    }
+    
+    .order-detail-section {
+        min-height: 72vh;
+        max-height: 72vh;
+    }
+}
+
+@media (min-width: 1400px) {
+    .dashboard-card {
+        min-height: 83vh;
+    }
+    
+    .order-list-container .list-group {
+        max-height: 75vh;
+    }
+    
+    .order-detail-section {
+        min-height: 75vh;
+        max-height: 75vh;
+    }
+}
 </style>
 {% endblock %}
 
@@ -1049,124 +3307,114 @@
   });
 </script>
 
-<div class="container-fluid my-4">
-    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-        <h2 class="page-title mb-0 me-3">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
-        <div class="text-muted" style="color : rgb(0, 0, 0)  !important;" id="order-count-text">0 orders found</div>
+<div class="admin-orders-page">
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="flex-between">
+            <div>
+                <h2 class="mb-0">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
+                <p class="subtitle mb-0">Manage and track order status, payments, and deliveries</p>
+            </div>
+            <div class="text-white-50" id="order-count-text">
+                <i class="bi bi-box-seam mr-2"></i>0 orders found
+            </div>
+        </div>
     </div>
-    
     <!-- Filters section -->
-    <div class="filter-section mb-4 customer-card">
-        <div class="row g-3">
+    <div class="filter-section">
+        <h5><i class="bi bi-funnel mr-2"></i>Filter Orders</h5>
+        <div class="filter-grid">
             <!-- Status filters -->
-            <div class="col-md-4">                
-                <label class="form-label" style="cursor: pointer !important;">Order Status</label>
-                <div class="filter-buttons">
-                    <button type="button" class="btn btn-sm status-filter active" data-filter="all">All</button>
-                    <button type="button" class="btn btn-sm status-filter" data-filter="recent">Recent</button>
-                    <button type="button" class="btn btn-sm status-filter" data-filter="completed">Completed</button>
-                    <button type="button" class="btn btn-sm status-filter" data-filter="ongoing">Ongoing</button>
-                    <button type="button" class="btn btn-sm status-filter" data-filter="pending_payment">Pending Payment</button>
-                    <button type="button" class="btn btn-sm status-filter" data-filter="pending_cash">Pending Cash Requests</button>
+            <div>
+                <label class="form-label"><i class="bi bi-check-circle mr-1"></i>Order Status</label>
+                <div class="button-group">
+                    <button type="button" class="btn btn-sm btn-primary status-filter" data-filter="all">All</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary status-filter" data-filter="recent">Recent</button>
+                    <button type="button" class="btn btn-sm btn-outline-success status-filter" data-filter="completed">Completed</button>
+                    <button type="button" class="btn btn-sm btn-outline-blue status-filter" data-filter="ongoing">Processing</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger status-filter" data-filter="pending_payment">Pending Payment</button>
+                    <button type="button" class="btn btn-sm btn-outline-warning status-filter" data-filter="pending_cash">Pending Cash Requests</button>
                 </div>
             </div>
-
             <!-- Date filters -->
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="col-md-5">
-                        <label for="date_from" class="form-label" style="cursor: pointer;">From Date</label>
-                        <input type="date" class="form-control form-control-sm" style="cursor: pointer;" id="date_from">
-                    </div>                    <div class="col-md-5">
-                        <label for="date_to" class="form-label">To Date</label>
-                        <input type="date" class="form-control form-control-sm" style="cursor: pointer;" id="date_to">
-                    </div>                    <div class="col-md-2 d-flex align-items-end justify-content-center">
-                        <button type="button" class="btn btn-sm btn-primary"
-                            style="width: 100%; margin-bottom: 8px; border-radius: 50px; 
-                            background: linear-gradient(135deg, #000000, #333333); 
-                            color: white; 
-                            letter-spacing: 0.5px;
-                            font-weight: 600; 
-                            box-shadow: var(--shadow-md);
-                            padding: 0.625rem 2rem;
-                            border: none;
-                            position: relative;
-                            overflow: hidden;
-                            z-index: 1;
-                            transition: all 0.3s ease;"
-                            id="apply-date-filter"
-                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)';">
-                            Apply
-                        </button>
-                    </div>
+            <div>
+                <label class="form-label"><i class="bi bi-calendar-range mr-1"></i>Date Range</label>
+                <div class="date-range-grid">
+                    <input type="date" class="form-control form-control-sm" id="date_from" placeholder="From">
+                    <input type="date" class="form-control form-control-sm" id="date_to" placeholder="To">
+                    <button type="button" class="btn btn-sm btn-primary w-full" id="apply-date-filter"
+                        style="margin-bottom: 8px; border-radius: 50px; background: linear-gradient(135deg, #000000, #333333); color: white; letter-spacing: 0.5px; font-weight: 600; box-shadow: var(--shadow-md); padding: 0.625rem 2rem; border: none; position: relative; overflow: hidden; z-index: 1; transition: all 0.3s ease;"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)';">
+                        Apply
+                    </button>
                 </div>
             </div>
-
-            <!-- Sorting options -->
-            <div class="col-md-2">
-                <label for="sort" class="form-label">Sort By</label>
-                <select class="form-select form-select-sm" style="cursor: pointer;" id="sort">
-                    <option value="-order_date">Newest First</option>
-                    <option value="order_date">Oldest First</option>
-                    <option value="-overall_amount">Amount (High to Low)</option>
-                    <option value="overall_amount">Amount (Low to High)</option>
-                </select>
-            </div>
-
-             <div class="col-md-2">
-                <label for="category-filter" class="form-label">Category</label>
-                <select id="category-filter" class="form-select form-select-sm" style="cursor: pointer;">
+        
+            <!-- Category filter -->
+            <div>
+                <label for="category-filter" class="form-label"><i class="bi bi-tag mr-1"></i>Category</label>
+                <select id="category-filter" class="form-select form-select-sm">
                     <option value="all">All Categories</option>
                     <option value="1">Rice</option>
                     <option value="2">Paddy</option>
                     <option value="3">Pesticide</option>
-                </select>            </div>
-            
+                </select>
+            </div>
+            <!-- Sorting options -->
+            <div>
+                <label for="sort" class="form-label"><i class="bi bi-sort-down mr-1"></i>Sort By</label>
+                <select class="form-select form-select-sm" id="sort">
+                    <option value="-order_id">Newest First</option>
+                    <option value="order_id">Oldest First</option>
+                    <option value="-overall_amount">Amount (High to Low)</option>
+                    <option value="overall_amount">Amount (Low to High)</option>
+                </select>
+            </div>
             <!-- Search box -->
-            <div class="col-12">
+            <div>
                 <label class="form-label">Search Orders</label>
                 <div class="search-container">
                     <i class="bi bi-search"></i>
                     <input type="text" class="form-control search-input" id="search-input" placeholder="Search by order ID, customer name or customer ID...">
                 </div>
             </div>
-
         </div>
     </div>
-    
     <!-- Main content with two-panel layout -->
-    <div class="row">
+    <div class="order-layout">
         <!-- Left panel: Order list -->
-        <div class="col-md-4">
+        <div class="order-list-panel">
             <div class="dashboard-card order-list-container">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>Order List</h5>
-                    <div class="spinner-border spinner-border-sm text-primary d-none" id="loading-spinner" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-                {% csrf_token %}
-                <div class="list-group list-group-flush" id="orders-list">
-                    <div class="text-center py-4">
-                        <div class="spinner-border text-primary loading-spinner" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
+            <div class="card-header">
+                <h5><i class="bi bi-list-ul mr-2"></i>Order List</h5>
+                <div class="spinner-border text-primary hidden" id="loading-spinner" role="status">
+                <span class="sr-only">Loading...</span>
                 </div>
             </div>
+            {% csrf_token %}
+            <div class="list-group" id="orders-list">
+                <div class="empty-state">
+                <div class="spinner-border text-primary loading-spinner" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                </div>
+            </div>
+            </div>
         </div>
-        
+
         <!-- Right panel: Order details -->
-        <div class="col-md-8">
-            <div class="dashboard-card h-100">
-                <div class="card-header">
-                    <h5>Order Details</h5>
+        <div class="order-details-panel">
+            <div class="dashboard-card">
+            <div class="card-header">
+                    <h5><i class="bi bi-receipt mr-2"></i>Order Details</h5>
+                    <div class="subtitle">View comprehensive order information</div>
                 </div>
                 <div class="order-detail-section" id="order-details">
-                    <div class="text-center py-5">
-                        <i class="bi bi-box-seam text-muted" style="font-size: 2.5rem;"></i>
-                        <p class="mt-3">Select an order to view details</p>
+                    <div class="empty-state">
+                    <i class="bi bi-box-seam"></i>
+                    <p>Select an order to view details</p>
                     </div>
                 </div>
             </div>
@@ -1206,6 +3454,9 @@
         const searchInput = document.getElementById('search-input');
         const loadingSpinner = document.getElementById('loading-spinner');
         const adminSelect = isSuperadmin ? document.getElementById('admin-filter') : null;
+        
+        // Debug: Check if elements are found
+        console.log('Admin Orders Page Initialized');
         
         // Set CSRF token for AJAX requests
         const csrfToken = getCookie('csrftoken');
@@ -1286,10 +3537,12 @@
         // Helper function to get button type based on filter
         function getButtonType(filter) {
             switch(filter) {
-                case 'completed': return 'success';
-                case 'ongoing': return 'warning';
-                case 'pending_payment': return 'danger';
-                 case 'pending_cash': return 'info';
+                case 'all': return 'primary';        // Black
+                case 'recent': return 'secondary';    // Purple
+                case 'completed': return 'success';   // Green
+                case 'ongoing': return 'blue';        // Blue
+                case 'pending_payment': return 'danger'; // Red
+                case 'pending_cash': return 'warning';   // Orange
                 default: return 'primary';
             }
         }
@@ -1406,18 +3659,288 @@
             updateURL();
         }
         
-        function updateOrderCountText() {
-            const count = filteredOrders.length;
-            orderCountText.textContent = `${count} ${count === 1 ? 'order' : 'orders'} found`;
+        function updateSelectedOrder() {
+            if (!selectedOrderId || !filteredOrders.some(order => order.order_id === selectedOrderId)) {
+                selectedOrderId = filteredOrders.length > 0 ? filteredOrders[0].order_id : null;
+            }
+        }
+        
+        function renderOrderDetails() {
+            if (!selectedOrderId) {
+                orderDetails.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-box-seam"></i>
+                        <p>Select an order to view details</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const order = filteredOrders.find(o => o.order_id === selectedOrderId);
+            if (!order) {
+                orderDetails.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <p>Order not found</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
+            const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
+            
+            // Order items section
+            let orderItemsHtml = '';
+            if (order.product_category_id === 3) { // Multiple items (pesticides)
+                orderItemsHtml = `
+                    <div class="detail-section">
+                        <h6>Order Items</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped items-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Batch #</th>
+                                        <th>Expiry</th>
+                                        <th>Quantity</th>
+                                        <th>Price/Unit</th>
+                                        <th>Unit</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${order.order_items ? order.order_items.map(item => `
+                                        <tr>
+                                            <td>${item.product_name}</td>
+                                            <td>${item.category || 'N/A'}</td>
+                                            <td>${item.batch_number}</td>
+                                            <td>${item.expiry_date !== 'N/A' ? formatDate(item.expiry_date) : 'N/A'}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>₹${item.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                            <td>${item.unit}</td>
+                                            <td>₹${item.total_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        </tr>
+                                    `).join('') : '<tr><td colspan="8">No items found</td></tr>'}
+                                </tbody>
+                                <tfoot>
+                                    <tr class="font-bold">
+                                        <td colspan="7" class="text-right">Total:</td>
+                                        <td>₹${order.overall_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // For single item orders (rice or paddy)
+                const productName = order.product_category_id === 1 ? 'Rice' : 'Paddy';
+                orderItemsHtml = `
+                    <div class="detail-section">
+                        <h6>Order Items</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Product Type:</td>
+                                    <td>${productName}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Category:</td>
+                                    <td>${order.category || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Quantity:</td>
+                                <td>${order.quantity || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Price Per Unit:</td>
+                                <td>₹${order.price_per_unit ? order.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Total Amount:</td>
+                                <td class="font-bold">₹${order.overall_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                            </tr>
+                        </table>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            let cashPaymentRequestsHtml = '';
+            if (order.cash_payment_requests && order.cash_payment_requests.length > 0) {
+                const pendingRequests = order.cash_payment_requests.filter(req => req.status === 0);
+                const approvedRequests = order.cash_payment_requests.filter(req => req.status === 1);
+                const rejectedRequests = order.cash_payment_requests.filter(req => req.status === 2);
+                
+                cashPaymentRequestsHtml += `<div class="detail-section">
+                    <h6><i class="bi bi-cash-coin me-2"></i>Cash Payment Requests</h6>`;
+                
+                if (pendingRequests.length > 0) {
+                    cashPaymentRequestsHtml += `
+                        <div class="alert alert-warning mb-3">
+                            <strong><i class="bi bi-exclamation-triangle me-2"></i>Pending Cash Payment Requests</strong>
+                            <p class="mb-0 mt-1">The following cash payment requests require your approval:</p>
+                        </div>
+                    `;
+                    
+                    pendingRequests.forEach(request => {
+                        cashPaymentRequestsHtml += `
+                            <div class="cash-request-card pending mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold">Amount: ₹${request.amount.toLocaleString()}</span>
+                                    <span class="badge bg-warning text-dark">Pending Approval</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <small class="text-muted">Requested on: ${formatDate(request.created_at)}</small>
+                                    <small class="text-muted">Request ID: #${request.request_id}</small>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-success btn-sm" onclick="approveCashPayment(${request.request_id})">
+                                        <i class="bi bi-check-circle me-1"></i>Approve
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="rejectCashPayment(${request.request_id})">
+                                        <i class="bi bi-x-circle me-1"></i>Reject
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Show approved requests if any
+                if (approvedRequests.length > 0) {
+                    cashPaymentRequestsHtml += `<h6 class="mt-3 mb-2">Approved Requests</h6>`;
+                    approvedRequests.forEach(request => {
+                        cashPaymentRequestsHtml += `
+                            <div class="cash-request-card approved mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Amount: ₹${request.amount.toLocaleString()}</span>
+                                    <span class="badge bg-success">Approved</span>
+                                </div>
+                                <small class="text-muted">Approved on: ${formatDate(request.updated_at)}</small>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Show rejected requests if any
+                if (rejectedRequests.length > 0) {
+                    cashPaymentRequestsHtml += `<h6 class="mt-3 mb-2">Rejected Requests</h6>`;
+                    rejectedRequests.forEach(request => {
+                        cashPaymentRequestsHtml += `
+                            <div class="cash-request-card rejected mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Amount: ₹${request.amount.toLocaleString()}</span>
+                                    <span class="badge bg-danger">Rejected</span>
+                                </div>
+                                <small class="text-muted">Rejected on: ${formatDate(request.updated_at)}</small>
+                            </div>
+                        `;
+                    });
+                }
+                
+                cashPaymentRequestsHtml += `</div>`;
+            }
+            
+            orderDetails.innerHTML = `
+                <div class="detail-header">
+                    <div class="detail-header-div">
+                        <div>
+                            <h5>Order #${order.order_id}</h5>
+                            <p>Placed on ${formatDate(order.order_date)}</p>
+                        </div>
+                        <div class="order-status-badges">
+                            ${paymentStatusBadge}
+                            ${deliveryStatusBadge}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-details-grid">
+                    <div class="detail-section">
+                        <h6>Customer Information</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Customer ID:</td>
+                                    <td>${order.customer_id}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Name:</td>
+                                    <td>${order.customer_full_name}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Mobile:</td>
+                                    <td>${order.customer_mobile || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Email:</td>
+                                    <td>${order.customer_email || 'N/A'}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h6>Order Summary</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td class="text-muted">Category:</td>
+                                <td>${getCategoryName(order.product_category_id)}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Total Amount:</td>
+                                <td class="fw-bold">₹${order.overall_amount.toLocaleString()}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Payment Status:</td>
+                                <td>${paymentStatusBadge}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Delivery Status:</td>
+                                <td>${deliveryStatusBadge}</td>
+                            </tr>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+                
+                ${orderItemsHtml}
+                ${cashPaymentRequestsHtml}
+                
+                <div class="delivery-info-grid">
+                    <div class="detail-section">
+                        <h6>Delivery Information</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Delivery Date:</td>
+                                    <td>${order.delivery_date ? formatDate(order.delivery_date) : 'Not set'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Address:</td>
+                                <td>${order.delivery_address || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Notes:</td>
+                                <td>${order.delivery_notes || 'None'}</td>
+                            </tr>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
         
         function renderOrdersList() {
             if (filteredOrders.length === 0) {
                 ordersList.innerHTML = `
                     <div class="list-group-item">
-                        <div class="text-center py-3">
-                            <i class="bi bi-search me-2"></i>
-                            No orders match your filters
+                        <div class="empty-state">
+                            <i class="bi bi-search"></i>
+                            <p>No orders match your filters</p>
                         </div>
                     </div>
                 `;
@@ -1431,33 +3954,31 @@
                 const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
                 const deliveryStatusBadge = getDeliveryStatusBadge(order.delivery_status);
                 
-                // Check for pending cash payment requests
-                const hasPendingCashRequests = order.cash_payment_requests && 
-                    order.cash_payment_requests.some(req => req.status === 0);
-                
                 html += `
                     <div class="list-group-item order-item ${isActive ? 'active' : ''}" 
                          data-order-id="${order.order_id}">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div>
-                                <span class="fw-medium">Order #${order.order_id}</span>
-                                ${hasPendingCashRequests ? `<span class="badge bg-warning text-dark ms-2" title="Has pending cash payment requests"><i class="bi bi-cash-coin"></i> Cash Request</span>` : ''}
-                                <span class="order-status ms-2">
-                                    <span class="order-status-icon ${statusClass}"></span>
-                                    <small>${paymentStatusBadge}</small>
-                                </span>
+                        <div class="order-item-content">
+                            <div class="order-item-header">
+                                <div class="order-item-title">
+                                    <span class="order-number">Order #${order.order_id}</span>
+                                    <span class="order-status">
+                                        <span class="order-status-icon ${statusClass}"></span>
+                                    </span>
+                                </div>
+                                <span class="order-date">${formatDate(order.order_date)}</span>
                             </div>
-                            <small class="text-muted">${formatDate(order.order_date)}</small>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <div>
-                                <small class="text-muted">${getCategoryName(order.product_category_id)}</small>
-                                <small class="d-block">${order.customer_full_name}</small>
-                                ${isSuperadmin && order.admin_name ? `<small class="d-block text-muted">Admin: ${order.admin_name}</small>` : ''}
-                            </div>
-                            <div class="text-end">
-                                <div class="fw-medium">₹${order.overall_amount.toLocaleString()}</div>
-                                <small>${deliveryStatusBadge}</small>
+                            <div class="order-item-body">
+                                <div class="order-item-details">
+                                    <div class="order-category">${getCategoryName(order.product_category_id)}</div>
+                                    <div class="customer-name">${order.customer_full_name}</div>
+                                </div>
+                                <div class="order-item-amount">
+                                    <div class="order-amount">₹${order.overall_amount.toLocaleString()}</div>
+                                    <div class="order-status-badges">
+                                        <div>${paymentStatusBadge}</div>
+                                        <div>${deliveryStatusBadge}</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1521,20 +4042,22 @@
                 adminInfoHtml = `
                     <div class="detail-section">
                         <h6>Admin Information</h6>
-                        <table class="table table-sm">
-                            <tr>
-                                <td class="text-muted">Admin ID:</td>
-                                <td>${order.admin_id}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">Admin Name:</td>
-                                <td>${order.admin_name || 'N/A'}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">Admin Email:</td>
-                                <td>${order.admin_email || 'N/A'}</td>
-                            </tr>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Admin ID:</td>
+                                    <td>${order.admin_id}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Admin Name:</td>
+                                    <td>${order.admin_name || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Admin Email:</td>
+                                    <td>${order.admin_email || 'N/A'}</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 `;
             }
@@ -1587,28 +4110,30 @@
                 orderItemsHtml = `
                     <div class="detail-section">
                         <h6>Order Items</h6>
-                        <table class="table table-sm">
-                            <tr>
-                                <td class="text-muted">Product Type:</td>
-                                <td>${productName}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">Category:</td>
-                                <td>${order.category}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">Quantity:</td>
-                                <td>${order.quantity || 'N/A'}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">Price Per Unit:</td>
-                                <td>₹${order.price_per_unit ? order.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : 'N/A'}</td>
-                            </tr>
-                            <tr>
-                                <td class="text-muted">Total Amount:</td>
-                                <td class="fw-medium">₹${order.overall_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                            </tr>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td class="text-muted">Product Type:</td>
+                                    <td>${productName}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Category:</td>
+                                    <td>${order.category}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Quantity:</td>
+                                    <td>${order.quantity || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Price Per Unit:</td>
+                                    <td>₹${order.price_per_unit ? order.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Total Amount:</td>
+                                    <td class="fw-medium">₹${order.overall_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 `;
             }
@@ -1708,55 +4233,59 @@
                 ${adminInfoHtml}
                 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="detail-section">
                             <h6>Customer Information</h6>
-                            <table class="table table-sm">
-                                <tr>
-                                    <td class="text-muted">Customer ID:</td>
-                                    <td>${order.customer_id}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Customer Name:</td>
-                                    <td>${order.customer_full_name}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Phone:</td>
-                                    <td>${order.customer_phone || 'N/A'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">GST:</td>
-                                    <td>${order.GST || 'N/A'}</td>
-                                </tr>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td class="text-muted">Customer ID:</td>
+                                        <td>${order.customer_id}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Customer Name:</td>
+                                        <td>${order.customer_full_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Phone:</td>
+                                        <td>${order.customer_phone || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">GST:</td>
+                                        <td>${order.GST || 'N/A'}</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="detail-section">
                             <h6>Payment Information</h6>
-                            <table class="table table-sm">
-                                <tr>
-                                    <td class="text-muted">Total Amount:</td>
-                                    <td>₹${order.overall_amount.toLocaleString()}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Paid Amount:</td>
-                                    <td>₹${order.paid_amount.toLocaleString()}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Balance:</td>
-                                    <td>₹${(order.overall_amount - order.paid_amount).toLocaleString()}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Payment Terms:</td>
-                                    <td>${order.payment_deadline || 0} days</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Status:</td>
-                                    <td>${paymentStatusBadge}</td>
-                                </tr>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td class="text-muted">Total Amount:</td>
+                                        <td>₹${order.overall_amount.toLocaleString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Paid Amount:</td>
+                                        <td>₹${order.paid_amount.toLocaleString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Balance:</td>
+                                        <td>₹${(order.overall_amount - order.paid_amount).toLocaleString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Payment Terms:</td>
+                                        <td>${order.payment_deadline || 0} days</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Status:</td>
+                                        <td>${paymentStatusBadge}</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1769,32 +4298,36 @@
                     <h6>Delivery Information</h6>
                     <div class="row">
                         <div class="col-md-6">
-                            <table class="table table-sm">
-                                <tr>
-                                    <td class="text-muted">Delivery Date:</td>
-                                    <td>${formatDate(order.delivery_date) || 'Not scheduled'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Status:</td>
-                                    <td>${deliveryStatusBadge}</td>
-                                </tr>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td class="text-muted">Delivery Date:</td>
+                                        <td>${formatDate(order.delivery_date) || 'Not scheduled'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Status:</td>
+                                        <td>${deliveryStatusBadge}</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <table class="table table-sm">
-                                <tr>
-                                    <td class="text-muted">Vehicle Number:</td>
-                                    <td>${order.lorry_number || 'N/A'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Driver:</td>
-                                    <td>${order.driver_name || 'N/A'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-muted">Driver Phone:</td>
-                                    <td>${order.driver_ph_no || 'N/A'}</td>
-                                </tr>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td class="text-muted">Vehicle Number:</td>
+                                        <td>${order.lorry_number || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Driver:</td>
+                                        <td>${order.driver_name || 'N/A'}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">Driver Phone:</td>
+                                        <td>${order.driver_ph_no || 'N/A'}</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1806,6 +4339,12 @@
             setTimeout(() => {
                 orderDetails.classList.remove('highlight');
             }, 1000);
+        }
+        
+        function updateOrderCountText() {
+            const count = filteredOrders.length;
+            const icon = '<i class="bi bi-box-seam mr-2"></i>';
+            orderCountText.innerHTML = `${icon}${count} ${count === 1 ? 'order' : 'orders'} found`;
         }
         
         // Helper Functions
@@ -1840,7 +4379,9 @@
         }
         
         function showLoading(isLoading) {
-            loadingSpinner.classList.toggle('d-none', !isLoading);
+            if (loadingSpinner) {
+                loadingSpinner.classList.toggle('hidden', !isLoading);
+            }
         }
         
         function getCookie(name) {
