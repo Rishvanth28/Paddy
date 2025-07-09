@@ -1947,7 +1947,6 @@ body {
     .customer-orders-page .detail-section {
         padding: 0.75rem;
         margin-bottom: 0.75rem;
-        overflow: hidden;
     }
     
     .customer-orders-page .detail-section h6 {
@@ -2164,7 +2163,6 @@ body {
     
     .customer-orders-page .detail-section {
         padding: 1rem;
-        overflow: hidden;
     }
     
     .customer-orders-page .detail-section .table td {
@@ -2230,7 +2228,6 @@ body {
     
     .customer-orders-page .detail-section {
         padding: 1.25rem;
-        overflow: hidden;
     }
     
     .customer-orders-page .detail-section .table td {
@@ -2324,6 +2321,35 @@ body {
     .customer-orders-page .order-detail-section {
         min-height: 75vh;
         max-height: 75vh;
+    }
+}
+
+/* Fixed Action Buttons */
+.fixed-action-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(99, 102, 241, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* Add padding to the bottom of the order details to prevent content from being hidden behind fixed buttons */
+.customer-orders-page .order-detail-section {
+    padding-bottom: 5rem;
+}
+
+@media (max-width: 767.98px) {
+    .fixed-action-buttons {
+        padding: 0.75rem;
+    }
+    
+    .customer-orders-page .order-detail-section {
+        padding-bottom: 7rem; /* More padding for mobile due to stacked buttons */
     }
 }
 
@@ -3012,7 +3038,7 @@ body {
 
 .customer-orders-page .order-detail-section {
     padding: 2rem;
-    background: transparent;
+    background: #fff;
     max-height: 80vh;
     display: flex;
     flex-direction: column;
@@ -3994,7 +4020,9 @@ body {
                     </div>
                 </div>
                 
-                <div class="detail-section">
+                <div class="detail-section" style="
+    margin-bottom: 9rem;
+">
                     <h6>Delivery Information</h6>
                     <table class="table table-sm">
                         <tr>
@@ -4022,7 +4050,7 @@ body {
                     </table>
                 </div>
                 
-                <div class="d-flex gap-2 for-mobile">
+                <div class="fixed-action-buttons d-flex gap-2 for-mobile flex-column flex-md-row">
                     ${order.paid_amount < order.overall_amount ? `
                         <form method="post" action="/payment/invoice/" class="flex-grow-1">
                             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
