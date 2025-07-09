@@ -695,9 +695,7 @@ body {
     text-align: right;
 }
 
-.customer-orders-page .text-muted {
-    color: var(--gray);
-}
+
 
 .customer-orders-page .text-primary {
     color: var(--primary) !important;
@@ -1213,13 +1211,7 @@ body {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
-.customer-orders-page .filter-section h5 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: var(--dark);
-    letter-spacing: -0.025em;
-}
+
 
 .customer-orders-page .form-label {
     font-weight: 600;
@@ -1629,7 +1621,7 @@ body {
 }
 
 .customer-orders-page .detail-header p {
-    font-size: 1rem;
+    font-size: 0.75rem;
     color: var(--gray);
     margin-bottom: 0;
     font-weight: 500;
@@ -1923,6 +1915,11 @@ body {
     .customer-orders-page .customer-card:hover {
         transform: translateY(-1px);
     }
+    .order-list-container .list-group {
+            max-height: 60vh !important;
+            padding: 0.5rem !important;
+            gap: 0.5rem !important;
+        }
 }
 
 @media (max-width: 575.98px) {
@@ -2107,6 +2104,12 @@ body {
     .customer-orders-page .page-title {
         font-size: 1.75rem;
     }
+    .order-list-container .list-group {
+            max-height: 55vh !important;
+            padding: 0.375rem !important;
+            gap: 0.5rem !important;
+        }
+        
 
     .customer-orders-page .btn {
         padding: 0.5rem 1rem;
@@ -2461,48 +2464,7 @@ body {
         padding: 0.75rem;
     }
 
-    .list-group {
-        display: flex;
-        flex-direction: column;
-        padding-left: 0;
-        margin-bottom: 0;
-        border-radius: var(--border-radius);
-    }
-
-    .list-group-flush {
-        border-radius: 0;
-    }
-
-    .list-group-item {
-        position: relative;
-        display: block;
-        padding: 0.5rem 1rem;
-        color: var(--text-primary);
-        text-decoration: none;
-        background-color: var(--surface-primary);
-        border: 1px solid var(--border-light);
-    }
-
-    .list-group-item:first-child {
-        border-top-left-radius: inherit;
-        border-top-right-radius: inherit;
-    }
-
-    .list-group-item:last-child {
-        border-bottom-right-radius: inherit;
-        border-bottom-left-radius: inherit;
-    }
-
-    .list-group-flush .list-group-item {
-        border-right: 0;
-        border-left: 0;
-        border-radius: 0;
-    }
-
-    .list-group-flush .list-group-item:last-child {
-        border-bottom-width: 0;
-    }
-
+    
     .h-100 {
         height: 100% !important;
     }
@@ -2624,6 +2586,7 @@ body {
 }
 
 
+
 /* Ensuring clean look for form controls across the page */
 .customer-orders-page .form-control,
 .customer-orders-page .form-select {
@@ -2639,7 +2602,844 @@ body {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
+
+
+/* Order Layout - Traditional Responsive Design */
+.customer-orders-page .order-layout {
+    display: block;
+    margin: 0 -0.75rem;
+}
+
+/* Order Panels - Default Mobile Stacked */
+.customer-orders-page .order-list-panel,
+.customer-orders-page .order-details-panel {
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+/* Small Mobile (Portrait) */
+@media (max-width: 575.98px) {
+    .customer-orders-page .order-layout {
+        margin: 0 -0.5rem;
+    }
+}
+
+/* Tablet (768px and up) - Still stacked but better spacing */
+@media (min-width: 768px) {
+    .customer-orders-page .order-layout {
+        margin: 0 -1rem;
+    }
+
+    .customer-orders-page .order-list-panel,
+    .customer-orders-page .order-details-panel {
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Desktop (992px and up) - Side by Side Layout */
+@media (min-width: 992px) {
+    .customer-orders-page .order-layout {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        margin: 0;
+    }
+}
+
+/* Order Panels - Default Mobile Stacked */
+.customer-orders-page .order-list-panel,
+.customer-orders-page .order-details-panel {
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+/* Small Mobile (Portrait) */
+@media (max-width: 575.98px) {
+    .customer-orders-page .order-layout {
+        margin: 0 -0.5rem;
+    }
+    
+    .customer-orders-page .order-list-panel,
+    .customer-orders-page .order-details-panel {
+        padding: 0 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .customer-orders-page .card-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start !important;
+        justify-content: space-between;
+    }
+
+    .customer-orders-page .button-group {
+        flex-wrap: nowrap;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Tablet (768px and up) - Still stacked but better spacing */
+@media (min-width: 768px) {
+    .customer-orders-page .order-layout {
+        margin: 0 -1rem;
+    }
+    
+    .customer-orders-page .order-list-panel,
+    .customer-orders-page .order-details-panel {
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Desktop (992px and up) - Side by Side Layout */
+@media (min-width: 992px) {
+    .customer-orders-page .order-layout {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        margin: 0;
+    }
+    
+    .customer-orders-page .order-list-panel {
+        display: table-cell;
+        width: 35%;
+        vertical-align: top;
+        margin-bottom: 0;
+    }
+    
+    .customer-orders-page .order-details-panel {
+        display: table-cell;
+        width: 65%;
+        vertical-align: top;
+        padding-left: 1rem;
+        margin-bottom: 0;
+    }
+}
+
+/* Large Desktop (1200px and up) - Optimized proportions */
+@media (min-width: 1200px) {
+    .customer-orders-page .order-list-panel {
+        width: 32%;
+    }
+    
+    .customer-orders-page .order-details-panel {
+        width: 68%;
+    }
+}
+
+/* Extra Large Desktop (1400px and up) - Maximum width and spacing */
+@media (min-width: 1400px) {
+    .customer-orders-page .order-list-panel {
+        width: 30%;
+    }
+    
+    .customer-orders-page .order-details-panel {
+        width: 70%;
+    }
+}
+
+ /* Cards */
+    .dashboard-card,
+    .customer-card {
+        background: var(--surface-primary);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-light);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        color: var(--text-primary);
+        transition: var(--transition-normal);
+        position: relative;
+    }
+
+    .dashboard-card::before,
+    .customer-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        opacity: 0;
+        transition: var(--transition-normal);
+    }
+
+    .dashboard-card:hover,
+    .customer-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--border-medium);
+    }
+
+    .dashboard-card:hover::before,
+    .customer-card:hover::before {
+        opacity: 1;
+    }
+    @media (max-width: 991.98px) {
+    .order-details-panel .dashboard-card {
+        overflow: hidden;
+    }
+    }
+
+    
+/* Order Layout - Traditional Responsive Design */
+.customer-orders-page .order-layout {
+    display: block;
+    margin: 0 -0.75rem;
+}
+
+/* Order Panels - Default Mobile Stacked */
+.customer-orders-page .order-list-panel,
+.customer-orders-page .order-details-panel {
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+/* Small Mobile (Portrait) */
+@media (max-width: 575.98px) {
+    .customer-orders-page .order-layout {
+        margin: 0 -0.5rem;
+    }
+    
+    .customer-orders-page .order-list-panel,
+    .customer-orders-page .order-details-panel {
+        padding: 0 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .customer-orders-page .card-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start !important;
+        justify-content: space-between;
+    }
+
+    .customer-orders-page .button-group {
+        flex-wrap: nowrap;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Tablet (768px and up) - Still stacked but better spacing */
+@media (min-width: 768px) {
+    .customer-orders-page .order-layout {
+        margin: 0 -1rem;
+    }
+    
+    .customer-orders-page .order-list-panel,
+    .customer-orders-page .order-details-panel {
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Desktop (992px and up) - Side by Side Layout */
+@media (min-width: 992px) {
+    .customer-orders-page .order-layout {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        margin: 0;
+    }
+    
+    .customer-orders-page .order-list-panel {
+        display: table-cell;
+        width: 35%;
+        vertical-align: top;
+        margin-bottom: 0;
+    }
+    
+    .customer-orders-page .order-details-panel {
+        display: table-cell;
+        width: 65%;
+        vertical-align: top;
+        padding-left: 1rem;
+        margin-bottom: 0;
+    }
+}
+
+/* Large Desktop (1200px and up) - Optimized proportions */
+@media (min-width: 1200px) {
+    .customer-orders-page .order-list-panel {
+        width: 32%;
+    }
+    
+    .customer-orders-page .order-details-panel {
+        width: 68%;
+    }
+}
+
+/* Extra Large Desktop (1400px and up) - Maximum width and spacing */
+@media (min-width: 1400px) {
+    .customer-orders-page .order-list-panel {
+        width: 30%;
+    }
+    
+    .customer-orders-page .order-details-panel {
+        width: 70%;
+    }
+}
+
+/* Modern Dashboard Cards */
+.customer-orders-page .dashboard-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    height: auto;
+    min-height: 400px;
+    backdrop-filter: blur(20px);
+    position: relative;
+}
+
+.customer-orders-page .dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--info) 50%, var(--success) 100%);
+    z-index: 1;
+}
+
+/* Modern Order List Container - Improved Heights */
+.customer-orders-page .order-list-container {
+    height: auto;
+    min-height: 400px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.customer-orders-page .order-list-container .list-group {
+    flex: 1;
+    min-height: 350px;
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) transparent;
+    padding: 0.75rem;
+    gap: 0.75rem;
+}
+
+/* Mobile responsive order list */
+@media (max-width: 575.98px) {
+    .customer-orders-page .order-list-container {
+        max-height: 60vh;
+        min-height: 250px;
+    }
+    
+    .customer-orders-page .order-list-container .list-group {
+        max-height: 60vh;
+        min-height: 220px;
+        padding: 0.625rem;
+        gap: 0.625rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .customer-orders-page .order-list-container {
+        max-height: 70vh;
+        min-height: 300px;
+    }
+    
+    .customer-orders-page .order-list-container .list-group {
+        max-height: 70vh;
+        min-height: 270px;
+        padding: 0.6875rem;
+        gap: 0.6875rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .customer-orders-page .order-list-container {
+        max-height: 75vh;
+        min-height: 350px;
+    }
+    
+    .customer-orders-page .order-list-container .list-group {
+        max-height: 75vh;
+        min-height: 320px;
+        padding: 0.71875rem;
+        gap: 0.71875rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .customer-orders-page .order-list-container {
+        max-height: 80vh;
+        min-height: 400px;
+    }
+    
+    .customer-orders-page .order-list-container .list-group {
+        max-height: 80vh;
+        min-height: 370px;
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+}
+
+.customer-orders-page .order-list-container .list-group::-webkit-scrollbar {
+    width: 8px;
+}
+
+.customer-orders-page .order-list-container .list-group::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.customer-orders-page .order-list-container .list-group::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.customer-orders-page .order-list-container .list-group::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+}
+
+/* Modern Order Details Container */
+.customer-orders-page .order-details-panel .dashboard-card {
+    min-height: 400px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+}
+
+.customer-orders-page .order-detail-section {
+    padding: 2rem;
+    background: transparent;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) transparent;
+}
+
+.customer-orders-page .order-detail-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.customer-orders-page .order-detail-section::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.customer-orders-page .order-detail-section::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+/* Mobile responsive order details */
+@media (max-width: 575.98px) {
+    .customer-orders-page .order-detail-section {
+        padding: 1rem;
+        gap: 1rem;
+        max-height: 70vh;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .customer-orders-page .order-detail-section {
+        padding: 1.5rem;
+        gap: 1.25rem;
+        max-height: 75vh;
+    }
+}
+
+/* Modern Card Header */
+.customer-orders-page .card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.customer-orders-page .card-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700 !important;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.customer-orders-page .card-header h5 i {
+    font-size: 1.1rem;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.customer-orders-page .subtitle {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+/* Mobile responsive card header */
+@media (max-width: 575.98px) {
+    .customer-orders-page .card-header {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .customer-orders-page .card-header h5 {
+        font-size: 1.125rem;
+        gap: 0.5rem;
+    }
+    
+    .customer-orders-page .card-header h5 i {
+        font-size: 1rem;
+    }
+    
+    .customer-orders-page .subtitle {
+        font-size: 0.8rem;
+        margin-top: 0.125rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .customer-orders-page .card-header {
+        padding: 1.25rem 1.5rem;
+        gap: 0.875rem;
+    }
+    
+    .customer-orders-page .card-header h5 {
+        font-size: 1.1875rem;
+        gap: 0.625rem;
+    }
+    
+    .customer-orders-page .card-header h5 i {
+        font-size: 1.05rem;
+    }
+    
+    .customer-orders-page .subtitle {
+        font-size: 0.8375rem;
+        margin-top: 0.1875rem;
+    }
+}
+
+
+
+/* Modern Card Header */
+.card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-header h5 i {
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.subtitle {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+    font-weight: 400;
+}
+
+/* Responsive Design Updates */
+@media (max-width: 991.98px) {
+    .order-layout {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .dashboard-card {
+        min-height: 60vh;
+    }
+    
+    .order-list-container .list-group {
+        max-height: 50vh;
+    }
+    
+    .order-detail-section {
+        min-height: 50vh;
+        max-height: 50vh;
+    }
+}
+
+@media (min-width: 1200px) {
+    .dashboard-card {
+        min-height: 80vh;
+    }
+    
+    .order-list-container .list-group {
+        max-height: 72vh;
+    }
+    
+    .order-detail-section {
+        min-height: 72vh;
+        max-height: 72vh;
+    }
+}
+
+@media (min-width: 1400px) {
+    .dashboard-card {
+        min-height: 83vh;
+    }
+    
+    .order-list-container .list-group {
+        max-height: 75vh;
+    }
+    
+    .order-detail-section {
+        min-height: 75vh;
+        max-height: 75vh;
+    }
+}
+
+/* Modern Card Header */
+.customer-orders-page .card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.customer-orders-page .card-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.customer-orders-page .card-header h5 i {
+    font-size: 1.1rem;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.customer-orders-page .subtitle {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+/* Mobile responsive card header */
+@media (max-width: 575.98px) {
+    .customer-orders-page .card-header {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .customer-orders-page .card-header h5 {
+        font-size: 1.125rem;
+        gap: 0.5rem;
+    }
+    
+    .customer-orders-page .card-header h5 i {
+        font-size: 1rem;
+    }
+    
+    .customer-orders-page .subtitle {
+        font-size: 0.8rem;
+        margin-top: 0.125rem;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .customer-orders-page .card-header {
+        padding: 1.25rem 1.5rem;
+        gap: 0.875rem;
+    }
+    
+    .customer-orders-page .card-header h5 {
+        font-size: 1.1875rem;
+        gap: 0.625rem;
+    }
+    
+    .customer-orders-page .card-header h5 i {
+        font-size: 1.05rem;
+    }
+    
+    .customer-orders-page .subtitle {
+        font-size: 0.8375rem;
+        margin-top: 0.1875rem;
+    }
+}
+
+/* Modern Card Header */
+.card-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.8) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-header h5 i {
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.subtitle {
+    font-size: 0.875rem;
+    color: var(--gray);
+    margin-top: 0.25rem;
+    font-weight: 400;
+}
+
+.customer-orders-page .filter-section h5 {
+    font-size: 1.25rem;
+    font-weight: 700 !important;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+    letter-spacing: -0.025em;
+}
+.customer-orders-page .card-header h5 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+    letter-spacing: -0.025em;
+}
+.admin-orders-page .text-muted{
+    font-weight: 400 !important;
+}
+
 </style>
+
+<script>  document.addEventListener('DOMContentLoaded', function () {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.classList.add('toast-container');
+      document.body.appendChild(toastContainer);
+    }
+
+    // Convert Django messages to toasts
+    const messages = document.querySelectorAll('.alert');
+    messages.forEach(message => {
+      const toastType = message.classList.contains('alert-success') ? 'success' :
+        message.classList.contains('alert-info') ? 'info' :
+          message.classList.contains('alert-warning') ? 'warning' : 'error';
+
+      createToast(message.textContent.trim(), toastType);
+      message.remove();
+    });
+
+    // Initialize close functionality for existing toasts
+    initializeToastCloseButtons();
+
+    function initializeToastCloseButtons() {
+      // Handle close button for all toasts
+      const allToasts = document.querySelectorAll('.toast');
+      allToasts.forEach(toast => {
+        const closeBtn = toast.querySelector('.toast-close');
+        if (closeBtn) {
+          // Remove any existing event listeners
+          closeBtn.removeEventListener('click', closeToastHandler);
+          // Add new event listener
+          closeBtn.addEventListener('click', closeToastHandler);
+        }
+      });
+    }
+
+    function closeToastHandler(e) {
+      const toast = this.closest('.toast');
+      if (toast) {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }
+    }
+
+    function createToast(message, type) {
+      const toast = document.createElement('div');
+      toast.classList.add('toast', type);
+      toast.innerHTML = `
+        ${message}
+        <button type="button" class="toast-close" aria-label="Close">&times;</button>
+      `;
+
+      toastContainer.appendChild(toast);
+
+      // Auto dismiss after 5 seconds
+      setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }, 5000);
+
+      // Add close button functionality
+      const closeBtn = toast.querySelector('.toast-close');      if (closeBtn) {
+        closeBtn.addEventListener('click', closeToastHandler);
+      }    }
+  });
+</script>
 
 <div class="customer-orders-page">
 <div class="container-fluid my-4">
@@ -3040,34 +3840,37 @@ body {
                 const paymentStatusBadge = getPaymentStatusBadge(order.payment_status);
 
                 html += `
-                    <div class="list-group-item order-item ${isActive ? 'active' : ''}" 
-                         data-order-id="${order.order_id}">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div>
-                                <span class="fw-medium">Order #${order.order_id}</span>
-                                <span class="order-status ms-2">
-                                    <span class="order-status-icon ${statusClass}"></span>
-                                    <large>${paymentStatusBadge}</large>
-                                </span>
-                            </div>
-                            <small class="text-muted">${formatDate(order.order_date)}</small>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <small class="text-muted">${getCategoryName(order.product_category_id)}</small>
-                                <small class="d-block">${order.quantity} item(s)</small>
-                            </div>
-                            <div>
-                                <small class="text-muted">${getCategoryName(order.category)}</small>
-                                <small class="d-block">${order.quantity} item(s)</small>
-                            </div>
-                            <div class="text-end">
-                                <div class="fw-medium">₹${order.overall_amount.toLocaleString()}</div>
-                                <small class="text-muted">${order.delivery_status === 1 ? 'Delivered' : 'Processing'}</small>
-                            </div>
-                        </div>
-                    </div>
-                `;
+    <div class="list-group-item order-item ${isActive ? 'active' : ''}" 
+         data-order-id="${order.order_id}">
+        <div class="order-item-content">
+            <div class="order-item-header d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <span class="fw-medium order-number">Order #${order.order_id}</span>
+                    <span class="order-status ms-2">
+                        <span class="order-status-icon ${statusClass}"></span>
+                        <large>${paymentStatusBadge}</large>
+                    </span>
+                </div>
+                <small class="text-muted order-date">${formatDate(order.order_date)}</small>
+            </div>
+            <div class="order-item-body d-flex justify-content-between">
+                <div>
+                    <small class="text-muted order-category">${getCategoryName(order.product_category_id)}</small>
+                    <small class="d-block">${order.quantity} item(s)</small>
+                </div>
+                <div>
+                    <small class="text-muted">${getCategoryName(order.category)}</small>
+                    <small class="d-block">${order.quantity} item(s)</small>
+                </div>
+                <div class="text-end order-item-amount">
+                    <div class="fw-medium order-amount">₹${order.overall_amount.toLocaleString()}</div>
+                    <small class="text-muted">${order.delivery_status === 1 ? 'Delivered' : 'Processing'}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
             });
 
             ordersList.innerHTML = html;
@@ -3135,7 +3938,7 @@ body {
                 <div class="detail-header">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <span class="fw-medium">Order #${order.order_id}</span>
+                            <span class="fw-bold">Order #${order.order_id}</span>
                             <p class="text-muted mb-0">Placed on ${formatDate(order.order_date)}</p>
                         </div>
                         <div class="order-status">
