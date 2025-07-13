@@ -2,21 +2,21 @@
 <html lang="en">
 {% load static %}
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>    <link rel="stylesheet" href="{% static 'css/login_responsive.css' %}">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/toast.css' %}"> 
+
 </head>
 
 <body>
     <div class="auth-container">
         <div class="auth-left">
-            
-
             <div class="login-section">
                 <h1><span class="highlight">Hey !</span> <br> Welcome Back</h1>
-                
+    
                 <!-- Main tabs -->
                 <div class="tab-container">
                     <div class="tab-nav">
@@ -167,8 +167,19 @@
                     {% endfor %}
                   {% endif %}
                 </div>
-                
-                <script>
+            </div>
+        </div>
+
+    <div class="auth-right">
+      <h2 class="logo">LOGO HERE</h2>
+            {% comment %} <div class="welcome-text">
+                <h1>Welcome <span>Back</span></h1>
+                <p>Sign in to access your dashboard or create an account</p>
+            </div> {% endcomment %}
+   </div>
+  </div>
+
+<script>
                   document.addEventListener('DOMContentLoaded', function() {
                     // Use event delegation for toast close buttons to handle dynamically added toasts
                     document.addEventListener('click', function(e) {
@@ -222,18 +233,7 @@
                       }
                     };
                   });
-                </script>
-            </div>
-        </div>
-
-    <div class="auth-right">
-      <h2 class="logo">LOGO HERE</h2>
-            {% comment %} <div class="welcome-text">
-                <h1>Welcome <span>Back</span></h1>
-                <p>Sign in to access your dashboard or create an account</p>
-            </div> {% endcomment %}
-   </div>
-  </div>
+</script>
 
  <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -260,6 +260,7 @@
   });
 </script>
 
-    <script src="{% static 'js/login.js' %}" defer></script>
+<script src="{% static 'js/login.js' %}" defer></script>
+
 </body>
 </html>
