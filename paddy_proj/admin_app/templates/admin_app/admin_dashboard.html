@@ -44,36 +44,6 @@
 }
 </style>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Add click event to close buttons
-    document.querySelectorAll('.toast-close').forEach(button => {
-      button.addEventListener('click', function() {
-        const toast = this.parentElement;
-        toast.style.animation = 'fadeOut 0.3s forwards';
-        setTimeout(() => {
-          toast.remove();
-        }, 300);
-      });
-    });
-    
-    // Auto-dismiss toasts after 5 seconds
-    document.querySelectorAll('.toast').forEach(toast => {
-      setTimeout(() => {
-        if (toast && toast.parentElement) {
-          toast.style.animation = 'fadeOut 0.3s forwards';
-          setTimeout(() => {
-            if (toast && toast.parentElement) {
-              toast.remove();
-            }
-          }, 300);
-        }
-      }, 5000);
-    });
-  });
-</script>
-
-
 <div class="admin-dashboard-container">
     <div class="header-bar">
         <div class="title-group">
@@ -251,6 +221,35 @@
         </div>
     </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add click event to close buttons
+    document.querySelectorAll('.toast-close').forEach(button => {
+      button.addEventListener('click', function() {
+        const toast = this.parentElement;
+        toast.style.animation = 'fadeOut 0.3s forwards';
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      });
+    });
+    
+    // Auto-dismiss toasts after 5 seconds
+    document.querySelectorAll('.toast').forEach(toast => {
+      setTimeout(() => {
+        if (toast && toast.parentElement) {
+          toast.style.animation = 'fadeOut 0.3s forwards';
+          setTimeout(() => {
+            if (toast && toast.parentElement) {
+              toast.remove();
+            }
+          }, 300);
+        }
+      }, 5000);
+    });
+  });
+</script>
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -696,6 +695,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-
 
 {% endblock %}

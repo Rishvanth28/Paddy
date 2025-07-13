@@ -3,7 +3,8 @@
 {% block content %}
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" href="{% static 'css/customer_onboard.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="stylesheet" href="{% static 'css/customer_onboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -74,76 +75,6 @@
     transform: translateX(-50%);
 }    </style>
 </head>
-
-<!-- Page Header -->
-
-<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3 customer-onboarding">
-    <h1 class="page-title mb-0 me-3 tab-title-margin">Customer Onboarding</h1>
-
-
-</div>
-
-<!-- Create Customer Form -->
-<div class="form-container">
-    <div class="form-card">
-        <form method="POST" action="{% url 'onboarding:customer_onboard' %}">
-            {% csrf_token %}
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>First Name</label>
-                    <input type="text" name="first_name" placeholder="Enter your first name" required
-                        pattern="[A-Za-z\s]+" minlength="2">
-                </div>
-                <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" name="last_name" placeholder="Enter your last name" required
-                        pattern="[A-Za-z\s]+" minlength="1">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" name="phone_number" placeholder="Enter your phone number" required
-                        pattern="[0-9]{10}" maxlength="10">
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" placeholder="Enter your email" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="text" name="password" placeholder="Enter a password" required minlength="6">
-                </div>
-                <div class="form-group">
-                    <label>Company Name</label>
-                    <input type="text" name="company_name" placeholder="Enter your company name" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group" style="flex: 1;">
-                    <label>Address</label>
-                    <textarea name="address" placeholder="Enter your address" rows="3" required
-                        minlength="5"></textarea>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group" style="flex: 1;">
-                    <label>GST (Optional)</label>
-                    <input type="text" name="gst" placeholder="Enter your GST number (optional)"
-                        pattern="^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$">
-                </div>
-            </div>
-
-            <button class="create-cutomer-button" type="submit">Create Customer</button>
-        </form>    </div>
-</div>
 
 {% if messages %}
 <!-- Custom Toast Notification System -->
@@ -249,5 +180,72 @@
   });
 </script>
 {% endif %}
+
+<!-- Page Header -->
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3 customer-onboarding">
+    <h1 class="page-title mb-0 me-3 tab-title-margin">Customer Onboarding</h1>
+</div>
+
+<!-- Create Customer Form -->
+<div class="form-container">
+    <div class="form-card">
+        <form method="POST" action="{% url 'onboarding:customer_onboard' %}">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" placeholder="Enter your first name" required
+                        pattern="[A-Za-z\s]+" minlength="2">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" placeholder="Enter your last name" required
+                        pattern="[A-Za-z\s]+" minlength="1">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone_number" placeholder="Enter your phone number" required
+                        pattern="[0-9]{10}" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" name="password" placeholder="Enter a password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="company_name" placeholder="Enter your company name" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>Address</label>
+                    <textarea name="address" placeholder="Enter your address" rows="3" required
+                        minlength="5"></textarea>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>GST (Optional)</label>
+                    <input type="text" name="gst" placeholder="Enter your GST number (optional)"
+                        pattern="^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$">
+                </div>
+            </div>
+
+            <button class="create-cutomer-button" type="submit">Create Customer</button>
+        </form>    </div>
+</div>
 
 {% endblock %}

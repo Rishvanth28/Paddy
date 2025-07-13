@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="{% static 'css/admin_base.css' %}" />
   <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  <style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  
+  <style>
     /* CSS Custom Properties for consistency */
     :root {
       --sidebar-width: 260px;
@@ -367,10 +368,7 @@
       scrollbar-color: #000000 #f5f5f5;
     }
   </style>
-</head>
-
-<body class="admin-page">
-<style>  /* Toast Notifications Styling */
+  <style>  /* Toast Notifications Styling */
   .toast-container {
     position: fixed;
     top: 25px;
@@ -612,6 +610,10 @@
     }
   }
 </style>
+</head>
+
+<body class="admin-page">
+
 <div class="toast-container">
     {% if messages %}
     {% for message in messages %}
@@ -629,79 +631,7 @@
   </div>
 
 
-<script>  document.addEventListener('DOMContentLoaded', function () {
-    // Create toast container if it doesn't exist
-    let toastContainer = document.querySelector('.toast-container');
-    if (!toastContainer) {
-      toastContainer = document.createElement('div');
-      toastContainer.classList.add('toast-container');
-      document.body.appendChild(toastContainer);
-    }
 
-    // Convert Django messages to toasts
-    const messages = document.querySelectorAll('.alert');
-    messages.forEach(message => {
-      const toastType = message.classList.contains('alert-success') ? 'success' :
-        message.classList.contains('alert-info') ? 'info' :
-          message.classList.contains('alert-warning') ? 'warning' : 'error';
-
-      createToast(message.textContent.trim(), toastType);
-      message.remove();
-    });
-
-    // Initialize close functionality for existing toasts
-    initializeToastCloseButtons();
-
-    function initializeToastCloseButtons() {
-      // Handle close button for all toasts
-      const allToasts = document.querySelectorAll('.toast');
-      allToasts.forEach(toast => {
-        const closeBtn = toast.querySelector('.toast-close');
-        if (closeBtn) {
-          // Remove any existing event listeners
-          closeBtn.removeEventListener('click', closeToastHandler);
-          // Add new event listener
-          closeBtn.addEventListener('click', closeToastHandler);
-        }
-      });
-    }
-
-    function closeToastHandler(e) {
-      const toast = this.closest('.toast');
-      if (toast) {
-        toast.classList.add('hide');
-        setTimeout(() => {
-          toast.remove();
-        }, 500);
-      }
-    }
-
-    function createToast(message, type) {
-      const toast = document.createElement('div');
-      toast.classList.add('toast', type);
-      toast.innerHTML = `
-        ${message}
-        <button type="button" class="toast-close" aria-label="Close">&times;</button>
-      `;
-
-      toastContainer.appendChild(toast);
-
-      // Auto dismiss after 5 seconds
-      setTimeout(() => {
-        toast.classList.add('hide');
-        setTimeout(() => {
-          toast.remove();
-        }, 500);
-      }, 5000);
-
-      // Add close button functionality
-      const closeBtn = toast.querySelector('.toast-close');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', closeToastHandler);
-      }
-    }
-  });
-</script>
 
   <button class="hamburger" id="hamburger" aria-label="Toggle menu">
     <span class="hamburger-line"></span>
@@ -881,6 +811,79 @@
       }
     });
   </script>
+  <script>  document.addEventListener('DOMContentLoaded', function () {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.classList.add('toast-container');
+      document.body.appendChild(toastContainer);
+    }
+
+    // Convert Django messages to toasts
+    const messages = document.querySelectorAll('.alert');
+    messages.forEach(message => {
+      const toastType = message.classList.contains('alert-success') ? 'success' :
+        message.classList.contains('alert-info') ? 'info' :
+          message.classList.contains('alert-warning') ? 'warning' : 'error';
+
+      createToast(message.textContent.trim(), toastType);
+      message.remove();
+    });
+
+    // Initialize close functionality for existing toasts
+    initializeToastCloseButtons();
+
+    function initializeToastCloseButtons() {
+      // Handle close button for all toasts
+      const allToasts = document.querySelectorAll('.toast');
+      allToasts.forEach(toast => {
+        const closeBtn = toast.querySelector('.toast-close');
+        if (closeBtn) {
+          // Remove any existing event listeners
+          closeBtn.removeEventListener('click', closeToastHandler);
+          // Add new event listener
+          closeBtn.addEventListener('click', closeToastHandler);
+        }
+      });
+    }
+
+    function closeToastHandler(e) {
+      const toast = this.closest('.toast');
+      if (toast) {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }
+    }
+
+    function createToast(message, type) {
+      const toast = document.createElement('div');
+      toast.classList.add('toast', type);
+      toast.innerHTML = `
+        ${message}
+        <button type="button" class="toast-close" aria-label="Close">&times;</button>
+      `;
+
+      toastContainer.appendChild(toast);
+
+      // Auto dismiss after 5 seconds
+      setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+        }, 500);
+      }, 5000);
+
+      // Add close button functionality
+      const closeBtn = toast.querySelector('.toast-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeToastHandler);
+      }
+    }
+  });
+</script>
 </body>
 
 </html>
