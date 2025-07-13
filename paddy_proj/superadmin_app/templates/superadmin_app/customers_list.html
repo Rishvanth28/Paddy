@@ -240,84 +240,8 @@
     }
 }
 </style>
-<div class="customer-list-container">
-    <div class="customer-header">
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-            <h1 class="page-title mb-0 me-3" style="margin-left: -1rem;">Customer List</h1>
-            <form class="search-form" method="GET" action="">
-                <input type="search" name="q" class="search-input" placeholder="Search customers...">
-                <i class="fas fa-search search-icon"></i>
-            </form>
-        </div>
-    </div>
 
-    <div class="customer-table-container">
-        {% if customers %}        <table class="customer-table">
-            <thead>
-                <tr>
-                    <th>Customer ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Company</th>
-                    <th>GST</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for customer in customers %}
-                <tr>
-                    <td>{{ customer.customer_id }}</td>
-                    <td>{{ customer.first_name }} {{ customer.last_name }}</td>
-                    <td>{{ customer.email }}</td>
-                    <td>{{ customer.phone_number }}</td>
-                    <td>{{ customer.company_name }}</td>
-                    <td>{{ customer.GST }}</td>                    <td>
-                        <form method="POST" action="{% url 'superadmin_app:delete_customer' customer.customer_id %}" class="delete-customer-form">
-                            {% csrf_token %}
-                            <button type="button" class="btn btn-sm btn-danger delete-customer-btn" 
-                                    title="Delete" 
-                                    data-customer-id="{{ customer.customer_id }}"
-                                    data-customer-name="{{ customer.first_name }} {{ customer.last_name }}">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-        <!-- No results found message for search -->
-        <div class="no-results-found d-none text-center py-4">
-            <div class="empty-icon">
-                <i class="fas fa-search no-results-icon"></i>
-                <style>
-                @media (max-width: 767.98px) {
-                  .no-results-icon {
-                    margin-left: 16px;
-                  }
-                }
-                @media (min-width: 768px) and (max-width: 991.98px) {
-                  .no-results-icon {
-                    margin-left: 32px;
-                  }
-                }
-                </style>
-            </div>
-            <p>No customers match your search criteria.</p>
-        </div>
-        
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-icon">
-                <i class="fas fa-user-friends"></i>
-            </div>
-            <p>No customers found for this admin.</p>
-        </div>
-        {% endif %}
-    </div>
-</div>{% if messages %}
+{% if messages %}
 <!-- Toast Notification System -->
 <style>
   .toast-container {
@@ -400,6 +324,86 @@
     });  });
 </script>
 {% endif %}
+
+<div class="customer-list-container">
+    <div class="customer-header">
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+            <h1 class="page-title mb-0 me-3" style="margin-left: -1rem;">Customer List</h1>
+            <form class="search-form" method="GET" action="">
+                <input type="search" name="q" class="search-input" placeholder="Search customers...">
+                <i class="fas fa-search search-icon"></i>
+            </form>
+        </div>
+    </div>
+
+    <div class="customer-table-container">
+        {% if customers %}        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Company</th>
+                    <th>GST</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.customer_id }}</td>
+                    <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.phone_number }}</td>
+                    <td>{{ customer.company_name }}</td>
+                    <td>{{ customer.GST }}</td>                    <td>
+                        <form method="POST" action="{% url 'superadmin_app:delete_customer' customer.customer_id %}" class="delete-customer-form">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-sm btn-danger delete-customer-btn" 
+                                    title="Delete" 
+                                    data-customer-id="{{ customer.customer_id }}"
+                                    data-customer-name="{{ customer.first_name }} {{ customer.last_name }}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- No results found message for search -->
+        <div class="no-results-found d-none text-center py-4">
+            <div class="empty-icon">
+                <i class="fas fa-search no-results-icon"></i>
+                <style>
+                @media (max-width: 767.98px) {
+                  .no-results-icon {
+                    margin-left: 16px;
+                  }
+                }
+                @media (min-width: 768px) and (max-width: 991.98px) {
+                  .no-results-icon {
+                    margin-left: 32px;
+                  }
+                }
+                </style>
+            </div>
+            <p>No customers match your search criteria.</p>
+        </div>
+        
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-user-friends"></i>
+            </div>
+            <p>No customers found for this admin.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 
 <!-- Professional Confirmation Dialog -->
 <div id="professional-confirm-dialog" class="confirm-dialog-overlay" style="display: none;">

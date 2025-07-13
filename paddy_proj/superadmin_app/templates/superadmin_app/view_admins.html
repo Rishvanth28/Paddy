@@ -267,85 +267,8 @@
     }
 }
 </style>
-<div class="customer-list-container">
-    <div class="customer-header">
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-            <h1 class="page-title mb-0 me-3" style="margin-left: -1rem;">Admin List</h1>
-            <form class="search-form" method="GET" action="">
-                <input type="search" name="q" class="search-input" placeholder="Search admins...">
-                <i class="fas fa-search search-icon"></i>
-            </form>
-        </div>
-    </div>
 
-    <div class="customer-table-container">
-        {% if admins %}        <table class="customer-table">
-            <thead>
-                <tr>
-                    <th>Admin ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for admin in admins %}
-                <tr>
-                    <td>{{ admin.admin_id }}</td>
-                    <td>
-                        <a href="{% url 'superadmin_app:view_customers_under_admin' admin.admin_id %}" class="admin-name-link">
-                            <i class="fa-solid fa-user-tie"></i>
-                            {{ admin.first_name }} {{ admin.last_name }}
-                        </a>
-                    </td>
-                    <td>{{ admin.email }}</td>
-                    <td>{{ admin.phone_number }}</td>                    <td>
-                        <form method="POST" action="{% url 'superadmin_app:delete_admin' admin.admin_id %}" class="delete-admin-form">
-                            {% csrf_token %}
-                            <button type="button" class="btn btn-sm btn-danger delete-admin-btn" 
-                                    title="Delete" 
-                                    data-admin-id="{{ admin.admin_id }}"
-                                    data-admin-name="{{ admin.first_name }} {{ admin.last_name }}">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-        <!-- No results found message for search -->
-        <div class="no-results-found d-none text-center py-4">
-            <div class="empty-icon">
-                <i class="fas fa-search no-results-icon"></i>
-                <style>
-                @media (max-width: 767.98px) {
-                  .no-results-icon {
-                    margin-left: 16px;
-                  }
-                }
-                @media (min-width: 768px) and (max-width: 991.98px) {
-                  .no-results-icon {
-                    margin-left: 32px;
-                  }
-                }
-                </style>
-            </div>
-            <p>No admins match your search criteria.</p>
-        </div>
-        
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-icon">
-                <i class="fas fa-user-friends"></i>
-            </div>
-            <p>No admins found.</p>
-        </div>
-        {% endif %}
-    </div>
-</div>{% if messages %}
+{% if messages %}
 <!-- Toast Notification System -->
 <style>
   .toast-container {
@@ -429,6 +352,87 @@
   });
 </script>
 {% endif %}
+
+<div class="customer-list-container">
+    <div class="customer-header">
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+            <h1 class="page-title mb-0 me-3" style="margin-left: -1rem;">Admin List</h1>
+            <form class="search-form" method="GET" action="">
+                <input type="search" name="q" class="search-input" placeholder="Search admins...">
+                <i class="fas fa-search search-icon"></i>
+            </form>
+        </div>
+    </div>
+
+    <div class="customer-table-container">
+        {% if admins %}        
+        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Admin ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for admin in admins %}
+                <tr>
+                    <td>{{ admin.admin_id }}</td>
+                    <td>
+                        <a href="{% url 'superadmin_app:view_customers_under_admin' admin.admin_id %}" class="admin-name-link">
+                            <i class="fa-solid fa-user-tie"></i>
+                            {{ admin.first_name }} {{ admin.last_name }}
+                        </a>
+                    </td>
+                    <td>{{ admin.email }}</td>
+                    <td>{{ admin.phone_number }}</td>                    <td>
+                        <form method="POST" action="{% url 'superadmin_app:delete_admin' admin.admin_id %}" class="delete-admin-form">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-sm btn-danger delete-admin-btn" 
+                                    title="Delete" 
+                                    data-admin-id="{{ admin.admin_id }}"
+                                    data-admin-name="{{ admin.first_name }} {{ admin.last_name }}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- No results found message for search -->
+        <div class="no-results-found d-none text-center py-4">
+            <div class="empty-icon">
+                <i class="fas fa-search no-results-icon"></i>
+                <style>
+                @media (max-width: 767.98px) {
+                  .no-results-icon {
+                    margin-left: 16px;
+                  }
+                }
+                @media (min-width: 768px) and (max-width: 991.98px) {
+                  .no-results-icon {
+                    margin-left: 32px;
+                  }
+                }
+                </style>
+            </div>
+            <p>No admins match your search criteria.</p>
+        </div>
+        
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-user-friends"></i>
+            </div>
+            <p>No admins found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
 
 <!-- Professional Confirmation Dialog -->
 <div id="professional-confirm-dialog" class="confirm-dialog-overlay" style="display: none;">
@@ -519,5 +523,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 {% endblock %}

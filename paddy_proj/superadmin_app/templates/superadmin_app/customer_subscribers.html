@@ -49,81 +49,8 @@
     font-weight: 500;
 }
 </style>
-<div class="customer-list-container">
-    <div class="customer-header">
-        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
-            <h1 class="page-title mb-0 me-3" style="margin-left: -1rem;">{{ user_type|capfirst }} Subscribers</h1>
-            <form class="search-form" method="GET" action="">
-                <input type="search" name="q" class="search-input" placeholder="Search subscribers...">
-                <i class="fas fa-search search-icon"></i>
-            </form>
-        </div>
-    </div>
 
-    <div class="customer-table-container">
-        {% if subscriptions %}        <table class="customer-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>{{ user_type|capfirst }} Name</th>
-                    <th>Payment Amount (₹)</th>
-                    <th>Status</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in subscriptions %}
-                <tr>
-                    <td>{{ item.subscription.sid }}</td>
-                    <td>
-                        {{ item.subscription.customer_id.first_name }} {{ item.subscription.customer_id.last_name }}
-                    </td>
-                    <td>{{ item.subscription.payment_amount }}</td>
-                    <td>
-                        {% if item.end_date_comparable and item.end_date_comparable > item.today_date %}
-                            <span class="active-status">Active</span>
-                        {% else %}
-                            <span class="inactive-status">Inactive</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ item.subscription.start_date }}</td>
-                    <td>{{ item.subscription.end_date|default:"-" }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-        <!-- No results found message for search -->
-        <div class="no-results-found d-none text-center py-4">
-            <div class="empty-icon">
-                <i class="fas fa-search no-results-icon"></i>
-                <style>
-                @media (max-width: 767.98px) {
-                  .no-results-icon {
-                    margin-left: 16px;
-                  }
-                }
-                @media (min-width: 768px) and (max-width: 991.98px) {
-                  .no-results-icon {
-                    margin-left: 32px;
-                  }
-                }
-                </style>
-            </div>
-            <p>No subscribers match your search criteria.</p>
-        </div>
-        
-        {% else %}
-        <div class="empty-state">
-            <div class="empty-icon">
-                <i class="fas fa-user-friends"></i>
-            </div>
-            <p>No {{ user_type }} subscribers found.</p>
-        </div>
-        {% endif %}
-    </div>
-</div>{% if messages %}
+{% if messages %}
 <!-- Toast Notification System -->
 <style>
   .toast-container {
@@ -207,6 +134,83 @@
   });
 </script>
 {% endif %}
+
+<div class="customer-list-container">
+    <div class="customer-header">
+        <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+            <h1 class="page-title mb-0 me-3" style="margin-left: -1rem;">{{ user_type|capfirst }} Subscribers</h1>
+            <form class="search-form" method="GET" action="">
+                <input type="search" name="q" class="search-input" placeholder="Search subscribers...">
+                <i class="fas fa-search search-icon"></i>
+            </form>
+        </div>
+    </div>
+
+    <div class="customer-table-container">
+        {% if subscriptions %}        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>{{ user_type|capfirst }} Name</th>
+                    <th>Payment Amount (₹)</th>
+                    <th>Status</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in subscriptions %}
+                <tr>
+                    <td>{{ item.subscription.sid }}</td>
+                    <td>
+                        {{ item.subscription.customer_id.first_name }} {{ item.subscription.customer_id.last_name }}
+                    </td>
+                    <td>{{ item.subscription.payment_amount }}</td>
+                    <td>
+                        {% if item.end_date_comparable and item.end_date_comparable > item.today_date %}
+                            <span class="active-status">Active</span>
+                        {% else %}
+                            <span class="inactive-status">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.subscription.start_date }}</td>
+                    <td>{{ item.subscription.end_date|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- No results found message for search -->
+        <div class="no-results-found d-none text-center py-4">
+            <div class="empty-icon">
+                <i class="fas fa-search no-results-icon"></i>
+                <style>
+                @media (max-width: 767.98px) {
+                  .no-results-icon {
+                    margin-left: 16px;
+                  }
+                }
+                @media (min-width: 768px) and (max-width: 991.98px) {
+                  .no-results-icon {
+                    margin-left: 32px;
+                  }
+                }
+                </style>
+            </div>
+            <p>No subscribers match your search criteria.</p>
+        </div>
+        
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-user-friends"></i>
+            </div>
+            <p>No {{ user_type }} subscribers found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 
 <!-- Subscriber Search Functionality -->
 <script>
