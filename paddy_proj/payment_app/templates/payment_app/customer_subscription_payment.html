@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <style>
         html, body {
             height: 100%;
@@ -295,6 +295,9 @@
         {% endfor %}
     {% endif %}
 </div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
     // Plan selection UI logic
     const planRadios = document.querySelectorAll('.plan-radio');
@@ -331,6 +334,7 @@
         });
     });
 </script>
+
 <script>
     // Razorpay payment integration (dynamic order creation)
     document.getElementById('plan-form').addEventListener('submit', function(e) {
@@ -407,8 +411,10 @@
         });
     });
 </script>
+
 <!-- Toast Auto-dismiss Script -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var toasts = document.querySelectorAll('.toast');
@@ -421,9 +427,11 @@
         });
     });
 </script>
+
 <!-- Razorpay order details for JS (populated by backend on POST) -->
 {% if order_id and amount and key_id %}
 <script id="razorpay-script-data" type="application/json">{"order_id": "{{ order_id }}", "amount": "{{ amount }}", "key_id": "{{ key_id }}"}</script>
 {% endif %}
+
 </body>
 </html>
