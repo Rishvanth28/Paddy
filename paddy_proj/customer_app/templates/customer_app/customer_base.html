@@ -3,6 +3,7 @@
 {% load static %}
 
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="stylesheet" type="text/css" href="{% static 'css/invoice.css' %}">
@@ -482,14 +483,7 @@
       font-weight: normal;
     }
   </style>
-
-    
-    
- 
-</head>
-
-<body class="customer-page">
-<style>  /* Toast Notifications Styling */
+  <style>  /* Toast Notifications Styling */
   .toast-container {
     position: fixed;
     top: 25px;
@@ -729,7 +723,12 @@
       margin-right: 6px;
     }
   }
-</style>  <!-- Hamburger Button -->
+</style>  
+
+</head>
+
+<body class="customer-page">
+<!-- Hamburger Button -->
   <button class="hamburger" id="hamburger" aria-label="Toggle menu">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
@@ -817,6 +816,24 @@
     {% block content %}
     {% endblock %}
   </main>  <script src="{% static 'js/customer_base.js' %}"></script>
+  
+
+
+  <div class="toast-container">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="toast 
+              {% if message.tags == 'success' %}success
+              {% elif message.tags == 'info' %}info
+              {% elif message.tags == 'warning' %}warning
+              {% elif message.tags == 'error' %}error
+              {% endif %}">
+      {{ message }}
+      <button type="button" class="toast-close" aria-label="Close">&times;</button>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
   
   <!-- Enhanced Hamburger Menu and Sidebar Script -->
   <script>
@@ -978,23 +995,6 @@
       }
     });
   </script>
-
-  <div class="toast-container">
-    {% if messages %}
-    {% for message in messages %}
-    <div class="toast 
-              {% if message.tags == 'success' %}success
-              {% elif message.tags == 'info' %}info
-              {% elif message.tags == 'warning' %}warning
-              {% elif message.tags == 'error' %}error
-              {% endif %}">
-      {{ message }}
-      <button type="button" class="toast-close" aria-label="Close">&times;</button>
-    </div>
-    {% endfor %}
-    {% endif %}
-  </div>
-
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       // Create toast container if it doesn't exist
@@ -1067,6 +1067,6 @@
       }
     });
   </script>
-</body>
 
+</body>
 </html>
