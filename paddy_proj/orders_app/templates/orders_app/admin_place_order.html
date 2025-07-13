@@ -3,6 +3,7 @@
 {% block content %}
 <head>
     <link rel="stylesheet" href="{% static 'css/place_order.css' %}">    
+
     <style>        
     
         @media (min-width: 769px) and (max-width: 1024px) {
@@ -69,10 +70,120 @@
             }
         }
 
-        </style>
+    </style>
+
+        <!-- Add styles for button states -->
+    <style>
+        /* Add some visual feedback for disabled buttons */
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        button.ready {
+            background-color: #4CAF50;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Style for required fields */
+        input:required, select:required {
+            border-left: 3px solid #4CAF50;
+        }
+        
+        input:required:invalid, select:required:invalid {
+            border-left: 3px solid #ff6b6b;
+        }
+        .add-item-btn {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            transition: background 0.2s, box-shadow 0.2s;
+            margin-right: 0.5rem;
+        }
+        .add-item-btn:hover:not(:disabled) {
+            background: #662222;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .submit-btn, .form-actions button {
+            background: #fff;
+            color: #e53935;
+            border: 1.5px solid #e53935;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: none;
+        }
+        .submit-btn:hover:not(:disabled), .form-actions button:hover:not(:disabled) {
+            background: #662222;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(229,57,53,0.13);
+        }
+        .submit-btn.ready, .form-actions button.ready {
+            background: #e53935;
+            color: #fff;
+        }
+        #pesticide-save-btn {
+            background: #2196F3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+            margin-right: 0.5rem;
+        }
+        #pesticide-save-btn:hover:not(:disabled) {
+            background: #1565c0;
+            box-shadow: 0 4px 12px rgba(33,150,243,0.13);
+        }
+        .remove-row-btn {
+            background: #fff;
+            color: #e53935;
+            border: 1.5px solid #e53935;
+            border-radius: 50px;
+            padding: 0.3rem 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .remove-row-btn:hover:not(:disabled) {
+            background: #e53935;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(229,57,53,0.13);
+        }
+        .order-placed-success {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            z-index: 9999;
+            box-shadow: 0 4px 16px rgba(76,175,80,0.18);
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+    </style>
+
 </head>
 
-<body>    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+<body>    
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
         <h1 class="page-title mb-0 me-3 " style="margin-left: -1rem;" >Place New<span class="title-break"> </span>Order</h1>
     </div>
     <!-- Tab Buttons -->
@@ -467,6 +578,7 @@
         setupCustomerListeners("customer-select-paddy", "customer-last-name-paddy");
         setupCustomerListeners("customer-select-pesticide", "customer-last-name-pesticide");
     </script>
+
     <script>
         // Replace the existing addNewRow, removeRow, calculateRowTotal, and updateGrandTotal functions with these:
 
@@ -557,6 +669,7 @@
             });
         });
     </script>
+
     <script>
         // Form validation function to enable/disable submit buttons
         function validateCurrentForm() {
@@ -674,114 +787,6 @@
         };
     </script>
 
-    <!-- Add styles for button states -->
-    <style>
-        /* Add some visual feedback for disabled buttons */
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        button.ready {
-            background-color: #4CAF50;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        /* Style for required fields */
-        input:required, select:required {
-            border-left: 3px solid #4CAF50;
-        }
-        
-        input:required:invalid, select:required:invalid {
-            border-left: 3px solid #ff6b6b;
-        }
-        .add-item-btn {
-            background: #f5f5f5;
-            color: #333;
-            border: 1px solid #bbb;
-            border-radius: 4px;
-            padding: 0.5rem 1.2rem;
-            font-size: 1rem;
-            transition: background 0.2s, box-shadow 0.2s;
-            margin-right: 0.5rem;
-        }
-        .add-item-btn:hover:not(:disabled) {
-            background: #662222;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        }
-        .submit-btn, .form-actions button {
-            background: #fff;
-            color: #e53935;
-            border: 1.5px solid #e53935;
-            border-radius: 50px;
-            padding: 0.5rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-            box-shadow: none;
-        }
-        .submit-btn:hover:not(:disabled), .form-actions button:hover:not(:disabled) {
-            background: #662222;
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(229,57,53,0.13);
-        }
-        .submit-btn.ready, .form-actions button.ready {
-            background: #e53935;
-            color: #fff;
-        }
-        #pesticide-save-btn {
-            background: #2196F3;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 0.5rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(33,150,243,0.07);
-            margin-right: 0.5rem;
-        }
-        #pesticide-save-btn:hover:not(:disabled) {
-            background: #1565c0;
-            box-shadow: 0 4px 12px rgba(33,150,243,0.13);
-        }
-        .remove-row-btn {
-            background: #fff;
-            color: #e53935;
-            border: 1.5px solid #e53935;
-            border-radius: 50px;
-            padding: 0.3rem 1rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-        }
-        .remove-row-btn:hover:not(:disabled) {
-            background: #e53935;
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(229,57,53,0.13);
-        }
-        .order-placed-success {
-            position: fixed;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #4CAF50;
-            color: #fff;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            z-index: 9999;
-            box-shadow: 0 4px 16px rgba(76,175,80,0.18);
-            animation: fadeIn 0.5s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-    </style>
-
     <script>
         // Prevent double form submissions
         document.addEventListener('DOMContentLoaded', function() {
@@ -812,5 +817,6 @@
             });
         });
     </script>
+
 </body>
 {% endblock %}
