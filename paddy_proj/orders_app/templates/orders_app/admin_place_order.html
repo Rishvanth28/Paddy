@@ -373,15 +373,15 @@
                         </thead>
                         <tbody id="pesticide-items-container">
                             <tr class="item-row">
-                                <td><input type="text" name="product_name[]" class="product-name" required></td>
-                                <td><input type="text" name="batch_number[]" class="batch-number" required></td>
-                                <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
-                                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
-                                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
+                                <td><input type="text" name="product_name[]" class="product-name" style="width: 100px;" required></td>
+                                <td><input type="text" name="batch_number[]" class="batch-number" style="width: 100px!important;" required></td>
+                                <td><input type="date" name="expiry_date[]" class="expiry-date" style="width: 100px!important;" required></td>
+                                <td><input type="number" name="quantity[]" class="quantity" style="width: 100px!important;" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
+                                <td><input type="number" name="price_per_unit[]" class="price" style="width: 100px;" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
                                 <td>
-                                    <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required>
+                                    <input type="text" name="unit[]" class="unit" style="width: 100px!important;" placeholder="e.g., 100 ml, 20 gm" required>
                                 </td>
-                                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
+                                <td><input type="number" name="total_amount[]" class="row-total" style="width: 100px!important;" step="0.01" readonly></td>
                                 <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
                             </tr>
                         </tbody>
