@@ -218,6 +218,7 @@ def admin_orders(request):
                 'order_id': order.order_id,
                 'customer_id': order.customer.customer_id if order.customer else None,
                 'customer_full_name': customer_full_name,
+                'customer_phone': order.customer.phone_number if order.customer else None,
                 'admin_id': order.admin.admin_id if order.admin else None,
                 'payment_status': order.payment_status,
                 'delivery_status': order.delivery_status,
@@ -386,7 +387,7 @@ def super_admin_orders(request):
                 'order_id': order.order_id,
                 'customer_id': order.customer.customer_id if order.customer else None,
                 'customer_full_name': customer_full_name,
-                'customer_phone': order.customer.phone_number,
+                'customer_phone': order.customer.phone_number if order.customer else None,
                 'admin_id': order.admin.admin_id if order.admin else None,
                 'admin_name': admin_name,  # Add admin name
                 'admin_email': admin_email,  # Add admin email
