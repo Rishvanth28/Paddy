@@ -1,0 +1,343 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment - Product Subscription</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .payment-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .payment-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .order-summary {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .summary-title {
+            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-list {
+            margin-bottom: 20px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-name {
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .product-price {
+            color: #3182ce;
+            font-weight: 600;
+        }
+
+        .total-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .total-row:last-child {
+            margin-bottom: 0;
+            padding-top: 15px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .total-label {
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .total-amount {
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .final-total {
+            color: #3182ce;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .payment-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            border: none;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+        }
+
+        .payment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
+        }
+
+        .payment-info {
+            text-align: center;
+            margin-top: 20px;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #48bb78;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .payment-container {
+                padding: 20px;
+                margin: 0 10px;
+            }
+            
+            .payment-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <h1 class="page-title">Complete Payment</h1>
+        <form action="{% url 'login_app:logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+
+    <div class="payment-container">
+        <h2 class="payment-title">Order Summary</h2>
+
+        <div class="order-summary">
+            <h3 class="summary-title">
+                <i class="fas fa-shopping-cart"></i>
+                Selected Products
+            </h3>
+            
+            <div class="product-list">
+                {% for product in selected_products %}
+                <div class="product-item">
+                    <span class="product-name">
+                        {% if product == 'rice' %}
+                            <i class="fas fa-seedling"></i> Rice Orders Access
+                        {% elif product == 'paddy' %}
+                            <i class="fas fa-wheat"></i> Paddy Orders Access
+                        {% elif product == 'pesticide' %}
+                            <i class="fas fa-flask"></i> Pesticide Orders Access
+                        {% endif %}
+                    </span>
+                    <span class="product-price">₹100</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="total-section">
+                <div class="total-row">
+                    <span class="total-label">Subtotal:</span>
+                    <span class="total-amount">₹{{ total_amount }}</span>
+                </div>
+                <div class="total-row">
+                    <span class="total-label">Duration:</span>
+                    <span class="total-amount">30 days</span>
+                </div>
+                <div class="total-row">
+                    <span class="total-label"><strong>Total Amount:</strong></span>
+                    <span class="final-total">₹{{ total_amount }}</span>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="pay-btn" class="payment-btn">
+            <i class="fas fa-credit-card"></i> Pay ₹{{ total_amount }} Now
+        </button>
+
+        <div class="payment-info">
+            <div class="secure-badge">
+                <i class="fas fa-shield-alt"></i>
+                Secure payment powered by Razorpay
+            </div>
+            <p>Your payment information is encrypted and secure</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('pay-btn').addEventListener('click', function() {
+            const options = {
+                key: '{{ key_id }}',
+                amount: {{ amount }},
+                currency: 'INR',
+                name: 'Paddy Management System',
+                description: 'Product Subscription - {{ selected_products|join:", "|title }}',
+                order_id: '{{ order_id }}',
+                handler: function (response) {
+                    // Send payment details to backend for verification
+                    fetch("{% url 'payment_app:verify_product_subscription_payment' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Payment successful! You now have access to the selected products.');
+                            window.location.href = "{% url 'admin_app:admin_dashboard' %}";
+                        } else {
+                            alert('Payment verification failed. Please contact support if amount was deducted.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Payment verification failed. Please contact support.');
+                    });
+                },
+                theme: { 
+                    color: '#3182ce' 
+                },
+                modal: {
+                    backdropClose: false,
+                    escape: false,
+                    animation: true
+                },
+                prefill: {
+                    name: "{{ admin_name }}",
+                    email: "{{ admin_email }}"
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            
+            rzp.on('payment.failed', function (response) {
+                alert('Payment failed: ' + response.error.description);
+            });
+            
+            rzp.open();
+        });
+    </script>
+</body>
+</html>

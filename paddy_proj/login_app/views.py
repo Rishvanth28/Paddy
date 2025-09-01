@@ -47,11 +47,19 @@ def login_view(request):
                 if check_password(password, user.password):
                     request.session["user_id"] = user.admin_id
                     request.session["role"] = "admin"
-                    sub = Subscription.objects.filter(admin_id=user, subscription_type="admin").order_by("-end_date").first()
-                    if sub and sub.end_date and sub.end_date >= now().date():
+                    
+                    # Check for any active product subscription (rice, paddy, pesticide)
+                    active_product_sub = Subscription.objects.filter(
+                        admin_id=user, 
+                        subscription_type__in=['admin_rice', 'admin_paddy', 'admin_pesticide'],
+                        end_date__gte=now().date(),
+                        subscription_status=1
+                    ).first()
+                    
+                    if active_product_sub:
                         return redirect("admin_app:admin_dashboard")
                     else:
-                        return redirect("payment_app:admin_subscription_payment")
+                        return redirect("payment_app:admin_product_subscription")
             except AdminTable.DoesNotExist:
                 messages.error(request, "Admin not found.")
 

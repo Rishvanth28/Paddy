@@ -186,6 +186,8 @@ def admin_dashboard(request):
         'payment_completed': payment_completed,
         'payment_partial': payment_partial,
         'payment_pending': payment_pending,
+        # Product access information
+        'product_access': Subscription.get_admin_product_access(admin_id),
     }
     
     return render(request, "admin_app/admin_dashboard.html", context)

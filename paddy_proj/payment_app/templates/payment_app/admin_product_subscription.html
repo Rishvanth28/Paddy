@@ -1,0 +1,470 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Products - Admin Subscription</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .subscription-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: #f8fafc;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4299e1, #3182ce);
+            transition: left 0.3s ease;
+        }
+
+        .product-card:hover::before,
+        .product-card.selected::before {
+            left: 0;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #4299e1;
+        }
+
+        .product-card.selected {
+            border-color: #3182ce;
+            background: #ebf8ff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(49, 130, 206, 0.15);
+        }
+
+        .product-card.has-access {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .product-card.has-access::before {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+        }
+
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #4299e1;
+        }
+
+        .product-card.selected .product-icon,
+        .product-card.has-access .product-icon {
+            color: #3182ce;
+        }
+
+        .product-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .product-description {
+            color: #718096;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3182ce;
+            margin-bottom: 15px;
+        }
+
+        .product-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .status-expired {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .status-not-subscribed {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .product-checkbox {
+            display: none;
+        }
+
+        .checkout-section {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .selected-products {
+            margin-bottom: 25px;
+        }
+
+        .selected-products h3 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .selected-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .selected-item {
+            background: #3182ce;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .total-section {
+            border-top: 2px solid #e2e8f0;
+            padding-top: 25px;
+            margin-top: 25px;
+        }
+
+        .total-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .total-duration {
+            color: #718096;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .subscribe-btn {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
+        }
+
+        .subscribe-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
+        }
+
+        .subscribe-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .no-selection-message {
+            color: #718096;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-bar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .subscription-container {
+                padding: 20px;
+                margin: 0 10px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <h1 class="page-title">Product Subscription</h1>
+        <form action="{% url 'login_app:logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+
+    <div class="subscription-container">
+        <h2 class="section-title">Choose Your Products</h2>
+        <p class="section-subtitle">Select the products you want access to. Each product costs ₹100 per month.</p>
+
+        <form id="subscription-form" method="POST">
+            {% csrf_token %}
+            <div class="products-grid">
+                <!-- Rice Product -->
+                <div class="product-card {% if current_access.rice %}has-access{% endif %}" 
+                     onclick="toggleProduct('rice')" 
+                     data-product="rice" 
+                     data-price="100">
+                    <input type="checkbox" name="products" value="rice" class="product-checkbox" id="rice-checkbox">
+                    <div class="product-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3 class="product-name">Rice Orders</h3>
+                    <p class="product-description">Create and manage rice orders for your customers</p>
+                    <div class="product-price">₹100<span style="font-size: 0.6em; color: #718096;">/month</span></div>
+                    {% if current_access.rice %}
+                        <span class="product-status status-active">Currently Active</span>
+                    {% else %}
+                        <span class="product-status status-not-subscribed">Not Subscribed</span>
+                    {% endif %}
+                </div>
+
+                <!-- Paddy Product -->
+                <div class="product-card {% if current_access.paddy %}has-access{% endif %}" 
+                     onclick="toggleProduct('paddy')" 
+                     data-product="paddy" 
+                     data-price="100">
+                    <input type="checkbox" name="products" value="paddy" class="product-checkbox" id="paddy-checkbox">
+                    <div class="product-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="product-name">Paddy Orders</h3>
+                    <p class="product-description">Create and manage paddy orders for your customers</p>
+                    <div class="product-price">₹100<span style="font-size: 0.6em; color: #718096;">/month</span></div>
+                    {% if current_access.paddy %}
+                        <span class="product-status status-active">Currently Active</span>
+                    {% else %}
+                        <span class="product-status status-not-subscribed">Not Subscribed</span>
+                    {% endif %}
+                </div>
+
+                <!-- Pesticide Product -->
+                <div class="product-card {% if current_access.pesticide %}has-access{% endif %}" 
+                     onclick="toggleProduct('pesticide')" 
+                     data-product="pesticide" 
+                     data-price="100">
+                    <input type="checkbox" name="products" value="pesticide" class="product-checkbox" id="pesticide-checkbox">
+                    <div class="product-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3 class="product-name">Pesticide Orders</h3>
+                    <p class="product-description">Create and manage pesticide/fertilizer orders for your customers</p>
+                    <div class="product-price">₹100<span style="font-size: 0.6em; color: #718096;">/month</span></div>
+                    {% if current_access.pesticide %}
+                        <span class="product-status status-active">Currently Active</span>
+                    {% else %}
+                        <span class="product-status status-not-subscribed">Not Subscribed</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="checkout-section">
+                <div class="selected-products">
+                    <h3>Selected Products:</h3>
+                    <div class="selected-list" id="selected-list">
+                        <p class="no-selection-message">No products selected</p>
+                    </div>
+                </div>
+
+                <div class="total-section">
+                    <div class="total-price" id="total-price">₹0</div>
+                    <div class="total-duration">per month</div>
+                    <button type="submit" class="subscribe-btn" id="subscribe-btn" disabled>
+                        <i class="fas fa-credit-card"></i> Subscribe Now
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let selectedProducts = [];
+        const productPrices = { rice: 100, paddy: 100, pesticide: 100 };
+        const productNames = { rice: 'Rice Orders', paddy: 'Paddy Orders', pesticide: 'Pesticide Orders' };
+
+        function toggleProduct(productName) {
+            const checkbox = document.getElementById(productName + '-checkbox');
+            const card = document.querySelector(`[data-product="${productName}"]`);
+            
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                card.classList.add('selected');
+                if (!selectedProducts.includes(productName)) {
+                    selectedProducts.push(productName);
+                }
+            } else {
+                card.classList.remove('selected');
+                selectedProducts = selectedProducts.filter(p => p !== productName);
+            }
+            
+            updateCheckoutSection();
+        }
+
+        function updateCheckoutSection() {
+            const selectedList = document.getElementById('selected-list');
+            const totalPrice = document.getElementById('total-price');
+            const subscribeBtn = document.getElementById('subscribe-btn');
+
+            if (selectedProducts.length === 0) {
+                selectedList.innerHTML = '<p class="no-selection-message">No products selected</p>';
+                totalPrice.textContent = '₹0';
+                subscribeBtn.disabled = true;
+            } else {
+                const selectedItems = selectedProducts.map(product => 
+                    `<span class="selected-item">${productNames[product]}</span>`
+                ).join('');
+                
+                selectedList.innerHTML = selectedItems;
+                
+                const total = selectedProducts.reduce((sum, product) => sum + productPrices[product], 0);
+                totalPrice.textContent = `₹${total}`;
+                subscribeBtn.disabled = false;
+            }
+        }
+
+        // Form submission
+        document.getElementById('subscription-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (selectedProducts.length === 0) {
+                alert('Please select at least one product.');
+                return;
+            }
+
+            // Submit form with selected products
+            this.submit();
+        });
+
+        // Initialize
+        updateCheckoutSection();
+    </script>
+</body>
+</html>

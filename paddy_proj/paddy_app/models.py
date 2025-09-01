@@ -135,16 +135,43 @@ class Payments(models.Model):
         return f"Payment {self.payment_id} - Amount: {self.amount}"
 
 class Subscription(models.Model):
+    SUBSCRIPTION_TYPES = [
+        ('admin', 'Admin General'),
+        ('customer', 'Customer General'),
+        ('admin_rice', 'Admin Rice Access'),
+        ('admin_paddy', 'Admin Paddy Access'),
+        ('admin_pesticide', 'Admin Pesticide Access'),
+    ]
+    
     sid = models.BigAutoField(primary_key=True)
     customer_id = models.ForeignKey('CustomerTable', null=True, blank=True, on_delete=models.CASCADE)
     admin_id = models.ForeignKey('AdminTable', null=True, blank=True, on_delete=models.CASCADE)
-    subscription_type = models.CharField(max_length=255)  # 'admin', 'customer', etc.
+    subscription_type = models.CharField(max_length=255, choices=SUBSCRIPTION_TYPES, default='admin')  # 'admin', 'customer', 'admin_rice', etc.
     subscription_status = models.IntegerField(default=0)  # 0: Pending, 1: Active
     payment_amount = models.BigIntegerField(default=0)
     start_date = models.DateField(default=now)
     end_date = models.DateField(null=True, blank=True)
+    
     def __str__(self):
         return f"Subscription {self.sid} - {self.subscription_type}"
+    
+    @classmethod
+    def get_admin_product_access(cls, admin_id):
+        """Returns dict with product access status for admin"""
+        from django.utils import timezone
+        now = timezone.now().date()
+        
+        active_subscriptions = cls.objects.filter(
+            admin_id=admin_id,
+            subscription_status=1,  # Active
+            end_date__gte=now
+        ).values_list('subscription_type', flat=True)
+        
+        return {
+            'rice': 'admin_rice' in active_subscriptions,
+            'paddy': 'admin_paddy' in active_subscriptions,
+            'pesticide': 'admin_pesticide' in active_subscriptions,
+        }
     
 
 

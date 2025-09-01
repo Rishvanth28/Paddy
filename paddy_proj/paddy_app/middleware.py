@@ -13,14 +13,18 @@ class SubscriptionMiddleware(MiddlewareMixin):
 
         # Allow access to these paths without subscription check
         exempt_paths = [
-            "/login/", "/login/logout/",
-            "/payment/admin-subscription-payment/", "/payment/admin-payment-success/",
+            "/login/", "/logout/", "/login/logout/",
+            "/payment/admin-product-subscription/", "/payment/admin-product-payment/", 
+            "/payment/verify-product-subscription-payment/", "/payment/admin-payment-success/",
             "/payment/customer-subscription-payment/", "/payment/customer-payment-success/",
             "/onboarding/create-admin-signup/", "/onboarding/create-customer-signup/"
         ]
 
-        # Check if path starts with /admin/ (Django admin) or is in exempt paths
-        if path in exempt_paths or path.startswith("/static/"):
+        # Check if path starts with /admin/, /payment/, /login/, or is in exempt paths
+        if (path in exempt_paths or 
+            path.startswith("/static/") or 
+            path.startswith("/payment/") or 
+            path.startswith("/login/")):
             return None
 
         # If user is not logged in (no role or user_id), redirect to login
@@ -29,16 +33,17 @@ class SubscriptionMiddleware(MiddlewareMixin):
             if not path.startswith("/admin/"):
                 return redirect("login_app:login")
 
-        # Handle admin subscription
+        # Handle admin subscription - check for any active product subscriptions
         if role == "admin":
+            # Check for any active product subscription (rice, paddy, pesticide)
             latest = Subscription.objects.filter(
                 admin_id=user_id,
-                subscription_type="admin",
+                subscription_type__in=['admin_rice', 'admin_paddy', 'admin_pesticide'],
                 subscription_status=1
             ).order_by("-end_date").first()
 
             if not latest or not latest.end_date or latest.end_date < now().date():
-                return redirect("payment_app:admin_subscription_payment")
+                return redirect("payment_app:admin_product_subscription")
 
         # Handle customer subscription
         elif role == "customer":

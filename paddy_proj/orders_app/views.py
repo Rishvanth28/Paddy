@@ -448,6 +448,22 @@ def place_order(request):
         if form_token:
             request.session['last_order_token'] = form_token
         
+        # For non-superadmin users, check product access before processing order
+        if not is_superadmin:
+            from paddy_app.models import Subscription
+            product_access = Subscription.get_admin_product_access(admin_id)
+            
+            product_category_id = request.POST.get("product_category_id")
+            if product_category_id == "1" and not product_access["rice"]:
+                messages.error(request, "You don't have access to place Rice orders. Please subscribe to Rice access first.")
+                return redirect('payment_app:admin_product_subscription')
+            elif product_category_id == "2" and not product_access["paddy"]:
+                messages.error(request, "You don't have access to place Paddy orders. Please subscribe to Paddy access first.")
+                return redirect('payment_app:admin_product_subscription')
+            elif product_category_id == "3" and not product_access["pesticide"]:
+                messages.error(request, "You don't have access to place Pesticide orders. Please subscribe to Pesticide access first.")
+                return redirect('payment_app:admin_product_subscription')
+        
         # Process order data
         if str(request.POST.get("product_category_id")) != "3":
             # Regular order (Rice/Paddy)
@@ -591,4 +607,11 @@ def place_order(request):
             return redirect('orders_app:admin_orders')
     
     # Render the initial form
-    return render(request, "orders_app/place_order.html" if is_superadmin else "orders_app/admin_place_order.html", {"customers": customers})
+    context = {"customers": customers}
+    
+    # For admin users, check product access
+    if not is_superadmin:
+        from paddy_app.models import Subscription
+        context["product_access"] = Subscription.get_admin_product_access(admin_id)
+    
+    return render(request, "orders_app/place_order.html" if is_superadmin else "orders_app/admin_place_order.html", context)

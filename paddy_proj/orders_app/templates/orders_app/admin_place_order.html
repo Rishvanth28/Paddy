@@ -178,6 +178,27 @@
             from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
+        
+        /* Disabled field styles */
+        input:disabled, select:disabled, button:disabled {
+            background-color: #f5f5f5 !important;
+            color: #999 !important;
+            cursor: not-allowed !important;
+            border-color: #ddd !important;
+        }
+        
+        .form-card:has(input:disabled) {
+            opacity: 0.7;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+        }
+        
+        .remove-row-btn:disabled {
+            background-color: #ddd !important;
+            color: #999 !important;
+        }
     </style>
 
 </head>
@@ -188,9 +209,41 @@
     </div>
     <!-- Tab Buttons -->
     <div class="tab-header">
-        <button class="tab-button active "  type="button" onclick="showForm('Rice')">Rice</button>
-        <button class="tab-button "  type="button" onclick="showForm('Paddy')">Paddy</button>
-        <button class="tab-button "  type="button" onclick="showForm('Pesticide')">Pesticide</button>
+        {% if product_access.rice %}
+            <button class="tab-button active" type="button" onclick="showForm('Rice')">
+                <i class="fas fa-seedling"></i> Rice
+                <span class="access-badge active">✓ Active</span>
+            </button>
+        {% else %}
+            <button class="tab-button disabled" type="button" onclick="showSubscriptionModal('Rice')" disabled>
+                <i class="fas fa-seedling"></i> Rice
+                <span class="access-badge inactive">✗ No Access</span>
+            </button>
+        {% endif %}
+        
+        {% if product_access.paddy %}
+            <button class="tab-button {% if not product_access.rice %}active{% endif %}" type="button" onclick="showForm('Paddy')">
+                <i class="fas fa-leaf"></i> Paddy
+                <span class="access-badge active">✓ Active</span>
+            </button>
+        {% else %}
+            <button class="tab-button disabled" type="button" onclick="showSubscriptionModal('Paddy')" disabled>
+                <i class="fas fa-wheat"></i> Paddy
+                <span class="access-badge inactive">✗ No Access</span>
+            </button>
+        {% endif %}
+        
+        {% if product_access.pesticide %}
+            <button class="tab-button {% if not product_access.rice and not product_access.paddy %}active{% endif %}" type="button" onclick="showForm('Pesticide')">
+                <i class="fas fa-flask"></i> Pesticide
+                <span class="access-badge active">✓ Active</span>
+            </button>
+        {% else %}
+            <button class="tab-button disabled" type="button" onclick="showSubscriptionModal('Pesticide')" disabled>
+                <i class="fas fa-flask"></i> Pesticide
+                <span class="access-badge inactive">✗ No Access</span>
+            </button>
+        {% endif %}
     </div>
     <div class="form-container">
         <!-- RICE FORM -->
@@ -204,7 +257,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-rice">First Name</label>
-                        <select name="customer" id="customer-select-rice" required>
+                        <select name="customer" id="customer-select-rice" required {% if not product_access.rice %}disabled{% endif %}>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
                             <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }} {{ customer.last_name }}</option>
@@ -213,47 +266,47 @@
                     </div>
                     <div class="form-group">
                         <label for="customer-last-name-rice">Last Name</label>
-                        <input type="text" id="customer-last-name-rice" readonly>
+                        <input type="text" id="customer-last-name-rice" readonly {% if not product_access.rice %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
+                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2" {% if not product_access.rice %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
+                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}" {% if not product_access.rice %}disabled{% endif %}>
                     </div>
                 </div>
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
+                <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.rice %}disabled{% endif %}>
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="category-rice">Category</label>
-                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required>
+                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required {% if not product_access.rice %}disabled{% endif %}>
                     </div>
 
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">
+                        <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01" {% if not product_access.rice %}disabled{% endif %}>
                     </div>
 
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01">
+                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01" {% if not product_access.rice %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
-                        <input type="date" name="delivery_date" required>
+                        <input type="date" name="delivery_date" required {% if not product_access.rice %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" id="rice-submit-btn">Place Rice Order</button>
+                    <button type="submit" id="rice-submit-btn" {% if not product_access.rice %}disabled{% endif %}>Place Rice Order</button>
                 </div>
             </form>
         </div>
@@ -268,7 +321,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-paddy">First Name</label>
-                        <select name="customer" id="customer-select-paddy" required>
+                        <select name="customer" id="customer-select-paddy" required {% if not product_access.paddy %}disabled{% endif %}>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
                             <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }} {{ customer.last_name }}</option>
@@ -277,45 +330,45 @@
                     </div>
                     <div class="form-group">
                         <label for="customer-last-name-paddy">Last Name</label>
-                        <input type="text" id="customer-last-name-paddy" readonly>
+                        <input type="text" id="customer-last-name-paddy" readonly {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
+                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2" {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
+                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}" {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                 </div>
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
+                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.paddy %}disabled{% endif %}>
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="category-rice">Category</label>
-                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required>
+                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
-                        <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01">
+                        <input type="number" name="quantity" placeholder="Enter quantity" required min="1" step="0.01" {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label for="price_per_unit">Price per Unit</label>
-                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01">
+                        <input type="number" name="price_per_unit" placeholder="Enter price" required min="0" step="0.01" {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
-                        <input type="date" name="delivery_date" required>
+                        <input type="date" name="delivery_date" required {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" id="paddy-submit-btn">Place Paddy Order</button>
+                    <button type="submit" id="paddy-submit-btn" {% if not product_access.paddy %}disabled{% endif %}>Place Paddy Order</button>
                 </div>
             </form>
         </div>
@@ -330,7 +383,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-pesticide">First Name</label>
-                        <select name="customer" id="customer-select-pesticide" required>
+                        <select name="customer" id="customer-select-pesticide" required {% if not product_access.pesticide %}disabled{% endif %}>
                             <option value="" disabled selected>Select a customer</option>
                             {% for customer in customers %}
                             <option value="{{ customer.customer_id }}" data-last-name="{{ customer.last_name }}">{{ customer.first_name }}</option>
@@ -339,21 +392,21 @@
                     </div>
                     <div class="form-group">
                         <label for="customer-last-name-pesticide">Last Name</label>
-                        <input type="text" id="customer-last-name-pesticide" readonly>
+                        <input type="text" id="customer-last-name-pesticide" readonly {% if not product_access.pesticide %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2">
+                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2" {% if not product_access.pesticide %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
-                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}">
+                        <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}" {% if not product_access.pesticide %}disabled{% endif %}>
                     </div>
                 </div>
                 <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
+                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.pesticide %}disabled{% endif %}>
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="items-section">
@@ -373,16 +426,16 @@
                         </thead>
                         <tbody id="pesticide-items-container">
                             <tr class="item-row">
-                                <td><input type="text" name="product_name[]" class="product-name" style="width: 100px;" required></td>
-                                <td><input type="text" name="batch_number[]" class="batch-number" style="width: 100px!important;" required></td>
-                                <td><input type="date" name="expiry_date[]" class="expiry-date" style="width: 100px!important;" required></td>
-                                <td><input type="number" name="quantity[]" class="quantity" style="width: 100px!important;" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
-                                <td><input type="number" name="price_per_unit[]" class="price" style="width: 100px;" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
+                                <td><input type="text" name="product_name[]" class="product-name" style="width: 100px;" required {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="text" name="batch_number[]" class="batch-number" style="width: 100px!important;" required {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="date" name="expiry_date[]" class="expiry-date" style="width: 100px!important;" required {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="number" name="quantity[]" class="quantity" style="width: 100px!important;" step="0.01" min="0.01" required onchange="calculateRowTotal(this)" {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="number" name="price_per_unit[]" class="price" style="width: 100px;" step="0.01" min="0" required onchange="calculateRowTotal(this)" {% if not product_access.pesticide %}disabled{% endif %}></td>
                                 <td>
-                                    <input type="text" name="unit[]" class="unit" style="width: 100px!important;" placeholder="e.g., 100 ml, 20 gm" required>
+                                    <input type="text" name="unit[]" class="unit" style="width: 100px!important;" placeholder="e.g., 100 ml, 20 gm" required {% if not product_access.pesticide %}disabled{% endif %}>
                                 </td>
-                                <td><input type="number" name="total_amount[]" class="row-total" style="width: 100px!important;" step="0.01" readonly></td>
-                                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
+                                <td><input type="number" name="total_amount[]" class="row-total" style="width: 100px!important;" step="0.01" readonly {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item" {% if not product_access.pesticide %}disabled{% endif %}>✕</button></td>
                             </tr>
                         </tbody>
                         <tfoot>
@@ -394,9 +447,9 @@
                         </tfoot>
                     </table>
                     <div class="form-row" style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
-                        <button type="button" id="pesticide-add-item-btn" class="add-item-btn" onclick="addPesticideRow()">+ Add Item</button>
+                        <button type="button" id="pesticide-add-item-btn" class="add-item-btn" onclick="addPesticideRow()" {% if not product_access.pesticide %}disabled{% endif %}>+ Add Item</button>
                         <!-- <button type="button" id="pesticide-save-btn" class="submit-btn" style="background:#2196F3;" onclick="savePesticideOrderDraft()" disabled>Save Order</button> -->
-                        <button type="submit" id="pesticide-submit-btn" class="submit-btn">Place Pesticide Order</button>
+                        <button type="submit" id="pesticide-submit-btn" class="submit-btn" {% if not product_access.pesticide %}disabled{% endif %}>Place Pesticide Order</button>
                     </div>
                 </div>
             </form>
@@ -586,18 +639,22 @@
             const tableBody = document.getElementById("pesticide-items-container");
             const newRow = document.createElement("tr");
             newRow.classList.add("item-row");
+            
+            // Check if user has pesticide access
+            const hasAccess = {% if product_access.pesticide %}true{% else %}false{% endif %};
+            const disabledAttr = hasAccess ? '' : 'disabled';
 
             newRow.innerHTML = `
-                <td><input type="text" name="product_name[]" class="product-name" required></td>
-                <td><input type="text" name="batch_number[]" class="batch-number" required></td>
-                <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
-                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
-                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
+                <td><input type="text" name="product_name[]" class="product-name" required ${disabledAttr}></td>
+                <td><input type="text" name="batch_number[]" class="batch-number" required ${disabledAttr}></td>
+                <td><input type="date" name="expiry_date[]" class="expiry-date" required ${disabledAttr}></td>
+                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)" ${disabledAttr}></td>
+                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)" ${disabledAttr}></td>
                 <td>
-                    <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required>
+                    <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required ${disabledAttr}>
                 </td>
-                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
-                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
+                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly ${disabledAttr}></td>
+                <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item" ${disabledAttr}>✕</button></td>
             `;
 
             tableBody.appendChild(newRow);
@@ -612,6 +669,16 @@
         function removeRow(button) {
             const row = button.closest("tr");
             if (row) {
+                // Check if this is a pesticide form row
+                const pesticideTable = document.getElementById("pesticide-items-container");
+                if (pesticideTable && pesticideTable.contains(row)) {
+                    // Count total pesticide rows
+                    const pesticideRows = pesticideTable.querySelectorAll("tr.item-row");
+                    if (pesticideRows.length <= 1) {
+                        alert("Cannot delete the last pesticide item. At least one item must remain.");
+                        return;
+                    }
+                }
                 row.remove();
                 updateGrandTotal();
             }

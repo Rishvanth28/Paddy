@@ -68,10 +68,9 @@ def profile(request):
         base_template = 'admin_app/admin_base.html'
         try:
             user = AdminTable.objects.get(admin_id=user_id)
-            # Get subscription info for admin
+            # Get most recent subscription info for admin (any type)
             subscription = Subscription.objects.filter(
-                admin_id=user, 
-                subscription_type="admin"
+                admin_id=user
             ).order_by('-end_date').first()
             
             user_data = {

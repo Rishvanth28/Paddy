@@ -427,8 +427,10 @@ def approve_cash_payment(request, request_id):
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
     
 # Subscription Payment Functions
+# DEPRECATED: Old admin subscription payment - replaced with admin_product_subscription
+"""
 def admin_subscription_payment(request):
-    """Admin subscription payment page"""
+    \"\"\"Admin subscription payment page\"\"\"
     if request.method == "POST":
         # Check if it's a JSON request (AJAX)
         content_type = request.content_type or ''
@@ -484,6 +486,66 @@ def admin_subscription_payment(request):
         })
 
     return render(request, "payment_app/admin_subscription_payment.html")
+"""
+
+@role_required(["admin"])
+def admin_product_subscription(request):
+    """Admin product-specific subscription selection page"""
+    admin_id = request.session.get("user_id")
+    if not admin_id:
+        return redirect("login_app:login")
+
+    admin = get_object_or_404(AdminTable, admin_id=admin_id)
+    
+    # Get current product access
+    current_access = Subscription.get_admin_product_access(admin_id)
+    
+    if request.method == "POST":
+        selected_products = request.POST.getlist('products')
+        
+        if not selected_products:
+            messages.error(request, "Please select at least one product.")
+            return render(request, "payment_app/admin_product_subscription.html", {
+                'current_access': current_access
+            })
+        
+        # Calculate total amount
+        total_amount = len(selected_products) * 100  # ₹100 per product
+        
+        # Create Razorpay order
+        order_data = {
+            "amount": total_amount * 100,  # In paise
+            "currency": "INR",
+            "payment_capture": "1",
+            "receipt": f"admin_products_{admin_id}_{timezone.now().timestamp()}",
+            "notes": {
+                "admin_id": admin_id,
+                "products": ",".join(selected_products),
+                "product_count": len(selected_products)
+            }
+        }
+        
+        razorpay_order = client.order.create(data=order_data)
+        
+        # Save session details for payment verification
+        request.session["product_subscription_amount"] = total_amount
+        request.session["product_subscription_products"] = selected_products
+        request.session["product_razorpay_order_id"] = razorpay_order["id"]
+        request.session["admin_id"] = admin_id
+        
+        return render(request, "payment_app/admin_product_payment.html", {
+            "order_id": razorpay_order["id"],
+            "amount": total_amount * 100,
+            "key_id": RAZORPAY_KEY_ID,
+            "selected_products": selected_products,
+            "total_amount": total_amount,
+            "admin_name": f"{admin.first_name} {admin.last_name}",
+            "admin_email": admin.email
+        })
+    
+    return render(request, "payment_app/admin_product_subscription.html", {
+        'current_access': current_access
+    })
 
 def customer_subscription_payment(request):
     """Customer subscription payment page"""
@@ -1083,3 +1145,142 @@ def debug_payment_verification(request):
             })
     
     return JsonResponse({'error': 'Only POST method allowed'}, status=405)
+
+@require_POST
+@csrf_exempt
+def verify_product_subscription_payment(request):
+    """Verify product subscription payment and create individual subscriptions for each product"""
+    try:
+        data = json.loads(request.body)
+        
+        razorpay_payment_id = data.get('razorpay_payment_id')
+        razorpay_order_id = data.get('razorpay_order_id')
+        razorpay_signature = data.get('razorpay_signature')
+        
+        # Get session data
+        session_razorpay_order_id = request.session.get('product_razorpay_order_id')
+        selected_products = request.session.get('product_subscription_products', [])
+        total_amount = request.session.get('product_subscription_amount', 0)
+        admin_id = request.session.get('admin_id')
+        
+        if not all([razorpay_payment_id, razorpay_order_id, razorpay_signature]):
+            return JsonResponse({'success': False, 'message': 'Missing payment parameters'}, status=400)
+        
+        if razorpay_order_id != session_razorpay_order_id:
+            return JsonResponse({'success': False, 'message': 'Invalid order ID'}, status=400)
+        
+        # Verify payment signature
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': razorpay_payment_id,
+            'razorpay_signature': razorpay_signature
+        }
+        
+        client.utility.verify_payment_signature(params_dict)
+        
+        # Get admin instance
+        admin = get_object_or_404(AdminTable, admin_id=admin_id)
+        
+        # Create individual subscriptions for each selected product
+        subscription_end_date = timezone.now().date() + timedelta(days=30)
+        created_subscriptions = []
+        
+        for product in selected_products:
+            subscription_type = f"admin_{product}"  # admin_rice, admin_paddy, admin_pesticide
+            
+            # Check if admin already has active subscription for this product
+            existing_subscription = Subscription.objects.filter(
+                admin_id=admin,
+                subscription_type=subscription_type,
+                subscription_status=1,  # Active
+                end_date__gte=timezone.now().date()
+            ).first()
+            
+            if existing_subscription:
+                # Extend existing subscription
+                existing_subscription.end_date = subscription_end_date
+                existing_subscription.save()
+                created_subscriptions.append(f"Extended {product.title()}")
+            else:
+                # Create new subscription
+                subscription = Subscription.objects.create(
+                    admin_id=admin,
+                    subscription_type=subscription_type,
+                    payment_amount=100,  # ₹100 per product
+                    start_date=timezone.now().date(),
+                    end_date=subscription_end_date,
+                    subscription_status=1  # Active
+                )
+                created_subscriptions.append(f"New {product.title()}")
+        
+        # Create or update general admin subscription for backwards compatibility
+        general_admin_sub = Subscription.objects.filter(
+            admin_id=admin,
+            subscription_type="admin"
+        ).order_by("-end_date").first()
+        
+        if general_admin_sub and general_admin_sub.end_date and general_admin_sub.end_date >= timezone.now().date():
+            # Extend existing general subscription to match the longest product subscription
+            general_admin_sub.end_date = subscription_end_date
+            general_admin_sub.save()
+        else:
+            # Create new general admin subscription
+            Subscription.objects.create(
+                admin_id=admin,
+                subscription_type="admin",
+                payment_amount=total_amount,
+                start_date=timezone.now().date(),
+                end_date=subscription_end_date,
+                subscription_status=1  # Active
+            )
+        
+        # Create payment record
+        try:
+            Payments.objects.create(
+                order=None,  # Not linked to any order
+                amount=total_amount,
+                date=timezone.now().date(),
+                reference=f"product_sub_{admin_id}_{timezone.now().timestamp()}",
+                proof_link=razorpay_payment_id,
+                payment_method="Razorpay",
+            )
+        except Exception as e:
+            print(f"Error creating payment record: {e}")
+        
+        # Create notifications
+        products_list = ", ".join([p.title() for p in selected_products])
+        create_notification(
+            user_type='admin',
+            user_id=admin_id,
+            notification_type='subscription_payment',
+            title='Product Subscriptions Activated',
+            message=f'Your subscriptions for {products_list} have been activated. Total payment: ₹{total_amount}',
+        )
+        
+        # Notification for superadmin
+        create_notification(
+            user_type='superadmin',
+            user_id='1000000',
+            notification_type='admin_payment',
+            title='New Product Subscriptions',
+            message=f'Admin {admin.first_name} {admin.last_name} purchased subscriptions for {products_list}. Amount: ₹{total_amount}',
+        )
+        
+        # Clear session variables
+        for key in ['product_subscription_amount', 'product_subscription_products', 'product_razorpay_order_id']:
+            if key in request.session:
+                del request.session[key]
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Payment successful! Subscriptions created: {", ".join(created_subscriptions)}',
+            'subscriptions': created_subscriptions
+        })
+        
+    except razorpay.errors.SignatureVerificationError:
+        return JsonResponse({'success': False, 'message': 'Payment verification failed: Invalid signature'}, status=400)
+    except AdminTable.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Admin not found'}, status=404)
+    except Exception as e:
+        print(f"Error in verify_product_subscription_payment: {e}")
+        return JsonResponse({'success': False, 'message': f'Payment verification failed: {str(e)}'}, status=500)

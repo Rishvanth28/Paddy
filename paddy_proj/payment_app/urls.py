@@ -20,7 +20,9 @@ urlpatterns = [
     path('approve-cash-payment/<int:request_id>/', views.approve_cash_payment, name='approve_cash_payment'),
     
     # Subscription Payment URLs
-    path('admin-subscription-payment/', views.admin_subscription_payment, name='admin_subscription_payment'),
+    # Removed old admin-subscription-payment - use admin-product-subscription instead
+    path('admin-product-subscription/', views.admin_product_subscription, name='admin_product_subscription'),
+    path('verify-product-subscription-payment/', views.verify_product_subscription_payment, name='verify_product_subscription_payment'),
     path('customer-subscription-payment/', views.customer_subscription_payment, name='customer_subscription_payment'),
     path('admin-payment-success/', views.payment_success, name='payment_success'),
     path('customer-payment-success/', views.customer_payment_success, name='customer_payment_success'),

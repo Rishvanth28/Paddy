@@ -321,11 +321,12 @@ def customers_under_admin(request):
     return render(request, "superadmin_app/customers_list.html" if is_superadmin else "admin_customer_list.html", {"customers": customers})
 
 def view_admin_subscribers(request):
-    admin_subscriptions = Subscription.objects.filter(subscription_type="admin") \
-                                              .select_related('admin_id') \
-                                              .order_by('-start_date')
+    # Include both general admin and product-specific subscriptions
+    admin_subscriptions = Subscription.objects.filter(
+        subscription_type__in=["admin", "admin_rice", "admin_paddy", "admin_pesticide"]
+    ).select_related('admin_id').order_by('-start_date')
     
-     # Add comparable end_date and today's date for frontend comparison
+    # Add comparable end_date and today's date for frontend comparison
     today_date = timezone.now().date().isoformat()
     # Prepare a list with comparable end_date and today's date
     admin_subscriptions = [
