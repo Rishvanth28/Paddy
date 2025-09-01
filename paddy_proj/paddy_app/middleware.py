@@ -30,7 +30,6 @@ class SubscriptionMiddleware(MiddlewareMixin):
         # If user is not logged in (no role or user_id), redirect to login
         # But allow access to Django admin
         if not role or not user_id:
-            if not path.startswith("/admin/"):
                 return redirect("login_app:login")
 
         # Handle admin subscription - check for any active product subscriptions
