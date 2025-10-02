@@ -1,327 +1,689 @@
+{% extends 'admin_app/admin_base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Products - Admin Subscription</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-        .header-bar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px 30px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+<style>
+/* Mobile and Tablet responsive styles consistent with other admin pages */
+.admin-subscription-container {
+    padding-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 3rem;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
 
-        .page-title {
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
+.title-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
 
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 12px 24px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-left: -0.7rem;
+    letter-spacing: 1px;
+    color: #000000;
+    position: relative;
+    text-transform: uppercase;
+    padding-bottom: 0.6rem;
+    text-align: left;
+    line-height: 1.2;
+}
 
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-            text-decoration: none;
-        }
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: #000000;
+    border-radius: 2px;
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
 
-        .subscription-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-        }
+.page-title:hover::after {
+    width: 110%;
+    transform: translateX(-50%);
+}
 
-        .section-title {
-            text-align: center;
-            color: #2d3748;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
+.upgrade-subtitle {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
 
-        .section-subtitle {
-            text-align: center;
-            color: #718096;
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-        }
+/* Large Desktop (1200px+) */
+@media (min-width: 1200px) {
+    .subscription-container {
+        max-width: 1400px;
+        padding: 40px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+}
 
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
+/* Desktop (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .subscription-container {
+        max-width: 1100px;
+        padding: 35px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+    }
+}
 
-        .product-card {
-            background: #f8fafc;
-            border: 3px solid #e2e8f0;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
+/* Large Tablet (768px - 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .header-bar {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+    
+    .subscription-container {
+        max-width: 900px;
+        padding: 25px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .checkout-section {
+        padding: 25px;
+    }
+}
 
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #4299e1, #3182ce);
-            transition: left 0.3s ease;
-        }
+/* Tablet Portrait (481px - 767px) */
+@media (max-width: 767px) and (min-width: 481px) {
+    .header-bar {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        padding-top: 85px !important;
+        text-align: center !important;
+        margin-top: 1rem;
+    }
+    
+    .title-group {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .page-title {
+        font-size: 1.6rem !important;
+        margin-left: 0;
+        text-align: center;
+    }
+    
+    .page-title::after {
+        left: 50%;
+        width: 100px;
+    }
+    
+    .upgrade-subtitle {
+        text-align: center;
+        font-size: 1rem;
+    }
+    
+    .subscription-container {
+        margin: 1rem;
+        padding: 20px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .product-card {
+        padding: 20px;
+    }
+    
+    .product-icon {
+        font-size: 2.5rem;
+    }
+    
+    .product-name {
+        font-size: 1.2rem;
+    }
+    
+    .product-price {
+        font-size: 1.6rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+    }
+    
+    .checkout-section {
+        padding: 20px;
+    }
+    
+    .subscribe-btn {
+        padding: 14px 30px;
+        font-size: 1rem;
+    }
+}
 
-        .product-card:hover::before,
-        .product-card.selected::before {
-            left: 0;
-        }
+/* Mobile Landscape (321px - 480px) */
+@media (max-width: 480px) and (min-width: 321px) {
+    .header-bar {
+        margin: 0;
+        padding: 90px 10px 20px 10px !important;
+        text-align: center !important;
+    }
+    
+    .title-group {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .page-title {
+        font-size: 1.4rem !important;
+        margin-left: 0;
+        text-align: center;
+        letter-spacing: 0.5px;
+    }
+    
+    .page-title::after {
+        width: 60px;
+        height: 3px;
+    }
+    
+    .upgrade-subtitle {
+        font-size: 0.9rem;
+        text-align: center;
+    }
+    
+    .subscription-container {
+        margin: 0.5rem;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .section-title {
+        font-size: 1.6rem !important;
+        margin-bottom: 10px;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr !important;
+        gap: 15px;
+    }
+    
+    .product-card {
+        padding: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .product-icon {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+    }
+    
+    .product-name {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+    
+    .product-description {
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    
+    .product-price {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+    }
+    
+    .product-status {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+    
+    .checkout-section {
+        padding: 18px;
+        margin-top: 30px;
+    }
+    
+    .selected-products h3 {
+        font-size: 1.1rem;
+    }
+    
+    .selected-list {
+        gap: 8px;
+    }
+    
+    .selected-item {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+    
+    .total-price {
+        font-size: 1.8rem;
+    }
+    
+    .total-duration {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    
+    .subscribe-btn {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .no-selection-message {
+        font-size: 0.9rem;
+    }
+}
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-color: #4299e1;
-        }
+/* Small Mobile (up to 320px) */
+@media (max-width: 320px) {
+    .header-bar {
+        margin: 0;
+        padding: 35px 10px 20px 10px !important;
+        text-align: center !important;
+    }
+    
+    .page-title {
+        font-size: 1.2rem !important;
+        letter-spacing: 0.3px;
+    }
+    
+    .page-title::after {
+        width: 50px;
+        height: 2px;
+    }
+    
+    .upgrade-subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .subscription-container {
+        margin: 0.25rem;
+        padding: 12px;
+    }
+    
+    .section-title {
+        font-size: 1.4rem !important;
+    }
+    
+    .section-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .product-card {
+        padding: 15px;
+    }
+    
+    .product-icon {
+        font-size: 2rem;
+    }
+    
+    .product-name {
+        font-size: 1rem;
+    }
+    
+    .product-description {
+        font-size: 0.85rem;
+    }
+    
+    .product-price {
+        font-size: 1.3rem;
+    }
+    
+    .checkout-section {
+        padding: 15px;
+    }
+    
+    .total-price {
+        font-size: 1.6rem;
+    }
+    
+    .subscribe-btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        width: 100%;
+    }
+}
+/* Admin-consistent styling with enhanced responsiveness */
+.subscription-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    box-sizing: border-box;
+}
 
-        .product-card.selected {
-            border-color: #3182ce;
-            background: #ebf8ff;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(49, 130, 206, 0.15);
-        }
+.section-title {
+    text-align: center;
+    color: #2d3748;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-family: 'Inter', sans-serif;
+    text-decoration: none;
+    border-bottom: none;
+    line-height: 1.2;
+}
 
-        .product-card.has-access {
-            border-color: #48bb78;
-            background: #f0fff4;
-        }
+.section-subtitle {
+    text-align: center;
+    color: #718096;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.4;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-        .product-card.has-access::before {
-            background: linear-gradient(90deg, #48bb78, #38a169);
-        }
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+    width: 100%;
+}
 
-        .product-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #4299e1;
-        }
+/* Enhanced touch targets for mobile */
+@media (max-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+}
 
-        .product-card.selected .product-icon,
-        .product-card.has-access .product-icon {
-            color: #3182ce;
-        }
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
 
-        .product-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 10px;
-        }
+.product-card {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
 
-        .product-description {
-            color: #718096;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
+.product-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #000000, #333333);
+    transition: left 0.3s ease;
+}
 
-        .product-price {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #3182ce;
-            margin-bottom: 15px;
-        }
+.product-card:hover::before,
+.product-card.selected::before {
+    left: 0;
+}
 
-        .product-status {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+.product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: #000000;
+}
 
-        .status-active {
-            background: #c6f6d5;
-            color: #276749;
-        }
+.product-card.selected {
+    border-color: #000000;
+    background: #f8f9fa;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
 
-        .status-expired {
-            background: #fed7d7;
-            color: #c53030;
-        }
+.product-card.has-access {
+    border-color: #22c55e;
+    background: #f0fdf4;
+}
 
-        .status-not-subscribed {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
+.product-card.has-access::before {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
 
-        .product-checkbox {
-            display: none;
-        }
+.product-icon {
+    font-size: 2.8rem;
+    margin-bottom: 18px;
+    color: #000000;
+}
 
-        .checkout-section {
-            background: #f7fafc;
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 40px;
-            text-align: center;
-        }
+.product-card.selected .product-icon,
+.product-card.has-access .product-icon {
+    color: #000000;
+}
 
-        .selected-products {
-            margin-bottom: 25px;
-        }
+.product-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 10px;
+    font-family: 'Inter', sans-serif;
+}
 
-        .selected-products h3 {
-            color: #2d3748;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-        }
+.product-description {
+    color: #718096;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
 
-        .selected-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+.product-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 15px;
+    font-family: 'Inter', sans-serif;
+}
 
-        .selected-item {
-            background: #3182ce;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
+.product-status {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
+}
 
-        .total-section {
-            border-top: 2px solid #e2e8f0;
-            padding-top: 25px;
-            margin-top: 25px;
-        }
+.status-active {
+    background: #dcfce7;
+    color: #166534;
+}
 
-        .total-price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 10px;
-        }
+.status-expired {
+    background: #fecaca;
+    color: #dc2626;
+}
 
-        .total-duration {
-            color: #718096;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-        }
+.status-not-subscribed {
+    background: #e2e8f0;
+    color: #4a5568;
+}
 
-        .subscribe-btn {
-            background: linear-gradient(135deg, #4299e1, #3182ce);
-            color: white;
-            border: none;
-            padding: 18px 50px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
-        }
+.product-checkbox {
+    display: none;
+}
 
-        .subscribe-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
-        }
+.checkout-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 40px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
 
-        .subscribe-btn:disabled {
-            background: #a0aec0;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+.selected-products {
+    margin-bottom: 25px;
+}
 
-        .no-selection-message {
-            color: #718096;
-            font-style: italic;
-            margin-bottom: 20px;
-        }
+.selected-products h3 {
+    color: #2d3748;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-family: 'Inter', sans-serif;
+}
 
-        @media (max-width: 768px) {
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-bar {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .page-title {
-                font-size: 1.5rem;
-            }
-            
-            .subscription-container {
-                padding: 20px;
-                margin: 0 10px;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="header-bar">
-        <h1 class="page-title">Product Subscription</h1>
-        <form action="{% url 'login_app:logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </form>
+.selected-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Responsive selected list */
+@media (max-width: 768px) {
+    .selected-list {
+        gap: 8px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .selected-list {
+        gap: 6px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .selected-item {
+        margin-bottom: 5px;
+        width: auto;
+        text-align: center;
+    }
+}
+
+.selected-item {
+    background: #000000;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.total-section {
+    border-top: 2px solid #e2e8f0;
+    padding-top: 25px;
+    margin-top: 25px;
+}
+
+.total-price {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.total-duration {
+    color: #718096;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    font-family: 'Inter', sans-serif;
+}
+
+.subscribe-btn {
+    background: linear-gradient(135deg, #000000, #333333);
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-family: 'Inter', sans-serif;
+}
+
+.subscribe-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.subscribe-btn:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.no-selection-message {
+    color: #718096;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+}
+</style>
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+        <div class="title-group">
+            <h1 class="page-title mb-0 me-3 i18n" ><i class="icon-arrow-up"></i>Product Subscription</h1>
+            <p class="upgrade-subtitle i18n" >Choose your products and manage your subscriptions
+            </p>
+        </div>
     </div>
+<div class="admin-subscription-container">
 
     <div class="subscription-container">
-        <h2 class="section-title">Choose Your Products</h2>
+        <h3 class="section-title" style="text-align:center; ">Choose Your Products</h3>
         <p class="section-subtitle">Select the products you want access to. Each product costs ₹100 per month.</p>
 
         <form id="subscription-form" method="POST">
@@ -466,5 +828,5 @@
         // Initialize
         updateCheckoutSection();
     </script>
-</body>
-</html>
+</div>
+{% endblock content %}
