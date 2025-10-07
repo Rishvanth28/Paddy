@@ -4,6 +4,36 @@
 <head>
     <link rel="stylesheet" href="{% static 'css/superadmin_dashboard.css ' %}">
     <link rel="stylesheet" href="{% static 'css/responsive.css ' %}">
+    <style>
+        /* Responsive styles for .page-title */
+        .page-title {
+            font-size: 2.2rem;
+            margin-bottom: 0;
+        }
+        @media (max-width: 1200px) {
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+        @media (max-width: 992px) {
+            .page-title {
+                font-size: 1.7rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.4rem;
+                margin-bottom: 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            .page-title {
+                margin-top: 70px!important;
+                font-size: 1.1rem;
+                margin-bottom: 6px;
+            }
+        }
+    </style>
 </head>
 
 <div class="superadmin-dashboard-container">

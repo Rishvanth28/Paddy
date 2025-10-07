@@ -139,6 +139,10 @@ body.superadmin-page {
         gap: 0.5rem;
         top: 4.5rem;
     }
+
+    .title-group{
+        margin-top: 50px;
+    }
 }
 
 /* Push page content below the fixed header */
@@ -1632,6 +1636,7 @@ body.superadmin-page {
         padding: 15px 0.8rem;
         flex-direction: column;
         gap: 0.5rem;
+        margin-top: -10px;
     }
     
     .superadmin-dashboard-hero {

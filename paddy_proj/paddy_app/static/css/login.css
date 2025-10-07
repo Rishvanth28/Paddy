@@ -95,9 +95,9 @@ body, html {
   position: relative;
   backdrop-filter: blur(10px);
   height: auto;
-  overflow: hidden; /* Ensure container clips overflow */
+  /* overflow: hidden; Ensure container clips overflow */
   box-sizing: border-box;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
 }
 

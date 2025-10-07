@@ -769,6 +769,7 @@ button:hover {
     margin-top: 0;
     padding: 15px;
     max-height: 90vh;
+    overflow: scroll;
   }
   
   /* Super compact elements for landscape */
