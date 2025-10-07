@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const hamburger = document.getElementById('hamburger');
   const mainContent = document.getElementById('main-content');
   const body = document.body;
+  const sidebarClose = document.getElementById('sidebar-close');
     // Enhanced sidebar toggle functionality with smooth animations
   function toggleSidebar() {
     // Use requestAnimationFrame for smoother animations
@@ -39,6 +40,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     hamburger.addEventListener('click', toggleSidebar);
+    
+    // Add event listener for sidebar close button
+    if (document.getElementById('sidebar-close')) {
+      document.getElementById('sidebar-close').addEventListener('click', toggleSidebar);
+    }
+    
+    // Add event listener for sidebar close button
+    if (sidebarClose) {
+      sidebarClose.addEventListener('click', toggleSidebar);
+    }
       // Optimized click outside to close with debouncing
     let clickTimeout;
     document.addEventListener('click', function(e) {
