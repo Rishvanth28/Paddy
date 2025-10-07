@@ -18,6 +18,52 @@
             transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
         }
         
+        /* Fix: Allow hamburger button animations to work */
+        .hamburger, .hamburger *, .hamburger-line {
+            animation: unset !important;
+            transition: all 0.3s ease !important;
+            transform: unset !important;
+        }
+        
+        .hamburger.active .hamburger-line:nth-child(1) {
+            transform: translateY(8px) rotate(45deg) !important;
+        }
+        
+        .hamburger.active .hamburger-line:nth-child(2) {
+            opacity: 0 !important;
+            transition: opacity 0.3s ease !important;
+        }
+        
+        .hamburger.active .hamburger-line:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg) !important;
+        }
+        
+        @media (max-width: 1024px) {
+            .hamburger.active .hamburger-line:nth-child(3) {
+                transform: translateY(-13px) rotate(-45deg) !important;
+            }
+        }
+        
+        /* Allow sidebar transitions */
+        .sidebar, #sidebar {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            transform: translateX(0) !important;
+        }
+        
+        .sidebar.open, #sidebar.open {
+            transform: translateX(0) !important;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar, #sidebar {
+                transform: translateX(-100%) !important;
+            }
+            
+            .sidebar.open, #sidebar.open {
+                transform: translateX(0) !important;
+            }
+        }
+        
         @media (max-width:768px) {
             .form-container {
                 padding: 10px;
