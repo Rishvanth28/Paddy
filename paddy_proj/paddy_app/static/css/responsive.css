@@ -2255,12 +2255,12 @@ button,
   margin-left: -1.5rem !important;
 }
 
-/* Ensure underlines for page titles are always left-aligned */
-.main-content h1::after,
-.main-content h2::after,
-.main-content .page-title::after,
-.page-title-underline,
-.title-underline {
+/* Ensure underlines for page titles are always left-aligned (excluding payment invoice) */
+.main-content h1:not(.invoice-container h1):not(.invoice-container h2)::after,
+.main-content h2:not(.invoice-container h1):not(.invoice-container h2)::after,
+.main-content .page-title:not(.invoice-container .page-title)::after,
+.page-title-underline:not(.invoice-container .page-title-underline),
+.title-underline:not(.invoice-container .title-underline) {
   content: '';
   display: block;
   width: 60px;
@@ -2268,6 +2268,14 @@ button,
   background-color: var(--primary-color, #333);
   /* margin: 8px 0 0 0 !important; */
   border-radius: 2px;
+}
+
+/* Prevent underlines in payment invoice page */
+.invoice-container h1::after,
+.invoice-container h2::after,
+.invoice-container .page-title::after {
+  content: none !important;
+  display: none !important;
 }
 
 /* Header sections spacing */

@@ -1,10 +1,12 @@
 {% extends 'customer_app/customer_base.html' %}
 {% load static %}
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
     * {
         box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     /* Print-specific styles */
@@ -149,17 +151,19 @@
         padding: 1rem;
         min-height: 100vh;
         background-color: #ffffff;
+        font-family: 'Inter', sans-serif;
     }
     
     .invoice-container {
         font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin-bottom: 2rem;
         padding: 2rem;
-        border-radius: 8px;
+        border-radius: 12px;
         background: #ffffff;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         color: #000000;
         position: relative;
+        border: 1px solid #e2e8f0;
     }
     
     /* Header Styles */
@@ -207,11 +211,11 @@
     }
     
     .print-button {
-        position: fixed;
-        top: 100px;
-        right: 20px;
+        position: absolute;
+        top: 0rem;
+        right: 1rem;
         padding: 0.75rem 1.5rem;
-        background: #000000;
+        background: linear-gradient(135deg, #000000, #333333);
         color: white;
         border: none;
         border-radius: 8px;
@@ -219,14 +223,16 @@
         font-weight: 600;
         font-size: 0.9rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         z-index: 1000;
+        font-family: 'Inter', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .print-button:hover {
-        background: #333333;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     }
     
     /* Payment Terms */
@@ -243,8 +249,8 @@
     .table-container {
         overflow-x: auto;
         margin-bottom: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
     
     .invoice-table {
@@ -253,13 +259,14 @@
         font-weight: 500;
         color: #000000;
         background: white;
-        border-radius: 8px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        font-family: 'Inter', sans-serif;
     }
     
     .invoice-table th {
-        background: #000000;
+        background: linear-gradient(135deg, #000000, #333333);
         color: white;
         padding: 1rem 0.75rem;
         text-align: left;
@@ -271,24 +278,24 @@
     
     .invoice-table td {
         padding: 0.875rem 0.75rem;
-        border-bottom: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e2e8f0;
         transition: background-color 0.2s ease;
     }
     
     .invoice-table tbody tr:hover {
-        background-color: #f8f8f8;
+        background-color: #f8f9fa;
     }
     
     .invoice-table td em {
         font-size: 0.8rem;
-        color: #666666;
+        color: #718096;
         font-style: italic;
     }
     
     .invoice-table tfoot td {
         font-weight: 700;
         border-top: 2px solid #000000;
-        background-color: #f8f8f8;
+        background-color: #f8f9fa;
         font-size: 1.05rem;
     }
     
@@ -302,17 +309,18 @@
     }
     
     .amount-in-words {
-        background: #f8f8f8;
+        background: #f8f9fa;
         padding: 1.5rem;
-        border-radius: 8px;
+        border-radius: 12px;
         font-weight: 600;
         margin-bottom: 2rem;
         border-left: 4px solid #000000;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        font-family: 'Inter', sans-serif;
     }
     
     .amount-in-words p:first-child {
-        color: #666666;
+        color: #718096;
         margin-bottom: 0.5rem;
         font-size: 0.9rem;
         text-transform: uppercase;
@@ -357,21 +365,26 @@
     /* Payment Section */
     .payment-section {
         margin-top: 1rem;
-        padding: 1rem;
+        padding: 2rem;
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         color: #000000;
         position: relative;
+        border: 1px solid #e2e8f0;
+        font-family: 'Inter', sans-serif;
     }
     
     .payment-section h2 {
         font-weight: 700;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         color: #000000;
-        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+        font-size: clamp(1.3rem, 2.5vw, 1.6rem);
         text-align: center;
         padding-top: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-family: 'Inter', sans-serif;
     }
     
     .payment-details {
@@ -383,10 +396,11 @@
     }
     
     .payment-info, .payment-summary {
-        background: #f8f8f8;
-        padding: 1rem;
-        border-radius: 6px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        background: #f8f9fa;
+        padding: 1.25rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        font-family: 'Inter', sans-serif;
     }
     
     .payment-info h3, .payment-summary h3 {
@@ -395,6 +409,7 @@
         font-size: 0.95rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        font-weight: 700;
     }
     
     .payment-info p, .payment-summary p {
@@ -443,9 +458,10 @@
     /* Payment Form */
     .payment-form {
         background: #ffffff;
-        padding: 1rem;
-        border-radius: 6px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        font-family: 'Inter', sans-serif;
     }
     
     .form-group {
@@ -458,31 +474,33 @@
         margin-bottom: 0.5rem;
         color: #000000;
         font-size: 0.9rem;
+        font-family: 'Inter', sans-serif;
     }
     
     .form-group input {
         width: 100%;
         padding: 0.75rem;
-        border-radius: 6px;
-        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
         font-size: 0.9rem;
         transition: all 0.3s ease;
         background: white;
         color: #000000;
+        font-family: 'Inter', sans-serif;
     }
     
     .form-group input:focus {
         outline: none;
         border-color: #000000;
-        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
     
     .pay-button {
         width: 100%;
         padding: 0.875rem;
-        background: #000000;
+        background: linear-gradient(135deg, #000000, #333333);
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         color: white;
         font-weight: 700;
         font-size: 0.95rem;
@@ -490,11 +508,13 @@
         transition: all 0.3s ease;
         text-transform: uppercase;
         letter-spacing: 1px;
+        font-family: 'Inter', sans-serif;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
     
     .pay-button:hover {
-        background: #333333;
         transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     }
     
     .pay-button:active {
@@ -552,7 +572,7 @@
     .payment-method input[type="radio"]:checked + label {
         border-color: #000000;
         background: #f0f0f0;
-        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
     
     .payment-method .method-desc {
@@ -594,20 +614,21 @@
     #payment-notes {
         width: 100%;
         padding: 0.75rem;
-        border-radius: 6px;
-        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
         font-size: 0.9rem;
         transition: all 0.3s ease;
         background: white;
         color: #000000;
         min-height: 80px;
         resize: vertical;
+        font-family: 'Inter', sans-serif;
     }
     
     #payment-notes:focus {
         outline: none;
         border-color: #000000;
-        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
     
     /* Pending Cash Request */
@@ -829,12 +850,16 @@
     .mt-0 {
         margin-top: 0 !important;
     }
+
+    .invoice-center{
+        content: none !important;
+    }
 </style>
 
 <div class="main-container">
-    <div class="invoice-container">
-        <button class="print-button" onclick="printInvoice()">
-            <i class="fas fa-print"></i> Print Invoice
+    <div class="invoice-container" >
+        <button class="print-button" style="margin-top: 120px; " onclick="printInvoice()">
+            <i class="fas fa-print" ></i> Print Invoice
         </button>
         
         <div class="invoice-header">
@@ -842,9 +867,9 @@
                 <p class="nowrap"><strong>Invoice No:</strong> {{ invoice_number }}</p>
                 <p><strong>Ref. No:</strong> -</p>
             </div>
-            <div class="invoice-center">
+            <div class="invoice-center" >
                 <h2>{{ business_year }} {{ order_name }} Sales</h2>
-                <h1>INVOICE</h1>
+                <h2>INVOICE</h2>
                 <div class="customer-address">
                     <strong>Party:</strong> {{ customer.first_name }} {{ customer.last_name }}<br>
                     {% if customer.address %}{{ customer.address }}{% endif %}
