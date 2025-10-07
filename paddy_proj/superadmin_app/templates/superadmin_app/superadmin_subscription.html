@@ -120,10 +120,10 @@
                     <thead>
                         <tr>
                             <th>Admin</th>
-                            <th>Type</th>
+                            <!-- <th>Type</th> -->
                             <th>Additional Users</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <!-- <th>Actions</th> -->
                         </tr>
                         <!-- Filter Row -->
                         <tr class="filter-row">
@@ -150,15 +150,7 @@
                             <td>
                                 <p class="cell-text">{{ subscription.admin_id.first_name}} {{subscription.admin_id.last_name }}</p>
                             </td>
-                            <td>
-                                <p class="cell-text">
-                                    {% if subscription.subscription_type == '1' %}
-                                        User Upgrade
-                                    {% else %}
-                                        {{ subscription.subscription_type }}
-                                    {% endif %}
-                                </p>
-                            </td>
+ 
                             <td>
                                 <p class="cell-text">{{ subscription.additional_users|default:"50" }}</p>
                             </td>
@@ -167,15 +159,7 @@
                                     {{ subscription.status_label }}
                                 </span>
                             </td>
-                            <td>
-                                {% if subscription.subscription_status == 0 %}
-                                <button type="button" class="btn btn-sm btn-primary" onclick="openModal('approveModal{{ subscription.sid }}')">
-                                    Review
-                                </button>
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
+
                         </tr>
 
                         <!-- Approval Modal -->

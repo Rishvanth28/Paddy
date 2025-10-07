@@ -1,231 +1,353 @@
+{% extends 'admin_app/admin_base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Payment - Product Subscription</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-        .header-bar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px 30px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+<style>
+/* Admin-consistent styling with enhanced responsiveness */
+.admin-payment-container {
+    padding-top: 20px;
+    position: relative;
+    z-index: 1;
+}
 
-        .page-title {
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 3rem;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
 
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 12px 24px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
+.title-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
 
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-            text-decoration: none;
-        }
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-left: -0.7rem;
+    letter-spacing: 1px;
+    color: #000000;
+    position: relative;
+    text-transform: uppercase;
+    padding-bottom: 0.6rem;
+    text-align: left;
+    line-height: 1.2;
+}
 
-        .payment-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-        }
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: #000000;
+    border-radius: 2px;
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
 
-        .payment-title {
-            text-align: center;
-            color: #2d3748;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
+.page-title:hover::after {
+    width: 110%;
+    transform: translateX(-50%);
+}
 
-        .order-summary {
-            background: #f8fafc;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
+.payment-subtitle {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
 
-        .summary-title {
-            color: #2d3748;
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+/* Responsive breakpoints matching admin_product_subscription */
+@media (max-width: 991px) and (min-width: 768px) {
+    .header-bar {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+    
+    .payment-container {
+        max-width: 900px;
+        padding: 25px;
+    }
+}
 
-        .product-list {
-            margin-bottom: 20px;
-        }
+@media (max-width: 767px) and (min-width: 481px) {
+    .header-bar {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        padding-top: 85px !important;
+        text-align: center !important;
+        margin-top: 1rem;
+    }
+    
+    .title-group {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .page-title {
+        font-size: 1.6rem !important;
+        margin-left: 0;
+        text-align: center;
+    }
+    
+    .page-title::after {
+        left: 50%;
+        width: 100px;
+    }
+    
+    .payment-subtitle {
+        text-align: center;
+        font-size: 1rem;
+    }
+    
+    .payment-container {
+        margin: 1rem;
+        padding: 20px;
+    }
+}
 
-        .product-item {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
+@media (max-width: 480px) and (min-width: 321px) {
+    .header-bar {
+        margin: 0;
+        padding: 90px 10px 20px 10px !important;
+        text-align: center !important;
+    }
+    
+    .title-group {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .page-title {
+        font-size: 1.4rem !important;
+        margin-left: 0;
+        text-align: center;
+        letter-spacing: 0.5px;
+    }
+    
+    .page-title::after {
+        width: 60px;
+        height: 3px;
+    }
+    
+    .payment-subtitle {
+        font-size: 0.9rem;
+        text-align: center;
+    }
+    
+    .payment-container {
+        margin: 0.5rem;
+        padding: 15px;
+        border-radius: 8px;
+    }
+}
 
-        .product-item:last-child {
-            border-bottom: none;
-        }
+@media (max-width: 320px) {
+    .header-bar {
+        margin: 0;
+        padding: 35px 10px 20px 10px !important;
+        text-align: center !important;
+    }
+    
+    .page-title {
+        font-size: 1.2rem !important;
+        letter-spacing: 0.3px;
+    }
+    
+    .page-title::after {
+        width: 50px;
+        height: 2px;
+    }
+    
+    .payment-subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .payment-container {
+        margin: 0.25rem;
+        padding: 12px;
+    }
+}
 
-        .product-name {
-            color: #4a5568;
-            font-weight: 600;
-        }
+.payment-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    font-family: 'Inter', sans-serif;
+}
 
-        .product-price {
-            color: #3182ce;
-            font-weight: 600;
-        }
+.payment-title {
+    text-align: center;
+    color: #2d3748;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    font-family: 'Inter', sans-serif;
+}
 
-        .total-section {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            border: 2px solid #e2e8f0;
-        }
+.order-summary {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+}
 
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+.summary-title {
+    color: #2d3748;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+}
 
-        .total-row:last-child {
-            margin-bottom: 0;
-            padding-top: 15px;
-            border-top: 2px solid #e2e8f0;
-        }
+.product-list {
+    margin-bottom: 20px;
+}
 
-        .total-label {
-            color: #4a5568;
-            font-weight: 600;
-        }
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e2e8f0;
+    font-family: 'Inter', sans-serif;
+}
 
-        .total-amount {
-            color: #2d3748;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
+.product-item:last-child {
+    border-bottom: none;
+}
 
-        .final-total {
-            color: #3182ce;
-            font-weight: 700;
-            font-size: 1.8rem;
-        }
+.product-name {
+    color: #4a5568;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        .payment-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #4299e1, #3182ce);
-            color: white;
-            border: none;
-            padding: 20px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 30px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.3);
-        }
+.product-price {
+    color: #000000;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+}
 
-        .payment-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
-        }
+.total-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    border: 2px solid #e2e8f0;
+}
 
-        .payment-info {
-            text-align: center;
-            margin-top: 20px;
-            color: #718096;
-            font-size: 0.9rem;
-        }
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-family: 'Inter', sans-serif;
+}
 
-        .secure-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #48bb78;
-            font-weight: 600;
-            margin-top: 15px;
-        }
+.total-row:last-child {
+    margin-bottom: 0;
+    padding-top: 15px;
+    border-top: 2px solid #e2e8f0;
+}
 
-        @media (max-width: 768px) {
-            .header-bar {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .page-title {
-                font-size: 1.5rem;
-            }
-            
-            .payment-container {
-                padding: 20px;
-                margin: 0 10px;
-            }
-            
-            .payment-title {
-                font-size: 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="header-bar">
-        <h1 class="page-title">Complete Payment</h1>
-        <form action="{% url 'login_app:logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </form>
+.total-label {
+    color: #4a5568;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.total-amount {
+    color: #2d3748;
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.final-total {
+    color: #000000;
+    font-weight: 700;
+    font-size: 1.8rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.payment-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #000000, #333333);
+    color: white;
+    border: none;
+    padding: 18px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-family: 'Inter', sans-serif;
+}
+
+.payment-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.payment-info {
+    text-align: center;
+    margin-top: 20px;
+    color: #718096;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.secure-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #22c55e;
+    font-weight: 600;
+    margin-top: 15px;
+    font-family: 'Inter', sans-serif;
+}
+</style>
+
+<div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <div class="title-group">
+        <h1 class="page-title mb-0 me-3"><i class="fas fa-credit-card"></i> Complete Payment</h1>
+        <p class="payment-subtitle">Review your order and complete the payment process</p>
     </div>
+</div>
 
+<div class="admin-payment-container">
     <div class="payment-container">
-        <h2 class="payment-title">Order Summary</h2>
+        <h3 class="payment-title">Order Summary</h3>
 
         <div class="order-summary">
             <h3 class="summary-title">
@@ -240,7 +362,7 @@
                         {% if product == 'rice' %}
                             <i class="fas fa-seedling"></i> Rice Orders Access
                         {% elif product == 'paddy' %}
-                            <i class="fas fa-wheat"></i> Paddy Orders Access
+                            <i class="fas fa-leaf"></i> Paddy Orders Access
                         {% elif product == 'pesticide' %}
                             <i class="fas fa-flask"></i> Pesticide Orders Access
                         {% endif %}
@@ -267,7 +389,7 @@
         </div>
 
         <button type="button" id="pay-btn" class="payment-btn">
-            <i class="fas fa-credit-card"></i> Pay ₹{{ total_amount }} Now
+            <i class="fas fa-lock"></i> Pay ₹{{ total_amount }} Now
         </button>
 
         <div class="payment-info">
@@ -278,66 +400,67 @@
             <p>Your payment information is encrypted and secure</p>
         </div>
     </div>
+</div>
 
-    <script>
-        document.getElementById('pay-btn').addEventListener('click', function() {
-            const options = {
-                key: '{{ key_id }}',
-                amount: {{ amount }},
-                currency: 'INR',
-                name: 'Paddy Management System',
-                description: 'Product Subscription - {{ selected_products|join:", "|title }}',
-                order_id: '{{ order_id }}',
-                handler: function (response) {
-                    // Send payment details to backend for verification
-                    fetch("{% url 'payment_app:verify_product_subscription_payment' %}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: JSON.stringify({
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_signature: response.razorpay_signature
-                        })
+<script>
+    document.getElementById('pay-btn').addEventListener('click', function() {
+        const options = {
+            key: '{{ key_id }}',
+            amount: {{ amount }},
+            currency: 'INR',
+            name: 'Paddy Management System',
+            description: 'Product Subscription - {{ selected_products|join:", "|title }}',
+            order_id: '{{ order_id }}',
+            handler: function (response) {
+                // Send payment details to backend for verification
+                fetch("{% url 'payment_app:verify_product_subscription_payment' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Payment successful! You now have access to the selected products.');
-                            window.location.href = "{% url 'admin_app:admin_dashboard' %}";
-                        } else {
-                            alert('Payment verification failed. Please contact support if amount was deducted.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Payment verification failed. Please contact support.');
-                    });
-                },
-                theme: { 
-                    color: '#3182ce' 
-                },
-                modal: {
-                    backdropClose: false,
-                    escape: false,
-                    animation: true
-                },
-                prefill: {
-                    name: "{{ admin_name }}",
-                    email: "{{ admin_email }}"
-                }
-            };
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Payment successful! You now have access to the selected products.');
+                        window.location.href = "{% url 'admin_app:admin_dashboard' %}";
+                    } else {
+                        alert('Payment verification failed. Please contact support if amount was deducted.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Payment verification failed. Please contact support.');
+                });
+            },
+            theme: { 
+                color: '#000000' 
+            },
+            modal: {
+                backdropClose: false,
+                escape: false,
+                animation: true
+            },
+            prefill: {
+                name: "{{ admin_name }}",
+                email: "{{ admin_email }}"
+            }
+        };
 
-            const rzp = new Razorpay(options);
-            
-            rzp.on('payment.failed', function (response) {
-                alert('Payment failed: ' + response.error.description);
-            });
-            
-            rzp.open();
+        const rzp = new Razorpay(options);
+        
+        rzp.on('payment.failed', function (response) {
+            alert('Payment failed: ' + response.error.description);
         });
-    </script>
-</body>
-</html>
+        
+        rzp.open();
+    });
+</script>
+
+{% endblock content %}
