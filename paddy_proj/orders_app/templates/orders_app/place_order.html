@@ -327,9 +327,9 @@
                 <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10">
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
-                <div class="items-section">
-                    <h3>Order Items</h3>
-                    <table id="pesticide-items-table" class="items-table">
+                <h3>Order Items</h3>
+                <div class="items-section" style="overflow-x: auto; width: 100%;">
+                    <table id="pesticide-items-table" class="items-table" style="min-width: 100%; width: max-content;">
                         <thead>
                             <tr>
                                 <th>Product Name</th>
@@ -364,11 +364,11 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <div class="form-row" style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
-                        <button type="button" id="pesticide-add-item-btn" class="add-item-btn" onclick="addPesticideRow()">+ Add Item</button>
-                        <!-- <button type="button" id="pesticide-save-btn" class="submit-btn" style="background:#2196F3;" onclick="savePesticideOrderDraft()" disabled>Save Order</button> -->
-                        <button type="submit" id="pesticide-submit-btn" class="submit-btn">Place Pesticide Order</button>
-                    </div>
+                </div>
+                <div class="form-row" style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
+                    <button type="button" id="pesticide-add-item-btn" class="add-item-btn" onclick="addPesticideRow()">+ Add Item</button>
+                    <!-- <button type="button" id="pesticide-save-btn" class="submit-btn" style="background:#2196F3;" onclick="savePesticideOrderDraft()" disabled>Save Order</button> -->
+                    <button type="submit" id="pesticide-submit-btn" class="submit-btn">Place Pesticide Order</button>
                 </div>
             </form>
         </div>
