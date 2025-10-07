@@ -2,105 +2,615 @@
 {% load static %}
 
 {% block content %}
-<!-- Include our custom CSS directly in the content block -->
-<link rel="stylesheet" href="{% static 'css/superadmin_subscription.css' %}">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-        <style>
-            body { 
-                font-family: 'Inter', sans-serif; 
-                }
-        </style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-            <style>
-                /* Responsive Styles */
-                @media (max-width: 768px) {
-                    .header-bar {
-                        padding: 0 20px;
-                        margin-bottom: 20px;
-                    }
+<style>
+    * {
+        font-family: 'Inter', sans-serif;
+    }
 
-                    .page-title {
-                        font-size: 1.5rem;
-                        text-align: center;
-                    }
+    body {
+        background-color: #ffffff;
+    }
 
-                    .page-container {
-                        padding: 0 20px;
-                    }
+    /* Header Section */
+    .header-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-left: 0.5rem;
+        margin-top: -1rem;
+        margin-bottom: 2rem;
+    }
 
-                    .main-card {
-                        margin: 0;
-                        border-radius: 8px;
-                    }
+    .title-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-top: 70px;
+    }
 
-                    .card-header {
-                        padding: 20px;
-                        text-align: center;
-                    }
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: 1px;
+        color: #000000;
+        position: relative;
+        text-transform: uppercase;
+        padding-bottom: 0.6rem;
+        text-align: left;
+        line-height: 1.2;
+        font-family: 'Inter', sans-serif;
+    }
 
-                    .card-header h4 {
-                        font-size: 1.3rem;
-                    }
+    .page-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: #000000;
+        border-radius: 2px;
+        transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
 
-                    .card-body {
-                        padding: 20px;
-                    }
+    .page-title:hover::after {
+        width: 110%;
+        transform: translateX(-50%);
+    }
 
-                    .table-responsive {
-                        overflow-x: auto;
-                        -webkit-overflow-scrolling: touch;
-                    }
+    /* Page Container */
+    .page-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem 2rem;
+    }
 
-                    .table {
-                        min-width: 600px;
-                        font-size: 0.9rem;
-                    }
+    /* Main Card */
+    .main-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        border: 1px solid #e2e8f0;
+    }
 
-                    .table th,
-                    .table td {
-                        padding: 8px;
-                        white-space: nowrap;
-                    }
+    .card-header {
+        background: linear-gradient(135deg, #000000, #333333);
+        color: white;
+        padding: 2rem;
+        border-bottom: none;
+    }
 
-                    .btn {
-                        font-size: 0.8rem;
-                        padding: 6px 12px;
-                    }
-                }
+    .card-header h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        font-family: 'Inter', sans-serif;
+    }
 
-                @media (max-width: 480px) {
-                    .header-bar {
-                        padding: 0 15px;
-                    }
+    .card-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+        font-family: 'Inter', sans-serif;
+    }
 
-                    .page-title {
-                        font-size: 1.3rem;
-                    }
+    .card-body {
+        padding: 0;
+    }
 
-                    .page-container {
-                        padding: 0 15px;
-                    }
+    /* Table Container */
+    .table-container {
+        overflow-x: auto;
+    }
 
-                    .card-header {
-                        padding: 15px;
-                    }
+    /* Table Styles */
+    .subscription-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Inter', sans-serif;
+    }
 
-                    .card-body {
-                        padding: 15px;
-                    }
+    .subscription-table thead tr:first-child {
+        background: linear-gradient(135deg, #000000, #333333);
+        color: white;
+    }
 
-                    .table {
-                        font-size: 0.8rem;
-                    }
+    .subscription-table th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: white;
+    }
 
-                    .table th,
-                    .table td {
-                        padding: 6px;
-                    }
+    .subscription-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
 
+    .subscription-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
 
-                }
-            </style>
+    .cell-text {
+        margin: 0;
+        color: #2d3748;
+        font-weight: 500;
+    }
+
+    /* Filter Row */
+    .filter-row {
+        background-color: #f8f9fa !important;
+    }
+
+    .filter-row td {
+        padding: 1rem !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+    }
+
+    .table-filter {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .filter-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .form-select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+        color: #2d3748;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .form-select:focus {
+        outline: none;
+        border-color: #000000;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Status Badges */
+    .status-badge {
+        display: inline-block;
+        padding: 0.375rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+        background-color: #fff3e0;
+        color: #e65100;
+    }
+
+    .status-approved {
+        background-color: #e3f2fd;
+        color: #1565c0;
+    }
+
+    .status-active {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .status-unknown {
+        background-color: #f5f5f5;
+        color: #757575;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #000000, #333333);
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e0;
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.875rem;
+        font-size: 0.85rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #718096;
+    }
+
+    .empty-state p {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1050;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-overlay.show {
+        display: flex;
+    }
+
+    .modal-dialog {
+        background: white;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .modal-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, #000000, #333333);
+        color: white;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .modal-title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: white;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: background 0.3s ease;
+    }
+
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .request-details {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #000000;
+    }
+
+    .request-details h6 {
+        margin: 0 0 0.75rem 0;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .request-details p {
+        margin: 0.5rem 0;
+        color: #2d3748;
+        font-size: 0.9rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #000000;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-text {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.85rem;
+        color: #718096;
+    }
+
+    .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+    }
+
+    /* Pagination */
+    .pagination-section {
+        margin-top: 2rem;
+    }
+
+    .pagination-nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 0.5rem;
+    }
+
+    .pagination-item {
+        display: inline-block;
+    }
+
+    .pagination-link {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        color: #2d3748;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .pagination-link:hover {
+        background: #f8f9fa;
+        border-color: #000000;
+    }
+
+    .pagination-item.active .pagination-link {
+        background: linear-gradient(135deg, #000000, #333333);
+        color: white;
+        border-color: #000000;
+    }
+
+    .pagination-item.disabled .pagination-link {
+        color: #cbd5e0;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 991px) {
+        .header-bar {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+
+        .page-container {
+            padding: 0 1rem 2rem;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .header-bar {
+            padding-top: 85px !important;
+            text-align: center !important;
+            margin-top: 1rem;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .title-group {
+            align-items: center;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 1.6rem !important;
+            text-align: center;
+        }
+
+        .page-title::after {
+            left: 50%;
+            width: 100px;
+        }
+
+        .page-container {
+            padding: 0 0.5rem 1rem;
+        }
+
+        .main-card {
+            border-radius: 8px;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .card-header h4 {
+            font-size: 1.3rem;
+        }
+
+        .subscription-table {
+            font-size: 0.85rem;
+        }
+
+        .subscription-table th,
+        .subscription-table td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .filter-controls {
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .form-select,
+        .btn {
+            width: 100%;
+        }
+
+        .modal-dialog {
+            width: 95%;
+            margin: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .header-bar {
+            padding: 90px 10px 20px 10px !important;
+        }
+
+        .page-title {
+            font-size: 1.4rem !important;
+            letter-spacing: 0.5px;
+        }
+
+        .page-title::after {
+            width: 60px;
+            height: 3px;
+        }
+
+        .card-header {
+            padding: 1rem;
+        }
+
+        .card-header h4 {
+            font-size: 1.1rem;
+        }
+
+        .card-header p {
+            font-size: 0.85rem;
+        }
+
+        .subscription-table {
+            font-size: 0.8rem;
+        }
+
+        .subscription-table th,
+        .subscription-table td {
+            padding: 0.5rem 0.375rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .header-bar {
+            padding: 35px 10px 20px 10px !important;
+        }
+
+        .page-title {
+            font-size: 1.2rem !important;
+            letter-spacing: 0.3px;
+        }
+
+        .page-title::after {
+            width: 50px;
+            height: 2px;
+        }
+
+        .subscription-table {
+            font-size: 0.75rem;
+        }
+    }
+</style>
 
 <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
     <div class="title-group">
@@ -123,7 +633,7 @@
                             <!-- <th>Type</th> -->
                             <th>Additional Users</th>
                             <th>Status</th>
-                            <!-- <th>Actions</th> -->
+                            <th>Actions</th>
                         </tr>
                         <!-- Filter Row -->
                         <tr class="filter-row">
@@ -158,6 +668,15 @@
                                 <span class="status-badge {% if subscription.status_label == 'Pending' %}status-pending{% elif subscription.status_label == 'Approved' %}status-approved{% elif subscription.status_label == 'Active' %}status-active{% else %}status-unknown{% endif %}">
                                     {{ subscription.status_label }}
                                 </span>
+                            </td>
+                            <td>
+                                {% if subscription.subscription_status == 0 %}
+                                <button type="button" class="btn btn-sm btn-primary" onclick="openModal('approveModal{{ subscription.sid }}')">
+                                    Review
+                                </button>
+                                {% else %}
+                                    -
+                                {% endif %}
                             </td>
 
                         </tr>
