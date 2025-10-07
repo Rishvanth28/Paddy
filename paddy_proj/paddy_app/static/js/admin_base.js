@@ -34,6 +34,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     hamburger.addEventListener('click', toggleSidebar);
     
+    // Add event listener for sidebar close button
+    const sidebarClose = document.getElementById('sidebar-close');
+    if (sidebarClose) {
+      sidebarClose.addEventListener('click', toggleSidebar);
+    }
+    
     // Simplified click outside to close - only on mobile and doesn't use overlay
     document.addEventListener('click', function(e) {
       if (

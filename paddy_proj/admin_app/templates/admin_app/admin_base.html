@@ -575,6 +575,27 @@
     }
   }
 
+  /* Sidebar close button styles */
+  .sidebar-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    display: none;
+    z-index: 100;
+  }
+  
+  @media (max-width: 1024px) {
+    .sidebar-close {
+      display: block;
+    }
+  }
+  
   /* ========== LANDSCAPE ORIENTATION ADJUSTMENTS ========== */
   @media (max-height: 600px) and (orientation: landscape) {
     .toast-container {
@@ -653,6 +674,9 @@
         <div style="font-size: 40px !important; color: #000000 !important; font-weight: bold !important; font-family: Arial, sans-serif !important; width: 40px !important; height: 40px !important; display: flex !important; align-items: center !important; justify-content: center !important; background-color: #f0f0f0 !important; border-radius: 50% !important; border: 2px solid #000000 !important;">⚙</div>
       </a>
       <h1 class="sidebar-title">Admin</h1>
+      <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+        <i class="bi bi-x-lg"></i>
+      </button>
     </div>
 
     <!-- Navigation -->
@@ -769,6 +793,22 @@
   </main>
    <script src="{% static 'js/admin_base.js' %}"></script>
     <script>
+    // Add direct event listener for the close button to ensure it works
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebarCloseButton = document.getElementById('sidebar-close');
+      if (sidebarCloseButton) {
+        sidebarCloseButton.addEventListener('click', function() {
+          const sidebar = document.getElementById('sidebar');
+          const hamburger = document.getElementById('hamburger');
+          const body = document.body;
+          
+          sidebar.classList.remove('open');
+          hamburger.classList.remove('active');
+          body.classList.remove('sidebar-open');
+        });
+      }
+    });
+    
     // Handle notifications indicator
     document.addEventListener('DOMContentLoaded', function() {
       {% if unread_count > 0 %}
