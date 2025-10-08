@@ -159,7 +159,3 @@ CSRF_TRUSTED_ORIGINS = [
 LOGIN_URL = 'login_app:login'  # Redirect to login app
 LOGIN_REDIRECT_URL = '/'  # Where to go after login (home page will handle routing)
 LOGOUT_REDIRECT_URL = 'login_app:login'  # Where to go after logout
-
-# Razorpay Settings
-RAZORPAY_KEY_ID = "rzp_test_zOexMQY9CNEGzd"
-RAZORPAY_SECRET = "Gmtv3UfGPIavIeneKQjkZTcu"

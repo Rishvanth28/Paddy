@@ -870,6 +870,32 @@
         sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
       }
     });
+
+    // ========== HAMBURGER SCROLL VISIBILITY FUNCTIONALITY ==========
+    let lastScrollTop = 0;
+    const scrollThreshold = 100; // Hide hamburger after scrolling 100px down
+
+    window.addEventListener('scroll', function() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (window.innerWidth <= 1024) { // Only apply on mobile/tablet
+        if (scrollTop > scrollThreshold) {
+          // Scrolling down past threshold - hide hamburger
+          hamburger.style.opacity = '0';
+          hamburger.style.visibility = 'hidden';
+          hamburger.style.pointerEvents = 'none';
+          hamburger.style.transform = 'scale(0.8) translateY(-10px)';
+        } else {
+          // At top or scrolling back up - show hamburger
+          hamburger.style.opacity = '1';
+          hamburger.style.visibility = 'visible';
+          hamburger.style.pointerEvents = 'auto';
+          hamburger.style.transform = 'scale(1) translateY(0)';
+        }
+      }
+
+      lastScrollTop = scrollTop;
+    });
   </script>
 
   <script>
