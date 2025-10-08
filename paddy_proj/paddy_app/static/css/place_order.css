@@ -384,7 +384,7 @@ button[type="submit"]:hover {
         left: 0;
         height: auto;
         z-index: 1000;
-        margin: 0;
+        margin: 15px 0;
         background-color: #fff;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         padding: 20px 65px;

@@ -3,83 +3,84 @@
 {% block content %}
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <link rel="stylesheet" href="{% static 'css/customer_onboard.css' %}">
-    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        /* Disable all page load animations */
-        .form-container,
-        .form-card,
-        .page-title,
-        .toast-container,
-        .customer-onboarding {
-            animation: none !important;
-        }
-
-        /* Disable any transform or opacity transitions that might cause fade effects */
-        * {
-            transition: none !important;
-        }
-
-        /* Keep only the title underline hover effect but remove transition */
-   
-
-        .header-bar {
-
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-left: 3rem;
-    margin-top: 3rem;
-}
-
-@media (max-width:480px){
-    .header-bar {
-        margin-top: 4.5rem;
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/customer_onboard.css' %}">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* Disable all page load animations */
+    .form-container,
+    .form-card,
+    .page-title,
+    .toast-container,
+    .customer-onboarding {
+      animation: none !important;
     }
-}
 
-/* Push page content below the fixed header */
+    /* Disable any transform or opacity transitions that might cause fade effects */
+    * {
+      transition: none !important;
+    }
 
-.title-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
+    /* Keep only the title underline hover effect but remove transition */
 
-.page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: 1px;
-    color: #000000;
-    position: relative;
-    text-transform: uppercase;
-    padding-bottom: 0.6rem;
-    text-align: left;
-}
 
-.page-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background-color: #000000;
-    border-radius: 2px;
-    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
+    .header-bar {
 
-.page-title:hover::after {
-    width: 110%;
-    transform: translateX(-50%);
-}    </style>
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-left: 3rem;
+      margin-top: 3rem;
+    }
+
+    @media (max-width:480px) {
+      .header-bar {
+        margin-top: 4.5rem;
+      }
+    }
+
+    /* Push page content below the fixed header */
+
+    .title-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 1px;
+      color: #000000;
+      position: relative;
+      text-transform: uppercase;
+      padding-bottom: 0.6rem;
+      text-align: left;
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background-color: #000000;
+      border-radius: 2px;
+      transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    .page-title:hover::after {
+      width: 110%;
+      transform: translateX(-50%);
+    }
+  </style>
 </head>
 
 {% if messages %}
@@ -95,7 +96,7 @@
     gap: 10px;
     max-width: 350px;
   }
-  
+
   .toast {
     padding: 15px 40px 15px 15px;
     border-radius: 6px;
@@ -109,7 +110,7 @@
     border-left: 4px solid #ccc;
     word-wrap: break-word;
   }
-  
+
   .toast.success {
     border-left-color: #28a745;
   }
@@ -125,7 +126,7 @@
   .toast.error {
     border-left-color: #dc3545;
   }
-  
+
   .toast-close {
     position: absolute;
     top: 10px;
@@ -142,7 +143,7 @@
     line-height: 20px;
     text-align: center;
   }
-  
+
   .toast-close:hover {
     color: #333;
   }
@@ -150,31 +151,31 @@
 
 <div class="toast-container">
   {% for message in messages %}
-    <div class="toast {{ message.tags|default:'info' }}">
-      <i class="fas 
+  <div class="toast {{ message.tags|default:'info' }}">
+    <i class="fas 
         {% if message.tags == 'error' %}fa-exclamation-circle
         {% elif message.tags == 'warning' %}fa-exclamation-triangle
         {% elif message.tags == 'success' %}fa-check-circle
         {% else %}fa-info-circle{% endif %} 
         me-2"></i>
-      {{ message }}
-      <button type="button" class="toast-close" aria-label="Close">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
+    {{ message }}
+    <button type="button" class="toast-close" aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
   {% endfor %}
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Add click event to close buttons
     document.querySelectorAll('.toast-close').forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function () {
         const toast = this.parentElement;
         toast.remove();
       });
     });
-    
+
     // Auto-dismiss toasts after 5 seconds
     document.querySelectorAll('.toast').forEach(toast => {
       setTimeout(() => {
@@ -189,69 +190,69 @@
 
 <!-- Page Header -->
 <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3 customer-onboarding">
-    <h1 class="page-title mb-0 me-3 tab-title-margin">Customer Onboarding</h1>
+  <h1 class="page-title mb-0 me-3 tab-title-margin">Customer Onboarding</h1>
 </div>
 
 <!-- Create Customer Form -->
 <div class="form-container">
-    <div class="form-card">
-        <form method="POST" action="{% url 'onboarding:customer_onboard' %}">
-            {% csrf_token %}
+  <div class="form-card">
+    <form method="POST" action="{% url 'onboarding:customer_onboard' %}">
+      {% csrf_token %}
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>First Name</label>
-                    <input type="text" name="first_name" placeholder="Enter your first name" required
-                        pattern="[A-Za-z\s]+" minlength="2">
-                </div>
-                <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" name="last_name" placeholder="Enter your last name" required
-                        pattern="[A-Za-z\s]+" minlength="1">
-                </div>
-            </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" placeholder="Enter your first name" required pattern="[A-Za-z\s]+"
+            minlength="2">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" placeholder="Enter your last name" required pattern="[A-Za-z\s]+"
+            minlength="1">
+        </div>
+      </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" name="phone_number" placeholder="Enter your phone number" required
-                        pattern="[0-9]{10}" maxlength="10">
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" placeholder="Enter your email" required>
-                </div>
-            </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" name="phone_number" placeholder="Enter your phone number" required pattern="[0-9]{10}"
+            maxlength="10">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="Enter your email" required>
+        </div>
+      </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="text" name="password" placeholder="Enter a password" required minlength="6">
-                </div>
-                <div class="form-group">
-                    <label>Company Name</label>
-                    <input type="text" name="company_name" placeholder="Enter your company name" required>
-                </div>
-            </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Password</label>
+          <input type="text" name="password" placeholder="Enter a password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Company Name</label>
+          <input type="text" name="company_name" placeholder="Enter your company name" required>
+        </div>
+      </div>
 
-            <div class="form-row">
-                <div class="form-group" style="flex: 1;">
-                    <label>Address</label>
-                    <textarea name="address" placeholder="Enter your address" rows="3" required
-                        minlength="5"></textarea>
-                </div>
-            </div>
+      <div class="form-row">
+        <div class="form-group" style="flex: 1;">
+          <label>Address</label>
+          <textarea name="address" placeholder="Enter your address" rows="3" required minlength="5"></textarea>
+        </div>
+      </div>
 
-            <div class="form-row">
-                <div class="form-group" style="flex: 1;">
-                    <label>GST (Optional)</label>
-                    <input type="text" name="gst" placeholder="Enter your GST number (optional)"
-                        pattern="^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$">
-                </div>
-            </div>
+      <div class="form-row">
+        <div class="form-group" style="flex: 1;">
+          <label>GST (Optional)</label>
+          <input type="text" name="gst" placeholder="Enter your GST number (optional)"
+            pattern="^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$">
+        </div>
+      </div>
 
-            <button class="create-cutomer-button" type="submit">Create Customer</button>
-        </form>    </div>
+      <button class="create-cutomer-button" type="submit">Create Customer</button>
+    </form>
+  </div>
 </div>
 
 {% endblock %}
