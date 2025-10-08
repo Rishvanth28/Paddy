@@ -215,7 +215,8 @@ body, .customer-list-container,
 /* Responsive Adjustments */
 @media (max-width: 1200px) {
     .customer-list-container {
-        padding: 2rem;
+        
+        padding: 0 2rem;
     }
 }
 

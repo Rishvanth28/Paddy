@@ -2255,12 +2255,12 @@ button,
   margin-left: -1.5rem !important;
 }
 
-/* Ensure underlines for page titles are always left-aligned (excluding payment invoice) */
-.main-content h1:not(.invoice-container h1):not(.invoice-container h2)::after,
-.main-content h2:not(.invoice-container h1):not(.invoice-container h2)::after,
-.main-content .page-title:not(.invoice-container .page-title)::after,
-.page-title-underline:not(.invoice-container .page-title-underline),
-.title-underline:not(.invoice-container .title-underline) {
+/* Ensure underlines for page titles are always left-aligned (excluding payment invoice and admin-dashboard) */
+.main-content h1:not(.invoice-container h1):not(.invoice-container h2):not(.admin-dashboard h1):not(.admin-dashboard h1)::after,
+.main-content h2:not(.invoice-container h1):not(.invoice-container h2):not(.admin-dashboard h1):not(.admin-dashboard h1)::after,
+.main-content .page-title:not(.invoice-container .page-title):not(.admin-dashboard .page-title)::after,
+.page-title-underline:not(.invoice-container .page-title-underline):not(.admin-dashboard .page-title-underline),
+.title-underline:not(.invoice-container .title-underline):not(.admin-dashboard .title-underline) {
   content: '';
   display: block;
   width: 60px;
@@ -2274,6 +2274,14 @@ button,
 .invoice-container h1::after,
 .invoice-container h2::after,
 .invoice-container .page-title::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Prevent underlines in admin dashboard page */
+.admin-dashboard h1::after,
+.admin-dashboard h2::after,
+.admin-dashboard .page-title::after {
   content: none !important;
   display: none !important;
 }
@@ -2466,17 +2474,17 @@ button,
     margin-left: -1rem !important;
   }
 
-  /* Tablet underline centering - GENERAL PAGES */
-  .page-title::after,
-  .main-content h1::after,
-  .main-content h2::after,
-  .customer-dashboard-hero h1::after,
-  .profile-header h1::after,
-  .upgrade-header h1::after,
-  .header-bar h1::after,
-  .page-title-underline,
-  .title-underline {
-    content: '' !important;
+  /* Tablet underline centering - GENERAL PAGES (excluding payment invoice and admin-dashboard) */
+  .page-title:not(.invoice-container .page-title):not(.admin-dashboard .page-title)::after,
+  .main-content h1:not(.invoice-container h1):not(.invoice-container h2):not(.admin-dashboard h1):not(.admin-dashboard h2)::after,
+  .main-content h2:not(.invoice-container h1):not(.invoice-container h2):not(.admin-dashboard h1):not(.admin-dashboard h2)::after,
+  .customer-dashboard-hero h1:not(.invoice-container h1):not(.admin-dashboard h1)::after,
+  .profile-header h1:not(.invoice-container h1):not(.admin-dashboard h1)::after,
+  .upgrade-header h1:not(.invoice-container h1):not(.admin-dashboard h1)::after,
+  .header-bar h1:not(.invoice-container h1):not(.admin-dashboard h1)::after,
+  .page-title-underline:not(.invoice-container .page-title-underline):not(.admin-dashboard .page-title-underline),
+  .title-underline:not(.invoice-container .title-underline):not(.admin-dashboard .title-underline) {
+    content: '' ;
     position: absolute !important;
     bottom: -8px !important;
     left: 50% !important;
@@ -2487,6 +2495,22 @@ button,
     border-radius: 2px !important;
     margin: 0 !important;
     display: block !important;
+  }
+
+  /* Prevent underlines in payment invoice page (Tablet) */
+  .invoice-container h1::after,
+  .invoice-container h2::after,
+  .invoice-container .page-title::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* Prevent underlines in admin dashboard page (Tablet) */
+  .admin-dashboard h1::after,
+  .admin-dashboard h2::after,
+  .admin-dashboard .page-title::after {
+    content: none !important;
+    display: none !important;
   }
 
   /* Tablet title group centering */
@@ -2590,16 +2614,16 @@ button,
     font-size: 1.5rem !important;
   }
 
-  /* Mobile underline centering - ALL PAGES */
-  .page-title::after,
-  .main-content h1::after,
-  .main-content h2::after,
-  .customer-dashboard-hero h1::after,
-  .profile-header h1::after,
-  .upgrade-header h1::after,
-  .header-bar h1::after,
-  .page-title-underline,
-  .title-underline {
+  /* Mobile underline centering - GENERAL PAGES (excluding payment invoice and admin-dashboard) */
+  .page-title:not(.invoice-container .page-title):not(.admin-dashboard .page-title)::after,
+  .main-content h1:not(.invoice-container h1):not(.invoice-container h2):not(.admin-dashboard h1):not(.admin-dashboard h2)::after,
+  .main-content h2:not(.invoice-container h1):not(.invoice-container h2):not(.admin-dashboard h1):not(.admin-dashboard h2)::after,
+  .customer-dashboard-hero h1:not(.invoice-container h1):not(.admin-dashboard h1)::after,
+  .profile-header h1:not(.invoice-container h1):not(.admin-dashboard h1)::after,
+  .upgrade-header h1:not(.invoice-container h1):not(.admin-dashboard h1)::after,
+  .header-bar h1:not(.invoice-container h1):not(.admin-dashboard h1)::after,
+  .page-title-underline:not(.invoice-container .page-title-underline):not(.admin-dashboard .page-title-underline),
+  .title-underline:not(.invoice-container .title-underline):not(.admin-dashboard .title-underline) {
     content: '' !important;
     position: absolute !important;
     bottom: -8px !important;
@@ -2611,6 +2635,22 @@ button,
     border-radius: 2px !important;
     margin: 0 !important;
     display: block !important;
+  }
+
+  /* Prevent underlines in payment invoice page (Mobile) */
+  .invoice-container h1::after,
+  .invoice-container h2::after,
+  .invoice-container .page-title::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* Prevent underlines in admin dashboard page (Mobile) */
+  .admin-dashboard h1::after,
+  .admin-dashboard h2::after,
+  .admin-dashboard .page-title::after {
+    content: none !important;
+    display: none !important;
   }
 
   /* Mobile underline for customer onboarding - MOBILE SPECIFIC */

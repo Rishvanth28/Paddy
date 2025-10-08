@@ -97,7 +97,14 @@
                 height: 18px;
             }
         }
-
+@media (max-width:900px){
+    .page-title{
+        margin-top: 10vh!important;
+    }
+    .page-title:has(.badge){
+        margin-top: 10vh!important;
+    }
+}
         /* Enhanced mobile responsive styles */
         @media (max-width: 767.98px) {
             .container-fluid {
@@ -1039,7 +1046,7 @@
 </head>
 
 <div class="container-fluid my-4">
-    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3 admin-notifications" style="margin-top: 1.5rem;">
+    <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3 admin-notifications" >
         <h1 class="page-title mb-0 me-3" >Notifications
             {% if unread_count > 0 %}
                 <span class="badge ms-2">{{ unread_count }}</span>

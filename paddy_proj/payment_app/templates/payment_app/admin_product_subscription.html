@@ -6,6 +6,168 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <style>
+/* Notification Toast Styles */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.custom-toast {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px 20px;
+    min-width: 320px;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 4px solid #000000;
+    font-family: 'Inter', sans-serif;
+    animation: slideInRight 0.3s ease-out;
+    position: relative;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+.custom-toast.hiding {
+    animation: slideOutRight 0.3s ease-out;
+}
+
+.custom-toast.toast-success {
+    border-left-color: #22c55e;
+}
+
+.custom-toast.toast-error {
+    border-left-color: #ef4444;
+}
+
+.custom-toast.toast-warning {
+    border-left-color: #f59e0b;
+}
+
+.custom-toast.toast-info {
+    border-left-color: #3b82f6;
+}
+
+.toast-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.toast-success .toast-icon {
+    color: #22c55e;
+}
+
+.toast-error .toast-icon {
+    color: #ef4444;
+}
+
+.toast-warning .toast-icon {
+    color: #f59e0b;
+}
+
+.toast-info .toast-icon {
+    color: #3b82f6;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.toast-message {
+    font-size: 0.85rem;
+    color: #718096;
+    line-height: 1.4;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #718096;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    background: #f1f5f9;
+    color: #2d3748;
+}
+
+/* Responsive notifications */
+@media (max-width: 768px) {
+    .toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+    }
+    
+    .custom-toast {
+        min-width: auto;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-toast {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .toast-icon {
+        font-size: 1.2rem;
+    }
+    
+    .toast-title {
+        font-size: 0.9rem;
+    }
+    
+    .toast-message {
+        font-size: 0.8rem;
+    }
+}
+
 /* Mobile and Tablet responsive styles consistent with other admin pages */
 .admin-subscription-container {
     padding-top: 20px;
@@ -829,4 +991,88 @@
         updateCheckoutSection();
     </script>
 </div>
+
+<!-- Toast Notification Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Django Messages as Notifications -->
+{% if messages %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+            showNotification(
+                '{{ message.tags|default:"info" }}',
+                '{% if message.tags == "success" %}Success!{% elif message.tags == "error" %}Error!{% elif message.tags == "warning" %}Warning!{% else %}Info{% endif %}',
+                '{{ message|escapejs }}'
+            );
+        {% endfor %}
+    });
+</script>
+{% endif %}
+
+<script>
+    // Notification System
+    function showNotification(type, title, message, duration = 5000) {
+        const container = document.getElementById('toast-container');
+        
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `custom-toast toast-${type}`;
+        
+        // Icon based on type
+        let icon = 'fa-info-circle';
+        if (type === 'success') icon = 'fa-check-circle';
+        else if (type === 'error') icon = 'fa-exclamation-circle';
+        else if (type === 'warning') icon = 'fa-exclamation-triangle';
+        
+        toast.innerHTML = `
+            <div class="toast-icon">
+                <i class="fas ${icon}"></i>
+            </div>
+            <div class="toast-content">
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+            <button class="toast-close" onclick="closeToast(this)">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Auto remove after duration
+        setTimeout(() => {
+            closeToast(toast.querySelector('.toast-close'));
+        }, duration);
+    }
+    
+    function closeToast(button) {
+        const toast = button.closest('.custom-toast');
+        toast.classList.add('hiding');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }
+    
+    // // Test Notifications (remove these in production)
+    // // Uncomment the lines below to test notifications
+    
+    // setTimeout(() => {
+    //     showNotification('success', 'Subscription Activated!', 'Your Rice Orders subscription has been successfully activated. You can now create rice orders for your customers.');
+    // }, 1000);
+    
+    // setTimeout(() => {
+    //     showNotification('info', 'Payment Processing', 'Your payment of ₹300 is being processed. You will receive a confirmation email shortly.');
+    // }, 2000);
+    
+    // setTimeout(() => {
+    //     showNotification('warning', 'Subscription Expiring Soon', 'Your Paddy Orders subscription will expire in 3 days. Renew now to avoid service interruption.');
+    // }, 3000);
+    
+    // setTimeout(() => {
+    //     showNotification('error', 'Payment Failed', 'Unable to process your payment. Please check your payment method and try again.');
+    // }, 4000);
+    
+</script>
+
 {% endblock content %}
