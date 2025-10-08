@@ -3242,10 +3242,10 @@ body {
 <div class="admin-orders-page">
 <div class="container-fluid py-4">
     <!-- Page Header -->
-    <div class="page-header">
+    <div class="page-header" style="margin-top: 5vh!important;">
         <div class="flex-between">
             <div>
-                <h2 class="mb-0">{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
+                <h2 class="mb-0" >{% if request.session.role == 'superadmin' %}All Customer Orders{% else %}Customer Orders{% endif %}</h2>
                 <p class="subtitle mb-0">Manage and track order status, payments, and deliveries</p>
             </div>
             <div class="text-white-50" id="order-count-text">
