@@ -2225,7 +2225,7 @@ button,
 /* Page title and header protection from hamburger overlap */
 .main-content h1,
 .main-content h2,
-.main-content .page-title,
+.main-content .page-title:not(.admin_add_subscription .page-title)e,
 .main-content .customer-dashboard-hero h1,
 .main-content .profile-header h1,
 .main-content .upgrade-header h1 {

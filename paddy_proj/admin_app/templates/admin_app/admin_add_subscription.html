@@ -116,7 +116,7 @@
                 margin-left: 1rem;
                 margin-right: 1rem;
             }
-            
+
             .form-container {
                 max-width: 900px;
                 padding: 25px;
@@ -131,28 +131,28 @@
                 text-align: center !important;
                 margin-top: 1rem;
             }
-            
+
             .title-group {
                 align-items: center;
                 text-align: center;
             }
-            
+
             .page-title {
                 font-size: 1.6rem !important;
                 margin-left: 0;
                 text-align: center;
             }
-            
+
             .page-title::after {
                 left: 50%;
                 width: 100px;
             }
-            
+
             .upgrade-subtitle {
                 text-align: center;
                 font-size: 1rem;
             }
-            
+
             .form-container {
                 margin: 1rem;
                 padding: 20px;
@@ -162,33 +162,33 @@
         @media (max-width: 480px) and (min-width: 321px) {
             .header-bar {
                 margin: 0;
-                padding: 90px 10px 20px 10px !important;
+                padding: 40px 10px 20px 10px !important;
                 text-align: center !important;
             }
-            
+
             .title-group {
                 align-items: center;
                 text-align: center;
                 width: 100%;
             }
-            
+
             .page-title {
                 font-size: 1.4rem !important;
                 margin-left: 0;
                 text-align: center;
                 letter-spacing: 0.5px;
             }
-            
+
             .page-title::after {
                 width: 60px;
                 height: 3px;
             }
-            
+
             .upgrade-subtitle {
                 font-size: 0.9rem;
                 text-align: center;
             }
-            
+
             .form-container {
                 margin: 0.5rem;
                 padding: 15px;
@@ -196,30 +196,62 @@
             }
         }
 
-        @media (max-width: 320px) {
+        @media (max-width: 1024px) {
+            .page-title {
+                margin-top: 40px !important;
+            }
+        }
+
+        @media (max-width: 360px) {
             .header-bar {
                 margin: 0;
-                padding: 35px 10px 20px 10px !important;
+                padding: 40px 8px 15px 8px !important;
                 text-align: center !important;
             }
-            
-            .page-title {
-                font-size: 1.2rem !important;
-                letter-spacing: 0.3px;
+
+            .title-group {
+                align-items: center;
+                text-align: center;
+                width: 100%;
             }
-            
+
+            .page-title {
+                font-size: 1.1rem !important;
+                margin-left: 0;
+                text-align: center;
+                letter-spacing: 0.2px;
+                margin-top: 40px !important;
+            }
+
             .page-title::after {
-                width: 50px;
+                width: 40px;
                 height: 2px;
             }
-            
+
             .upgrade-subtitle {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+                text-align: center;
             }
-            
+
             .form-container {
-                margin: 0.25rem;
-                padding: 12px;
+                margin: 0.15rem;
+                padding: 10px;
+                border-radius: 7px;
+            }
+
+            .pricing-info,
+            .price-calculation {
+                padding: 10px;
+            }
+
+            .user-count,
+            .upgrade-count {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.95rem;
             }
         }
 
@@ -457,7 +489,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .spinner-border {
@@ -475,9 +509,10 @@
             height: 0.875rem;
             border-width: 0.15em;
         }
-        @media (max-width:1024px){
-            .header-bar{
-                margin-top: 0vh!important;
+
+        @media (max-width:1024px) {
+            .header-bar {
+                margin-top: 0vh !important;
             }
         }
     </style>
@@ -549,7 +584,7 @@
                     </div>
                 </div>
                 {% endif %}
-                
+
                 <div class="pricing-info">
                     <div class="pricing-row">
                         <div class="pricing-col">
@@ -577,14 +612,16 @@
 
                 {# Show appropriate action based on status #}
                 {% if not existing_subscription_obj or existing_subscription_obj.subscription_status == 2 or existing_subscription_obj.subscription_status == 3 %}
-                <form id="subscriptionUpgradeRequestForm" method="post" action="{% url 'admin_app:admin_add_subscription' %}">
+                <form id="subscriptionUpgradeRequestForm" method="post"
+                    action="{% url 'admin_app:admin_add_subscription' %}">
                     {% csrf_token %}
                     <input type="hidden" name="submission_type" value="0">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="confirmUpgradeRequest"
                             name="confirm_upgrade_request" required>
                         <label class="form-check-label i18n" for="confirmUpgradeRequest">
-                            I understand this will request a permanent increase of 50 users to my account limit, with applicable charges.
+                            I understand this will request a permanent increase of 50 users to my account limit, with
+                            applicable charges.
                         </label>
                     </div>
                     <div class="button-container">
@@ -604,8 +641,8 @@
             </div>
         </div>
     </div>
-    
-    
+
+
     <!-- Translation Script -->
     <script>
         let translations = {};
@@ -644,7 +681,7 @@
             });
         }
     </script>
-    
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         // Function to get CSRF token from cookies
@@ -737,7 +774,7 @@
                 })
             })
                 .then(response => response.json())
-                .then(data => {
+                .then data => {
                     if (data.success) {
                         window.location.reload();
                     } else {
@@ -748,14 +785,14 @@
                         }
                     }
                 })
-                .catch(error => {
-                    console.error('Verification error:', error);
-                    alert('Verification error. Please contact support.');
-                    if (makePaymentButton) {
-                        makePaymentButton.disabled = false;
-                        makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill me-2"></i>Pay ₹{{ payment_amount }} Now';
-                    }
-                });
+                .catch (error => {
+                console.error('Verification error:', error);
+                alert('Verification error. Please contact support.');
+                if (makePaymentButton) {
+                    makePaymentButton.disabled = false;
+                    makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill me-2"></i>Pay ₹{{ payment_amount }} Now';
+                }
+            });
         }
 
         // Form submission handling
@@ -770,7 +807,8 @@
             });
         }
     </script>
-    
+
 </body>
+
 </html>
 {% endblock content %}
