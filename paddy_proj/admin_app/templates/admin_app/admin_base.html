@@ -862,12 +862,21 @@
 
     // ========== HAMBURGER SCROLL VISIBILITY FUNCTIONALITY ==========
     let lastScrollTop = 0;
-    const scrollThreshold = 100; // Hide hamburger after scrolling 100px down
+    const scrollThreshold = 50; // Hide hamburger after scrolling 100px down
 
     window.addEventListener('scroll', function() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
       if (window.innerWidth <= 1024) { // Only apply on mobile/tablet
+        // Don't hide hamburger if sidebar is open
+        if (sidebar.classList.contains('open')) {
+          hamburger.style.opacity = '1';
+          hamburger.style.visibility = 'visible';
+          hamburger.style.pointerEvents = 'auto';
+          hamburger.style.transform = 'scale(1) translateY(0)';
+          return;
+        }
+
         if (scrollTop > scrollThreshold) {
           // Scrolling down past threshold - hide hamburger
           hamburger.style.opacity = '0';
