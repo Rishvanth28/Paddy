@@ -149,14 +149,24 @@
         font-weight: 500;
     }
 
-    /* Filter Row */
-    .filter-row {
-        background-color: #f8f9fa !important;
+    /* Filter Section */
+    .filter-section {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0.5rem 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        /* margin-bottom: 1.5rem; */
     }
 
-    .filter-row td {
-        padding: 1rem !important;
-        border-bottom: 2px solid #e2e8f0 !important;
+    .filter-section select{
+        margin-bottom: 0px !important;
+    }
+
+    @media (max-width: 600px) {
+        .filter-section {
+            flex-direction: column;
+        }
     }
 
     .table-filter {
@@ -531,6 +541,11 @@
             padding: 0.75rem 0.5rem;
         }
 
+        .filter-section {
+            /* padding: 0.75rem 0; */
+            margin-bottom: 1rem;
+        }
+
         .filter-controls {
             flex-direction: column;
             align-items: stretch;
@@ -629,6 +644,23 @@
         </div>        
         <div class="card-body">
 
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="table-filter">
+                    <form method="get" class="filter-group">
+                        <div class="filter-controls">
+                            <select name="status" class="form-select form-select-sm">
+                                <option value="" {% if not request.GET.status %}selected{% endif %}>All Statuses</option>
+                                <option value="0" {% if request.GET.status == '0' %}selected{% endif %}>Pending</option>
+                                <option value="1" {% if request.GET.status == '1' %}selected{% endif %}>Approved</option>
+                                <option value="2" {% if request.GET.status == '2' %}selected{% endif %}>Active</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
               <div class="table-container">
                 <table class="subscription-table">
                     <thead>
@@ -638,24 +670,6 @@
                             <th>Additional Users</th>
                             <th>Status</th>
                             <th>Actions</th>
-                        </tr>
-                        <!-- Filter Row -->
-                        <tr class="filter-row">
-                            <td colspan="5">
-                                <div class="table-filter">
-                                    <form method="get" class="filter-group">
-                                        <div class="filter-controls">
-                                            <select name="status" class="form-select form-select-sm">
-                                                <option value="" {% if not request.GET.status %}selected{% endif %}>All Statuses</option>
-                                                <option value="0" {% if request.GET.status == '0' %}selected{% endif %}>Pending</option>
-                                                <option value="1" {% if request.GET.status == '1' %}selected{% endif %}>Approved</option>
-                                                <option value="2" {% if request.GET.status == '2' %}selected{% endif %}>Active</option>
-                                            </select>
-                                            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </td>
                         </tr>
                     </thead>
                     <tbody>
