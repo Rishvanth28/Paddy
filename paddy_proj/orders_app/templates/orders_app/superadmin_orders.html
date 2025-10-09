@@ -2271,37 +2271,6 @@ body {
 {% endblock %}
 
 
-{% if messages %}
-<div class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1100;">
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
-<div class="flex-center">
-{% if message.tags == 'success' %}
-<i class="bi bi-check-circle-fill mr-2"></i>
-{% elif message.tags == 'warning' %}
-<i class="bi bi-exclamation-triangle-fill mr-2"></i>
-{% elif message.tags == 'error' %}
-<i class="bi bi-x-circle-fill mr-2"></i>
-{% else %}
-<i class="bi bi-info-circle-fill mr-2"></i>
-{% endif %}
-<div>{{ message }}</div>
-</div>
-<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-</div>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-setTimeout(function() {
-document.querySelectorAll('.alert').forEach(alert => {
-alert.style.opacity = '0';
-setTimeout(() => alert.remove(), 300);
-});
-}, 5000);
-});
-</script>
-{% endif %}
 
 <div class="superadmin-orders-page">
 <div class="container-fluid py-4">
