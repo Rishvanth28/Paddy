@@ -111,6 +111,99 @@
         input:required:invalid, select:required:invalid {
             border-left: 3px solid #ff6b6b;
         }
+
+        /* Table styling for order items */
+        .items-section {
+            overflow-x: auto;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        .items-table thead {
+            background-color: #f5f5f5;
+        }
+
+        .items-table th, .items-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .items-table th {
+            font-weight: 600;
+            background-color: #f9f9f9;
+        }
+
+        .items-table input[type="text"],
+        .items-table input[type="number"],
+        .items-table input[type="date"] {
+            width: 100%;
+            min-width: 60px;
+            padding: 6px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .items-table input:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 4px rgba(33, 150, 243, 0.3);
+        }
+
+        .items-table input:invalid {
+            /* border: 2px solid #e53935 !important; */
+            border-left: 3px solid #e53935 !important;
+            box-shadow: 0 0 4px rgba(229, 57, 53, 0.3);
+        }
+
+        .items-table input:invalid:focus {
+            /* border: 2px solid #e53935 !important; */
+            border-left: 3px solid #e53935 !important;
+            box-shadow: 0 0 6px rgba(229, 57, 53, 0.5);
+        }
+
+        .remove-row-btn {
+            background: none;
+            border: none;
+            color: #e53935;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: transform 0.2s;
+        }
+
+        .remove-row-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .items-table tfoot {
+            background-color: #f9f9f9;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .items-table {
+                font-size: 0.85rem;
+            }
+
+            .items-table th, .items-table td {
+                padding: 6px;
+            }
+
+            .items-table input[type="text"],
+            .items-table input[type="number"],
+            .items-table input[type="date"] {
+                font-size: 0.8rem;
+                padding: 4px;
+            }
+        }
         .add-item-btn {
             background: #f5f5f5;
             color: #333;
@@ -268,6 +361,10 @@
                         <label for="delivery_date">Order Date</label>
                         <input type="date" name="delivery_date" required>
                     </div>
+                    <div class="form-group">
+                        <label for="rice-total">Total Amount</label>
+                        <input type="number" id="rice-total" name="display_total" placeholder="0.00" step="0.01" readonly>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" id="rice-submit-btn">Place Rice Order</button>
@@ -330,6 +427,10 @@
                         <label for="delivery_date">Order Date</label>
                         <input type="date" name="delivery_date" required>
                     </div>
+                    <div class="form-group">
+                        <label for="paddy-total">Total Amount</label>
+                        <input type="number" id="paddy-total" name="display_total" placeholder="0.00" step="0.01" readonly>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" id="paddy-submit-btn">Place Paddy Order</button>
@@ -374,8 +475,8 @@
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <h3>Order Items</h3>
-                <div class="items-section" style="overflow-x: auto; width: 100%;">
-                    <table id="pesticide-items-table" class="items-table" style="min-width: 100%; width: max-content;">
+                <div class="items-section">
+                    <table id="pesticide-items-table" class="items-table">
                         <thead>
                             <tr>
                                 <th>Product Name</th>
@@ -390,15 +491,15 @@
                         </thead>
                             <tbody id="pesticide-items-container">
                                     <tr class="item-row">
-                                        <td><input type="text" name="product_name[]" class="product-name" style="width: 100px!important;" required></td>
-                                        <td><input type="text" name="batch_number[]" class="batch-number" style="width: 100px!important;" required></td>
-                                        <td><input type="date" name="expiry_date[]" class="expiry-date" style="width: 100px!important;" required></td>
-                                        <td><input type="number" name="quantity[]" class="quantity" style="width: 100px!important;" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
-                                        <td><input type="number" name="price_per_unit[]" class="price" style="width: 100px!important;" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
+                                        <td><input type="text" name="product_name[]" class="product-name" required></td>
+                                        <td><input type="text" name="batch_number[]" class="batch-number" required></td>
+                                        <td><input type="date" name="expiry_date[]" class="expiry-date" required></td>
+                                        <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)"></td>
+                                        <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)"></td>
                                         <td>
-                                            <input type="text" name="unit[]" class="unit" style="width: 100px!important;" placeholder="e.g., 100 ml, 20 gm" required>
+                                            <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml" required>
                                         </td>
-                                        <td><input type="number" name="total_amount[]" class="row-total" style="width: 100px!important;" step="0.01" readonly></td>
+                                        <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly></td>
                                         <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item">✕</button></td>
                                     </tr>
                                 </tbody>
@@ -408,6 +509,7 @@
                                 <td><input type="number" id="pesticide-grand-total" name="grand_total" step="0.01" readonly></td>
                                 <td></td>
                             </tr>
+                        </tfoot>
                         </tfoot>
                     </table>
                 </div>
@@ -569,6 +671,40 @@
         setupCustomerListeners("customer-select-rice", "customer-last-name-rice");
         setupCustomerListeners("customer-select-paddy", "customer-last-name-paddy");
         setupCustomerListeners("customer-select-pesticide", "customer-last-name-pesticide");
+    </script>
+
+    <script>
+        // Calculate total (quantity * price) for single-item forms (Rice / Paddy)
+        function calculateSingleOrderTotal(formId, totalInputId) {
+            const form = document.getElementById(formId);
+            if (!form) return;
+            const qty = parseFloat(form.querySelector('input[name="quantity"]')?.value || 0);
+            const price = parseFloat(form.querySelector('input[name="price_per_unit"]')?.value || 0);
+            const total = (qty * price) || 0;
+            const totalInput = document.getElementById(totalInputId);
+            if (totalInput) totalInput.value = total.toFixed(2);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const riceForm = document.getElementById('rice-order-form');
+            if (riceForm) {
+                const q = riceForm.querySelector('input[name="quantity"]');
+                const p = riceForm.querySelector('input[name="price_per_unit"]');
+                q?.addEventListener('input', () => calculateSingleOrderTotal('rice-order-form', 'rice-total'));
+                p?.addEventListener('input', () => calculateSingleOrderTotal('rice-order-form', 'rice-total'));
+                // Initialize if backend provided values
+                calculateSingleOrderTotal('rice-order-form', 'rice-total');
+            }
+
+            const paddyForm = document.getElementById('paddy-order-form');
+            if (paddyForm) {
+                const q = paddyForm.querySelector('input[name="quantity"]');
+                const p = paddyForm.querySelector('input[name="price_per_unit"]');
+                q?.addEventListener('input', () => calculateSingleOrderTotal('paddy-order-form', 'paddy-total'));
+                p?.addEventListener('input', () => calculateSingleOrderTotal('paddy-order-form', 'paddy-total'));
+                calculateSingleOrderTotal('paddy-order-form', 'paddy-total');
+            }
+        });
     </script>
     <script>
         // Replace the existing addNewRow, removeRow, calculateRowTotal, and updateGrandTotal functions with these:
