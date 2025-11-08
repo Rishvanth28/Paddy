@@ -776,8 +776,24 @@
         }
         // Show only the first form on page load
         document.addEventListener('DOMContentLoaded', function() {
-            showForm('Rice');
-        });
+            const activeButton = document.querySelector('.tab-button.active');
+            if (activeButton) {
+                // Extract form type from its onclick attribute
+                const match = activeButton.getAttribute('onclick').match(/showForm\('([^']+)'\)/);
+                if (match && match[1]) {
+                    showForm(match[1]);
+                }
+            } else {
+                // fallback: show the first form if no active button is preset
+                const firstType = Object.keys({
+                    'Rice': 'rice-form',
+                    'Paddy': 'paddy-form',
+                    'Pesticide': 'pesticide-form'
+                })[0];
+                showForm(firstType);
+            }
+        }
+       );
     </script>
 
     <!-- Customer last name script for all forms -->
