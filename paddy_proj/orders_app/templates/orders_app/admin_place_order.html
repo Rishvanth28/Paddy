@@ -207,6 +207,114 @@
         }
     </style>
 
+    <!-- Table styling for order items -->
+    <style>
+        .items-section {
+            width: 100%;
+            margin: 1rem 0;
+            overflow: visible;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            /* removed min-width to allow table to shrink to fit page width */
+        }
+
+        .items-table thead {
+            background-color: #f5f5f5;
+        }
+
+        .items-table th, .items-table td {
+            padding: 5px 3px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .items-table th {
+            font-weight: 600;
+            background-color: #f9f9f9;
+        }
+
+        .items-table input[type="text"],
+        .items-table input[type="number"],
+        .items-table input[type="date"] {
+            width: 100% !important;
+            min-width: 40px;
+            padding: 6px 4px;
+            border: 1px solid #ccc !important;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            box-sizing: border-box;
+            height: 32px;
+        }
+
+        .items-table input:focus {
+            outline: none;
+            border-color: #2196F3 !important;
+            box-shadow: 0 0 4px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Only show validation on touched/filled fields */
+        .items-table input:not(:placeholder-shown):invalid,
+        .items-table input:user-invalid {
+            border-color: #e53935 !important;
+            border-left: 3px solid #e53935 !important;
+        }
+
+        .items-table input[readonly] {
+            background-color: #f5f5f5;
+            cursor: default;
+        }
+
+        .remove-row-btn {
+            background: #fff !important;
+            border: 1px solid #e53935 !important;
+            border-radius: 4px;
+            color: #e53935 !important;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.1rem 0.3rem;
+            transition: all 0.2s;
+            min-width: 28px;
+        }
+
+        .remove-row-btn:hover:not(:disabled) {
+            background: #e53935 !important;
+            color: #fff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(229, 57, 53, 0.2);
+        }
+
+        .items-table tfoot {
+            background-color: #f9f9f9;
+            font-weight: 600;
+        }
+
+        .items-table tfoot td {
+            padding: 12px 8px;
+        }
+
+        @media (max-width: 768px) {
+            .items-table {
+                font-size: 0.85rem;
+            }
+
+            .items-table th, .items-table td {
+                padding: 6px;
+            }
+
+            .items-table input[type="text"],
+            .items-table input[type="number"],
+            .items-table input[type="date"] {
+                font-size: 0.8rem;
+                padding: 4px;
+                min-width: 60px;
+            }
+        }
+    </style>
+
 </head>
 
 <body>    
@@ -284,9 +392,11 @@
                         <label>Vehicle Number*</label>
                         <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}" {% if not product_access.rice %}disabled{% endif %}>
                     </div>
+                    <div class="form-group">
+                        <label for="driver_ph_no">Driver Phone No*</label>
+                        <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.rice %}disabled{% endif %}>
+                    </div>
                 </div>
-                <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.rice %}disabled{% endif %}>
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
@@ -309,6 +419,10 @@
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
                         <input type="date" name="delivery_date" required {% if not product_access.rice %}disabled{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <label for="rice-total">Total Amount</label>
+                        <input type="number" id="rice-total" name="display_total" placeholder="0.00" step="0.01" readonly {% if not product_access.rice %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-actions">
@@ -342,21 +456,23 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2" {% if not product_access.paddy %}disabled{% endif %}>
+                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2" {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
                         <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}" {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
+                    <div class="form-group">
+                        <label for="driver_ph_no">Driver Phone No*</label>
+                        <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.paddy %}disabled{% endif %}>
+                    </div>
                 </div>
-                <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.paddy %}disabled{% endif %}>
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="category-rice">Category</label>
-                        <input type="text" name="category" id="category-rice" placeholder="Enter rice category" required {% if not product_access.paddy %}disabled{% endif %}>
+                        <label for="category-paddy">Category</label>
+                        <input type="text" name="category" id="category-paddy" placeholder="Enter paddy category" required {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label for="quantity">Quantity</label>
@@ -371,6 +487,10 @@
                     <div class="form-group">
                         <label for="delivery_date">Order Date</label>
                         <input type="date" name="delivery_date" required {% if not product_access.paddy %}disabled{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <label for="paddy-total">Total Amount</label>
+                        <input type="number" id="paddy-total" name="display_total" placeholder="0.00" step="0.01" readonly {% if not product_access.paddy %}disabled{% endif %}>
                     </div>
                 </div>
                 <div class="form-actions">
@@ -404,15 +524,17 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="driver_name">Driver Name*</label>
-                        <input type="text" name="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2" {% if not product_access.pesticide %}disabled{% endif %}>
+                        <input type="text" name="driver_name" id="driver_name" placeholder="Driver full name" required pattern="[A-Za-z\s]+" minlength="2" {% if not product_access.pesticide %}disabled{% endif %}>
                     </div>
                     <div class="form-group">
                         <label>Vehicle Number*</label>
                         <input type="text" name="vehicle_number" placeholder="e.g., TN23AB4567" required pattern="[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}" {% if not product_access.pesticide %}disabled{% endif %}>
                     </div>
+                    <div class="form-group">
+                        <label for="driver_ph_no">Driver Phone No*</label>
+                        <input type="tel" name="driver_ph_no" id="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.pesticide %}disabled{% endif %}>
+                    </div>
                 </div>
-                <label for="driver_ph_no">Driver Phone No*</label>
-                <input type="tel" name="driver_ph_no" placeholder="9876543210" required pattern="[0-9]{10}" maxlength="10" {% if not product_access.pesticide %}disabled{% endif %}>
                 <h3>Order Details <span title="Fill order details">ⓘ</span></h3>
                 <hr>
                 <div class="items-section">
@@ -432,15 +554,15 @@
                         </thead>
                         <tbody id="pesticide-items-container">
                             <tr class="item-row">
-                                <td><input type="text" name="product_name[]" class="product-name" style="width: 100px;" required {% if not product_access.pesticide %}disabled{% endif %}></td>
-                                <td><input type="text" name="batch_number[]" class="batch-number" style="width: 100px!important;" required {% if not product_access.pesticide %}disabled{% endif %}></td>
-                                <td><input type="date" name="expiry_date[]" class="expiry-date" style="width: 100px!important;" required {% if not product_access.pesticide %}disabled{% endif %}></td>
-                                <td><input type="number" name="quantity[]" class="quantity" style="width: 100px!important;" step="0.01" min="0.01" required onchange="calculateRowTotal(this)" {% if not product_access.pesticide %}disabled{% endif %}></td>
-                                <td><input type="number" name="price_per_unit[]" class="price" style="width: 100px;" step="0.01" min="0" required onchange="calculateRowTotal(this)" {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="text" name="product_name[]" class="product-name" required {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="text" name="batch_number[]" class="batch-number" required {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="date" name="expiry_date[]" class="expiry-date" required {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="number" name="quantity[]" class="quantity" step="0.01" min="0.01" required onchange="calculateRowTotal(this)" {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="number" name="price_per_unit[]" class="price" step="0.01" min="0" required onchange="calculateRowTotal(this)" {% if not product_access.pesticide %}disabled{% endif %}></td>
                                 <td>
-                                    <input type="text" name="unit[]" class="unit" style="width: 100px!important;" placeholder="e.g., 100 ml, 20 gm" required {% if not product_access.pesticide %}disabled{% endif %}>
+                                    <input type="text" name="unit[]" class="unit" placeholder="e.g., 100 ml, 20 gm" required {% if not product_access.pesticide %}disabled{% endif %}>
                                 </td>
-                                <td><input type="number" name="total_amount[]" class="row-total" style="width: 100px!important;" step="0.01" readonly {% if not product_access.pesticide %}disabled{% endif %}></td>
+                                <td><input type="number" name="total_amount[]" class="row-total" step="0.01" readonly {% if not product_access.pesticide %}disabled{% endif %}></td>
                                 <td><button type="button" class="remove-row-btn" onclick="removeRow(this)" title="Remove Item" {% if not product_access.pesticide %}disabled{% endif %}>✕</button></td>
                             </tr>
                         </tbody>
@@ -514,6 +636,45 @@
             console.log("Grand Total:", grandTotal);
             document.getElementById("grand-total").value = grandTotal.toFixed(2);
         }
+    </script>
+
+    <script>
+        // Calculate totals for single-item forms (Rice / Paddy)
+        function calculateSingleOrderTotal(formId, totalInputId) {
+            const form = document.getElementById(formId);
+            if (!form) return;
+            const qtyInput = form.querySelector('input[name="quantity"]');
+            const priceInput = form.querySelector('input[name="price_per_unit"]');
+            const qty = parseFloat(qtyInput?.value || 0);
+            const price = parseFloat(priceInput?.value || 0);
+            const total = (qty * price).toFixed(2);
+            const totalInput = document.getElementById(totalInputId);
+            if (totalInput) totalInput.value = isNaN(total) ? '' : total;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wire rice form inputs
+            const riceForm = document.getElementById('rice-order-form');
+            if (riceForm) {
+                const qty = riceForm.querySelector('input[name="quantity"]');
+                const price = riceForm.querySelector('input[name="price_per_unit"]');
+                if (qty) qty.addEventListener('input', function() { calculateSingleOrderTotal('rice-order-form', 'rice-total'); });
+                if (price) price.addEventListener('input', function() { calculateSingleOrderTotal('rice-order-form', 'rice-total'); });
+                // initialize
+                calculateSingleOrderTotal('rice-order-form', 'rice-total');
+            }
+
+            // Wire paddy form inputs
+            const paddyForm = document.getElementById('paddy-order-form');
+            if (paddyForm) {
+                const qty = paddyForm.querySelector('input[name="quantity"]');
+                const price = paddyForm.querySelector('input[name="price_per_unit"]');
+                if (qty) qty.addEventListener('input', function() { calculateSingleOrderTotal('paddy-order-form', 'paddy-total'); });
+                if (price) price.addEventListener('input', function() { calculateSingleOrderTotal('paddy-order-form', 'paddy-total'); });
+                // initialize
+                calculateSingleOrderTotal('paddy-order-form', 'paddy-total');
+            }
+        });
     </script>
 
     <!-- Order submission script -->
