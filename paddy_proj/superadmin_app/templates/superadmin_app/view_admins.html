@@ -358,7 +358,7 @@
         <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
             <h1 class="page-title mb-0 me-3" style="margin-left: -1rem;">Admin List</h1>
             <form class="search-form" method="GET" action="">
-                <input type="search" name="q" class="search-input" placeholder="Search admins...">
+                <input type="search" name="q" id="adminSearchInput" class="search-input" placeholder="Search admins..." autocomplete="off">
                 <i class="fas fa-search search-icon"></i>
             </form>
         </div>
@@ -521,6 +521,57 @@ document.addEventListener('DOMContentLoaded', function() {
             hideConfirmDialog();
         }
     });
+});
+
+// Real-time search filtering
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('adminSearchInput');
+    const tableBody = document.querySelector('.customer-table tbody');
+    const noResultsDiv = document.querySelector('.no-results-found');
+    const emptyStateDiv = document.querySelector('.empty-state');
+    
+    if (searchInput && tableBody) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const rows = tableBody.querySelectorAll('tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                // Get all text content from the row
+                const adminId = row.cells[0]?.textContent.toLowerCase() || '';
+                const fullName = row.cells[1]?.textContent.toLowerCase() || '';
+                const email = row.cells[2]?.textContent.toLowerCase() || '';
+                const phone = row.cells[3]?.textContent.toLowerCase() || '';
+                
+                // Check if search term matches any field
+                const matches = adminId.includes(searchTerm) ||
+                               fullName.includes(searchTerm) ||
+                               email.includes(searchTerm) ||
+                               phone.includes(searchTerm);
+                
+                if (matches) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no results message
+            if (noResultsDiv) {
+                if (visibleCount === 0 && searchTerm !== '') {
+                    noResultsDiv.classList.remove('d-none');
+                } else {
+                    noResultsDiv.classList.add('d-none');
+                }
+            }
+        });
+        
+        // Prevent form submission on Enter key
+        searchInput.closest('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+        });
+    }
 });
 </script>
 {% endblock %}
