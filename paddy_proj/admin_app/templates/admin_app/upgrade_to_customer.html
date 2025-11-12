@@ -523,9 +523,14 @@
             </div>
 
             <div class="form-group">
-              <label for="GST" class="form-label">GST Number</label>
-              <input type="text" id="GST" name="GST" class="form-control" placeholder="22AAAAA0000A1Z5">
-              <small class="text-muted">Format: 22AAAAA0000A1Z5</small>
+              <label for="GST" class="form-label">GST Number (Optional)</label>
+              <input type="text" id="GST" name="GST" class="form-control" placeholder="22AAAAA0000A1Z5"
+                     pattern="^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$"
+                     maxlength="15"
+                     title="GST must be 15 characters: 2 digits, 5 uppercase letters, 4 digits, 1 letter, 1 alphanumeric, Z, 1 alphanumeric"
+                     style="text-transform: uppercase;">
+              <small id="gst-hint" class="text-muted">Format: 22AAAAA0000A1Z5 (15 characters)</small>
+              <small id="gst-error-upgrade" style="color: #e53935; display: none; margin-top: 0.25rem;">Invalid GST format. Example: 22AAAAA0000A1Z5</small>
             </div>
           </div>
 
@@ -594,6 +599,51 @@
         }
       });
     });
+
+    // GST validation
+    const gstInput = document.getElementById('GST');
+    const gstError = document.getElementById('gst-error-upgrade');
+    const gstHint = document.getElementById('gst-hint');
+    
+    if (gstInput) {
+      // Convert to uppercase as user types
+      gstInput.addEventListener('input', function(e) {
+        this.value = this.value.toUpperCase();
+        
+        // Only validate if field has value
+        if (this.value.length > 0) {
+          validateGST(this.value);
+        } else {
+          gstError.style.display = 'none';
+          gstHint.style.display = 'block';
+          this.style.borderColor = '#ddd';
+        }
+      });
+      
+      // Validate on blur
+      gstInput.addEventListener('blur', function(e) {
+        if (this.value.length > 0) {
+          validateGST(this.value);
+        }
+      });
+      
+      function validateGST(value) {
+        // GST pattern: 2 digits, 5 letters, 4 digits, 1 letter, 1 alphanumeric, Z, 1 alphanumeric
+        const gstPattern = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/;
+        
+        if (value.length === 15 && gstPattern.test(value)) {
+          gstError.style.display = 'none';
+          gstHint.style.display = 'block';
+          gstInput.style.borderColor = '#4CAF50';
+          return true;
+        } else {
+          gstError.style.display = 'block';
+          gstHint.style.display = 'none';
+          gstInput.style.borderColor = '#e53935';
+          return false;
+        }
+      }
+    }
   });
 </script>
 
