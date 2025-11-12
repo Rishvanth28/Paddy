@@ -522,8 +522,8 @@
     <div class="admin-subscription-container">
         <div class="header-bar d-flex align-items-center justify-content-between flex-wrap mb-3">
             <div class="title-group">
-                <h1 class="page-title mb-0 me-3 i18n"><i class="icon-arrow-up"></i> User Limit Upgrade</h1>
-                <p class="upgrade-subtitle i18n">Increase your account capacity by 50 users</p>
+                <h1 class="page-title mb-0 me-3"><i class="icon-arrow-up"></i> User Limit Upgrade</h1>
+                <p class="upgrade-subtitle">Increase your account capacity by 50 users</p>
             </div>
         </div>
 
@@ -588,24 +588,24 @@
                 <div class="pricing-info">
                     <div class="pricing-row">
                         <div class="pricing-col">
-                            <p class="pricing-label i18n">Current User Limit</p>
+                            <p class="pricing-label">Current User Limit</p>
                             <p class="user-count">{{ user_count }}</p>
                         </div>
                         <div class="pricing-col">
-                            <p class="pricing-label i18n">New Limit After Upgrade</p>
+                            <p class="pricing-label">New Limit After Upgrade</p>
                             <p class="user-count upgrade-count">{{ added_count }}</p>
                         </div>
                     </div>
                     {% if existing_subscription_obj and existing_subscription_obj.subscription_status == 1 and payment_amount > 0 %}
                     <div class="price-calculation">
-                        <p class="pricing-label i18n">One-Time Upgrade Fee</p>
+                        <p class="pricing-label">One-Time Upgrade Fee</p>
                         <p class="price-highlight">₹{{ payment_amount }}</p>
-                        <p class="text-muted pricing-note i18n">Includes all applicable taxes</p>
+                        <p class="text-muted pricing-note">Includes all applicable taxes</p>
                     </div>
                     {% elif existing_subscription_obj and existing_subscription_obj.subscription_status == 0 %}
                     <div class="price-calculation">
-                        <p class="pricing-label i18n">Upgrade Fee</p>
-                        <p class="text-muted i18n">Pending approval confirmation</p>
+                        <p class="pricing-label">Upgrade Fee</p>
+                        <p class="text-muted">Pending approval confirmation</p>
                     </div>
                     {% endif %}
                 </div>
@@ -619,13 +619,13 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="confirmUpgradeRequest"
                             name="confirm_upgrade_request" required>
-                        <label class="form-check-label i18n" for="confirmUpgradeRequest">
+                        <label class="form-check-label" for="confirmUpgradeRequest">
                             I understand this will request a permanent increase of 50 users to my account limit, with
                             applicable charges.
                         </label>
                     </div>
                     <div class="button-container">
-                        <button type="submit" class="btn btn-primary i18n" id="submitUpgradeRequestBtn">
+                        <button type="submit" class="btn btn-primary" id="submitUpgradeRequestBtn">
                             <i class="icon-send"></i> Request Upgrade
                         </button>
                     </div>
@@ -635,7 +635,7 @@
                     <button class="btn btn-success btn-lg" type="button" id="makeUserIncreasePaymentBtn">
                         <i class="icon-credit-card"></i> Pay ₹{{ payment_amount }} Now
                     </button>
-                    <p class="text-muted payment-note i18n">Secure payment processed via Razorpay</p>
+                    <p class="text-muted payment-note">Secure payment processed via Razorpay</p>
                 </div>
                 {% endif %}
             </div>
@@ -643,44 +643,7 @@
     </div>
 
 
-    <!-- Translation Script -->
-    <script>
-        let translations = {};
-        let currentLanguage = 'en';
 
-        document.addEventListener('DOMContentLoaded', async function () {
-            const savedLanguage = localStorage.getItem('preferred_language') || 'en';
-            await loadTranslations(savedLanguage);
-            document.getElementById('language-select').value = savedLanguage;
-        });
-
-        async function changeLanguage(lang) {
-            currentLanguage = lang;
-            localStorage.setItem('preferred_language', lang);
-            await loadTranslations(lang);
-        }
-
-        async function loadTranslations(lang) {
-            try {
-                const response = await fetch(`{% static 'js/i18n/' %}${lang}.json`);
-                if (!response.ok) return;
-                translations = await response.json();
-                updatePageText();
-            } catch (error) {
-                console.error('Translation error:', error);
-            }
-        }
-
-        function updatePageText() {
-            const elements = document.querySelectorAll('.i18n');
-            elements.forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[key]) {
-                    el.textContent = translations[key];
-                }
-            });
-        }
-    </script>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
