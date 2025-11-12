@@ -374,6 +374,7 @@
                 height: 32px !important;
                 top: 8px !important;
                 right: 8px !important;
+                opacity: 1 !important; /* Always visible on mobile */
             }
             
             .custom-checkbox {
@@ -546,6 +547,7 @@
             transform: translateY(-4px) !important;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
             border-color: rgba(0, 0, 0, 0.2) !important;
+            cursor: pointer !important;
         }
 
         .notification-card.unread {
@@ -775,23 +777,28 @@
         /* Notification Selection Checkbox */
         .notification-checkbox {
             position: absolute !important;
-            top: 12px !important;
-            right: 12px !important;
-            opacity: 0 !important;
+            top: 16px !important;
+            right: 16px !important;
+            opacity: 0.7 !important;
             transition: all 0.3s ease !important;
+            z-index: 10 !important;
+            transform: scale(0.8) !important;
         }
 
         .notification-card:hover .notification-checkbox {
             opacity: 1 !important;
+            transform: scale(1) !important;
         }
 
         .notification-card.selected .notification-checkbox {
             opacity: 1 !important;
+            transform: scale(1) !important;
         }
 
         .notification-card.selected {
             border-color: #000000 !important;
-            background: #f8f8f8 !important;
+            background: #f0f0f0 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
         }
 
         .custom-checkbox {
@@ -804,7 +811,7 @@
             cursor: pointer !important;
             transition: all 0.3s ease !important;
             position: relative !important;
-            margin-top:10px;
+            margin: 0 !important;
         }
 
         .custom-checkbox:checked {
@@ -826,6 +833,7 @@
         .custom-checkbox:hover {
             border-color: #000000 !important;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.2) !important;
+            transform: scale(1.1) !important;
         }
 
         /* Select All Button */
@@ -833,12 +841,17 @@
             background: #ffffff !important;
             border: 1px solid #000000 !important;
             color: #000000 !important;
-            padding: 6px 12px !important;
+            padding: 8px 16px !important;
             border-radius: 6px !important;
-            font-size: 0.75rem !important;
+            font-size: 0.875rem !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
             cursor: pointer !important;
+            min-width: 100px !important;
+            min-height: 36px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
         .btn-select-all:hover {
@@ -1054,9 +1067,9 @@
             {% endif %}
         </h1>
         <div class="d-flex align-items-center gap-4">            {% if notifications %}
-            <button class="btn btn-select-all btn-sm" style="display: inline-flex;margin-right: 1rem;"
-                onclick="toggleSelectAll()">
-                <i class="bi bi-check-square me-2" style="margin-right: 8px;"></i>Select All
+            <button class="btn btn-select-all btn-sm"
+                onclick="toggleSelectAll()" title="Select/Deselect all notifications (Ctrl+A)">
+                <i class="bi bi-check-square me-2"></i>Select All
             </button>
             <button class="btn btn-outline-primary btn-sm" onclick="markAllAsRead()">
                 <i class="bi bi-check-all me-2" style="margin-right: 8px;"></i>Mark All as Read
@@ -1089,7 +1102,7 @@
             data-notification-id="{{ notification.notification_id }}">
 
             <!-- Selection Checkbox -->
-            <div class="notification-checkbox">
+            <div class="notification-checkbox" onclick="event.stopPropagation()">
                 <input type="checkbox" class="custom-checkbox notification-select"
                     value="{{ notification.notification_id }}" onchange="updateSelection()">
             </div>
@@ -1377,6 +1390,7 @@
         const checked = document.querySelectorAll('.notification-select:checked');
         const deleteControls = document.getElementById('deleteControls');
         const selectionCount = document.getElementById('selectionCount');
+        const selectAllBtn = document.querySelector('.btn-select-all');
 
         // Update selection count
         selectionCount.textContent = checked.length;
@@ -1384,8 +1398,12 @@
         // Show/hide delete controls
         if (checked.length > 0) {
             deleteControls.classList.add('show');
+            // Update select all button to show deselect option
+            selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1"></i>Deselect All';
         } else {
             deleteControls.classList.remove('show');
+            // Reset select all button
+            selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1"></i>Select All';
         }
 
         // Update card styles
@@ -1400,18 +1418,21 @@
     }
 
     function toggleSelectAll() {
+        event.stopPropagation(); // Prevent event bubbling
         const checkboxes = document.querySelectorAll('.notification-select');
         const selectAllBtn = document.querySelector('.btn-select-all');
-        const allChecked = document.querySelectorAll('.notification-select:checked').length === checkboxes.length;
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        const newCheckedState = !allChecked;
 
+        // Set all checkboxes to the new state
         checkboxes.forEach(checkbox => {
-            checkbox.checked = !allChecked;
+            checkbox.checked = newCheckedState;
         });
 
-        // Update button text
-        selectAllBtn.innerHTML = allChecked ?
-            '<i class="bi bi-check-square me-1" style="margin-right: 8px;"></i>Select All' :
-            '<i class="bi bi-square me-1" style="margin-right: 8px;"></i>Deselect All';
+        // Update button text based on new state
+        selectAllBtn.innerHTML = newCheckedState ?
+            '<i class="bi bi-check-square me-1"></i>Deselect All' :
+            '<i class="bi bi-check-square me-1"></i>Select All';
 
         updateSelection();
     }
@@ -1525,6 +1546,14 @@
                 const notificationId = this.getAttribute('data-notification-id');
                 markAsRead(notificationId);
             });
+        });
+
+        // Add keyboard shortcut for select all (Ctrl+A)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'a' && document.activeElement.tagName !== 'INPUT') {
+                e.preventDefault();
+                toggleSelectAll();
+            }
         });
     });
 </script>
