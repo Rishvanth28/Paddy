@@ -30,23 +30,53 @@ def customer_orders(request):
         orders = Orders.objects.filter(customer__customer_id=customer_id).order_by('-order_date')
         
         # Convert to JSON serializable format
-        orders_data = [{
-            'order_id': order.order_id,
-            'order_date': order.order_date.strftime('%Y-%m-%d'),
-            'delivery_date': order.delivery_date.strftime('%Y-%m-%d') if order.delivery_date else None,
-            'overall_amount': order.overall_amount,
-            'paid_amount': order.paid_amount,
-            'payment_status': order.payment_status,
-            'delivery_status': order.delivery_status,
-            'quantity': order.quantity,
-            'price_per_unit': float(order.price_per_unit),
-            'GST': order.GST,
-            'lorry_number': order.lorry_number,
-            'driver_name': order.driver_name,
-            'driver_ph_no': order.driver_ph_no,
-            'product_category_id': order.product_category_id,
-            'category': order.category,  # Include category field
-        } for order in orders]
+        orders_data = []
+        for order in orders:
+            # Get order items data
+            order_items_data = []
+            if order.product_category_id == 3:  # Pesticide orders have multiple items
+                for item in order.items.all():
+                    order_items_data.append({
+                        'product_name': item.product_name,
+                        'batch_number': item.batch_number,
+                        'expiry_date': str(item.expiry_date),
+                        'quantity': item.quantity,
+                        'price_per_unit': float(item.price_per_unit),
+                        'total_amount': float(item.total_amount),
+                        'unit': item.unit,
+                    })
+            else:
+                # For single item orders (rice or paddy)
+                product_name = "Paddy" if order.product_category_id == 2 else "Rice" if order.product_category_id == 1 else "Unknown"
+                order_items_data.append({
+                    'product_name': product_name,
+                    'category': order.category,
+                    'quantity': order.quantity,
+                    'price_per_unit': float(order.price_per_unit),
+                    'total_amount': float(order.overall_amount),
+                    'batch_number': 'N/A',
+                    'expiry_date': 'N/A',
+                    'unit': 'N/A',
+                })
+            
+            orders_data.append({
+                'order_id': order.order_id,
+                'order_date': order.order_date.strftime('%Y-%m-%d'),
+                'delivery_date': order.delivery_date.strftime('%Y-%m-%d') if order.delivery_date else None,
+                'overall_amount': order.overall_amount,
+                'paid_amount': order.paid_amount,
+                'payment_status': order.payment_status,
+                'delivery_status': order.delivery_status,
+                'quantity': order.quantity,
+                'price_per_unit': float(order.price_per_unit),
+                'GST': order.GST,
+                'lorry_number': order.lorry_number,
+                'driver_name': order.driver_name,
+                'driver_ph_no': order.driver_ph_no,
+                'product_category_id': order.product_category_id,
+                'category': order.category,
+                'order_items': order_items_data,  # Include order items
+            })
         return JsonResponse({'orders': orders_data})
     
     # For regular page load, just render the template (JS will fetch data)
@@ -186,6 +216,7 @@ def admin_orders(request):
                 product_name = "Paddy" if order.product_category_id == 2 else "Rice" if order.product_category_id == 1 else "Unknown"
                 order_items_data.append({
                     'product_name': product_name,
+                    'category': order.category,  # Add category from order
                     'quantity': order.quantity,
                     'price_per_unit': float(order.price_per_unit),
                     'total_amount': float(order.overall_amount),
@@ -232,6 +263,7 @@ def admin_orders(request):
                 'driver_name': order.driver_name,
                 'driver_ph_no': order.driver_ph_no,
                 'order_date': str(order.order_date),
+                'delivery_date': order.delivery_date.strftime('%Y-%m-%d') if order.delivery_date else None,
                 'paid_amount': float(order.paid_amount) if order.paid_amount is not None else 0.0,
                 'order_items': order_items_data,
                 'category': order.category,
@@ -350,6 +382,7 @@ def super_admin_orders(request):
                 product_name = "Paddy" if order.product_category_id == 2 else "Rice" if order.product_category_id == 1 else "Unknown"
                 order_items_data.append({
                     'product_name': product_name,
+                    'category': order.category,  # Add category from order
                     'quantity': order.quantity,
                     'price_per_unit': float(order.price_per_unit),
                     'total_amount': float(order.overall_amount),
@@ -393,7 +426,7 @@ def super_admin_orders(request):
                 'admin_email': admin_email,  # Add admin email
                 'payment_status': order.payment_status,
                 'delivery_status': order.delivery_status,
-                'delivery_date': order.delivery_date if order.delivery_status else None,
+                'delivery_date': order.delivery_date.strftime('%Y-%m-%d') if order.delivery_date else None,
                 'product_category_id': order.product_category_id,
                 'category': order.category,
                 'quantity': float(order.quantity),

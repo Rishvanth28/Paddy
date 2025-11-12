@@ -4108,7 +4108,7 @@ body {
             <div class="order-item-body d-flex justify-content-between">
                 <div>
                     <small class="text-muted order-category">${getCategoryName(order.product_category_id)}</small>
-                    <small class="d-block">${order.quantity} item(s)</small>
+                    <small class="d-block">${order.product_category_id === 3 ? (order.order_items ? order.order_items.length : 0) : 1} item(s)</small>
                 </div>
                 <div class="order-status-badges">
                     ${paymentStatusBadge}
@@ -4246,6 +4246,76 @@ body {
                         </div>
                     </div>
                 </div>
+                
+                ${order.order_items && order.order_items.length > 0 ? (() => {
+                    let orderItemsHtml = '';
+                    if (order.product_category_id === 3) { // Multiple items (pesticides)
+                        orderItemsHtml = `
+                <div class="detail-section">
+                    <h6>Order Items</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Batch #</th>
+                                    <th>Expiry</th>
+                                    <th>Quantity</th>
+                                    <th>Price/Unit</th>
+                                    <th>Unit</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${order.order_items.map(item => `
+                                    <tr>
+                                        <td>${item.product_name}</td>
+                                        <td>${item.batch_number}</td>
+                                        <td>${item.expiry_date !== 'N/A' ? formatDate(item.expiry_date) : 'N/A'}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>₹${item.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        <td>${item.unit}</td>
+                                        <td>₹${item.total_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                `;
+                    } else {
+                        // For single item orders (rice or paddy)
+                        const productName = order.product_category_id === 1 ? 'Rice' : 'Paddy';
+                        orderItemsHtml = `
+                <div class="detail-section">
+                    <h6>Order Items</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td class="text-muted">Product Type:</td>
+                            <td>${productName}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Category:</td>
+                            <td>${order.category || 'N/A'}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Quantity:</td>
+                            <td>${order.quantity || 'N/A'}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Price Per Unit:</td>
+                            <td>₹${order.price_per_unit ? order.price_per_unit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : 'N/A'}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Total Amount:</td>
+                            <td class="fw-medium">₹${order.overall_amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        </tr>
+                    </table>
+                </div>
+                `;
+                    }
+                    return orderItemsHtml;
+                })() : ''}
                 
                 <div class="detail-section last">
                     <h6>Delivery Information</h6>
