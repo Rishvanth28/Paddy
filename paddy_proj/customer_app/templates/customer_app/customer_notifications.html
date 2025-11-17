@@ -273,6 +273,9 @@
                 background: rgba(255, 255, 255, 0.9) !important;
                 border-radius: 50% !important;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+                opacity: 1 !important;
+                z-index: 10 !important;
+                pointer-events: auto !important;
             }
             
             .custom-checkbox {
@@ -401,6 +404,7 @@
                 height: 35px !important;
                 top: 6px !important;
                 right: 6px !important;
+                opacity: 1 !important;
             }
             
             .custom-checkbox {
@@ -450,6 +454,7 @@
                 width: 44px !important;
                 height: 44px !important;
                 touch-action: manipulation;
+                opacity: 1 !important;
             }
             
             .custom-checkbox {
@@ -834,6 +839,8 @@
             right: 12px !important;
             opacity: 0 !important;
             transition: all 0.3s ease !important;
+            z-index: 10 !important;
+            pointer-events: auto !important;
         }
 
         .notification-card:hover .notification-checkbox {
@@ -859,6 +866,8 @@
             cursor: pointer !important;
             transition: all 0.3s ease !important;
             position: relative !important;
+            z-index: 10 !important;
+            pointer-events: auto !important;
         }
 
         .custom-checkbox:checked {
@@ -893,6 +902,10 @@
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
             cursor: pointer !important;
+        }
+        
+        .btn-select-all i {
+            margin-right: 8px !important;
         }
 
         .btn-select-all:hover {
@@ -1616,8 +1629,8 @@ function markAsRead(notificationId) {
 
         // Update button text and icon
         selectAllBtn.innerHTML = currentlyAllChecked ? 
-            '<i class="fas fa-square"></i> Select All' : 
-            '<i class="fas fa-check-square"></i> Deselect All';
+            '<i class="bi bi-check-square me-2" style="margin-right: 8px;"></i>Select All' : 
+            '<i class="bi bi-square me-2" style="margin-right: 8px;"></i>Deselect All';
 
         // Show/hide delete controls
         const deleteControls = document.querySelector('.delete-controls');
@@ -1643,7 +1656,7 @@ function markAsRead(notificationId) {
         });
 
         // Reset select all button
-        selectAllBtn.innerHTML = '<i class="fas fa-square"></i> Select All';
+        selectAllBtn.innerHTML = '<i class="bi bi-check-square me-2" style="margin-right: 8px;"></i>Select All';
         
         // Hide delete controls
         if (deleteControls) {
