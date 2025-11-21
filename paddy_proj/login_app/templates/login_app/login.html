@@ -28,19 +28,12 @@
                     <div class="tab-content active" id="signin">
                         <form method="POST" action="{% url 'login_app:login' %}">
                             {% csrf_token %}  <!-- Security Token -->
-
-                            <label class="text" for="role">SELECT ROLE</label>
-                            <select name="role" id="role">
-                                <option value="superadmin">Superadmin</option>
-                                <option value="admin">Admin</option>
-                                <option value="customer">Customer</option>
-                            </select>
                         
                             <label class="text" for="username">PHONE NUMBER</label>
-                            <input type="text" name="username" id="username">
+                            <input type="text" name="username" id="username" required>
 
                             <label class="text" for="password">PASSWORD</label>
-                            <input type="password" name="password" id="password">
+                            <input type="password" name="password" id="password" required>
 
                             <button class="login" type="submit">LOG IN</button>
                         </form>

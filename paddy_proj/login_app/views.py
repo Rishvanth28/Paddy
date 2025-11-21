@@ -19,38 +19,28 @@ def login_view(request):
     if request.method == "POST":
         phone_number = request.POST.get("username")
         password = request.POST.get("password")
-        role = request.POST.get("role")
 
-        if not phone_number or not password or not role:
+        if not phone_number or not password:
             messages.error(request, "All fields are required.")
             return redirect("login_app:login")
 
-        if role == "superadmin":
-            try:
-                user = AdminTable.objects.get(phone_number=phone_number)
-                if user.admin_id > 1000000:
-                    messages.error(request, "Unauthorized access.")
-                    return redirect("login_app:login")
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.admin_id
+        # Priority 1: Check if Superadmin (admin_id <= 1000000)
+        try:
+            admin_user = AdminTable.objects.get(phone_number=phone_number)
+            if check_password(password, admin_user.password):
+                # Check if superadmin
+                if admin_user.admin_id <= 1000000:
+                    request.session["user_id"] = admin_user.admin_id
                     request.session["role"] = "superadmin"
                     return redirect("superadmin_app:superadmin_dashboard")
-            except AdminTable.DoesNotExist:
-                messages.error(request, "Super Admin not found.")
-
-        elif role == "admin":
-            try:
-                user = AdminTable.objects.get(phone_number=phone_number)
-                if user.admin_id == 1000000:
-                    messages.error(request, "Unauthorized access.")
-                    return redirect("login_app:login")
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.admin_id
+                # Regular admin
+                else:
+                    request.session["user_id"] = admin_user.admin_id
                     request.session["role"] = "admin"
                     
                     # Check for any active product subscription (rice, paddy, pesticide)
                     active_product_sub = Subscription.objects.filter(
-                        admin_id=user, 
+                        admin_id=admin_user, 
                         subscription_type__in=['admin_rice', 'admin_paddy', 'admin_pesticide'],
                         end_date__gte=now().date(),
                         subscription_status=1
@@ -60,40 +50,40 @@ def login_view(request):
                         return redirect("admin_app:admin_dashboard")
                     else:
                         return redirect("payment_app:admin_product_subscription")
-            except AdminTable.DoesNotExist:
-                messages.error(request, "Admin not found.")
+        except AdminTable.DoesNotExist:
+            pass  # Continue to check customer
 
-        elif role == "customer":
-            try:
-                user = CustomerTable.objects.get(phone_number=phone_number)
-                if check_password(password, user.password):
-                    request.session["user_id"] = user.customer_id
-                    request.session["role"] = "customer"
+        # Priority 2: Check if Customer (only if not found in AdminTable or password didn't match)
+        try:
+            customer_user = CustomerTable.objects.get(phone_number=phone_number)
+            if check_password(password, customer_user.password):
+                request.session["user_id"] = customer_user.customer_id
+                request.session["role"] = "customer"
 
-                    # Subscription check
-                    sub = Subscription.objects.filter(customer_id=user, subscription_type="customer").order_by("-end_date").first()
-                    
-                    if sub:
-                        if sub.end_date and sub.end_date >= now().date():
-                            return redirect("customer_app:customer_dashboard")
-                        else:
-                            return redirect("payment_app:customer_subscription_payment")
-                    else:
-                        # Free trial logic
-                        Subscription.objects.create(
-                            customer_id=user,
-                            subscription_type="customer",
-                            subscription_status=1,
-                            payment_amount=0,
-                            start_date=now().date(),
-                            end_date=now().date() + timedelta(days=30)
-                        )
+                # Subscription check
+                sub = Subscription.objects.filter(customer_id=customer_user, subscription_type="customer").order_by("-end_date").first()
+                
+                if sub:
+                    if sub.end_date and sub.end_date >= now().date():
                         return redirect("customer_app:customer_dashboard")
-            except CustomerTable.DoesNotExist:
-                messages.error(request, "Customer not found.")
+                    else:
+                        return redirect("payment_app:customer_subscription_payment")
+                else:
+                    # Free trial logic
+                    Subscription.objects.create(
+                        customer_id=customer_user,
+                        subscription_type="customer",
+                        subscription_status=1,
+                        payment_amount=0,
+                        start_date=now().date(),
+                        end_date=now().date() + timedelta(days=30)
+                    )
+                    return redirect("customer_app:customer_dashboard")
+        except CustomerTable.DoesNotExist:
+            pass  # User not found in either table
 
-        else:
-            messages.error(request, "Invalid role selected.")
+        # If we reach here, credentials are invalid
+        messages.error(request, "Invalid phone number or password.")
 
     return render(request, "login_app/login.html")   
 
