@@ -84,6 +84,7 @@
     body.customer-page .sidebar {
       width: var(--sidebar-width, 260px) !important;
       height: 100vh !important;
+      height: 100dvh !important; /* Use dynamic viewport height for mobile browsers */
       background-color: var(--sidebar-bg, #ffffff) !important;
       color: var(--sidebar-text, #333333) !important;
       display: flex !important;
@@ -95,9 +96,8 @@
       z-index: 1000 !important;
       box-shadow: var(--shadow, 0 4px 6px rgba(0, 0, 0, 0.1)) !important;
       border-right: 1px solid var(--sidebar-border, #e0e0e0) !important;
-      overflow-y: auto !important;
-      scrollbar-width: thin !important;
-      scrollbar-color: #888 #f1f1f1 !important;
+      overflow: hidden !important; /* Prevent whole sidebar scroll */
+      overscroll-behavior: contain !important; /* Prevent body scroll chaining */
       will-change: transform !important;
       transform: translateX(0) !important;
     }
@@ -111,6 +111,7 @@
       gap: 12px !important;
       border-bottom: 1px solid var(--sidebar-border, #e0e0e0) !important;
       background-color: var(--sidebar-bg, #ffffff) !important;
+      flex-shrink: 0 !important; /* Don't shrink */
     }
     
     /* Logo icon styling */
@@ -131,7 +132,7 @@
       flex: 1 1 auto !important;
       padding: 20px 0 !important;
       overflow-y: auto !important;
-      max-height: calc(100vh - 200px) !important;
+      /* max-height removed to let flexbox handle it */
     }
     
     /* Navigation menu items */
@@ -193,18 +194,19 @@
       text-align: center !important;
       border-top: 1px solid var(--sidebar-border, #e0e0e0) !important;
       margin-top: auto !important;
-      position: sticky !important;
-      bottom: 0 !important;
+      /* position: sticky !important; -- Removed */
+      /* bottom: 0 !important; */
       background-color: var(--sidebar-bg, #ffffff) !important;
       box-shadow: 0 -2px 5px rgba(0,0,0,0.05) !important;
+      flex-shrink: 0 !important; /* Don't shrink */
     }
     
     @media (max-width: 1024px) {
       body.customer-page .sidebar-footer {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        width: 260px !important;
+        /* position: fixed !important; -- Removed fixed positioning */
+        /* bottom: 0 !important; */
+        /* left: 0 !important; */
+        width: 100% !important; /* Changed from 260px */
         padding: 12px 15px !important;
         z-index: 1001 !important;
       }
@@ -1097,9 +1099,10 @@
       
       // Make sure sidebar scroll works on mobile too
       if (sidebar) {
-        sidebar.style.overflowY = 'auto';
+        // sidebar.style.overflowY = 'auto'; // Removed manual overflow
         
-        // Set height of sidebar-nav to enable scrolling
+        // Set height of sidebar-nav to enable scrolling - REMOVED as CSS handles it now
+        /*
         const sidebarHeader = document.querySelector('.sidebar-header');
         const sidebarFooter = document.querySelector('.sidebar-footer');
         const sidebarNav = document.querySelector('.sidebar-nav');
@@ -1111,10 +1114,12 @@
           
           sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
         }
+        */
       }
     });
     
-    // Update sidebar nav height on window resize
+    // Update sidebar nav height on window resize - REMOVED
+    /*
     window.addEventListener('resize', function() {
       const sidebarHeader = document.querySelector('.sidebar-header');
       const sidebarFooter = document.querySelector('.sidebar-footer');
@@ -1128,6 +1133,7 @@
         sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
       }
     });
+    */
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {

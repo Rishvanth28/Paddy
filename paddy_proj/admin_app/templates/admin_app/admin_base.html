@@ -71,7 +71,8 @@
       z-index: 1000 !important;
       box-shadow: var(--shadow, 0 4px 6px rgba(0, 0, 0, 0.1)) !important;
       border-right: 1px solid var(--sidebar-border, #e0e0e0) !important;
-      overflow-y: hidden !important;
+      overflow: hidden !important; /* Prevent whole sidebar scroll */
+      overscroll-behavior: contain !important; /* Prevent body scroll chaining */
       scrollbar-width: thin !important;
       scrollbar-color: #888 #f1f1f1 !important;
       will-change: transform !important;
@@ -87,10 +88,10 @@
       gap: 10px !important;
       border-bottom: 1px solid var(--sidebar-border, #e0e0e0) !important;
       background-color: var(--sidebar-bg, #ffffff) !important;
-      position: sticky !important;
-      top: 0 !important;
+      /* position: sticky !important; -- Removed */
+      /* top: 0 !important; */
       z-index: 10 !important;
-      flex-shrink: 0 !important;
+      flex-shrink: 0 !important; /* Don't shrink */
     }
     
     /* Logo icon styling */
@@ -165,12 +166,12 @@
       text-align: center !important;
       border-top: 1px solid var(--sidebar-border, #e0e0e0) !important;
       margin-top: auto !important;
-      position: sticky !important;
-      bottom: 0 !important;
+      /* position: sticky !important; -- Removed */
+      /* bottom: 0 !important; */
       background-color: var(--sidebar-bg, #ffffff) !important;
       box-shadow: 0 -2px 5px rgba(0,0,0,0.05) !important;
       z-index: 10 !important;
-      flex-shrink: 0 !important;
+      flex-shrink: 0 !important; /* Don't shrink */
     }
     
     body.admin-page .logout-button {
@@ -1070,11 +1071,11 @@
       }
       
       // Make sure sidebar scroll works on mobile too
-      const sidebar = document.getElementById('sidebar');
       if (sidebar) {
-        sidebar.style.overflowY = 'auto';
+        // sidebar.style.overflowY = 'auto'; // Removed manual overflow
         
-        // Set height of sidebar-nav to enable scrolling
+        // Set height of sidebar-nav to enable scrolling - REMOVED as CSS handles it now
+        /*
         const sidebarHeader = document.querySelector('.sidebar-header');
         const sidebarFooter = document.querySelector('.sidebar-footer');
         const sidebarNav = document.querySelector('.sidebar-nav');
@@ -1086,10 +1087,12 @@
           
           sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
         }
+        */
       }
     });
     
-    // Update sidebar nav height on window resize
+    // Update sidebar nav height on window resize - REMOVED
+    /*
     window.addEventListener('resize', function() {
       const sidebarHeader = document.querySelector('.sidebar-header');
       const sidebarFooter = document.querySelector('.sidebar-footer');
@@ -1103,6 +1106,7 @@
         sidebarNav.style.maxHeight = `${windowHeight - headerHeight - footerHeight}px`;
       }
     });
+    */
 
     // ========== HAMBURGER SCROLL VISIBILITY FUNCTIONALITY ==========
     let lastScrollTop = 0;
