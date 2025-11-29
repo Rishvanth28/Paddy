@@ -1,6 +1,5 @@
 .venv
 venv
-.env
 __pycache__
 migrations
 
