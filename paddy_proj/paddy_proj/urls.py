@@ -3,7 +3,7 @@ from django.urls import path, include
 
 urlpatterns = [
     # Django Admin Panel - Keep this at the top for priority
-    #path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     
     # Authentication
     path('login/', include('login_app.urls')),
