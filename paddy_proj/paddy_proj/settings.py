@@ -19,6 +19,11 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# PostgreSQL Database Configuration
+POSTGRES_USER = 'admin'
+POSTGRES_PASSWORD = 'admin'
+POSTGRES_NAME = 'paddy'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -92,9 +97,9 @@ WSGI_APPLICATION = 'paddy_proj.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env('POSTGRES_NAME'),
-        "USER": env('POSTGRES_USER'),
-        "PASSWORD": env('POSTGRES_PASSWORD'),
+        "NAME": POSTGRES_NAME,
+        "USER": POSTGRES_USER,
+        "PASSWORD": POSTGRES_PASSWORD,
         "HOST": "localhost",  # set in docker-compose.yml
         "PORT": 5432,  # default postgres port
     }
