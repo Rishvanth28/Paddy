@@ -126,11 +126,10 @@ def admin_orders(request):
         orders_query = Orders.objects.all()
 
         if role == 'admin':
-            # Admins can only see orders associated with their customers
+            # Admins should see orders they placed, regardless of which admin the customer belongs to
             try:
                 admin_instance = AdminTable.objects.get(admin_id=user_id)
-                customer_ids_for_admin = CustomerTable.objects.filter(admin=admin_instance).values_list('customer_id', flat=True)
-                orders_query = orders_query.filter(customer__customer_id__in=customer_ids_for_admin)
+                orders_query = orders_query.filter(admin=admin_instance)
             except AdminTable.DoesNotExist:
                 return JsonResponse({'error': 'Admin not found'}, status=404)
 
@@ -461,7 +460,8 @@ def place_order(request):
     if not admin_id:
         return redirect("login_app:login")
 
-    customers = CustomerTable.objects.filter(admin__admin_id=admin_id)
+    # Allow placing orders to any customer (platform-wide)
+    customers = CustomerTable.objects.all()
     
     # Handle order submission - create order and redirect to dashboard
     if request.method == "POST":
