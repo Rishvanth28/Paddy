@@ -492,7 +492,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 4px;
-            background-color: #000000;
+            background-color: #28a745;
             border-radius: 2px;
             transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
         }        .page-title:hover::after {
@@ -501,8 +501,8 @@
         }
 
         .btn-outline-primary {
-            color: #000000 !important;
-            border-color: #000000 !important;
+            color: #28a745 !important;
+            border-color: #28a745 !important;
             background: #ffffff !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
@@ -510,11 +510,11 @@
         }
 
         .btn-outline-primary:hover {
-            background: #000000 !important;
-            border-color: #000000 !important;
+            background: #28a745 !important;
+            border-color: #28a745 !important;
             color: #ffffff !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
         }
 
         .notifications-container {
@@ -523,7 +523,7 @@
 
         .notification-card {
             background: #ffffff !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(40, 167, 69, 0.2) !important;
             border-radius: 16px !important;
             padding: 20px !important;
             margin-bottom: 16px !important;
@@ -540,24 +540,24 @@
             left: 0 !important;
             right: 0 !important;
             height: 3px !important;
-            background: #e0e0e0 !important;
+            background: #28a745 !important;
         }
 
         .notification-card:hover {
             transform: translateY(-4px) !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
-            border-color: rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 8px 24px rgba(40, 167, 69, 0.15) !important;
+            border-color: rgba(40, 167, 69, 0.4) !important;
             cursor: pointer !important;
         }
 
         .notification-card.unread {
-            background: #f8f8f8 !important;
-            border-color: rgba(0, 0, 0, 0.15) !important;
+            background: #f8fff9 !important;
+            border-color: rgba(40, 167, 69, 0.3) !important;
         }
 
         .notification-card.unread::before {
-            background: #000000 !important;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2) !important;
+            background: #28a745 !important;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3) !important;
         }
 
         .notification-header {
@@ -568,14 +568,14 @@
         }
 
         .notification-icon {
-            background: rgba(0, 0, 0, 0.05) !important;
+            background: rgba(40, 167, 69, 0.08) !important;
             border-radius: 50% !important;
             width: 40px !important;
             height: 40px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(40, 167, 69, 0.2) !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
             position: relative !important;
@@ -583,9 +583,9 @@
 
         .notification-icon:hover {
             transform: scale(1.1) !important;
-            background: rgba(0, 0, 0, 0.1) !important;
-            border-color: rgba(0, 0, 0, 0.2) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+            background: rgba(40, 167, 69, 0.15) !important;
+            border-color: rgba(40, 167, 69, 0.4) !important;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2) !important;
         }
 
         .notification-icon.animate-pulse {
@@ -599,7 +599,7 @@
 
             50% {
                 transform: scale(1.2);
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
             }
 
             100% {
@@ -613,7 +613,7 @@
             inset: -2px !important;
             border-radius: 50% !important;
             padding: 2px !important;
-            background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.1), transparent) !important;
+            background: linear-gradient(45deg, transparent, rgba(40, 167, 69, 0.3), transparent) !important;
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
             mask-composite: exclude !important;
             opacity: 0 !important;
@@ -645,8 +645,8 @@
         }
 
         .action-feedback.success {
-            border-color: #000000 !important;
-            background: #f8f8f8 !important;
+            border-color: #28a745 !important;
+            background: #f8fff9 !important;
         }
 
         .action-feedback.info {
@@ -682,7 +682,7 @@
 
         .notification-icon i {
             font-size: 1.2rem !important;
-            color: #000000 !important;
+            color: #28a745 !important;
         }
 
         .notification-title {
@@ -702,23 +702,23 @@
             top: 2px;
             width: 12px !important;
             height: 12px !important;
-            background: #000000 !important;
+            background: #28a745 !important;
             border-radius: 50% !important;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
-            animation: pulse-black 2s infinite !important;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.5) !important;
+            animation: pulse-green 2s infinite !important;
         }
 
-        @keyframes pulse-black {
+        @keyframes pulse-green {
             0% {
-                box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
             }
 
             50% {
-                box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+                box-shadow: 0 0 16px rgba(40, 167, 69, 0.8);
             }
 
             100% {
-                box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
             }
         }
 
@@ -730,9 +730,9 @@
         }
 
         .notification-actions .btn {
-            background: #ffffff !important;
-            border: 1px solid #000000 !important;
-            color: #000000 !important;
+            background: #28a745 !important;
+            border: 1px solid #28a745 !important;
+            color: #ffffff !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
@@ -740,11 +740,11 @@
         }
 
         .notification-actions .btn:hover {
-            background: #000000 !important;
-            border-color: #000000 !important;
+            background: #218838 !important;
+            border-color: #218838 !important;
             color: #ffffff !important;
             transform: translateY(-1px) !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3) !important;
         }
 
         .empty-state {
@@ -752,7 +752,7 @@
             padding: 60px 20px !important;
             background: #f9f9f9 !important;
             border-radius: 20px !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(40, 167, 69, 0.2) !important;
         }
 
         .empty-icon {
@@ -796,9 +796,9 @@
         }
 
         .notification-card.selected {
-            border-color: #000000 !important;
-            background: #f0f0f0 !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            border-color: #28a745 !important;
+            background: #f8fff9 !important;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2) !important;
         }
 
         .custom-checkbox {
@@ -806,7 +806,7 @@
             height: 20px !important;
             appearance: none !important;
             background: #ffffff !important;
-            border: 2px solid #000000 !important;
+            border: 2px solid #28a745 !important;
             border-radius: 4px !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
@@ -815,8 +815,8 @@
         }
 
         .custom-checkbox:checked {
-            background: #000000 !important;
-            border-color: #000000 !important;
+            background: #28a745 !important;
+            border-color: #28a745 !important;
         }
 
         .custom-checkbox:checked::after {
@@ -831,16 +831,16 @@
         }
 
         .custom-checkbox:hover {
-            border-color: #000000 !important;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2) !important;
+            border-color: #28a745 !important;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.3) !important;
             transform: scale(1.1) !important;
         }
 
         /* Select All Button */
         .btn-select-all {
             background: #ffffff !important;
-            border: 1px solid #000000 !important;
-            color: #000000 !important;
+            border: 1px solid #28a745 !important;
+            color: #28a745 !important;
             padding: 8px 16px !important;
             border-radius: 6px !important;
             font-size: 0.875rem !important;
@@ -855,10 +855,10 @@
         }
 
         .btn-select-all:hover {
-            background: #000000 !important;
+            background: #28a745 !important;
             color: #ffffff !important;
-            border-color: #000000 !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+            border-color: #28a745 !important;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3) !important;
         }
 
         /* --- Select All Button: Custom styles for <=700px screens --- */
@@ -875,13 +875,13 @@
             background: #ffffff !important;
             border-radius: 12px !important;
             padding: 16px 20px !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(40, 167, 69, 0.2) !important;
             margin-bottom: 20px !important;
             display: none !important;
             align-items: center !important;
             justify-content: space-between !important;
             transition: all 0.3s ease !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+            box-shadow: 0 2px 10px rgba(40, 167, 69, 0.08) !important;
         }
 
         .delete-controls.show {
@@ -910,7 +910,7 @@
         }
 
         .selection-count {
-            background: #000000 !important;
+            background: #28a745 !important;
             color: #ffffff !important;
             padding: 4px 8px !important;
             border-radius: 12px !important;
@@ -921,7 +921,7 @@
         }
 
         .btn-delete-selected {
-            background: #000000 !important;
+            background: #dc3545 !important;
             border: none !important;
             color: #ffffff !important;
             padding: 8px 16px !important;
@@ -936,20 +936,20 @@
         }
 
         .btn-delete-selected:hover {
-            background: #333333 !important;
+            background: #c82333 !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
         }
 
         .btn-delete-selected:active {
             transform: translateY(0) !important;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3) !important;
         }
 
         .btn-cancel-selection {
             background: #ffffff !important;
-            border: 1px solid #000000 !important;
-            color: #000000 !important;
+            border: 1px solid #dc3545 !important;
+            color: #dc3545 !important;
             padding: 8px 16px !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
@@ -960,18 +960,19 @@
         }
 
         .btn-cancel-selection:hover {
-            background: #f0f0f0 !important;
-            border-color: #000000 !important;
+            background: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
         }
 
         /* Badge Styles */
         .badge {
-            background: #000000 !important;
+            background: #28a745 !important;
             font-weight: 700 !important;
             font-size: 0.8rem !important;
             padding: 6px 10px !important;
             border-radius: 20px !important;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3) !important;
             color: #ffffff !important;
             margin-left: 8px !important;
             position: relative !important;
@@ -985,22 +986,22 @@
 
         @keyframes pulse-badge {
             0% {
-                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
                 transform: translateY(-5px) scale(1);
             }
             50% {
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 5px 15px rgba(40, 167, 69, 0.5);
                 transform: translateY(-5px) scale(1.1);
             }
             100% {
-                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+                box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
                 transform: translateY(-5px) scale(1);
             }
         }
 
         /* Icon color customizations */
         .text-success, .text-primary, .text-info, .text-warning, .text-secondary {
-            color: #000000 !important;
+            color: #28a745 !important;
         }        /* Responsive adjustments */
         @media (max-width: 768px) {
             .header-bar {

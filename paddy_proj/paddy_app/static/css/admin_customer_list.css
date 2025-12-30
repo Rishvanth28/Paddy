@@ -60,7 +60,7 @@ body, .customer-list-container,
     left: 0;
     width: 60px;
     height: 4px;
-    background-color: var(--primary-color);
+    background-color: #28a745;
     border-radius: 2px;
 }
 
@@ -91,8 +91,8 @@ body, .customer-list-container,
 
 .search-input:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #28a745;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.15);
     transform: translateY(-1px);
 }
 
@@ -110,7 +110,7 @@ body, .customer-list-container,
 }
 
 .search-input:focus + .search-icon {
-    color: var(--primary-color);
+    color: #28a745;
     transform: translateY(-50%) scale(1.1);
 }
 
@@ -121,7 +121,7 @@ body, .customer-list-container,
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     animation: scaleIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-    border: 1px solid #eaeaea;
+    border: 2px solid #28a745;
 }
 
 @keyframes scaleIn {
@@ -136,14 +136,15 @@ body, .customer-list-container,
 }
 
 .customer-table thead {
-    background-color: #1a1a1a;
+    background-color: #ffffff;
+    border-bottom: 3px solid #28a745;
 }
 
 .customer-table th {
     padding: 1.25rem 1.5rem;
     text-align: left;
     font-weight: 600;
-    color: white;
+    color: #000000;
     text-transform: uppercase;
     font-size: 0.875rem;
     letter-spacing: 0.05em;
@@ -158,7 +159,7 @@ body, .customer-list-container,
     transform: translateY(-50%);
     height: 60%;
     width: 1px;
-    background-color: rgba(255,255,255,0.2);
+    background-color: rgba(40, 167, 69, 0.3);
 }
 
 .customer-table td {
@@ -182,7 +183,7 @@ body, .customer-list-container,
 .customer-table tbody tr:hover {
     background-color: #f8f8f8;
     transform: translateX(4px);
-    box-shadow: 4px 0 0 0 var(--primary-color) inset;
+    box-shadow: 4px 0 0 0 #28a745 inset;
 }
 
 /* Empty State */
@@ -308,7 +309,7 @@ body, .customer-list-container,
     width: 80px;
     /* initial width */
     height: 4px;
-    background-color: #000000;
+    background-color: #28a745;
     border-radius: 2px;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
     /* added transition for both properties */

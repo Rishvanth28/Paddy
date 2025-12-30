@@ -19,7 +19,7 @@
       --sidebar-hover: rgba(0, 0, 0, 0.05);
       --sidebar-active: rgba(0, 0, 0, 0.1);
       --sidebar-border: #e0e0e0;
-      --primary-color: #000000;
+      --primary-color: #28a745;
       --transition-speed: 0.3s;
       --smooth-easing: cubic-bezier(0.4, 0, 0.2, 1);
       --nav-item-height: 48px;
@@ -98,7 +98,7 @@
     
     body.superadmin-page .sidebar-logo {
       transform: scale(1.1) !important;
-      color: #000000 !important;
+      color: #28a745 !important;
     }
     
     /* Sidebar navigation consistency */
@@ -145,9 +145,9 @@
     }
       body.superadmin-page .nav-item.active .nav-link {
       background-color: var(--sidebar-active, rgba(0, 0, 0, 0.1)) !important;
-      border-left: 3px solid var(--primary-color, #000000) !important;
+      border-left: 3px solid var(--primary-color, #28a745) !important;
       font-weight: normal !important;
-      color: var(--primary-color, #000000) !important;
+      color: #333333 !important;
     }
     
     /* Sidebar footer consistency */
@@ -202,7 +202,7 @@
       right: 15px !important;
       top: 40% !important;
       transform: translateY(-50%) !important;
-      background-color: #000000 !important;
+      background-color: #28a745 !important;
       color: white !important;
       border-radius: 50% !important;
       min-width: 18px !important;
@@ -219,15 +219,15 @@
     
     @keyframes pulse-badge {
       0% {
-        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
         transform: translateY(-50%) scale(1);
       }
       50% {
-        box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+        box-shadow: 0 5px 8px rgba(40, 167, 69, 0.5);
         transform: translateY(-50%) scale(1.1);
       }
       100% {
-        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
         transform: translateY(-50%) scale(1);
       }
     }
@@ -282,8 +282,8 @@
     
     body.superadmin-page .submenu-link:hover {
       background-color: var(--sidebar-hover, rgba(0, 0, 0, 0.05)) !important;
-      color: var(--primary-color, #000000) !important;
-      box-shadow: inset 4px 0 0 var(--primary-color, #000000) !important;
+      color: #333333 !important;
+      box-shadow: inset 4px 0 0 var(--primary-color, #28a745) !important;
     }
       /* Responsive styles with high priority */
     @media (max-width: 1024px) {
@@ -381,7 +381,7 @@
       width: 16px !important;
       height: 16px !important;
       border-radius: 50% !important;
-      background-color: var(--primary-color, #000000) !important;
+      background-color: #28a745 !important;
       color: white !important;
       display: flex !important;
       align-items: center !important;
@@ -416,7 +416,7 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     padding: 16px 40px 16px 24px;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #000000;
+    border-left: 4px solid #28a745;
     font-weight: 500;
     position: relative;
     animation: slideInRight 0.5s forwards;
@@ -438,24 +438,24 @@
     height: 16px;
     border-radius: 50%;
     margin-right: 12px;
-    background-color: #000000;
+    background-color: #28a745;
     flex-shrink: 0;
   }
 
   .toast.success {
-    border-left-color: #000000;
+    border-left-color: #28a745;
   }
 
   .toast.info {
-    border-left-color: #000000;
+    border-left-color: #17a2b8;
   }
 
   .toast.warning {
-    border-left-color: #000000;
+    border-left-color: #ffc107;
   }
 
   .toast.error {
-    border-left-color: #000000;
+    border-left-color: #dc3545;
   }
 
   @keyframes slideInRight {
@@ -478,7 +478,7 @@
     border: none;
     font-size: 1.2rem;
     cursor: pointer;
-    color: #000000;
+    color: #6c757d;
     opacity: 0.7;
     transition: all 0.3s ease;
     width: 24px;
@@ -649,19 +649,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #000000; /* Black scrollbar */
+  background-color: #28a745; /* Green scrollbar */
   border-radius: 10px;        /* Rounded corners */
   border: 3px solid #f5f5f5;  /* Creates padding effect */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #1a1a1a;
+  background-color: #218838;
 }
 
 /* For Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #000000 #f5f5f5;
+  scrollbar-color: #28a745 #f5f5f5;
 }
 
     </style>
@@ -698,7 +698,7 @@
   <aside class="sidebar" id="sidebar">
     <!-- Top section -->    <div class="sidebar-header">
       <a href="{% url 'profile' %}" class="logo-link">
-        <i class="fas fa-user-tie sidebar-logo" style="font-size: 2.5rem; color: #000000;"></i>
+        <i class="fas fa-user-tie sidebar-logo" style="font-size: 2.5rem; color: #28a745;"></i>
       </a>
       <h1 class="sidebar-title">Super Admin</h1>
     </div>

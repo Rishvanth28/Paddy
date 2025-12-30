@@ -20,8 +20,8 @@
 }
 
 .notification-card.unread {
-    border-left: 4px solid #007bff;
-    background: #f8f9ff;
+    border-left: 4px solid #28a745;
+    background: #f8fff9;
 }
 
 .notification-header {
@@ -52,7 +52,7 @@
 .unread-indicator {
     width: 8px;
     height: 8px;
-    background: #dc3545;
+    background: #28a745;
     border-radius: 50%;
     position: absolute;
     top: 1rem;
@@ -470,15 +470,15 @@
 }
 
 .notification-card[data-type="payment_received"] {
-    border-left-color: #007bff;
+    border-left-color: #28a745;
 }
 
 .notification-card[data-type="subscription_payment"] {
-    border-left-color: #ffc107;
+    border-left-color: #28a745;
 }
 
 .notification-card[data-type="admin_payment"] {
-    border-left-color: #17a2b8;
+    border-left-color: #28a745;
 }
 
 /* ========== TOAST NOTIFICATION RESPONSIVE STYLES ========== */

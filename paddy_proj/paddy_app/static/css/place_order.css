@@ -59,7 +59,7 @@ body {
     width: 80px;
     /* initial width */
     height: 4px;
-    background-color: #000000;
+    background-color: #28a745;
     border-radius: 2px;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
     /* added transition for both properties */
@@ -95,6 +95,7 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
     background-color: #fff;
+    border: 2px solid #28a745;
 }
 
 
@@ -134,7 +135,7 @@ body {
 
 .form-card input:focus {
     outline: none;
-    border-color: #000;
+    border-color: #28a745;
     background-color: #fff;
 }
 
@@ -196,7 +197,7 @@ body {
 /* Submit button */
 .form-card form button {
     padding: 10px 24px;
-    background-color: #000;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 6px;
@@ -317,7 +318,7 @@ body {
 }
 
 .tab-button.active {
-    background-color: #000;
+    background-color: #28a745;
     color: white;
 }
 
@@ -494,12 +495,12 @@ input[readonly] {
 .items-table input:focus,
 .items-table select:focus {
     outline: none;
-    border-color: #000;
+    border-color: #28a745;
     background-color: #fff;
 }
 
 .remove-row-btn {
-    background-color: #e74c3c;
+    background-color: #dc3545;
     color: white;
     border: none;
     border-radius: 4px;
@@ -511,12 +512,12 @@ input[readonly] {
 }
 
 .remove-row-btn:hover {
-    background-color: #c0392b;
+    background-color: #c82333;
 }
 
 #add-item-btn {
     margin-top: 1rem;
-    background-color: #3498db;
+    background-color: #28a745;
     color: white;
     border: none;
     padding: 10px 16px;
@@ -527,7 +528,7 @@ input[readonly] {
 }
 
 #add-item-btn:hover {
-    background-color: #2980b9;
+    background-color: #218838;
 }
 
 /* Total row styling */
