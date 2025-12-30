@@ -15,7 +15,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #ffffff;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -29,13 +29,13 @@
         }
         
         .plan-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             padding: 50px 40px;
             max-width: 600px;
             width: 100%;
-            backdrop-filter: blur(10px);
+            border: 2px solid #28a745;
         }
         
         .page-title {
@@ -61,13 +61,13 @@
         }
         
         .plan-button {
-            background: white;
-            border: 3px solid #e9ecef;
+            background: #28a745;
+            border: 3px solid #28a745;
             border-radius: 15px;
             padding: 25px 30px;
             font-size: 1.2rem;
             font-weight: 600;
-            color: #495057;
+            color: #ffffff;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -80,10 +80,11 @@
         }
         
         .plan-button:hover {
-            border-color: #007bff;
-            color: #007bff;
+            border-color: #218838;
+            background: #218838;
+            color: #ffffff;
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
         }
         
         .plan-button:active {
@@ -93,12 +94,12 @@
         .plan-button .plan-price {
             font-size: 1.4rem;
             font-weight: 700;
-            color: #28a745;
+            color: #ffffff;
         }
         
         .plan-button .plan-duration {
             font-size: 1rem;
-            color: #6c757d;
+            color: #f8f9fa;
             margin-bottom: 5px;
         }
         
@@ -112,8 +113,8 @@
         
         /* Popular plan highlight */
         .plan-popular {
-            border-color: #28a745 !important;
-            background: linear-gradient(135deg, #f8fff8 0%, #e8f5e8 100%);
+            border-color: #1e7e34 !important;
+            background: #1e7e34;
             position: relative;
         }
         
@@ -122,19 +123,21 @@
             position: absolute;
             top: -10px;
             right: 20px;
-            background: #28a745;
-            color: white;
+            background: #ffffff;
+            color: #28a745;
             padding: 5px 15px;
             border-radius: 12px;
             font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            border: 2px solid #28a745;
         }
         
         .plan-popular:hover {
-            border-color: #28a745;
-            color: #28a745;
+            border-color: #1e7e34;
+            background: #1c7430;
+            color: #ffffff;
         }
         
         /* Mobile styles */

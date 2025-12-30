@@ -9,8 +9,8 @@
 
 body, html {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
+  background-color: #f5f5f5;
+  color: #000000;
   height: 100%;
   overflow: hidden; /* Prevent page scrolling on desktop */
   line-height: 1.6;
@@ -34,7 +34,7 @@ body, html {
   left: 30px;
   font-weight: 700;
   font-size: 28px;
-  color: #333;
+  color: #000000;
   z-index: 100;
   text-decoration: none;
 }
@@ -55,13 +55,13 @@ body, html {
 /* Desktop Image Area */
 .auth-right {
   width: 45%;
-  background-image: url('/static/media/login.png');
+  background-image: url('/static/media/login_cover.png');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   position: relative;
   height: 100vh;
-  background-color: #f0f4ff;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,7 +72,7 @@ body, html {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(78, 110, 242, 0.08) 0%, rgba(78, 110, 242, 0.03) 100%);
+  background: linear-gradient(135deg, rgba(45, 122, 62, 0.08) 0%, rgba(45, 122, 62, 0.03) 100%);
   pointer-events: none;
 }
 
@@ -116,7 +116,7 @@ body, html {
   left: 12px;
   right: 12px;
   height: 4px;
-  background: #333;
+  background: #2d7a3e;
   border-radius: 40px 40px 0 0;
 }
 
@@ -125,13 +125,13 @@ h1 {
   font-size: 28px;
   margin-bottom: 15px;
   text-align: center;
-  color: #333;
+  color: #333333;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .highlight {
-  color: #4e6ef2;
+  color: #2d7a3e;
   font-weight: 700;
 }
 
@@ -164,32 +164,33 @@ h1 {
 }
 
 .tab-btn {
-  background-color: #f8f9fa;
+  background-color: #f5f5f5;
   padding: 12px 28px;
   border-radius: 50px;
-  border: 2px solid transparent;
+  border: 2px solid #e0e0e0;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 15px;
   min-width: 130px;
   text-align: center;
-  color: #666;
+  color: #333333;
   position: relative;
 }
 
 .tab-btn:hover {
-  background-color: #e9ecef;
-  border-color: #4e6ef2;
+  background-color: #2d7a3e;
+  color: #ffffff;
+  border-color: #2d7a3e;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(78, 110, 242, 0.15);
+  box-shadow: 0 4px 12px rgba(45, 122, 62, 0.3);
 }
 
 .tab-btn.active {
-  background-color: #333;
+  background-color: #2d7a3e;
   color: white;
-  border-color: #4e6ef2;
-  box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
+  border-color: #2d7a3e;
+  box-shadow: 0 6px 20px rgba(45, 122, 62, 0.3);
   transform: translateY(-2px);
 }
 
@@ -205,14 +206,14 @@ label {
   font-weight: 600;
   margin-top: 10px;
   margin-bottom: 6px;
-  color: #333;
+  color: #333333;
   font-size: 14px;
   letter-spacing: 0.5px;
 }
 
 input, select, textarea {
   padding: 12px 14px;
-  border: 2px solid #e8ecef;
+  border: 2px solid #d0d0d0;
   border-radius: 12px;
   margin-bottom: 6px;
   width: 100%;
@@ -220,20 +221,20 @@ input, select, textarea {
   background-color: #ffffff;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
-  color: #333;
+  color: #000000;
   outline: none;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #4e6ef2;
-  box-shadow: 0 0 0 4px rgba(78, 110, 242, 0.1);
+  border-color: #2d7a3e;
+  box-shadow: 0 0 0 4px rgba(45, 122, 62, 0.1);
   background-color: #ffffff;
   transform: translateY(-1px);
 }
 
 button, button[type="submit"] {
   padding: 14px 35px;
-  background: #333;
+  background: #2d7a3e;
   color: white;
   border: none;
   border-radius: 12px;
@@ -242,7 +243,7 @@ button, button[type="submit"] {
   font-weight: 600;
   align-self: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
+  box-shadow: 0 6px 20px rgba(45, 122, 62, 0.3);
   letter-spacing: 0.5px;
 }
 
@@ -257,9 +258,9 @@ button, button[type="submit"] {
 }
 
 button:hover {
-  background: #333;
+  background: #256a33;
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(78, 110, 242, 0.4);
+  box-shadow: 0 8px 25px rgba(45, 122, 62, 0.4);
 }
 
 /* Form Layout */
@@ -306,14 +307,14 @@ button:hover {
   font-weight: 600;
   margin-top: 0;
   margin-bottom: 6px;
-  color: #333;
+  color: #333333;
   display: block;
 }
 
 #signup-role {
   width: 100%;
   padding: 12px;
-  border: 2px solid #e8ecef;
+  border: 2px solid #d0d0d0;
   border-radius: 10px;
   margin-bottom: 20px;
   font-size: 14px;
@@ -344,7 +345,7 @@ button:hover {
   font-weight: 600;
   margin-top: 12px;
   margin-bottom: 4px;
-  color: #333;
+  color: #333333;
   display: block;
   width: 100%;
 }
@@ -354,7 +355,7 @@ button:hover {
 #signup textarea {
   width: 100%;
   padding: 12px;
-  border: 2px solid #e8ecef;
+  border: 2px solid #d0d0d0;
   border-radius: 10px;
   margin-bottom: 12px;
   font-size: 14px;
@@ -366,8 +367,8 @@ button:hover {
 #signup input:focus, 
 #signup select:focus, 
 #signup textarea:focus {
-  border-color: #4e6ef2;
-  box-shadow: 0 0 0 3px rgba(78, 110, 242, 0.1);
+  border-color: #2d7a3e;
+  box-shadow: 0 0 0 3px rgba(45, 122, 62, 0.1);
   outline: none;
 }
 
@@ -403,7 +404,7 @@ button:hover {
 #signup button[type="submit"] {
   width: 100%;
   padding: 14px;
-  background: #333;
+  background: #2d7a3e;
   color: white;
   border: none;
   border-radius: 10px;
@@ -416,9 +417,9 @@ button:hover {
 }
 
 #signup button[type="submit"]:hover {
-  background: #333;
+  background: #256a33;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(78, 110, 242, 0.3);
+  box-shadow: 0 8px 25px rgba(45, 122, 62, 0.3);
 }
 
 /* Custom scrollbar */
@@ -427,17 +428,17 @@ button:hover {
 }
 
 #signup::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
+  background: #f5f5f5;
   border-radius: 10px;
 }
 
 #signup::-webkit-scrollbar-thumb {
-  background: rgba(78, 110, 242, 0.3);
+  background: rgba(45, 122, 62, 0.3);
   border-radius: 10px;
 }
 
 #signup::-webkit-scrollbar-thumb:hover {
-  background: rgba(78, 110, 242, 0.5);
+  background: rgba(45, 122, 62, 0.5);
 }
 
 /* ===== KEY FIX: MAKE SIGNUP CONTENT SCROLLABLE ===== */
@@ -509,7 +510,7 @@ button:hover {
 /* ===== MOBILE RESPONSIVE DESIGN (≤768px) - FIXED SCROLLING ===== */
 @media screen and (max-width: 768px) {
   body, html {
-    background-color: #f8f9fa;
+    background-color: #f5f5f5;
     overflow-x: hidden; /* Prevent horizontal scroll */
     overflow-y: auto; /* Allow vertical scroll */
     height: auto; /* Allow body to expand */
@@ -521,7 +522,7 @@ button:hover {
     min-height: 100vh; /* Use min-height instead of fixed height */
     height: auto; /* Allow container to expand */
     box-shadow: none;
-    background-color: #f8f9fa;
+    background-color: #f5f5f5;
     overflow: visible; /* Allow overflow for scrolling */
     position: relative;
   }
@@ -532,7 +533,7 @@ button:hover {
     height: 40vh; /* Fixed height for image area */
     background-size: cover;
     background-position: center center;
-    background-color: #f0f4ff;
+    background-color: #ffffff;
     background-repeat: no-repeat;
     order: 1;
     position: relative;
@@ -547,7 +548,7 @@ button:hover {
   }
 
   .auth-right::after {
-    background: linear-gradient(135deg, rgba(78, 110, 242, 0.08) 0%, rgba(78, 110, 242, 0.04) 100%);
+    background: linear-gradient(135deg, rgba(45, 122, 62, 0.08) 0%, rgba(45, 122, 62, 0.04) 100%);
     border-radius: 0;
   }
 
@@ -619,7 +620,7 @@ button:hover {
     font-size: 22px;
     text-align: center;
     margin-bottom: 10px;
-    color: #333;
+    color: #333333;
     margin-top: 0;
     line-height: 1.3;
   }

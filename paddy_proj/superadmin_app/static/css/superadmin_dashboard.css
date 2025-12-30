@@ -86,8 +86,8 @@ body.superadmin-page {
 }
 
 .header-bar {
-    background: linear-gradient(120deg, #000000 0%, #2a2a2a 100%);
-    color: #ffffff;
+    background: #ffffff;
+    color: #000000;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 2.5rem 2rem 2rem 2rem;
@@ -98,7 +98,7 @@ body.superadmin-page {
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: 3rem;
-    border: 2px solid #000000;
+    border: 2px solid #28a745;
     position: relative;
 }
 
@@ -119,11 +119,11 @@ body.superadmin-page {
         left: 0;
         z-index: 1000;
         margin: 0;
-        background: linear-gradient(120deg, #000000 0%, #2a2a2a 100%);
+        background: #ffffff;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         border-radius: 0 !important;
         padding: 20px 1rem;
-        border-bottom: 1px solid #333;
+        border-bottom: 2px solid #28a745;
         border-left: none;
         border-right: none;
         border-top: none;
@@ -157,7 +157,7 @@ body.superadmin-page {
     font-weight: 700;
     margin: 0;
     letter-spacing: 1px;
-    color: #ffffff;
+    color: #000000;
     position: relative;
     text-transform: uppercase;
     padding-bottom: 0.6rem;
@@ -194,7 +194,7 @@ body.superadmin-page {
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
-    background-color: #ffffff;
+    background-color: #28a745;
     border-radius: 2px;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
@@ -203,7 +203,7 @@ body.superadmin-page {
     transform: translateX(-50%);
 }
 .upgrade-subtitle {
-    color: #dadada;
+    color: #666666;
     font-size: 0.9rem;
     margin-top: 0.5rem;
 }
@@ -603,7 +603,7 @@ body.superadmin-page {
     font-weight: 700;
     border-radius: var(--radius);
     background: #ffffff;
-    border: 2px solid #000000;
+    border: 2px solid #28a745;
     color: var(--text-main);
     text-decoration: none;
     box-shadow: var(--shadow);
@@ -680,9 +680,9 @@ body.superadmin-page {
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
 }
 .superadmin-dashboard-btn:hover, .superadmin-dashboard-btn:focus {
-    background: #f5f5f5;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    border-color: #000000;
+    background: #f0f9f4;
+    box-shadow: 0 20px 40px rgba(40, 167, 69, 0.2);
+    border-color: #28a745;
     /* transform: translateY(-6px); */
     outline: none;
 }
@@ -695,7 +695,7 @@ body.superadmin-page {
     left: 0;
     width: 4px;
     height: 0%;
-    background: linear-gradient(to bottom, #000000, #333333);
+    background: linear-gradient(to bottom, #28a745, #1e7e34);
     transition: height 0.4s ease;
     z-index: 1;
 }
@@ -711,7 +711,7 @@ body.superadmin-page {
     right: 0;
     width: 0;
     height: 4px;
-    background: linear-gradient(to right, transparent, #000000);
+    background: linear-gradient(to right, transparent, #28a745);
     transition: width 0.4s ease;
     z-index: 1;
 }
@@ -742,7 +742,7 @@ body.superadmin-page {
     gap: 3rem;
     align-items: flex-start;
     justify-content: space-between;
-    border: 2px solid #000000;
+    border: 2px solid #28a745;
     position: relative;
 }
 
@@ -809,7 +809,7 @@ body.superadmin-page {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, #000000 0%, #333333 100%);
+    background: linear-gradient(90deg, #28a745 0%, #1e7e34 100%);
 }
 
 .recent-activity-list {
@@ -833,7 +833,7 @@ body.superadmin-page {
     left: 0;
     width: 50px;
     height: 2px;
-    background: #000000;
+    background: #28a745;
 }
 
 .recent-activity-list ul {
@@ -1056,7 +1056,7 @@ body.superadmin-page {
     padding: 2rem 1.5rem;
     position: relative;
     overflow: hidden;
-    border: 2px solid #000000;
+    border: 2px solid #28a745;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -1105,12 +1105,12 @@ body.superadmin-page {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, #000000 0%, #333333 100%);
+    background: linear-gradient(90deg, #28a745 0%, #1e7e34 100%);
 }
 
 .chart-card:hover {
     /* transform: translateY(-6px); */
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 40px rgba(40, 167, 69, 0.2);
 }
 
 .chart-card:hover::before {
