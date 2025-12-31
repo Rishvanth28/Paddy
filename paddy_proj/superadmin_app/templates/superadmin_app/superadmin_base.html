@@ -101,6 +101,19 @@
       color: #28a745 !important;
     }
     
+    /* Logo image styling */
+    body.superadmin-page .sidebar-logo-img {
+      width: 80px !important;
+      height: 80px !important;
+      object-fit: contain !important;
+      margin-bottom: 8px !important;
+      transition: transform 0.3s ease !important;
+    }
+    
+    body.superadmin-page .sidebar-logo-img:hover {
+      transform: scale(1.05) !important;
+    }
+    
     /* Sidebar navigation consistency */
     body.superadmin-page .sidebar-nav {
       flex: 1 1 auto !important;
@@ -698,7 +711,7 @@
   <aside class="sidebar" id="sidebar">
     <!-- Top section -->    <div class="sidebar-header">
       <a href="{% url 'profile' %}" class="logo-link">
-        <i class="fas fa-user-tie sidebar-logo" style="font-size: 2.5rem; color: #28a745;"></i>
+        <img src="{% static 'media/FULL.png' %}" alt="Logo" class="sidebar-logo-img" />
       </a>
       <h1 class="sidebar-title">Super Admin</h1>
     </div>

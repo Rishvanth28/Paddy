@@ -7,18 +7,20 @@
 :root {
     --primary: #000000;
     --primary-dark: #1a1a1a;
-    --accent: #404040;
+    --accent: #28a745;
+    --accent-light: #d4edda;
+    --accent-hover: #218838;
     --bg: #f8f8f8;
     --glass: #ffffff;
-    --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    --shadow: 0 8px 30px rgba(40, 167, 69, 0.08);
     --border: 1px solid rgba(0, 0, 0, 0.08);
     --radius: 12px;
     --text-main: #1a1a1a;
     --text-secondary: #666666;
-    --success: #000000;
-    --warning: #333333;
-    --danger: #666666;
-    --info: #444444;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
 }
 
 /* Responsive Dashboard Layout */
@@ -271,16 +273,16 @@
 body { background: var(--bg); color: var(--text-main); }
 
 .customer-dashboard-hero {
-    background: linear-gradient(145deg, #000000, #222222);
-    color: #fff;
+    /* background: linear-gradient(120deg, #1e7e34 0%, #28a745 100%); */
+    color: black;
     border-radius: var(--radius);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.25);
     padding: 3rem 2.5rem;
     margin-bottom: 3rem;
     text-align: left;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid #1e7e34;
 }
 .customer-dashboard-hero:after {
     content: "";
@@ -324,7 +326,7 @@ body { background: var(--bg); color: var(--text-main); }
     padding: 0.65rem 1.4rem;
     font-size: 0.95rem;
     font-weight: 600;
-    color: #fff;
+    color: black;
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -370,7 +372,7 @@ body { background: var(--bg); color: var(--text-main); }
     left: 0;
     width: 4px;
     height: 0%;
-    background: linear-gradient(to bottom, #000000, #333333);
+    background: linear-gradient(to bottom, #28a745, #1e7e34);
     transition: height 0.4s ease;
 }
 .stat-card:hover::before {
@@ -383,7 +385,7 @@ body { background: var(--bg); color: var(--text-main); }
     right: 0;
     width: 0;
     height: 4px;
-    background: linear-gradient(to right, transparent, #000000);
+    background: linear-gradient(to right, transparent, #28a745);
     transition: width 0.4s ease;
 }
 .stat-card:hover::after {
@@ -455,7 +457,7 @@ body { background: var(--bg); color: var(--text-main); }
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(to right, #000000, transparent);
+    background: linear-gradient(to right, #28a745, transparent);
     transition: width 0.4s ease;
 }
 .chart-card:hover::after {
@@ -477,7 +479,7 @@ body { background: var(--bg); color: var(--text-main); }
     left: 0;
     width: 40px;
     height: 3px;
-    background: linear-gradient(to right, #000000, #333333);
+    background: linear-gradient(to right, #28a745, #1e7e34);
     border-radius: 2px;
     transition: width 0.3s ease;
 }
@@ -586,7 +588,7 @@ body { background: var(--bg); color: var(--text-main); }
     right: 0;
     width: 0%;
     height: 3px;
-    background: linear-gradient(to left, #000000, transparent);
+    background: linear-gradient(to left, #28a745, transparent);
     transition: width 0.4s ease;
 }
 .table-section:hover::before {
@@ -609,7 +611,7 @@ body { background: var(--bg); color: var(--text-main); }
     left: 0;
     width: 40px;
     height: 3px;
-    background: linear-gradient(to right, #000000, #333333);
+    background: linear-gradient(to right, #28a745, #1e7e34);
     border-radius: 2px;
     transition: width 0.3s ease;
 }
@@ -709,7 +711,7 @@ body { background: var(--bg); color: var(--text-main); }
 }
 .table-responsive { overflow-x: auto; }
 .btn-primary {
-    background: linear-gradient(90deg, #000000 0%, #333333 100%);
+    background: linear-gradient(90deg, #28a745 0%, #1e7e34 100%);
     color: #fff;
     border: none;
     padding: 0.5rem 1.2rem;
@@ -718,15 +720,15 @@ body { background: var(--bg); color: var(--text-main); }
     font-weight: 600;
     transition: all 0.3s ease;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 6px rgba(40, 167, 69, 0.25);
 }
 .btn-primary:hover { 
-    background: linear-gradient(90deg, #333333 0%, #000000 100%);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    background: linear-gradient(90deg, #218838 0%, #1e7e34 100%);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.35);
     transform: translateY(-1px);
 }
 .btn-primary.btn-sm {
-    background: linear-gradient(90deg, #059669 0%, #10B981 100%);
+    background: linear-gradient(90deg, #28a745 0%, #1e7e34 100%);
     color: #fff;
     border: none;
     padding: 0.5rem 1.2rem;
@@ -735,11 +737,11 @@ body { background: var(--bg); color: var(--text-main); }
     font-weight: 600;
     transition: all 0.3s ease;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+    box-shadow: 0 2px 6px rgba(40, 167, 69, 0.25);
 }
 .btn-primary.btn-sm:hover { 
-    background: linear-gradient(90deg, #10B981 0%, #059669 100%);
-    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    background: linear-gradient(90deg, #218838 0%, #1e7e34 100%);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.35);
     transform: translateY(-1px);
 }
 @media (max-width: 920px) {
@@ -998,7 +1000,7 @@ body { background: var(--bg); color: var(--text-main); }
 
 <div class="container-fluid">
     <div class="customer-dashboard-hero">
-        <h1>Welcome, {{ customer.first_name }}!</h1>
+        <h1>WELCOME, {{ customer.first_name | upper }}!</h1>
         <p>Your orders, payments, and deliveries at a glance.</p>
         <div class="order-summary">
             <div class="order-summary-badge">Total Orders: {{ total_orders }}</div>

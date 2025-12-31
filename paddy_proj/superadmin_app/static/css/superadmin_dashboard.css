@@ -1534,7 +1534,7 @@ body.superadmin-page {
         left: 0;
         z-index: 1000;
         margin: 0;
-        background: linear-gradient(120deg, #000000 0%, #2a2a2a 100%);
+        /* background: linear-gradient(120deg, #000000 0%, #2a2a2a 100%); */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         border-radius: 0 !important;
         padding: 20px 1rem;

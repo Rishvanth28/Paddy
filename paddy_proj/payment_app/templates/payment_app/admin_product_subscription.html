@@ -27,7 +27,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    border-left: 4px solid #000000;
+    border-left: 4px solid #28a745;
     font-family: 'Inter', sans-serif;
     animation: slideInRight 0.3s ease-out;
     position: relative;
@@ -60,11 +60,11 @@
 }
 
 .custom-toast.toast-success {
-    border-left-color: #22c55e;
+    border-left-color: #28a745;
 }
 
 .custom-toast.toast-error {
-    border-left-color: #ef4444;
+    border-left-color: #dc3545;
 }
 
 .custom-toast.toast-warning {
@@ -81,11 +81,11 @@
 }
 
 .toast-success .toast-icon {
-    color: #22c55e;
+    color: #28a745;
 }
 
 .toast-error .toast-icon {
-    color: #ef4444;
+    color: #dc3545;
 }
 
 .toast-warning .toast-icon {
@@ -213,7 +213,7 @@
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
-    background-color: #000000;
+    background-color: #28a745;
     border-radius: 2px;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
@@ -624,7 +624,7 @@
     left: -100%;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, #000000, #333333);
+    background: linear-gradient(90deg, #28a745, #218838);
     transition: left 0.3s ease;
 }
 
@@ -636,34 +636,34 @@
 .product-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    border-color: #000000;
+    border-color: #28a745;
 }
 
 .product-card.selected {
-    border-color: #000000;
+    border-color: #28a745;
     background: #f8f9fa;
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .product-card.has-access {
-    border-color: #22c55e;
+    border-color: #28a745;
     background: #f0fdf4;
 }
 
 .product-card.has-access::before {
-    background: linear-gradient(90deg, #22c55e, #16a34a);
+    background: linear-gradient(90deg, #28a745, #218838);
 }
 
 .product-icon {
     font-size: 2.8rem;
     margin-bottom: 18px;
-    color: #000000;
+    color: #28a745;
 }
 
 .product-card.selected .product-icon,
 .product-card.has-access .product-icon {
-    color: #000000;
+    color: #28a745;
 }
 
 .product-name {
@@ -685,7 +685,7 @@
 .product-price {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #000000;
+    color: #28a745;
     margin-bottom: 15px;
     font-family: 'Inter', sans-serif;
 }
@@ -702,13 +702,13 @@
 }
 
 .status-active {
-    background: #dcfce7;
-    color: #166534;
+    background: #d4edda;
+    color: #155724;
 }
 
 .status-expired {
-    background: #fecaca;
-    color: #dc2626;
+    background: #f8d7da;
+    color: #721c24;
 }
 
 .status-not-subscribed {
@@ -771,7 +771,7 @@
 }
 
 .selected-item {
-    background: #000000;
+    background: #28a745;
     color: white;
     padding: 8px 16px;
     border-radius: 20px;
@@ -802,7 +802,7 @@
 }
 
 .subscribe-btn {
-    background: linear-gradient(135deg, #000000, #333333);
+    background: linear-gradient(135deg, #28a745, #218838);
     color: white;
     border: none;
     padding: 16px 40px;
@@ -813,13 +813,14 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     font-family: 'Inter', sans-serif;
 }
 
 .subscribe-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #218838, #1e7e34);
 }
 
 .subscribe-btn:disabled {
