@@ -3244,6 +3244,185 @@ body {
         max-height: 75vh;
     }
 }
+
+/* Custom Confirmation Modal */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 80px;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+}
+
+.confirmation-overlay.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.confirmation-modal {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.3s ease;
+}
+
+.confirmation-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    border: 2px solid;
+}
+
+.confirmation-icon.approve {
+    background: #d1fae5;
+    border-color: #28a745;
+}
+
+.confirmation-icon.reject {
+    background: #fee2e2;
+    border-color: #dc3545;
+}
+
+.confirmation-icon i {
+    font-size: 32px;
+}
+
+.confirmation-icon.approve i {
+    color: #28a745;
+}
+
+.confirmation-icon.reject i {
+    color: #dc3545;
+}
+
+.confirmation-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.confirmation-message {
+    font-size: 1rem;
+    color: #333333;
+    text-align: center;
+    margin-bottom: 28px;
+    line-height: 1.5;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.confirmation-btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.confirmation-btn-cancel {
+    background: #f8f8f8;
+    color: #000000;
+    border: 1px solid #28a745;
+}
+
+.confirmation-btn-cancel:hover {
+    background: #28a745;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+}
+
+.confirmation-btn-approve {
+    background: #28a745;
+    color: #ffffff;
+    border: 1px solid #28a745;
+}
+
+.confirmation-btn-approve:hover {
+    background: #218838;
+    border-color: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.confirmation-btn-reject {
+    background: #dc3545;
+    color: #ffffff;
+    border: 1px solid #dc3545;
+}
+
+.confirmation-btn-reject:hover {
+    background: #c82333;
+    border-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+@media (max-width: 575.98px) {
+    .confirmation-modal {
+        padding: 24px;
+        max-width: 95%;
+    }
+
+    .confirmation-title {
+        font-size: 1.3rem;
+    }
+
+    .confirmation-message {
+        font-size: 0.9rem;
+    }
+
+    .confirmation-actions {
+        flex-direction: column;
+    }
+
+    .confirmation-btn {
+        width: 100%;
+    }
+}
 </style>
 {% endblock %}
 
@@ -3361,6 +3540,27 @@ body {
     </div>
 </div>
 
+<!-- Custom Confirmation Modal -->
+<div id="confirmationOverlay" class="confirmation-overlay">
+    <div class="confirmation-modal">
+        <div id="confirmationIcon" class="confirmation-icon">
+            <i id="confirmationIconSymbol" class="bi"></i>
+        </div>
+        <h3 id="confirmationTitle" class="confirmation-title">Confirm Action</h3>
+        <p id="confirmationMessage" class="confirmation-message">
+            Are you sure you want to proceed?
+        </p>
+        <div class="confirmation-actions">
+            <button type="button" class="confirmation-btn confirmation-btn-cancel" onclick="hideConfirmation()">
+                Cancel
+            </button>
+            <button type="button" id="confirmationActionBtn" class="confirmation-btn">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>  document.addEventListener('DOMContentLoaded', function () {
@@ -3433,6 +3633,104 @@ body {
         closeBtn.addEventListener('click', closeToastHandler);
       }    }
   });
+</script>
+
+<script>
+// Confirmation modal functions (global scope)
+let pendingRequestId = null;
+let pendingAction = null;
+
+function showConfirmation(requestId, action) {
+    pendingRequestId = requestId;
+    pendingAction = action;
+    
+    const overlay = document.getElementById('confirmationOverlay');
+    const icon = document.getElementById('confirmationIcon');
+    const iconSymbol = document.getElementById('confirmationIconSymbol');
+    const title = document.getElementById('confirmationTitle');
+    const message = document.getElementById('confirmationMessage');
+    const actionBtn = document.getElementById('confirmationActionBtn');
+    
+    if (action === 'approve') {
+        icon.className = 'confirmation-icon approve';
+        iconSymbol.className = 'bi bi-check-circle';
+        title.textContent = 'Approve Payment Request';
+        message.textContent = 'Are you sure you want to approve this cash payment request?';
+        actionBtn.className = 'confirmation-btn confirmation-btn-approve';
+        actionBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Approve';
+    } else {
+        icon.className = 'confirmation-icon reject';
+        iconSymbol.className = 'bi bi-x-circle';
+        title.textContent = 'Reject Payment Request';
+        message.textContent = 'Are you sure you want to reject this cash payment request?';
+        actionBtn.className = 'confirmation-btn confirmation-btn-reject';
+        actionBtn.innerHTML = '<i class="bi bi-x-circle me-1"></i>Reject';
+    }
+    
+    // Scroll to top smoothly
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+    
+    overlay.classList.add('show');
+}
+
+function hideConfirmation() {
+    const overlay = document.getElementById('confirmationOverlay');
+    overlay.classList.remove('show');
+    pendingRequestId = null;
+    pendingAction = null;
+}
+
+window.confirmAction = function() {
+    console.log('Confirm clicked - RequestID:', pendingRequestId, 'Action:', pendingAction);
+    if (pendingRequestId && pendingAction) {
+        if (typeof window.processCashPaymentRequest === 'function') {
+            window.processCashPaymentRequest(pendingRequestId, pendingAction);
+            hideConfirmation();
+        } else {
+            console.error('processCashPaymentRequest function not found');
+            alert('Error: Payment processing function not available. Please refresh the page.');
+        }
+    } else {
+        console.error('Missing pendingRequestId or pendingAction');
+    }
+};
+
+// Event listeners for confirmation modal
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmationOverlay = document.getElementById('confirmationOverlay');
+    const confirmationActionBtn = document.getElementById('confirmationActionBtn');
+    
+    console.log('Setting up confirmation modal listeners');
+    console.log('Overlay:', confirmationOverlay);
+    console.log('Action button:', confirmationActionBtn);
+    
+    if (confirmationOverlay) {
+        // Close modal when clicking outside
+        confirmationOverlay.addEventListener('click', function(e) {
+            if (e.target === confirmationOverlay) {
+                hideConfirmation();
+            }
+        });
+    }
+    
+    if (confirmationActionBtn) {
+        // Confirm button click
+        confirmationActionBtn.addEventListener('click', function() {
+            console.log('Action button clicked');
+            window.confirmAction();
+        });
+    }
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && confirmationOverlay && confirmationOverlay.classList.contains('show')) {
+            hideConfirmation();
+        }
+    });
+});
 </script>
 
 <script>
@@ -4492,18 +4790,14 @@ body {
         
         // Cash payment approval functions
 window.approveCashPayment = function(requestId) {
-    if (confirm("Are you sure you want to approve this cash payment request?")) {
-        processCashPaymentRequest(requestId, 'approve');
-    }
+    showConfirmation(requestId, 'approve');
 };
 
 window.rejectCashPayment = function(requestId) {
-    if (confirm("Are you sure you want to reject this cash payment request?")) {
-        processCashPaymentRequest(requestId, 'reject');
-    }
+    showConfirmation(requestId, 'reject');
 };
 
-function processCashPaymentRequest(requestId, action) {
+window.processCashPaymentRequest = function(requestId, action) {
     showLoading(true);
     
     const formData = new FormData();
