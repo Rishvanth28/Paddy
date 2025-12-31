@@ -27,7 +27,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    border-left: 4px solid #000000;
+    border-left: 4px solid #28a745;
     font-family: 'Inter', sans-serif;
     animation: slideInRight 0.3s ease-out;
     position: relative;
@@ -60,19 +60,19 @@
 }
 
 .custom-toast.toast-success {
-    border-left-color: #22c55e;
+    border-left-color: #28a745;
 }
 
 .custom-toast.toast-error {
-    border-left-color: #ef4444;
+    border-left-color: #dc3545;
 }
 
 .custom-toast.toast-warning {
-    border-left-color: #f59e0b;
+    border-left-color: #ffc107;
 }
 
 .custom-toast.toast-info {
-    border-left-color: #3b82f6;
+    border-left-color: #17a2b8;
 }
 
 .toast-icon {
@@ -81,19 +81,19 @@
 }
 
 .toast-success .toast-icon {
-    color: #22c55e;
+    color: #28a745;
 }
 
 .toast-error .toast-icon {
-    color: #ef4444;
+    color: #dc3545;
 }
 
 .toast-warning .toast-icon {
-    color: #f59e0b;
+    color: #ffc107;
 }
 
 .toast-info .toast-icon {
-    color: #3b82f6;
+    color: #17a2b8;
 }
 
 .toast-content {
@@ -213,7 +213,7 @@
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
-    background-color: #000000;
+    background-color: #28a745;
     border-radius: 2px;
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
@@ -624,7 +624,7 @@
     left: -100%;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, #000000, #333333);
+    background: linear-gradient(90deg, #28a745, #1e7e34);
     transition: left 0.3s ease;
 }
 
@@ -635,15 +635,15 @@
 
 .product-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    border-color: #000000;
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.12);
+    border-color: #28a745;
 }
 
 .product-card.selected {
-    border-color: #000000;
+    border-color: #28a745;
     background: #f8f9fa;
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.18);
 }
 
 .product-card.has-access {
@@ -771,7 +771,7 @@
 }
 
 .selected-item {
-    background: #000000;
+    background: #28a745;
     color: white;
     padding: 8px 16px;
     border-radius: 20px;
@@ -802,7 +802,7 @@
 }
 
 .subscribe-btn {
-    background: linear-gradient(135deg, #000000, #333333);
+    background: linear-gradient(135deg, #28a745, #1e7e34);
     color: white;
     border: none;
     padding: 16px 40px;
@@ -813,13 +813,13 @@
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+        font-family: 'Inter', sans-serif;
 }
 
 .subscribe-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
 }
 
 .subscribe-btn:disabled {
