@@ -61,8 +61,8 @@
 .switch {
   --_switch-bg-clr: #fff;
   --_switch-padding: 4px;
-  --_slider-bg-clr: #000;
-  --_slider-bg-clr-on: #000;
+  --_slider-bg-clr: #28a745;
+  --_slider-bg-clr-on: #28a745;
   --_label-padding: 0.6rem 1.6rem;
   --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
 
@@ -75,7 +75,7 @@
   font-weight: 600;
   font-size: 0.9rem;
   overflow: hidden;
-  border: 2px solid #000;
+  border: 2px solid #28a745;
   cursor: pointer;
   background-color: var(--_switch-bg-clr);
 }

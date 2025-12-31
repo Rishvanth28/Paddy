@@ -83,11 +83,11 @@
     
     /* Sidebar header consistency */
     body.admin-page .sidebar-header {
-      padding: 20px 15px !important;
+      padding: 24px 20px !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
-      gap: 10px !important;
+      gap: 12px !important;
       border-bottom: 1px solid var(--sidebar-border, #e0e0e0) !important;
       background-color: var(--sidebar-bg, #ffffff) !important;
       /* position: sticky !important; -- Removed */
@@ -104,9 +104,30 @@
       transition: all 0.3s ease !important;
     }
     
-    body.admin-page .sidebar-logo {
+    body.admin-page .sidebar-logo:hover {
       transform: scale(1.1) !important;
-      color: #000000 !important;
+      color: #28a745 !important;
+    }
+    
+    /* Logo image styling */
+    body.admin-page .sidebar-logo-img {
+      width: 80px !important;
+      height: 80px !important;
+      object-fit: contain !important;
+      margin-bottom: 8px !important;
+      transition: transform 0.3s ease !important;
+    }
+    
+    body.admin-page .sidebar-logo-img:hover {
+      transform: scale(1.05) !important;
+    }
+    
+    /* Sidebar title styling */
+    body.admin-page .sidebar-title {
+      font-size: 20px !important;
+      font-weight: 600 !important;
+      color: var(--sidebar-text, #333333) !important;
+      margin: 0 !important;
     }
     
     /* Sidebar navigation consistency */
@@ -152,14 +173,14 @@
     body.admin-page .nav-link:hover,
     body.admin-page .submenu-toggle:hover {
       background-color: var(--sidebar-hover, rgba(0, 0, 0, 0.05)) !important;
-      box-shadow: inset 4px 0 0 var(--primary-color, #000000) !important;
+      box-shadow: inset 4px 0 0 var(--primary-color, #28a745) !important;
     }
     
     body.admin-page .nav-item.active .nav-link {
       background-color: var(--sidebar-active, rgba(0, 0, 0, 0.1)) !important;
-      border-left: 3px solid var(--primary-color, #000000) !important;
+      border-left: 3px solid var(--primary-color, #28a745) !important;
       font-weight: normal !important;
-      color: var(--primary-color, #000000) !important;
+      color: #333333 !important;
     }
     
     /* Sidebar footer consistency */
@@ -224,15 +245,15 @@
     
     @keyframes pulse-badge {
       0% {
-        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
         transform: translateY(-50%) scale(1);
       }
       50% {
-        box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+        box-shadow: 0 5px 8px rgba(40, 167, 69, 0.5);
         transform: translateY(-50%) scale(1.1);
       }
       100% {
-        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
         transform: translateY(-50%) scale(1);
       }
     }
@@ -277,7 +298,7 @@
     
     body.admin-page .submenu-link {
       display: block !important;
-      padding: 10px 16px 10px 40px !important;
+      padding: 15px 16px 10px 40px !important;
       text-decoration: none !important;
       color: var(--sidebar-text, #333333) !important;
       border-radius: 6px !important;
@@ -287,15 +308,15 @@
     
     body.admin-page .submenu-link:hover {
       background-color: var(--sidebar-hover, rgba(0, 0, 0, 0.05)) !important;
-      color: var(--primary-color, #000000) !important;
-      box-shadow: inset 4px 0 0 var(--primary-color, #000000) !important;
+      color: #333333 !important;
+      box-shadow: inset 4px 0 0 var(--primary-color, #28a745) !important;
     }
     
     /* Responsive styles with high priority */
     @media (max-width: 1024px) {
       body.admin-page .main-content {
         margin-left: 0 !important;
-        padding: 70px 15px 20px 15px !important;
+        padding: 130px 15px 20px 15px !important;
         width: 100% !important;
         transition: margin-left var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
       }
@@ -303,17 +324,13 @@
       body.admin-page .sidebar {
         transform: translateX(-100%) !important;
         width: 280px !important;
-        height: 100vh !important;
-        height: 100svh !important; /* Use small viewport height for mobile */
-        max-height: 100vh !important;
-        max-height: 100svh !important;
         z-index: 1001 !important;
         transition: transform var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
         will-change: transform !important;
       }
       
       body.admin-page .sidebar-header {
-        padding: 12px 10px !important;
+        padding: 15px 12px !important;
         gap: 8px !important;
       }
       
@@ -322,11 +339,25 @@
       }
       
       body.admin-page .sidebar-footer {
-        padding: 10px !important;
+        width: 100% !important;
+        padding: 12px 15px !important;
+        z-index: 1001 !important;
       }
       
       body.admin-page .sidebar.open {
         transform: translateX(0) !important;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.2) !important;
+      }
+      
+      body.admin-page .hamburger {
+        display: flex !important;
+        position: fixed !important;
+        top: 25px !important;
+        left: 15px !important;
+        z-index: 1003 !important;
+        transition: all var(--transition-speed, 0.3s) cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+    }
         box-shadow: 4px 0 15px rgba(0,0,0,0.2) !important;
       }
       
@@ -355,90 +386,24 @@
       }
       
       body.admin-page .submenu-link {
-        padding: 8px 12px 8px 30px !important;
+        padding: 15px 12px 8px 30px !important;
       }
     }
     
     @media (max-width: 480px) {
-      body.admin-page .sidebar {
-        max-height: calc(100vh - 0px) !important;
-        max-height: calc(100svh - 0px) !important;
-      }
-      
-      body.admin-page .sidebar-header {
-        padding: 10px 8px !important;
-        gap: 6px !important;
-      }
-      
-      body.admin-page .sidebar-title {
-        font-size: 16px !important;
-      }
-      
-      body.admin-page .sidebar-nav {
-        padding: 8px 0 !important;
-      }
-      
-      body.admin-page .nav-item {
-        margin: 2px 8px !important;
-      }
-      
-      body.admin-page .nav-link {
-        padding: 10px 12px !important;
-        height: 42px !important;
-      }
-      
       body.admin-page .sidebar-footer {
-        padding: 8px 10px !important;
+        padding: 15px 10px !important;
       }
       
       body.admin-page .logout-button {
-        font-size: 13px !important;
-        padding: 8px !important;
-      }
-      
-      body.admin-page .language-toggle {
-        padding: 7px 10px !important;
-        margin-bottom: 6px !important;
-        font-size: 12px !important;
-      }
-      
-      body.admin-page .switch {
-        font-size: 0.7rem !important;
-        --_label-padding: 0.35rem 0.8rem !important;
-      }
-      
-      body.admin-page .switch > span {
-        min-width: 45px !important;
-      }
-      
-      body.admin-page .switch-container {
-        margin-bottom: 6px !important;
-      }
-    }
-    
-    /* Additional mobile styles for better footer visibility */
-    @media (max-width: 1024px) {
-      body.admin-page .sidebar-footer {
-        padding: 15px !important;
-      }
-      
-      body.admin-page .sidebar-nav {
-        padding-bottom: 10px !important;
-      }
-      
-      /* Ensure footer elements stack properly */
-      body.admin-page .switch-container {
-        margin-bottom: 10px !important;
-      }
-      
-      body.admin-page .language-toggle {
-        margin-bottom: 10px !important;
+        font-size: 14px !important;
+        padding: 10px !important;
       }
     }
     
     /* Hamburger focus state */
     body.admin-page .hamburger:focus {
-      outline: 2px solid var(--primary-color, #000000) !important;
+      outline: 2px solid var(--primary-color, #28a745) !important;
     }
     
     /* Add 'has-notifications' class styling */
@@ -449,8 +414,8 @@
     /* Language Toggle Button Styles */
     body.admin-page .language-toggle {
       width: 100% !important;
-      padding: 8px 12px !important;
-      margin-bottom: 8px !important;
+      padding: 12px 16px !important;
+      margin-bottom: 12px !important;
       background-color: var(--sidebar-bg, #ffffff) !important;
       border: 1px solid var(--sidebar-border, #e0e0e0) !important;
       border-radius: 6px !important;
@@ -479,7 +444,7 @@
       width: 16px !important;
       height: 16px !important;
       border-radius: 50% !important;
-      background-color: var(--primary-color, #000000) !important;
+      background-color: #28a745 !important;
       color: white !important;
       display: flex !important;
       align-items: center !important;
@@ -817,26 +782,7 @@
     }
   }
 
-  /* Sidebar close button styles */
-  .sidebar-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: #333;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 5px;
-    display: none;
-    z-index: 100;
-  }
-  
-  @media (max-width: 1024px) {
-    .sidebar-close {
-      display: block;
-    }
-  }
+
   
   /* ========== LANDSCAPE ORIENTATION ADJUSTMENTS ========== */
   @media (max-height: 600px) and (orientation: landscape) {
@@ -912,13 +858,10 @@
   </button>
   <aside class="sidebar" id="sidebar">
     <!-- Top section -->    <div class="sidebar-header">
-      <a href="{% url 'profile' %}" class="logo-link" style="text-decoration: none;">
-        <div style="font-size: 40px !important; color: #28a745 !important; font-weight: bold !important; font-family: Arial, sans-serif !important; width: 40px !important; height: 40px !important; display: flex !important; align-items: center !important; justify-content: center !important; background-color: #f0f0f0 !important; border-radius: 50% !important; border: 2px solid #28a745 !important;">⚙</div>
+      <a href="{% url 'profile' %}" class="logo-link">
+        <img src="{% static 'media/FULL.png' %}" alt="Logo" class="sidebar-logo-img" />
       </a>
       <h1 class="sidebar-title">Admin</h1>
-      <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
-        <i class="bi bi-x-lg"></i>
-      </button>
     </div>
 
     <!-- Navigation -->
@@ -1040,21 +983,6 @@
   </main>
    <script src="{% static 'js/admin_base.js' %}"></script>
     <script>
-    // Add direct event listener for the close button to ensure it works
-    document.addEventListener('DOMContentLoaded', function() {
-      const sidebarCloseButton = document.getElementById('sidebar-close');
-      if (sidebarCloseButton) {
-        sidebarCloseButton.addEventListener('click', function() {
-          const sidebar = document.getElementById('sidebar');
-          const hamburger = document.getElementById('hamburger');
-          const body = document.body;
-          
-          sidebar.classList.remove('open');
-          hamburger.classList.remove('active');
-          body.classList.remove('sidebar-open');
-        });
-      }
-    });
     
     // Handle notifications indicator
     document.addEventListener('DOMContentLoaded', function() {
