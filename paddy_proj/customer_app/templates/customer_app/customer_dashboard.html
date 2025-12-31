@@ -6,7 +6,7 @@
 <style>
 :root {
     --primary: #000000;
-    --primary-dark: #1a1a1a;
+    --primary-dark: #218838;
     --accent: #28a745;
     --accent-light: #d4edda;
     --accent-hover: #218838;
@@ -350,7 +350,7 @@ body { background: var(--bg); color: var(--text-main); }
     border-radius: var(--radius);
     padding: 2rem;
     box-shadow: var(--shadow);
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid rgba(40, 167, 69, 0.15);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -362,8 +362,8 @@ body { background: var(--bg); color: var(--text-main); }
 }
 .stat-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    border-color: rgba(0,0,0,0.1);
+    box-shadow: 0 20px 40px rgba(40, 167, 69, 0.15);
+    border-color: rgba(40, 167, 69, 0.3);
 }
 .stat-card::before {
     content: '';
@@ -408,13 +408,13 @@ body { background: var(--bg); color: var(--text-main); }
     left: 0;
     width: 30px;
     height: 2px;
-    background: var(--primary);
+    background: #28a745;
     border-radius: 2px;
 }
 .stat-value { 
     font-size: 2.2rem; 
     font-weight: 700; 
-    color: var(--primary); 
+    color: #000000; 
     margin-bottom: 0.5rem; 
     letter-spacing: -0.5px;
     transition: all 0.2s ease;
@@ -439,14 +439,14 @@ body { background: var(--bg); color: var(--text-main); }
     border-radius: var(--radius);
     padding: 2rem;
     box-shadow: var(--shadow);
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid rgba(40, 167, 69, 0.15);
     height: 100%;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
 .chart-card:hover {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(40, 167, 69, 0.12);
     /* transform: translateY(-4px); */
     border-color: rgba(0,0,0,0.1);
 }
@@ -687,7 +687,7 @@ body { background: var(--bg); color: var(--text-main); }
 }
 .status-pending { 
     background: rgba(246, 190, 79, 0.15); 
-    color: #F59E0B; 
+    color: #000000; 
     border: 1px solid rgba(246, 190, 79, 0.3);
 }
 .status-pending:hover {
@@ -695,7 +695,7 @@ body { background: var(--bg); color: var(--text-main); }
 }
 .status-partial { 
     background: rgba(37, 99, 235, 0.1); 
-    color: #2563EB; 
+    color: #000000; 
     border: 1px solid rgba(37, 99, 235, 0.2);
 }
 .status-partial:hover {
@@ -703,7 +703,7 @@ body { background: var(--bg); color: var(--text-main); }
 }
 .status-completed { 
     background: rgba(16, 185, 129, 0.15);
-    color: #10B981; 
+    color: #000000; 
     border: 1px solid rgba(16, 185, 129, 0.3);
 }
 .status-completed:hover {
@@ -1173,11 +1173,20 @@ body { background: var(--bg); color: var(--text-main); }
 const categoryData = {{ category_data_json|safe }};
 const paymentStatusData = {{ payment_status_json|safe }};
 function pastelColors(count) {
-    // Enhanced palette with subtle colors that complement black & white theme
+    // Balanced green color palette for charts
     const palette = [
-        '#000000', '#10B981', '#2563EB', '#F59E0B', '#8B5CF6', 
-        '#EC4899', '#6366F1', '#14B8A6', '#F97316', '#4B5563',
-        '#3F3F46', '#71717A'
+        '#28a745',  // Main green
+        '#52d273',  // Light green
+        '#1e7e34',  // Dark green
+        '#6fd68f',  // Medium light green
+        '#34ce57',  // Bright green
+        '#8ddaab',  // Pale green
+        '#218838',  // Forest green
+        '#abdfc7',  // Mint green
+        '#45b862',  // Grass green
+        '#5cc179',  // Spring green
+        '#2d9c4a',  // Sea green
+        '#73d68c'   // Soft green
     ];
     let colors = [];
     for (let i = 0; i < count; i++) {

@@ -509,12 +509,11 @@
             font-weight: 700;
             margin: 0;
             letter-spacing: 1px;
-            color: #28a745;
+            color: #000000;
             position: relative;
             text-transform: uppercase;
             padding-bottom: 0.6rem;
             text-align: left;
-            /* <-- Ensure left alignment */
             transition: padding-left 0.3s ease !important;
         }
         
@@ -689,17 +688,17 @@
         }
 
         .action-feedback.success {
-            border-color: #000000 !important;
+            border-color: #28a745 !important;
             background: #f8f8f8 !important;
         }
 
         .action-feedback.info {
-            border-color: #000000 !important;
+            border-color: #17a2b8 !important;
             background: #ffffff !important;
         }
 
         .action-feedback.error {
-            border-color: #000000 !important;
+            border-color: #dc3545 !important;
             background: #f0f0f0 !important;
         }
 
@@ -741,14 +740,14 @@
 
         .notification-icon i {
             font-size: 1.2rem !important;
-            color: #28a745 !important;
+            color: #000000 !important;
         }
 
         .notification-title {
             flex: 1 !important;
             font-weight: 600 !important;
             font-size: 1.1rem !important;
-            color: #333333 !important;
+            color: #000000 !important;
         }
 
         .notification-time {
@@ -791,10 +790,11 @@
         .notification-actions .btn {
             background: #ffffff !important;
             border: 1px solid #28a745 !important;
-            color: #28a745 !important;
+            color: #000000 !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
+            text-decoration: none;
         }
 
         .notification-actions .btn:hover {
@@ -853,7 +853,7 @@
 
         .notification-card.selected {
             border-color: #28a745 !important;
-            background: #f0f9f3 !important;
+            background: #f8f8f8 !important;
         }
 
         .custom-checkbox {
@@ -888,14 +888,14 @@
 
         .custom-checkbox:hover {
             border-color: #28a745 !important;
-            box-shadow: 0 0 8px rgba(40, 167, 69, 0.3) !important;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.2) !important;
         }
 
         /* Select All Button */
         .btn-select-all {
             background: #ffffff !important;
             border: 1px solid #28a745 !important;
-            color: #28a745 !important;
+            color: #000000 !important;
             padding: 6px 12px !important;
             border-radius: 6px !important;
             font-size: 0.75rem !important;
@@ -903,16 +903,12 @@
             transition: all 0.3s ease !important;
             cursor: pointer !important;
         }
-        
-        .btn-select-all i {
-            margin-right: 8px !important;
-        }
 
         .btn-select-all:hover {
             background: #28a745 !important;
             color: #ffffff !important;
             border-color: #28a745 !important;
-            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3) !important;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2) !important;
         }
 
         /* Professional Delete Button Styles */
@@ -947,7 +943,7 @@
         }
 
         .selection-info {
-            color: #333333 !important;
+            color: #000000 !important;
             font-weight: 500 !important;
             display: flex !important;
             align-items: center !important;
@@ -983,7 +979,7 @@
         .btn-delete-selected:hover {
             background: #c82333 !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+            box-shadow: 0 4px 12px rgba(200, 35, 51, 0.3) !important;
         }
 
         .btn-delete-selected:active {
@@ -993,8 +989,8 @@
 
         .btn-cancel-selection {
             background: #ffffff !important;
-            border: 1px solid #dc3545 !important;
-            color: #dc3545 !important;
+            border: 1px solid #28a745 !important;
+            color: #000000 !important;
             padding: 8px 16px !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
@@ -1003,23 +999,18 @@
             cursor: pointer !important;
             margin-right: 8px !important;
         }        .btn-cancel-selection:hover {
-            background: #dc3545 !important;
-            border-color: #dc3545 !important;
-            color: #ffffff !important;
+            background: #f0f0f0 !important;
+            border-color: #28a745 !important;
         }
 
-        .btn-cancel-selection i {
-            margin-right: 8px !important;
-        }
-
-        /* Notification Badge Styles */
+        /* Badge Styles */
         .badge {
             background: #28a745 !important;
             font-weight: 700 !important;
             font-size: 0.8rem !important;
             padding: 6px 10px !important;
             border-radius: 20px !important;
-            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3) !important;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2) !important;
             color: #ffffff !important;
             margin-left: 8px !important;
             position: relative !important;
@@ -1038,17 +1029,17 @@
 
         @keyframes pulse-badge {
             0% {
-                box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
                 transform: translateY(-5px) scale(1);
             }
 
             50% {
-                box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
                 transform: translateY(-5px) scale(1.1);
             }
 
             100% {
-                box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
                 transform: translateY(-5px) scale(1);
             }
         }
@@ -1111,24 +1102,8 @@
         }
 
         /* Icon color customizations */
-        .text-success {
-            color: #28a745 !important;
-        }
-
-        .text-primary {
-            color: #28a745 !important;
-        }
-
-        .text-info {
-            color: #28a745 !important;
-        }
-
-        .text-warning {
-            color: #28a745 !important;
-        }
-
-        .text-secondary {
-            color: #28a745 !important;
+        .text-success, .text-primary, .text-info, .text-warning, .text-secondary {
+            color: #000000 !important;
         }
 
         /* Scrollbar styling - using standardized style from base templates */        /* ========== MAIN RESPONSIVE ADJUSTMENTS ========== */
