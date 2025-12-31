@@ -75,8 +75,6 @@
       border-right: 1px solid var(--sidebar-border, #e0e0e0) !important;
       overflow: hidden !important; /* Prevent whole sidebar scroll */
       overscroll-behavior: contain !important; /* Prevent body scroll chaining */
-      scrollbar-width: thin !important;
-      scrollbar-color: #888 #f1f1f1 !important;
       will-change: transform !important;
       transform: translateX(0) !important;
     }
@@ -132,19 +130,40 @@
     
     /* Sidebar navigation consistency */
     body.admin-page .sidebar-nav {
-      flex: 1 1 0 !important;
-      min-height: 0 !important;
-      padding: 15px 0 !important;
-      overflow-y: auto !important;
+      flex: 1 !important;
+      overflow-y: scroll !important;
       overflow-x: hidden !important;
+      padding: 15px 0 50px 0 !important; /* Extra bottom padding to ensure last item is visible */
       -webkit-overflow-scrolling: touch !important;
+      max-height: calc(100vh - 350px) !important; /* Constrain to show scrollbar */
+      min-height: 300px !important;
     }
     
     /* Navigation menu items */
     body.admin-page .nav-menu {
       list-style: none !important;
-      padding: 0 !important;
+      padding: 0 0 30px 0 !important; /* Extra padding at bottom */
       margin: 0 !important;
+    }
+
+    /* Custom scrollbar for sidebar navigation - WebKit browsers */
+    body.admin-page .sidebar-nav::-webkit-scrollbar {
+      width: 8px !important;
+    }
+
+    body.admin-page .sidebar-nav::-webkit-scrollbar-track {
+      background: #f5f5f5 !important;
+      border-radius: 10px !important;
+    }
+
+    body.admin-page .sidebar-nav::-webkit-scrollbar-thumb {
+      background-color: #28a745 !important;
+      border-radius: 10px !important;
+      border: 2px solid #f5f5f5 !important;
+    }
+
+    body.admin-page .sidebar-nav::-webkit-scrollbar-thumb:hover {
+      background-color: #1e7e34 !important;
     }
     
     body.admin-page .nav-item {

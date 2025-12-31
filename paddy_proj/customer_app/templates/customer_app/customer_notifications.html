@@ -738,6 +738,156 @@
             color: #333333 !important;
         }
 
+        /* Custom delete confirmation modal */
+        .delete-confirmation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 80px;
+            z-index: 9999;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .delete-confirmation-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delete-confirmation-modal {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease;
+        }
+
+        .delete-confirmation-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #fff3cd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border: 2px solid #ffc107;
+        }
+
+        .delete-confirmation-icon i {
+            font-size: 32px;
+            color: #ffc107;
+        }
+
+        .delete-confirmation-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .delete-confirmation-message {
+            font-size: 1rem;
+            color: #333333;
+            text-align: center;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .delete-confirmation-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .delete-confirmation-btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .delete-confirmation-btn-cancel {
+            background: #f8f8f8;
+            color: #000000;
+            border: 1px solid #28a745;
+        }
+
+        .delete-confirmation-btn-cancel:hover {
+            background: #28a745;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+        }
+
+        .delete-confirmation-btn-delete {
+            background: #dc3545;
+            color: #ffffff;
+            border: 1px solid #dc3545;
+        }
+
+        .delete-confirmation-btn-delete:hover {
+            background: #c82333;
+            border-color: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        @media (max-width: 575.98px) {
+            .delete-confirmation-modal {
+                padding: 24px;
+                max-width: 95%;
+            }
+
+            .delete-confirmation-title {
+                font-size: 1.3rem;
+            }
+
+            .delete-confirmation-message {
+                font-size: 0.9rem;
+            }
+
+            .delete-confirmation-actions {
+                flex-direction: column;
+            }
+
+            .delete-confirmation-btn {
+                width: 100%;
+            }
+        }
+
         .notification-icon i {
             font-size: 1.2rem !important;
             color: #000000 !important;
@@ -839,8 +989,8 @@
             right: 12px !important;
             opacity: 0 !important;
             transition: all 0.3s ease !important;
-            z-index: 10 !important;
             pointer-events: auto !important;
+            z-index: 10 !important;
         }
 
         .notification-card:hover .notification-checkbox {
@@ -848,6 +998,12 @@
         }
 
         .notification-card.selected .notification-checkbox {
+            opacity: 1 !important;
+        }
+
+        /* Show checkboxes when delete controls are visible */
+        .delete-controls.show ~ .container-fluid .notification-checkbox,
+        body:has(.delete-controls.show) .notification-checkbox {
             opacity: 1 !important;
         }
 
@@ -1220,7 +1376,7 @@
             data-notification-id="{{ notification.notification_id }}">
 
             <!-- Selection Checkbox -->
-            <div class="notification-checkbox">
+            <div class="notification-checkbox" onclick="event.stopPropagation()">
                 <input type="checkbox" class="custom-checkbox notification-select"
                     value="{{ notification.notification_id }}" onchange="updateSelection()">
             </div>            <div class="notification-header">
@@ -1642,19 +1798,64 @@ function markAsRead(notificationId) {
         updateSelection();
     }
 
+    let pendingDeleteIds = [];
+
+    function showDeleteConfirmation(selectedIds) {
+        pendingDeleteIds = selectedIds;
+        const count = selectedIds.length;
+        const message = document.getElementById('deleteConfirmationMessage');
+        message.textContent = `Are you sure you want to delete ${count} notification${count > 1 ? 's' : ''}? This action cannot be undone.`;
+        
+        const overlay = document.getElementById('deleteConfirmationOverlay');
+        overlay.classList.add('show');
+    }
+
+    function hideDeleteConfirmation() {
+        const overlay = document.getElementById('deleteConfirmationOverlay');
+        overlay.classList.remove('show');
+        pendingDeleteIds = [];
+    }
+
+    function confirmDelete() {
+        console.log('confirmDelete called with pendingDeleteIds:', pendingDeleteIds);
+        if (pendingDeleteIds.length === 0) {
+            console.error('pendingDeleteIds is empty in confirmDelete!');
+            showActionFeedback('No notifications selected', 'info');
+            hideDeleteConfirmation();
+            return;
+        }
+        // Store the IDs before hiding (which clears pendingDeleteIds)
+        const idsToDelete = [...pendingDeleteIds];
+        hideDeleteConfirmation();
+        performDelete(idsToDelete);
+    }
+
     function deleteSelectedNotifications() {
-        const selectedIds = Array.from(document.querySelectorAll('.notification-select:checked'))
-            .map(cb => cb.value);
+        const selectedCheckboxes = document.querySelectorAll('.notification-select:checked');
+        const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+        console.log('Selected checkboxes:', selectedCheckboxes.length);
+        console.log('Selected IDs:', selectedIds);
 
         if (selectedIds.length === 0) {
             showActionFeedback('No notifications selected', 'info');
             return;
         }
 
-        // Show confirmation dialog
-        if (!confirm(`Are you sure you want to delete ${selectedIds.length} notification(s)? This action cannot be undone.`)) {
+        // Show custom confirmation modal
+        showDeleteConfirmation(selectedIds);
+    }
+
+    function performDelete(selectedIds) {
+        console.log('performDelete called with:', selectedIds);
+        
+        if (!selectedIds || selectedIds.length === 0) {
+            console.error('performDelete received empty selectedIds');
+            showActionFeedback('No notifications selected', 'info');
             return;
-        }        // Show loading state
+        }
+
+        // Show loading state
         const deleteBtn = document.querySelector('.btn-delete-selected');
         const originalContent = deleteBtn.innerHTML;
         deleteBtn.innerHTML = '<i class="bi bi-spinner bi-spin" style="margin-right: 8px;"></i>Deleting...';
@@ -1727,6 +1928,23 @@ function markAsRead(notificationId) {
                 }
             }, 5000);
         });
+
+        // Close modal when clicking outside
+        document.getElementById('deleteConfirmationOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteConfirmation();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('deleteConfirmationOverlay');
+                if (overlay.classList.contains('show')) {
+                    hideDeleteConfirmation();
+                }
+            }
+        });
     });
     
     // Initialize on page load
@@ -1784,5 +2002,26 @@ function markAsRead(notificationId) {
         });
     }
 </script>
+
+<!-- Custom Delete Confirmation Modal -->
+<div id="deleteConfirmationOverlay" class="delete-confirmation-overlay">
+    <div class="delete-confirmation-modal">
+        <div class="delete-confirmation-icon">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <h3 class="delete-confirmation-title">Delete Notifications?</h3>
+        <p class="delete-confirmation-message" id="deleteConfirmationMessage">
+            Are you sure you want to delete this notification? This action cannot be undone.
+        </p>
+        <div class="delete-confirmation-actions">
+            <button class="delete-confirmation-btn delete-confirmation-btn-cancel" onclick="hideDeleteConfirmation()">
+                <i class="bi bi-x-circle me-2"></i>Cancel
+            </button>
+            <button class="delete-confirmation-btn delete-confirmation-btn-delete" onclick="confirmDelete()">
+                <i class="bi bi-trash me-2"></i>Delete
+            </button>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
