@@ -523,7 +523,7 @@
 
         .notification-card {
             background: #ffffff !important;
-            border: 1px solid rgba(40, 167, 69, 0.2) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
             border-radius: 16px !important;
             padding: 20px !important;
             margin-bottom: 16px !important;
@@ -540,24 +540,23 @@
             left: 0 !important;
             right: 0 !important;
             height: 3px !important;
-            background: #28a745 !important;
+            background: #e0e0e0 !important;
         }
 
         .notification-card:hover {
             transform: translateY(-4px) !important;
-            box-shadow: 0 8px 24px rgba(40, 167, 69, 0.15) !important;
-            border-color: rgba(40, 167, 69, 0.4) !important;
-            cursor: pointer !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+            border-color: rgba(0, 0, 0, 0.2) !important;
         }
 
         .notification-card.unread {
-            background: #f8fff9 !important;
-            border-color: rgba(40, 167, 69, 0.3) !important;
+            background: #f8f8f8 !important;
+            border-color: rgba(0, 0, 0, 0.15) !important;
         }
 
         .notification-card.unread::before {
             background: #28a745 !important;
-            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3) !important;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.2) !important;
         }
 
         .notification-header {
@@ -568,14 +567,14 @@
         }
 
         .notification-icon {
-            background: rgba(40, 167, 69, 0.08) !important;
+            background: rgba(0, 0, 0, 0.05) !important;
             border-radius: 50% !important;
             width: 40px !important;
             height: 40px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            border: 1px solid rgba(40, 167, 69, 0.2) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
             position: relative !important;
@@ -583,9 +582,9 @@
 
         .notification-icon:hover {
             transform: scale(1.1) !important;
-            background: rgba(40, 167, 69, 0.15) !important;
-            border-color: rgba(40, 167, 69, 0.4) !important;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2) !important;
+            background: rgba(0, 0, 0, 0.1) !important;
+            border-color: rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
         }
 
         .notification-icon.animate-pulse {
@@ -599,7 +598,7 @@
 
             50% {
                 transform: scale(1.2);
-                box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
             }
 
             100% {
@@ -613,7 +612,7 @@
             inset: -2px !important;
             border-radius: 50% !important;
             padding: 2px !important;
-            background: linear-gradient(45deg, transparent, rgba(40, 167, 69, 0.3), transparent) !important;
+            background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.1), transparent) !important;
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
             mask-composite: exclude !important;
             opacity: 0 !important;
@@ -646,17 +645,22 @@
 
         .action-feedback.success {
             border-color: #28a745 !important;
-            background: #f8fff9 !important;
+            background: #f8f8f8 !important;
         }
 
         .action-feedback.info {
-            border-color: #000000 !important;
+            border-color: #17a2b8 !important;
             background: #ffffff !important;
         }
 
         .action-feedback.error {
-            border-color: #000000 !important;
+            border-color: #dc3545 !important;
             background: #f0f0f0 !important;
+        }
+
+        .action-feedback.warning {
+            border-color: #ffc107 !important;
+            background: #fffbf0 !important;
         }
 
         /* Loading state for delete button */
@@ -680,9 +684,159 @@
             }
         }
 
+        /* Custom delete confirmation modal */
+        .delete-confirmation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 80px;
+            z-index: 9999;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .delete-confirmation-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delete-confirmation-modal {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease;
+        }
+
+        .delete-confirmation-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #fff3cd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border: 2px solid #ffc107;
+        }
+
+        .delete-confirmation-icon i {
+            font-size: 32px;
+            color: #ffc107;
+        }
+
+        .delete-confirmation-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .delete-confirmation-message {
+            font-size: 1rem;
+            color: #333333;
+            text-align: center;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .delete-confirmation-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .delete-confirmation-btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .delete-confirmation-btn-cancel {
+            background: #f8f8f8;
+            color: #000000;
+            border: 1px solid #28a745;
+        }
+
+        .delete-confirmation-btn-cancel:hover {
+            background: #28a745;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+        }
+
+        .delete-confirmation-btn-delete {
+            background: #dc3545;
+            color: #ffffff;
+            border: 1px solid #dc3545;
+        }
+
+        .delete-confirmation-btn-delete:hover {
+            background: #c82333;
+            border-color: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        @media (max-width: 575.98px) {
+            .delete-confirmation-modal {
+                padding: 24px;
+                max-width: 95%;
+            }
+
+            .delete-confirmation-title {
+                font-size: 1.3rem;
+            }
+
+            .delete-confirmation-message {
+                font-size: 0.9rem;
+            }
+
+            .delete-confirmation-actions {
+                flex-direction: column;
+            }
+
+            .delete-confirmation-btn {
+                width: 100%;
+            }
+        }
+
         .notification-icon i {
             font-size: 1.2rem !important;
-            color: #28a745 !important;
+            color: #000000 !important;
         }
 
         .notification-title {
@@ -704,21 +858,21 @@
             height: 12px !important;
             background: #28a745 !important;
             border-radius: 50% !important;
-            box-shadow: 0 0 8px rgba(40, 167, 69, 0.5) !important;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.3) !important;
             animation: pulse-green 2s infinite !important;
         }
 
         @keyframes pulse-green {
             0% {
-                box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
+                box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
             }
 
             50% {
-                box-shadow: 0 0 16px rgba(40, 167, 69, 0.8);
+                box-shadow: 0 0 16px rgba(40, 167, 69, 0.5);
             }
 
             100% {
-                box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
+                box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
             }
         }
 
@@ -730,9 +884,9 @@
         }
 
         .notification-actions .btn {
-            background: #28a745 !important;
+            background: #ffffff !important;
             border: 1px solid #28a745 !important;
-            color: #ffffff !important;
+            color: #000000 !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
@@ -740,11 +894,11 @@
         }
 
         .notification-actions .btn:hover {
-            background: #218838 !important;
-            border-color: #218838 !important;
+            background: #28a745 !important;
+            border-color: #28a745 !important;
             color: #ffffff !important;
             transform: translateY(-1px) !important;
-            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3) !important;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2) !important;
         }
 
         .empty-state {
@@ -752,7 +906,7 @@
             padding: 60px 20px !important;
             background: #f9f9f9 !important;
             border-radius: 20px !important;
-            border: 1px solid rgba(40, 167, 69, 0.2) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
         }
 
         .empty-icon {
@@ -777,28 +931,37 @@
         /* Notification Selection Checkbox */
         .notification-checkbox {
             position: absolute !important;
-            top: 16px !important;
-            right: 16px !important;
-            opacity: 0.7 !important;
+            top: 12px !important;
+            right: 12px !important;
+            opacity: 0 !important;
             transition: all 0.3s ease !important;
+            pointer-events: auto !important;
             z-index: 10 !important;
-            transform: scale(0.8) !important;
         }
 
         .notification-card:hover .notification-checkbox {
             opacity: 1 !important;
-            transform: scale(1) !important;
         }
 
         .notification-card.selected .notification-checkbox {
             opacity: 1 !important;
-            transform: scale(1) !important;
+        }
+
+        /* Show checkboxes when delete controls are visible */
+        .delete-controls.show ~ .container-fluid .notification-checkbox,
+        body:has(.delete-controls.show) .notification-checkbox {
+            opacity: 1 !important;
         }
 
         .notification-card.selected {
             border-color: #28a745 !important;
             background: #f8fff9 !important;
             box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2) !important;
+        }
+
+        .notification-card.selected {
+            border-color: #28a745 !important;
+            background: #f8f8f8 !important;
         }
 
         .custom-checkbox {
@@ -811,7 +974,7 @@
             cursor: pointer !important;
             transition: all 0.3s ease !important;
             position: relative !important;
-            margin: 0 !important;
+            margin-top:10px;
         }
 
         .custom-checkbox:checked {
@@ -832,33 +995,27 @@
 
         .custom-checkbox:hover {
             border-color: #28a745 !important;
-            box-shadow: 0 0 8px rgba(40, 167, 69, 0.3) !important;
-            transform: scale(1.1) !important;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.2) !important;
         }
 
         /* Select All Button */
         .btn-select-all {
             background: #ffffff !important;
             border: 1px solid #28a745 !important;
-            color: #28a745 !important;
-            padding: 8px 16px !important;
+            color: #000000 !important;
+            padding: 6px 12px !important;
             border-radius: 6px !important;
-            font-size: 0.875rem !important;
+            font-size: 0.75rem !important;
             font-weight: 500 !important;
             transition: all 0.3s ease !important;
             cursor: pointer !important;
-            min-width: 100px !important;
-            min-height: 36px !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
         }
 
         .btn-select-all:hover {
             background: #28a745 !important;
             color: #ffffff !important;
             border-color: #28a745 !important;
-            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3) !important;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2) !important;
         }
 
         /* --- Select All Button: Custom styles for <=700px screens --- */
@@ -938,18 +1095,18 @@
         .btn-delete-selected:hover {
             background: #c82333 !important;
             transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+            box-shadow: 0 4px 12px rgba(200, 35, 51, 0.3) !important;
         }
 
         .btn-delete-selected:active {
             transform: translateY(0) !important;
-            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3) !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
         }
 
         .btn-cancel-selection {
             background: #ffffff !important;
-            border: 1px solid #dc3545 !important;
-            color: #dc3545 !important;
+            border: 1px solid #28a745 !important;
+            color: #000000 !important;
             padding: 8px 16px !important;
             border-radius: 8px !important;
             font-weight: 500 !important;
@@ -960,9 +1117,8 @@
         }
 
         .btn-cancel-selection:hover {
-            background: #dc3545 !important;
-            border-color: #dc3545 !important;
-            color: #ffffff !important;
+            background: #f0f0f0 !important;
+            border-color: #28a745 !important;
         }
 
         /* Badge Styles */
@@ -972,7 +1128,7 @@
             font-size: 0.8rem !important;
             padding: 6px 10px !important;
             border-radius: 20px !important;
-            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3) !important;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.2) !important;
             color: #ffffff !important;
             margin-left: 8px !important;
             position: relative !important;
@@ -986,23 +1142,25 @@
 
         @keyframes pulse-badge {
             0% {
-                box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
                 transform: translateY(-5px) scale(1);
             }
             50% {
-                box-shadow: 0 5px 15px rgba(40, 167, 69, 0.5);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
                 transform: translateY(-5px) scale(1.1);
             }
             100% {
-                box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
                 transform: translateY(-5px) scale(1);
             }
         }
 
         /* Icon color customizations */
         .text-success, .text-primary, .text-info, .text-warning, .text-secondary {
-            color: #28a745 !important;
-        }        /* Responsive adjustments */
+            color: #000000 !important;
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .header-bar {
                 padding: 16px 0 !important;
@@ -1067,10 +1225,10 @@
             <span class="badge ms-2">{{ unread_count }}</span>
             {% endif %}
         </h1>
-        <div class="d-flex align-items-center gap-4">            {% if notifications %}
-            <button class="btn btn-select-all btn-sm"
+        <div class="d-flex align-items-center gap-2">            {% if notifications %}
+            <button class="btn btn-select-all btn-sm" style="display: inline-flex; margin-right: 1rem;"
                 onclick="toggleSelectAll()" title="Select/Deselect all notifications (Ctrl+A)">
-                <i class="bi bi-check-square me-2"></i>Select All
+                <i class="bi bi-check-square me-2" style="margin-right: 8px;"></i>Select All
             </button>
             <button class="btn btn-outline-primary btn-sm" onclick="markAllAsRead()">
                 <i class="bi bi-check-all me-2" style="margin-right: 8px;"></i>Mark All as Read
@@ -1400,11 +1558,11 @@
         if (checked.length > 0) {
             deleteControls.classList.add('show');
             // Update select all button to show deselect option
-            selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1"></i>Deselect All';
+            selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1" style="margin-right: 8px;"></i>Deselect All';
         } else {
             deleteControls.classList.remove('show');
             // Reset select all button
-            selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1"></i>Select All';
+            selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1" style="margin-right: 8px;"></i>Select All';
         }
 
         // Update card styles
@@ -1432,8 +1590,8 @@
 
         // Update button text based on new state
         selectAllBtn.innerHTML = newCheckedState ?
-            '<i class="bi bi-check-square me-1"></i>Deselect All' :
-            '<i class="bi bi-check-square me-1"></i>Select All';
+            '<i class="bi bi-check-square me-1" style="margin-right: 8px;"></i>Deselect All' :
+            '<i class="bi bi-check-square me-1" style="margin-right: 8px;"></i>Select All';
 
         updateSelection();
     }
@@ -1446,9 +1604,11 @@
             checkbox.checked = false;
         });
 
-        selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1"></i>Select All';
+        selectAllBtn.innerHTML = '<i class="bi bi-check-square me-1" style="margin-right: 8px;"></i>Select All';
         updateSelection();
     }
+
+    let pendingDeleteIds = [];
 
     function deleteSelectedNotifications() {
         const selectedIds = Array.from(document.querySelectorAll('.notification-select:checked'))
@@ -1459,11 +1619,32 @@
             return;
         }
 
-        // Show confirmation dialog
-        if (!confirm(`Are you sure you want to delete ${selectedIds.length} notification(s)? This action cannot be undone.`)) {
-            return;
-        }
+        // Store selected IDs and show custom confirmation modal
+        pendingDeleteIds = selectedIds;
+        showDeleteConfirmation(selectedIds.length);
+    }
 
+    function showDeleteConfirmation(count) {
+        const overlay = document.getElementById('deleteConfirmationOverlay');
+        const message = document.getElementById('deleteConfirmationMessage');
+        message.textContent = `Are you sure you want to delete ${count} notification(s)? This action cannot be undone.`;
+        overlay.classList.add('show');
+    }
+
+    function hideDeleteConfirmation() {
+        const overlay = document.getElementById('deleteConfirmationOverlay');
+        overlay.classList.remove('show');
+        pendingDeleteIds = [];
+    }
+
+    function confirmDelete() {
+        // Copy the array before hiding to ensure we use the correct IDs
+        const idsToDelete = [...pendingDeleteIds];
+        hideDeleteConfirmation();
+        performDelete(idsToDelete);
+    }
+
+    function performDelete(selectedIds) {
         // Show loading state
         const deleteBtn = document.querySelector('.btn-delete-selected');
         const originalContent = deleteBtn.innerHTML;
@@ -1556,6 +1737,47 @@
                 toggleSelectAll();
             }
         });
+
+        // Event listeners for delete confirmation modal
+        const overlay = document.getElementById('deleteConfirmationOverlay');
+        
+        // Close modal when clicking outside
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                hideDeleteConfirmation();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay.classList.contains('show')) {
+                hideDeleteConfirmation();
+            }
+        });
     });
 </script>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteConfirmationOverlay" class="delete-confirmation-overlay">
+    <div class="delete-confirmation-modal">
+        <div class="delete-confirmation-icon">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <h3 class="delete-confirmation-title">Confirm Deletion</h3>
+        <p id="deleteConfirmationMessage" class="delete-confirmation-message">
+            Are you sure you want to delete these notifications? This action cannot be undone.
+        </p>
+        <div class="delete-confirmation-actions">
+            <button type="button" class="delete-confirmation-btn delete-confirmation-btn-cancel"
+                onclick="hideDeleteConfirmation()">
+                Cancel
+            </button>
+            <button type="button" class="delete-confirmation-btn delete-confirmation-btn-delete"
+                onclick="confirmDelete()">
+                Delete
+            </button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
