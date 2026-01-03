@@ -2802,13 +2802,13 @@ if (order.cash_payment_requests && order.cash_payment_requests.length > 0) {
     const rejectedRequests = order.cash_payment_requests.filter(req => req.status === 2);
     
     cashPaymentRequestsHtml += `<div class="detail-section">
-        <h6><i class="bi bi-cash-coin me-2"></i>Cash Payment Requests</h6>`;
+        <h6><i class="bi bi-cash-coin me-2"></i>Payment Update Requests</h6>`;
     
     if (pendingRequests.length > 0) {
         cashPaymentRequestsHtml += `
             <div class="alert alert-warning mb-3">
-                <strong><i class="bi bi-exclamation-triangle me-2"></i>Pending Cash Payment Requests</strong>
-                <p class="mb-0 mt-1">The following cash payment requests require your approval:</p>
+                <strong><i class="bi bi-exclamation-triangle me-2"></i>Pending Payment Update Requests</strong>
+                <p class="mb-0 mt-1">The following payment updates require your approval:</p>
             </div>
         `;
         
@@ -2823,6 +2823,9 @@ if (order.cash_payment_requests && order.cash_payment_requests.length > 0) {
                         <small class="text-muted">Requested on: ${formatDate(request.created_at)}</small>
                         <small class="text-muted">Request ID: #${request.request_id}</small>
                     </div>
+                    ${request.transaction_date ? `<div class="mb-2"><small class="text-muted">Transaction Date: ${formatDate(request.transaction_date)}</small></div>` : ''}
+                    ${request.transaction_id ? `<div class="mb-2"><small class="text-muted">Transaction ID: ${request.transaction_id}</small></div>` : ''}
+                    ${request.screenshot_url ? `<div class="mb-2"><small class="text-muted">Screenshot: <a href="${request.screenshot_url}" target="_blank">View</a></small></div>` : ''}
                     ${request.reference ? `<div class="mb-2"><small class="text-muted">Reference: ${request.reference}</small></div>` : ''}
                     ${request.notes ? `<div class="mb-2"><small class="text-muted">Notes: ${request.notes}</small></div>` : ''}
                     <div class="d-flex justify-content-end gap-2 mt-3">
@@ -2861,6 +2864,9 @@ if (order.cash_payment_requests && order.cash_payment_requests.length > 0) {
                         <small class="text-muted">Request ID: #${request.request_id}</small>
                         <small class="text-muted">Processed by: ${request.processed_by_name || 'N/A'}</small>
                     </div>
+                    ${request.transaction_date ? `<div class="mb-2"><small class="text-muted">Transaction Date: ${formatDate(request.transaction_date)}</small></div>` : ''}
+                    ${request.transaction_id ? `<div class="mb-2"><small class="text-muted">Transaction ID: ${request.transaction_id}</small></div>` : ''}
+                    ${request.screenshot_url ? `<div class="mb-2"><small class="text-muted">Screenshot: <a href="${request.screenshot_url}" target="_blank">View</a></small></div>` : ''}
                     ${request.reference ? `<div class="mb-2"><small class="text-muted">Reference: ${request.reference}</small></div>` : ''}
                     ${request.notes ? `<div class="mb-2"><small class="text-muted">Notes: ${request.notes}</small></div>` : ''}
                 </div>

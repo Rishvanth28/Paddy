@@ -982,93 +982,85 @@
         {% endif %}
 
         {% if payment_status != 2 %}
-        <form id="payment-form" class="payment-form">
+        <div class="payment-form">
             <h3 style="margin-bottom: 1rem; color: #000000; text-align: center; font-size: 0.95rem;">
-                <i class="fas fa-money-bill-wave"></i> Make Payment
+                <i class="fas fa-money-bill-wave"></i> Payment Update
             </h3>
-            
-            <!-- Payment method selection -->
-            <div class="payment-method-selector">
-                <h4><i class="fas fa-money-bill-alt"></i> Select Payment Method</h4>
-                <div class="payment-methods">
-                    <div class="payment-method">
-                        <input type="radio" id="method-online" name="payment_method" value="online" checked>
-                        <label for="method-online">
-                            <i class="fas fa-credit-card"></i> Pay Online
-                            <span class="method-desc">Instant payment via credit/debit card, UPI, etc.</span>
-                        </label>
-                    </div>
-                    <div class="payment-method">
-                        <input type="radio" id="method-cash" name="payment_method" value="cash">
-                        <label for="method-cash">
-                            <i class="fas fa-money-bill-wave"></i> Pay by Cash
-                            <span class="method-desc">Request approval for cash payment</span>
-                        </label>
-                    </div>
+
+            <div id="payment-details-section">
+                <button type="button" id="open-payment-update" class="cash-button" {% if pending_cash_request %}disabled{% endif %}>
+                    <i class="fas fa-edit"></i> Payment Update
+                </button>
+
+                <div id="payment-update-form-wrapper" style="display: none; margin-top: 1rem;">
+                    <form id="payment-update-form" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="transaction-date">
+                                <i class="fas fa-calendar"></i> Transaction Date <span style="color: #e74c3c;">*</span>
+                            </label>
+                            <input type="date" id="transaction-date" name="transaction_date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transaction-id">
+                                <i class="fas fa-receipt"></i> Transaction ID
+                            </label>
+                            <input type="text" id="transaction-id" name="transaction_id" placeholder="Optional">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="payment-amount">
+                                <i class="fas fa-rupee-sign"></i> Enter Amount (₹) <span style="color: #e74c3c;">*</span>
+                            </label>
+                            <input type="number"
+                                   id="payment-amount"
+                                   name="amount"
+                                   min="1"
+                                   max="{{ balance_due }}"
+                                   step="1"
+                                   value="{{ balance_due }}"
+                                   required
+                                   placeholder="Enter amount">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="screenshot">
+                                <i class="fas fa-image"></i> Screenshot (Max 2MB) <span style="color: #e74c3c;">*</span>
+                            </label>
+                            <input type="file" id="screenshot" name="screenshot" accept="image/*" required>
+                        </div>
+
+                        <input type="hidden" id="order-id" name="order_id" value="{{ order.order_id }}">
+                        <input type="hidden" id="customer-id" name="customer_id" value="{{ customer.customer_id }}">
+
+                        <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1rem;">
+                            <button type="submit" id="submit-payment-update" class="cash-button">
+                                <i class="fas fa-paper-plane"></i> Submit
+                            </button>
+                            <button type="button" id="cancel-payment-update" class="pay-button">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <div id="payment-details-section">
-                <div class="form-group">
-                    <label for="payment-amount">
-                        <i class="fas fa-rupee-sign"></i> Payment Amount (₹):
-                    </label>
-                    <input type="number" 
-                           id="payment-amount" 
-                           name="payment_amount" 
-                           min="1" 
-                           max="{{ balance_due }}" 
-                           value="{{ balance_due }}" 
-                           required
-                           placeholder="Enter amount to pay">
-                    <input type="hidden" id="order-id" name="order_id" value="{{ order.order_id }}">
-                    <input type="hidden" id="customer-id" name="customer_id" value="{{ customer.customer_id }}">
-                </div>
-                
-                <!-- Cash payment details section (initially hidden) -->
-                <div id="cash-payment-details" style="display: none;">
-                    <div class="form-group">
-                        <label for="payment-reference">
-                            <i class="fas fa-file-invoice"></i> Payment Reference:
-                        </label>
-                        <input type="text" 
-                               id="payment-reference" 
-                               name="payment_reference" 
-                               placeholder="Optional: Receipt number, transaction ID, etc.">
-                    </div>
-                    <div class="form-group">
-                        <label for="payment-notes">
-                            <i class="fas fa-sticky-note"></i> Payment Notes:
-                        </label>
-                        <textarea 
-                            id="payment-notes" 
-                            name="payment_notes" 
-                            placeholder="Additional details about this cash payment"></textarea>
-                    </div>
-                </div>
-                
-                <button type="button" id="make-payment" class="pay-button">
-                    <i class="fas fa-credit-card"></i> Pay Now Securely
-                </button>
-                
-                <button type="button" id="request-cash-payment" class="cash-button" style="display: none;">
-                    <i class="fas fa-money-bill-wave"></i> Request Cash Payment Approval
-                </button>
-            </div>
-            
-            <!-- Pending cash request section -->
             {% if pending_cash_request %}
             <div class="pending-cash-request">
-                <h4><i class="fas fa-clock"></i> Pending Cash Payment Request</h4>
+                <h4><i class="fas fa-clock"></i> Pending Payment Update</h4>
                 <div class="request-details">
                     <p><strong>Amount:</strong> ₹{{ pending_cash_request.amount }}</p>
+                    <p><strong>Transaction Date:</strong> {{ pending_cash_request.transaction_date|date:"d-M-Y" }}</p>
+                    {% if pending_cash_request.transaction_id %}
+                    <p><strong>Transaction ID:</strong> {{ pending_cash_request.transaction_id }}</p>
+                    {% endif %}
                     <p><strong>Requested on:</strong> {{ pending_cash_request.created_at|date:"d-M-Y" }}</p>
                     <p><strong>Status:</strong> <span class="status-pending">Awaiting Approval</span></p>
                 </div>
-                <p class="note"><i class="fas fa-info-circle"></i> Your cash payment request is being reviewed. You'll be notified once it's approved.</p>
+                <p class="note"><i class="fas fa-info-circle"></i> Your payment update is being reviewed. You'll be notified once it's approved.</p>
             </div>
             {% endif %}
-        </form>
+        </div>
         {% else %}
         <div style="text-align: center; padding: 1rem; background: #28a745; border-radius: 6px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);">
             <i class="fas fa-check-circle" style="font-size: 2rem; color: #ffffff; margin-bottom: 0.5rem;"></i>
@@ -1079,7 +1071,6 @@
     </div>
 </div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 <script>
 function printInvoice() {
@@ -1094,120 +1085,103 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Payment functionality
-document.getElementById('make-payment')?.addEventListener('click', function (e) {
-    e.preventDefault();
-    
-    const button = this;
-    const originalText = button.innerHTML;
-    
-    const amount = parseFloat(document.getElementById('payment-amount').value);
-    const orderId = document.getElementById('order-id').value;
-    const customerId = document.getElementById('customer-id').value;
-    const balanceDue = parseFloat("{{ balance_due }}");
+// Payment update form toggle
+const openPaymentUpdateBtn = document.getElementById('open-payment-update');
+const paymentUpdateWrapper = document.getElementById('payment-update-form-wrapper');
+const cancelPaymentUpdateBtn = document.getElementById('cancel-payment-update');
+const paymentUpdateForm = document.getElementById('payment-update-form');
 
-    // Validate amount - MUST be first and exit immediately if invalid
-    if (!amount || amount <= 0) {
-        showAlert('Please enter a valid payment amount.', 'error');
-        return false; // Exit immediately
+openPaymentUpdateBtn?.addEventListener('click', function () {
+    if (paymentUpdateWrapper) {
+        paymentUpdateWrapper.style.display = 'block';
+        this.style.display = 'none';
     }
-    
-    // Check if amount exceeds balance due - STOP EVERYTHING if this fails
-    if (amount > balanceDue) {
-        showAlert('Payment amount cannot exceed the balance due of ₹' + balanceDue.toLocaleString(), 'error');
-        return false; // Exit immediately - NO further execution
-    }
-
-    // Only reach here if validation passes
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-    fetch('/payment/create-partial-payment-order/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ order_id: orderId, amount: amount, customer_id: customerId })
-    })
-    .then(res => res.json())
-    .then(data => {
-        button.disabled = false;
-        button.innerHTML = originalText;
-        
-        if (data.success) {
-            const options = {
-                key: data.key_id,
-                amount: data.amount,
-                currency: "INR",
-                name: "{{ business_year }}",
-                description: "Invoice Payment - Order #{{ order.order_id }}",
-                order_id: data.razorpay_order_id,
-                handler: function (response) {
-                    verifyPayment(response, data.razorpay_order_id, amount, orderId);
-                },
-                prefill: {
-                    name: "{{ customer.first_name }} {{ customer.last_name }}",
-                    email: "{{ customer.email }}",
-                    contact: "{{ customer.phone_number }}"
-                },
-                theme: {
-                    color: "#3498db"
-                },
-                modal: {
-                    ondismiss: function() {
-                        showAlert('Payment cancelled by user.', 'info');
-                    }
-                }
-            };
-            const rzp = new Razorpay(options);
-            rzp.open();
-        } else {
-            showAlert('Unable to initiate payment. Please try again.', 'error');
-        }
-    })
-    .catch(error => {
-        button.disabled = false;
-        button.innerHTML = originalText;
-        console.error('Error:', error);
-        showAlert('An error occurred while initiating payment.', 'error');
-    });
 });
 
-function verifyPayment(payment, razorpay_order_id, amount, localOrderId) {
-    // Show processing message
-    showAlert('Verifying payment...', 'info');
-    
-    fetch('/payment/verify-partial-payment/', {
+cancelPaymentUpdateBtn?.addEventListener('click', function () {
+    if (paymentUpdateWrapper) {
+        paymentUpdateWrapper.style.display = 'none';
+    }
+    if (openPaymentUpdateBtn) {
+        openPaymentUpdateBtn.style.display = 'inline-block';
+    }
+    paymentUpdateForm?.reset();
+});
+
+paymentUpdateForm?.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submit-payment-update');
+    const originalText = submitBtn?.innerHTML;
+
+    const amount = parseFloat(document.getElementById('payment-amount').value);
+    const balanceDue = parseFloat("{{ balance_due }}");
+    const transactionDate = document.getElementById('transaction-date').value;
+    const screenshotInput = document.getElementById('screenshot');
+    const file = screenshotInput?.files?.[0];
+    const maxBytes = 2 * 1024 * 1024;
+
+    if (!transactionDate) {
+        showAlert('Transaction date is required.', 'error');
+        return;
+    }
+
+    if (!amount || amount <= 0) {
+        showAlert('Please enter a valid amount.', 'error');
+        return;
+    }
+    if (amount > balanceDue) {
+        showAlert('Amount cannot exceed pending balance of ₹' + balanceDue.toLocaleString(), 'error');
+        return;
+    }
+
+    if (!file) {
+        showAlert('Screenshot is required.', 'error');
+        return;
+    }
+    if (file.size > maxBytes) {
+        showAlert('Screenshot must be 2MB or less.', 'error');
+        return;
+    }
+
+    const formData = new FormData(paymentUpdateForm);
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+    }
+
+    fetch('/payment/request-cash-payment/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
         },
-        body: JSON.stringify({
-            razorpay_payment_id: payment.razorpay_payment_id,
-            razorpay_order_id: payment.razorpay_order_id,
-            razorpay_signature: payment.razorpay_signature,
-            order_id: localOrderId,
-            amount: amount
-        })
+        body: formData
     })
     .then(res => res.json())
     .then(data => {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+
         if (data.success) {
-            showAlert('Payment successful! Refreshing page...', 'success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
+            showAlert('Payment update submitted successfully! Refreshing...', 'success');
+            setTimeout(() => window.location.reload(), 1500);
         } else {
-            showAlert('Payment verification failed. Please contact support.', 'error');
+            showAlert(data.message || 'Unable to submit payment update.', 'error');
         }
     })
     .catch(error => {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
         console.error('Error:', error);
-        showAlert('An error occurred during payment verification.', 'error');
+        showAlert('An error occurred while submitting your update.', 'error');
     });
-}
+});
 
 function getCookie(name) {
     let cookieValue = null;
@@ -1370,94 +1344,7 @@ if (paymentInput) {
     });
 }
 
-// Payment method toggle
-const methodRadios = document.querySelectorAll('input[name="payment_method"]');
-const onlineButton = document.getElementById('make-payment');
-const cashButton = document.getElementById('request-cash-payment');
-const cashDetailsSection = document.getElementById('cash-payment-details');
-
-// Handle payment method change
-methodRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
-        if (this.value === 'online') {
-            onlineButton.style.display = 'block';
-            cashButton.style.display = 'none';
-            cashDetailsSection.style.display = 'none';
-        } else if (this.value === 'cash') {
-            onlineButton.style.display = 'none';
-            cashButton.style.display = 'block';
-            cashDetailsSection.style.display = 'block';
-        }
-    });
-});
-
-// Handle cash payment request
-document.getElementById('request-cash-payment')?.addEventListener('click', function(e) {
-    e.preventDefault();
-    
-    const button = this;
-    const originalText = button.innerHTML;
-    
-    const amount = parseFloat(document.getElementById('payment-amount').value);
-    const orderId = document.getElementById('order-id').value;
-    const customerId = document.getElementById('customer-id').value;
-    const reference = document.getElementById('payment-reference')?.value || '';
-    const notes = document.getElementById('payment-notes')?.value || '';
-    const balanceDue = parseFloat("{{ balance_due }}");
-
-    // Validate amount - MUST be first and exit immediately if invalid
-    if (!amount || amount <= 0) {
-        showAlert('Please enter a valid payment amount.', 'error');
-        return false; // Exit immediately
-    }
-    
-    // Check if amount exceeds balance due - STOP EVERYTHING if this fails
-    if (amount > balanceDue) {
-        showAlert('Payment amount cannot exceed the balance due of ₹' + balanceDue.toLocaleString(), 'error');
-        return false; // Exit immediately - NO further execution
-    }
-
-    // Only reach here if validation passes
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-    fetch('/payment/request-cash-payment/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({
-            order_id: orderId,
-            amount: amount,
-            customer_id: customerId,
-            reference: reference,
-            notes: notes
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        button.disabled = false;
-        button.innerHTML = originalText;
-        
-        if (data.success) {
-            showAlert('Cash payment request submitted successfully!', 'success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
-        } else {
-            showAlert(data.message || 'Unable to submit cash payment request.', 'error');
-        }
-    })
-    .catch(error => {
-        button.disabled = false;
-        button.innerHTML = originalText;
-        console.error('Error:', error);
-        showAlert('An error occurred while submitting your request.', 'error');
-    });
-});
-
-// Disable payment section if there's already a pending cash request
+// Disable payment section if there's already a pending payment update request
 const pendingCashRequest = document.querySelector('.pending-cash-request');
 const paymentDetailsSection = document.getElementById('payment-details-section');
 
@@ -1465,7 +1352,7 @@ if (pendingCashRequest && paymentDetailsSection) {
     paymentDetailsSection.classList.add('disabled');
     
     // Show message about pending request
-    showAlert('You have a pending cash payment request. Please wait for approval before making additional payments.', 'warning');
+    showAlert('You have a pending payment update. Please wait for approval before submitting another.', 'warning');
 }
 </script>
 

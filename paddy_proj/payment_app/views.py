@@ -9,6 +9,7 @@ from datetime import timedelta, date
 import json
 import os
 import razorpay
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from django.contrib import messages
 from django.utils.timezone import now
 
@@ -44,6 +45,8 @@ def payment(request):
     # Calculate balance due
     paid_amount = order.paid_amount or 0
     balance_due = total_amount - paid_amount
+
+    pending_cash_request = CashPaymentRequest.objects.filter(order=order, status=0).order_by('-created_at').first()
     
     # Determine payment status
     if paid_amount == 0:
@@ -65,6 +68,7 @@ def payment(request):
         'payment_terms': order.payment_deadline,
         'balance_due': balance_due,
         'payment_status': payment_status,
+        'pending_cash_request': pending_cash_request,
         'invoice_date': order.order_date,
         'total_items': sum(item['quantity'] for item in order_items),
         'invoice_number': f"UFs {order.order_id}",
@@ -75,227 +79,69 @@ def payment(request):
     }
     return render(request, 'payment_app/payment.html', context)
 
-# Partial Payment Functions
-@require_POST
-@csrf_exempt
-def create_partial_payment_order(request):
-    """API endpoint to create a Razorpay order for partial payment"""
-    try:
-        data = json.loads(request.body)
-        order_id = data.get('order_id')
-        amount = float(data.get('amount'))
-        
-        # Get the order
-        order = get_object_or_404(Orders, order_id=order_id)
-        
-        # Validate amount
-        paid_amount = order.paid_amount or 0
-        balance_due = order.overall_amount - paid_amount
-        
-        if amount <= 0 or amount > balance_due:
-            return JsonResponse({
-                'success': False, 
-                'message': 'Invalid payment amount'
-            })
-        # Create Razorpay order (amount in paise)
-        razorpay_amount = int(amount * 100)
-        order_data = {
-            'amount': razorpay_amount,
-            'currency': 'INR',
-            'receipt': f'receipt_{order_id}_{timezone.now().timestamp()}',
-            'payment_capture': "1",  
-            'notes': {
-                'order_id': order_id
-            }
-        }
-        
-        razorpay_order = client.order.create(data=order_data)
-        
-        # Store order details in session
-        request.session['partial_payment_order_id'] = razorpay_order['id']
-        request.session['partial_payment_amount'] = amount
-        request.session['partial_payment_for_order'] = order_id
-        
-        return JsonResponse({
-            'success': True,
-            'key_id': RAZORPAY_KEY_ID,
-            'amount': razorpay_amount,
-            'razorpay_order_id': razorpay_order['id']
-        })
-        
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'message': str(e)
-        })
-
-@require_POST
-@csrf_exempt
-def verify_partial_payment(request):
-    """API endpoint to verify and process partial payment for customer orders"""
-    try:
-        # Parse request data
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'message': 'Invalid JSON data provided.'}, status=400)
-        
-        # Extract payment data
-        razorpay_payment_id = data.get('razorpay_payment_id')
-        razorpay_order_id = data.get('razorpay_order_id')
-        razorpay_signature = data.get('razorpay_signature')
-        application_order_id = data.get('order_id')
-        amount_paid_this_transaction = data.get('amount')
-
-        # Validate required fields
-        if not razorpay_payment_id:
-            return JsonResponse({'success': False, 'message': 'Missing razorpay_payment_id.'}, status=400)
-        if not razorpay_order_id:
-            return JsonResponse({'success': False, 'message': 'Missing razorpay_order_id.'}, status=400)
-        if not razorpay_signature:
-            return JsonResponse({'success': False, 'message': 'Missing razorpay_signature.'}, status=400)
-        if not application_order_id:
-            return JsonResponse({'success': False, 'message': 'Missing order_id.'}, status=400)
-        if not amount_paid_this_transaction:
-            return JsonResponse({'success': False, 'message': 'Missing payment amount.'}, status=400)
-
-        # Convert amount to float
-        try:
-            amount_paid_this_transaction = float(amount_paid_this_transaction)
-        except (ValueError, TypeError):
-            return JsonResponse({'success': False, 'message': 'Invalid payment amount format.'}, status=400)
-
-        if amount_paid_this_transaction <= 0:
-            return JsonResponse({'success': False, 'message': 'Payment amount must be greater than zero.'}, status=400)
-
-        # Get the order
-        try:
-            order = Orders.objects.get(order_id=application_order_id)
-        except Orders.DoesNotExist:
-            return JsonResponse({'success': False, 'message': f'Order {application_order_id} not found.'}, status=404)
-
-        # Validate payment amount against order balance
-        current_paid_amount = order.paid_amount or 0
-        balance_due = order.overall_amount - current_paid_amount
-        
-        if amount_paid_this_transaction > balance_due:
-            return JsonResponse({
-                'success': False, 
-                'message': f'Payment amount (₹{amount_paid_this_transaction}) exceeds balance due (₹{balance_due}).'
-            }, status=400)
-
-        # Verify payment signature with Razorpay
-        params_dict = {
-            'razorpay_payment_id': razorpay_payment_id,
-            'razorpay_order_id': razorpay_order_id,
-            'razorpay_signature': razorpay_signature
-        }
-        
-        try:
-            client.utility.verify_payment_signature(params_dict)
-        except Exception as signature_error:
-            return JsonResponse({
-                'success': False, 
-                'message': f'Payment signature verification failed: {str(signature_error)}'
-            }, status=400)
-
-        # Create Payment Record
-        try:
-            payment_record = Payments.objects.create(
-                order=order,
-                amount=amount_paid_this_transaction,
-                date=timezone.now().date(),
-                reference=f"partial_payment_{application_order_id}_{razorpay_payment_id[:10]}",
-                proof_link=razorpay_payment_id,
-                payment_method="Razorpay"
-            )
-        except Exception as payment_error:
-            return JsonResponse({
-                'success': False, 
-                'message': f'Failed to create payment record: {str(payment_error)}'
-            }, status=500)
-
-        # Update Order paid_amount and payment_status
-        try:
-            new_paid_amount = current_paid_amount + amount_paid_this_transaction
-            order.paid_amount = new_paid_amount
-            
-            # Update payment status based on new paid amount
-            if new_paid_amount >= order.overall_amount:
-                order.payment_status = 2  # Fully paid
-                status_text = "fully paid"
-            else:
-                order.payment_status = 1  # Partially paid
-                status_text = "partially paid"
-            
-            order.save()
-            
-            # Create notification for customer about payment
-            create_notification(
-                user_type='customer',
-                user_id=order.customer.customer_id,
-                notification_type='payment_received',
-                title='Payment Received',
-                message=f'Your payment of ₹{amount_paid_this_transaction} for order #{order.order_id} has been processed. Order is now {status_text}.',
-                related_order_id=order.order_id
-            )
-            
-        except Exception as order_update_error:
-            return JsonResponse({
-                'success': False, 
-                'message': f'Failed to update order: {str(order_update_error)}'
-            }, status=500)
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Payment verified and processed successfully',
-            'new_balance': float(order.overall_amount - order.paid_amount),
-            'payment_status': order.payment_status,
-            'paid_amount': float(order.paid_amount),
-            'total_amount': float(order.overall_amount)
-        })
-        
-    except razorpay.errors.SignatureVerificationError:
-        return JsonResponse({
-            'success': False,
-            'message': 'Payment signature verification failed. Invalid signature.'
-        }, status=400)
-    except Exception as e:
-        # Log the error for debugging
-        print(f"Error in verify_partial_payment: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return JsonResponse({
-            'success': False,
-            'message': f'An unexpected error occurred: {str(e)}'
-        }, status=500)
-
 # Cash Payment Functions
 @csrf_exempt
 @require_POST
 def request_cash_payment(request):
-    """API endpoint to request cash payment approval"""
+    """API endpoint to request manual payment update approval (formerly cash payment)."""
     try:
-        data = json.loads(request.body)
-        order_id = data.get('order_id')
-        amount = float(data.get('amount'))
-        customer_id = data.get('customer_id')
-        reference = data.get('reference', '')
-        notes = data.get('notes', '')
+        content_type = request.content_type or ''
+        if 'application/json' in content_type:
+            data = json.loads(request.body)
+            order_id = data.get('order_id')
+            customer_id = data.get('customer_id')
+            amount_raw = data.get('amount')
+            transaction_date_raw = data.get('transaction_date')
+            transaction_id = data.get('transaction_id', '')
+            reference = data.get('reference', '')
+            notes = data.get('notes', '')
+            screenshot = None
+        else:
+            order_id = request.POST.get('order_id')
+            customer_id = request.POST.get('customer_id')
+            amount_raw = request.POST.get('amount')
+            transaction_date_raw = request.POST.get('transaction_date')
+            transaction_id = request.POST.get('transaction_id', '')
+            reference = request.POST.get('reference', '')
+            notes = request.POST.get('notes', '')
+            screenshot = request.FILES.get('screenshot')
+
+        # Required fields
+        if not order_id or not customer_id:
+            return JsonResponse({'success': False, 'message': 'Missing order_id or customer_id.'}, status=400)
+
+        try:
+            amount = Decimal(str(amount_raw))
+        except (InvalidOperation, TypeError, ValueError):
+            return JsonResponse({'success': False, 'message': 'Invalid payment amount.'}, status=400)
+
+        if amount <= 0:
+            return JsonResponse({'success': False, 'message': 'Payment amount must be greater than zero.'}, status=400)
+
+        if not transaction_date_raw:
+            return JsonResponse({'success': False, 'message': 'Transaction date is required.'}, status=400)
+        try:
+            transaction_date_value = date.fromisoformat(str(transaction_date_raw))
+        except ValueError:
+            return JsonResponse({'success': False, 'message': 'Invalid transaction date.'}, status=400)
+
+        if screenshot is None:
+            return JsonResponse({'success': False, 'message': 'Screenshot is required.'}, status=400)
+
+        max_bytes = 2 * 1024 * 1024
+        if getattr(screenshot, 'size', 0) > max_bytes:
+            return JsonResponse({'success': False, 'message': 'Screenshot must be 2MB or less.'}, status=400)
         
         # Get the order
         order = get_object_or_404(Orders, order_id=order_id)
         customer = get_object_or_404(CustomerTable, customer_id=customer_id)
         
         # Validate amount
-        paid_amount = order.paid_amount or 0
-        balance_due = order.overall_amount - paid_amount
-        
-        if amount <= 0 or amount > balance_due:
-            return JsonResponse({
-                'success': False, 
-                'message': 'Invalid payment amount'
-            })
+        paid_amount = Decimal(str(order.paid_amount or 0))
+        balance_due = Decimal(str(order.overall_amount)) - paid_amount
+
+        if amount > balance_due:
+            return JsonResponse({'success': False, 'message': f'Amount cannot exceed pending balance of ₹{balance_due}.'}, status=400)
             
         # Check if there's already a pending request
         existing_request = CashPaymentRequest.objects.filter(
@@ -313,15 +159,18 @@ def request_cash_payment(request):
         cash_request = CashPaymentRequest.objects.create(
             order=order,
             customer=customer,
+            transaction_date=transaction_date_value,
+            transaction_id=transaction_id or None,
             amount=amount,
             reference=reference,
             notes=notes,
+            screenshot=screenshot,
             status=0  # Pending
         )
         
         return JsonResponse({
             'success': True,
-            'message': 'Cash payment request submitted successfully',
+            'message': 'Payment update submitted successfully',
             'request_id': cash_request.request_id
         })
         
@@ -338,6 +187,9 @@ def approve_cash_payment(request, request_id):
     
     try:
         cash_request = get_object_or_404(CashPaymentRequest, request_id=request_id)
+
+        if cash_request.status != 0:
+            return JsonResponse({'success': False, 'message': 'This request is already processed.'}, status=400)
         
         # Security check: Only allow admins to approve/reject their own orders
         if request.session.get('role') == 'admin':
@@ -365,18 +217,38 @@ def approve_cash_payment(request, request_id):
             
             # Create payment record
             order = cash_request.order
+
+            current_paid = Decimal(str(order.paid_amount or 0))
+            balance_due = Decimal(str(order.overall_amount)) - current_paid
+            if cash_request.amount > balance_due:
+                return JsonResponse({'success': False, 'message': f'Request amount exceeds current pending balance of ₹{balance_due}.'}, status=400)
+
+            amount_rupees_int = int(cash_request.amount.quantize(Decimal('1.'), rounding=ROUND_HALF_UP))
+            if amount_rupees_int <= 0:
+                return JsonResponse({'success': False, 'message': 'Invalid request amount.'}, status=400)
+
+            proof_link = "Payment Update Approved by Admin"
+            if cash_request.screenshot:
+                try:
+                    proof_link = cash_request.screenshot.url
+                except Exception:
+                    proof_link = "Payment Update Approved by Admin"
+
+            reference_text = "Payment Update"
+            if cash_request.transaction_id:
+                reference_text = f"Payment Update: {cash_request.transaction_id}"
+
             Payments.objects.create(
                 order=order,
-                amount=cash_request.amount,
+                amount=amount_rupees_int,
                 date=timezone.now().date(),
-                reference=f"Cash Payment: {cash_request.reference}" if cash_request.reference else "Cash Payment",
-                proof_link="Cash Payment Approved by Admin",
-                payment_method="Cash"
+                reference=reference_text,
+                proof_link=proof_link,
+                payment_method="Manual"
             )
             
             # Update order payment status
-            current_paid = order.paid_amount or 0
-            order.paid_amount = current_paid + cash_request.amount
+            order.paid_amount = int(Decimal(str(order.paid_amount or 0)) + Decimal(str(amount_rupees_int)))
             
             if order.paid_amount >= order.overall_amount:
                 order.payment_status = 2  # Fully paid
@@ -392,14 +264,14 @@ def approve_cash_payment(request, request_id):
                 user_type='customer',
                 user_id=cash_request.customer.customer_id,
                 notification_type='payment_approved',
-                title='Cash Payment Approved',
-                message=f'Your cash payment of ₹{cash_request.amount} for order #{order.order_id} has been approved. Order is now {payment_status_text}.',
+                title='Payment Update Approved',
+                message=f'Your payment update of ₹{amount_rupees_int} for order #{order.order_id} has been approved. Order is now {payment_status_text}.',
                 related_order_id=order.order_id
             )
             
             return JsonResponse({
                 'success': True, 
-                'message': 'Cash payment has been approved and recorded.'
+                'message': 'Payment update has been approved and recorded.'
             })
         else:  # reject
             # Update request status
@@ -413,14 +285,14 @@ def approve_cash_payment(request, request_id):
                 user_type='customer',
                 user_id=cash_request.customer.customer_id,
                 notification_type='payment_rejected',
-                title='Cash Payment Rejected',
-                message=f'Your cash payment request of ₹{cash_request.amount} for order #{cash_request.order.order_id} has been rejected. Please contact support for more information.',
+                title='Payment Update Rejected',
+                message=f'Your payment update request of ₹{cash_request.amount} for order #{cash_request.order.order_id} has been rejected. Please contact support for more information.',
                 related_order_id=cash_request.order.order_id
             )
             
             return JsonResponse({
                 'success': True, 
-                'message': 'Cash payment request has been rejected.'
+                'message': 'Payment update request has been rejected.'
             })
             
     except Exception as e:
@@ -1088,63 +960,6 @@ def order_booking_payment(request):
     }
     return render(request, 'payment_app/booking_payment.html', context)
     """
-
-# Debug endpoint for payment verification issues
-@csrf_exempt
-def debug_payment_verification(request):
-    """Debug endpoint to check payment verification data"""
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            
-            debug_info = {
-                'received_data': {
-                    'razorpay_payment_id': data.get('razorpay_payment_id'),
-                    'razorpay_order_id': data.get('razorpay_order_id'),
-                    'razorpay_signature': data.get('razorpay_signature'),
-                    'order_id': data.get('order_id'),
-                    'amount': data.get('amount'),
-                },
-                'razorpay_config': {
-                    'key_id_exists': bool(RAZORPAY_KEY_ID),
-                    'secret_exists': bool(RAZORPAY_SECRET),
-                    'client_initialized': bool(client),
-                }
-            }
-            
-            # Check if order exists
-            try:
-                order_id = data.get('order_id')
-                if order_id:
-                    order = Orders.objects.get(order_id=order_id)
-                    debug_info['order_info'] = {
-                        'exists': True,
-                        'order_id': order.order_id,
-                        'overall_amount': float(order.overall_amount),
-                        'paid_amount': float(order.paid_amount or 0),
-                        'balance_due': float(order.overall_amount - (order.paid_amount or 0)),
-                        'payment_status': order.payment_status,
-                    }
-                else:
-                    debug_info['order_info'] = {'exists': False, 'error': 'No order_id provided'}
-            except Orders.DoesNotExist:
-                debug_info['order_info'] = {'exists': False, 'error': f'Order {order_id} not found'}
-            except Exception as e:
-                debug_info['order_info'] = {'exists': False, 'error': str(e)}
-            
-            return JsonResponse({
-                'success': True,
-                'debug_info': debug_info
-            })
-            
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'error': str(e),
-                'raw_body': request.body.decode('utf-8') if request.body else 'No body'
-            })
-    
-    return JsonResponse({'error': 'Only POST method allowed'}, status=405)
 
 @require_POST
 @csrf_exempt

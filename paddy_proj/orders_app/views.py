@@ -230,6 +230,9 @@ def admin_orders(request):
                 cash_req_data = {
                     'request_id': req.request_id,
                     'amount': float(req.amount),
+                    'transaction_date': str(req.transaction_date) if getattr(req, 'transaction_date', None) else None,
+                    'transaction_id': getattr(req, 'transaction_id', None),
+                    'screenshot_url': req.screenshot.url if getattr(req, 'screenshot', None) else None,
                     'reference': req.reference,
                     'notes': req.notes,
                     'status': req.status,
@@ -401,6 +404,9 @@ def super_admin_orders(request):
                 cash_req_data = {
                     'request_id': req.request_id,
                     'amount': float(req.amount),
+                    'transaction_date': str(req.transaction_date) if getattr(req, 'transaction_date', None) else None,
+                    'transaction_id': getattr(req, 'transaction_id', None),
+                    'screenshot_url': req.screenshot.url if getattr(req, 'screenshot', None) else None,
                     'reference': req.reference,
                     'notes': req.notes,
                     'status': req.status,

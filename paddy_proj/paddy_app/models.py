@@ -190,9 +190,12 @@ class CashPaymentRequest(models.Model):
     request_id = models.AutoField(primary_key=True)
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
     customer = models.ForeignKey(CustomerTable, on_delete=models.CASCADE)
+    transaction_date = models.DateField(null=True, blank=True)
+    transaction_id = models.CharField(max_length=255, blank=True, null=True)
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     reference = models.CharField(max_length=255, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
+    screenshot = models.FileField(upload_to='payment_updates/screenshots/', null=True, blank=True)
     status = models.IntegerField(default=0)  # 0: Pending, 1: Approved, 2: Rejected
     created_at = models.DateTimeField(auto_now_add=True)
     processed_at = models.DateTimeField(null=True, blank=True)

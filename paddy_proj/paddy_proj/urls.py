@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # Django Admin Panel - Keep this at the top for priority
@@ -24,3 +26,6 @@ urlpatterns = [
     # Main app routes - Keep this last to catch remaining URLs
     path('', include('paddy_app.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
