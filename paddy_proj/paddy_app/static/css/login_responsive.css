@@ -292,10 +292,10 @@ button:hover {
     position: relative;
   }
 
-  /* MOBILE: Image Section First (Top 50%) */
+  /* MOBILE: Image Section - Minimized */
   .auth-right {
     width: 100%;
-    height: 50vh; /* Fixed height */
+    height: 15vh; /* Reduced height */
     background-size: cover;
     background-position: center center;
     background-color: #f0f4ff;
@@ -316,12 +316,12 @@ button:hover {
     border-radius: 0;
   }
 
-  /* MOBILE: Forms Section Overlapping (Bottom 50% + Overlap) */
+  /* MOBILE: Forms Section with Logo */
   .auth-left {
     width: 100%;
-    height: 60vh; /* Slightly more to create overlap */
-    padding: 0 20px 20px; /* No top padding */
-    background-color: transparent;
+    height: 85vh; /* More space for content */
+    padding: 40px 20px 20px; /* Extra top padding for arch visibility */
+    background-color: #ffffff;
     position: relative;
     overflow: hidden; /* No scrolling */
     display: flex;
@@ -330,7 +330,9 @@ button:hover {
     align-items: center;
     order: 2;
     z-index: 10;
-    margin-top: -10vh; /* Overlap the image */
+    margin-top: -25px; /* Pull up to show arch above content */
+    border-radius: 40px 40px 0 0; /* Prominent arch-like border radius at top */
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1); /* Shadow to emphasize the arch */
   }  /* Mobile Content */
   .content-wrapper {
     width: 100%;
@@ -339,26 +341,28 @@ button:hover {
     height: 100%; /* Full height */
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding-top: 20px; /* Add top padding for overlap */
+    justify-content: flex-start;
+    padding-top: 0;
   }
 
-  /* Mobile Logo - Position on Image */
-  .logo {
-    position: absolute;
-    top: 25px; /* Position on image */
-    left: 25px;
-    font-size: 24px;
-    color: #ffffff; /* White text on image */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Shadow for readability */
-    z-index: 50;
-    font-weight: 700;
+  /* Mobile Logo - Position at Top */
+  .logo-above-login {
+    position: relative !important;
+    z-index: 20;
+    margin-top: 10px !important;
+    margin-bottom: 15px !important;
+  }
+
+  /* Mobile Subtitle */
+  .subtitle-text {
+    position: relative !important;
+    z-index: 20;
   }
 
   /* Mobile Login Section - Floating Above Image */
   .login-section {
     padding: 25px; /* Good padding for mobile */
-    background: #ffffff;
+    /* background: #ffffff; */
     border-radius: 25px; /* Large radius for modern look */
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); /* Strong shadow for floating effect */
     border: 1px solid rgba(0, 0, 0, 0.06);
@@ -473,13 +477,13 @@ button:hover {
 /* ===== SMALL MOBILE (≤480px) ===== */
 @media screen and (max-width: 480px) {
   .auth-right {
-    height: 45vh; /* Adjusted height */
+    height: 15vh; /* Adjusted height */
   }
 
   .auth-left {
     height: 65vh; /* Adjusted height */
     padding: 0 15px 15px;
-    margin-top: -10vh; /* Maintain overlap */
+    margin-top: 0vh; /* Maintain overlap */
   }
 
   .content-wrapper {
