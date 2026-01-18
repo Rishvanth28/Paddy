@@ -17,6 +17,43 @@ from paddy_app.models import (
 from paddy_app.decorators import role_required
 from paddy_app.helpers import number_to_words_indian, create_notification
 
+# Customer Lookup by Phone Number
+@role_required(["admin", "superadmin"])
+def get_customer_by_phone(request):
+    """API endpoint to search customers by phone number (supports partial matches)"""
+    if request.method == 'GET':
+        phone_number = request.GET.get('phone_number', '').strip()
+        
+        if not phone_number:
+            return JsonResponse({'success': False, 'message': 'Phone number is required'}, status=400)
+        
+        try:
+            # Search for customers with phone numbers starting with the input
+            customers = CustomerTable.objects.filter(phone_number__startswith=phone_number)[:10]  # Limit to 10 results
+            
+            if customers.exists():
+                customer_list = [{
+                    'customer_id': customer.customer_id,
+                    'first_name': customer.first_name,
+                    'last_name': customer.last_name,
+                    'phone_number': customer.phone_number,
+                    'email': customer.email,
+                    'company_name': customer.company_name,
+                    'gst': customer.GST,
+                    'address': customer.address,
+                } for customer in customers]
+                
+                return JsonResponse({
+                    'success': True,
+                    'customers': customer_list
+                })
+            else:
+                return JsonResponse({'success': False, 'message': 'No customers found', 'customers': []})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+    
+    return JsonResponse({'success': False, 'message': 'Invalid request'}, status=400)
+
 # Customer Orders Views
 @role_required(["customer"])
 def customer_orders(request):

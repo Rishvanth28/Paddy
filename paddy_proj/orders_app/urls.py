@@ -17,4 +17,7 @@ urlpatterns = [
     # Order Placement URLs
     path('place-order/', views.place_order, name='place_order'),
     path('admin-place-order/', views.place_order, name='admin_place_order'),
+    
+    # API Endpoints
+    path('api/get-customer-by-phone/', views.get_customer_by_phone, name='get_customer_by_phone'),
 ]

@@ -288,6 +288,194 @@
             from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
+        
+        /* Phone search dropdown styles */
+        .phone-search-wrapper {
+            position: relative;
+        }
+        
+        .customer-search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #28a745;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+        
+        .customer-search-results.active {
+            display: block;
+        }
+        
+        .customer-result-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+        
+        .customer-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .customer-result-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .customer-result-item .customer-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .customer-result-item .customer-phone {
+            color: #28a745;
+            font-size: 0.9em;
+        }
+        
+        .customer-result-item .customer-company {
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 2px;
+        }
+        
+        .no-results-message {
+            padding: 15px;
+            text-align: center;
+            color: #999;
+        }
+        
+        /* Custom customer select dropdown */
+        .custom-select-wrapper {
+            position: relative;
+        }
+        
+        .custom-select-trigger {
+            width: 100%;
+            padding: 12px 40px 12px 14px;
+            border: 2px solid #d0d0d0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 15px;
+            color: #333;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .custom-select-trigger:hover {
+            border-color: #28a745;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
+        }
+        
+        .custom-select-trigger.active {
+            border-color: #28a745;
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .custom-select-trigger .placeholder {
+            color: #999;
+        }
+        
+        .custom-select-arrow {
+            width: 20px;
+            height: 20px;
+            stroke: #28a745;
+            transition: transform 0.3s ease;
+        }
+        
+        .custom-select-trigger.active .custom-select-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .custom-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #28a745;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+        
+        .custom-select-dropdown.active {
+            display: block;
+        }
+        
+        .custom-select-search {
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+        
+        .custom-select-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .custom-select-search input:focus {
+            outline: none;
+            border-color: #28a745;
+        }
+        
+        .custom-select-option {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+        
+        .custom-select-option:last-child {
+            border-bottom: none;
+        }
+        
+        .custom-select-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .custom-select-option.selected {
+            background-color: #e8f5e9;
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .custom-select-option .option-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .custom-select-option .option-id {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 2px;
+        }
+        
+        /* Hide original select */
+        select[id*="customer-select"] {
+            display: none;
+        }
     </style>
 
 </head>
@@ -311,6 +499,13 @@
                 {% csrf_token %}
                 <input type="hidden" name="form_token" value="{{ request.session.session_key }}_rice_{{ now|date:'U' }}">
                 <input type="hidden" name="product_category_id" value="1">
+                <div class="form-row">
+                    <div class="form-group phone-search-wrapper">
+                        <label for="phone-search-rice">Search by Phone Number</label>
+                        <input type="tel" id="phone-search-rice" placeholder="Type phone number to search..." maxlength="10">
+                        <div id="search-results-rice" class="customer-search-results"></div>
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-rice">First Name</label>
@@ -380,6 +575,13 @@
                 <input type="hidden" name="form_token" value="{{ request.session.session_key }}_paddy_{{ now|date:'U' }}">
                 <input type="hidden" name="product_category_id" value="2">
                 <div class="form-row">
+                    <div class="form-group phone-search-wrapper">
+                        <label for="phone-search-paddy">Search by Phone Number</label>
+                        <input type="tel" id="phone-search-paddy" placeholder="Type phone number to search..." maxlength="10">
+                        <div id="search-results-paddy" class="customer-search-results"></div>
+                    </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-paddy">First Name</label>
                         <select name="customer" id="customer-select-paddy" required>
@@ -445,6 +647,13 @@
                 {% csrf_token %}
                 <input type="hidden" name="form_token" value="{{ request.session.session_key }}_pesticide_{{ now|date:'U' }}">
                 <input type="hidden" name="product_category_id" value="3">
+                <div class="form-row">
+                    <div class="form-group phone-search-wrapper">
+                        <label for="phone-search-pesticide">Search by Phone Number</label>
+                        <input type="tel" id="phone-search-pesticide" placeholder="Type phone number to search..." maxlength="10">
+                        <div id="search-results-pesticide" class="customer-search-results"></div>
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="customer-select-pesticide">First Name</label>
@@ -677,6 +886,248 @@
         setupCustomerListeners("customer-select-rice", "customer-last-name-rice");
         setupCustomerListeners("customer-select-paddy", "customer-last-name-paddy");
         setupCustomerListeners("customer-select-pesticide", "customer-last-name-pesticide");
+    </script>
+
+    <script>
+        // Phone Number Search and Customer Autofill - Live Search
+        let searchTimeout = null;
+        
+        function setupPhoneSearch(phoneInputId, resultsContainerId, selectId, lastNameInputId) {
+            const phoneInput = document.getElementById(phoneInputId);
+            const resultsContainer = document.getElementById(resultsContainerId);
+            
+            if (!phoneInput || !resultsContainer) return;
+            
+            // Search as user types
+            phoneInput.addEventListener('input', function() {
+                const phone = this.value.trim();
+                
+                // Clear previous timeout
+                if (searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+                
+                // Hide results if input is empty
+                if (!phone) {
+                    resultsContainer.classList.remove('active');
+                    resultsContainer.innerHTML = '';
+                    return;
+                }
+                
+                // Debounce the search
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const response = await fetch(`{% url 'orders_app:get_customer_by_phone' %}?phone_number=${phone}`);
+                        const data = await response.json();
+                        
+                        if (data.success && data.customers && data.customers.length > 0) {
+                            displaySearchResults(data.customers, resultsContainer, selectId, lastNameInputId, phoneInputId);
+                        } else {
+                            resultsContainer.innerHTML = '<div class="no-results-message">No customers found</div>';
+                            resultsContainer.classList.add('active');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        resultsContainer.innerHTML = '<div class="no-results-message">Error searching customers</div>';
+                        resultsContainer.classList.add('active');
+                    }
+                }, 300); // Wait 300ms after user stops typing
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!phoneInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+                    resultsContainer.classList.remove('active');
+                }
+            });
+        }
+        
+        function displaySearchResults(customers, resultsContainer, selectId, lastNameInputId, phoneInputId) {
+            let html = '';
+            
+            customers.forEach(customer => {
+                html += `
+                    <div class="customer-result-item" onclick="selectCustomer('${customer.customer_id}', '${selectId}', '${lastNameInputId}', '${phoneInputId}')">
+                        <div class="customer-name">${customer.first_name} ${customer.last_name}</div>
+                        <div class="customer-phone">${customer.phone_number}</div>
+                        ${customer.company_name ? `<div class="customer-company">${customer.company_name}</div>` : ''}
+                    </div>
+                `;
+            });
+            
+            resultsContainer.innerHTML = html;
+            resultsContainer.classList.add('active');
+        }
+        
+        function selectCustomer(customerId, selectId, lastNameInputId, phoneInputId) {
+            // Set the select dropdown value
+            const select = document.getElementById(selectId);
+            select.value = customerId;
+            
+            // Get the selected option to retrieve last name
+            const selectedOption = select.options[select.selectedIndex];
+            const lastName = selectedOption.getAttribute('data-last-name');
+            
+            // Update last name field
+            const lastNameInput = document.getElementById(lastNameInputId);
+            if (lastNameInput) {
+                lastNameInput.value = lastName;
+            }
+            
+            // Trigger change event
+            select.dispatchEvent(new Event('change'));
+            
+            // Hide results and clear search input
+            const phoneInput = document.getElementById(phoneInputId);
+            const resultsContainer = phoneInput.nextElementSibling;
+            resultsContainer.classList.remove('active');
+            phoneInput.value = '';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup phone search for all forms
+            setupPhoneSearch('phone-search-rice', 'search-results-rice', 'customer-select-rice', 'customer-last-name-rice');
+            setupPhoneSearch('phone-search-paddy', 'search-results-paddy', 'customer-select-paddy', 'customer-last-name-paddy');
+            setupPhoneSearch('phone-search-pesticide', 'search-results-pesticide', 'customer-select-pesticide', 'customer-last-name-pesticide');
+            
+            // Initialize custom select dropdowns
+            initCustomSelect('customer-select-rice', 'customer-last-name-rice');
+            initCustomSelect('customer-select-paddy', 'customer-last-name-paddy');
+            initCustomSelect('customer-select-pesticide', 'customer-last-name-pesticide');
+        });
+        
+        // Custom Select Dropdown Implementation
+        function initCustomSelect(selectId, lastNameInputId) {
+            const selectElement = document.getElementById(selectId);
+            if (!selectElement) return;
+            
+            // Create custom dropdown structure
+            const wrapper = document.createElement('div');
+            wrapper.className = 'custom-select-wrapper';
+            
+            const trigger = document.createElement('div');
+            trigger.className = 'custom-select-trigger';
+            trigger.innerHTML = `
+                <span class="selected-text placeholder">Select a customer</span>
+                <svg class="custom-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            `;
+            
+            const dropdown = document.createElement('div');
+            dropdown.className = 'custom-select-dropdown';
+            
+            // Add search input
+            const searchWrapper = document.createElement('div');
+            searchWrapper.className = 'custom-select-search';
+            searchWrapper.innerHTML = '<input type="text" placeholder="Search customers..." />';
+            dropdown.appendChild(searchWrapper);
+            
+            const searchInput = searchWrapper.querySelector('input');
+            
+            // Add options
+            const optionsContainer = document.createElement('div');
+            const options = selectElement.querySelectorAll('option');
+            
+            options.forEach((option, index) => {
+                if (option.value === '') return; // Skip placeholder option
+                
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'custom-select-option';
+                optionDiv.dataset.value = option.value;
+                optionDiv.dataset.lastName = option.getAttribute('data-last-name') || '';
+                optionDiv.innerHTML = `
+                    <div class="option-name">${option.textContent}</div>
+                    <div class="option-id">ID: ${option.value}</div>
+                `;
+                
+                optionDiv.addEventListener('click', function() {
+                    selectOption(selectElement, trigger, dropdown, this, lastNameInputId);
+                });
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            dropdown.appendChild(optionsContainer);
+            
+            // Insert custom dropdown before select element
+            selectElement.parentNode.insertBefore(wrapper, selectElement);
+            wrapper.appendChild(trigger);
+            wrapper.appendChild(dropdown);
+            
+            // Toggle dropdown
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const isActive = dropdown.classList.contains('active');
+                
+                // Close all other dropdowns
+                document.querySelectorAll('.custom-select-dropdown').forEach(d => {
+                    d.classList.remove('active');
+                    d.previousElementSibling.classList.remove('active');
+                });
+                
+                if (!isActive) {
+                    dropdown.classList.add('active');
+                    trigger.classList.add('active');
+                    searchInput.focus();
+                }
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const options = optionsContainer.querySelectorAll('.custom-select-option');
+                
+                options.forEach(option => {
+                    const text = option.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        option.style.display = 'block';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Prevent search input from closing dropdown
+            searchInput.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!wrapper.contains(e.target)) {
+                    dropdown.classList.remove('active');
+                    trigger.classList.remove('active');
+                }
+            });
+        }
+        
+        function selectOption(selectElement, trigger, dropdown, optionDiv, lastNameInputId) {
+            // Update hidden select
+            selectElement.value = optionDiv.dataset.value;
+            selectElement.dispatchEvent(new Event('change'));
+            
+            // Update trigger text
+            const selectedText = trigger.querySelector('.selected-text');
+            selectedText.textContent = optionDiv.querySelector('.option-name').textContent;
+            selectedText.classList.remove('placeholder');
+            
+            // Update last name field
+            const lastNameInput = document.getElementById(lastNameInputId);
+            if (lastNameInput) {
+                lastNameInput.value = optionDiv.dataset.lastName;
+            }
+            
+            // Mark as selected
+            dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            optionDiv.classList.add('selected');
+            
+            // Close dropdown
+            dropdown.classList.remove('active');
+            trigger.classList.remove('active');
+        }
     </script>
 
     <script>
