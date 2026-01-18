@@ -416,7 +416,7 @@
         e.preventDefault();
         const selectedPlan = document.querySelector('.plan-radio:checked');
         if (!selectedPlan) {
-            alert('Please select a plan.');
+            showToast('Please select a plan.', 'warning');
             return;
         }
         const planValue = selectedPlan.value;
@@ -463,14 +463,17 @@
                     .then(res => res.json())
                     .then(result => {
                         if (result.success) {
-                            window.location.href = data.redirect_url;
+                            showToast('Payment successful! Redirecting...', 'success');
+                            setTimeout(() => {
+                                window.location.href = data.redirect_url;
+                            }, 1500);
                         } else {
-                            alert('Payment failed. Please try again.');
+                            showToast('Payment failed. Please try again.', 'error');
                             payBtn.disabled = false;
                         }
                     })
                     .catch(() => {
-                        alert('Payment verification failed.');
+                        showToast('Payment verification failed.', 'error');
                         payBtn.disabled = false;
                     });
                 },
@@ -481,7 +484,7 @@
             payBtn.disabled = false;
         })
         .catch(err => {
-            alert(err.message || 'Could not initiate payment.');
+            showToast(err.message || 'Could not initiate payment.', 'error');
             payBtn.disabled = false;
         });
     });

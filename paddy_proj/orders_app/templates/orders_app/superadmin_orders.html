@@ -3170,31 +3170,31 @@ function showAlert(message, type) {
                     }
                     
                     // Show success message
-                    alert('Order status updated successfully!');
+                    showToast('Order status updated successfully!', 'success');
                     
                     // Refresh orders to show updated status
                     fetchOrders();
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred while updating the order status.');
+                    showToast('An error occurred while updating the order status.', 'error');
                 });
             }
         };
         
         window.recordPayment = function(orderId) {
             // Implementation would depend on your system's payment recording functionality
-            alert('Payment recording functionality to be implemented');
+            showToast('Payment recording functionality to be implemented', 'info');
         };
         
         window.viewPaymentHistory = function(orderId) {
             // Implementation would depend on your system's payment history tracking
-            alert('Payment history functionality to be implemented');
+            showToast('Payment history functionality to be implemented', 'info');
         };
         
         window.sendPaymentReminder = function(orderId) {
             // Implementation would depend on your system's notification functionality
-            alert('Payment reminder functionality to be implemented');
+            showToast('Payment reminder functionality to be implemented', 'info');
         };
         
         // Initialize from URL parameters

@@ -1073,7 +1073,7 @@
                     // Count total pesticide rows
                     const pesticideRows = pesticideTable.querySelectorAll("tr.item-row");
                     if (pesticideRows.length <= 1) {
-                        alert("Cannot delete the last pesticide item. At least one item must remain.");
+                        showToast("Cannot delete the last pesticide item. At least one item must remain.", 'warning');
                         return;
                     }
                 }
