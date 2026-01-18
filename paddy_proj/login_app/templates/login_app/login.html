@@ -50,7 +50,15 @@
                 <input type="text" name="username" id="username" required />
 
                 <label class="text" for="password">PASSWORD</label>
-                <input type="password" name="password" id="password" required />
+                <div class="password-field-wrapper">
+                  <input type="password" name="password" id="password" required />
+                  <button type="button" class="password-toggle" id="signin-password-toggle" onclick="togglePasswordVisibility('password', 'signin-password-toggle')">
+                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
 
                 <button class="login" type="submit">LOG IN</button>
               </form>
@@ -107,20 +115,38 @@
                   <input type="email" name="email" required />
 
                   <label>Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    required
-                    minlength="6"
-                  />
+                  <div class="password-field-wrapper">
+                    <input
+                      type="password"
+                      name="password"
+                      class="admin-password"
+                      required
+                      minlength="6"
+                    />
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)">
+                      <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    </button>
+                  </div>
 
                   <label>Confirm Password</label>
-                  <input
-                    type="password"
-                    name="confirm_password"
-                    required
-                    minlength="6"
-                  />
+                  <div class="password-field-wrapper">
+                    <input
+                      type="password"
+                      name="confirm_password"
+                      class="admin-confirm-password"
+                      required
+                      minlength="6"
+                    />
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)">
+                      <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    </button>
+                  </div>
 
                   <input type="hidden" name="role" value="0" />
                   <button type="submit">Create Admin User</button>
@@ -192,25 +218,43 @@
                   <div class="form-row">
                     <div class="form-group">
                       <label for="password">Password</label>
-                      <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Enter password"
-                        required
-                        minlength="6"
-                      />
+                      <div class="password-field-wrapper">
+                        <input
+                          type="password"
+                          id="password"
+                          name="password"
+                          placeholder="Enter password"
+                          class="customer-password"
+                          required
+                          minlength="6"
+                        />
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)">
+                          <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                     <div class="form-group">
                       <label for="confirm_password">Confirm Password</label>
-                      <input
-                        type="password"
-                        id="confirm_password"
-                        name="confirm_password"
-                        placeholder="Confirm password"
-                        required
-                        minlength="6"
-                      />
+                      <div class="password-field-wrapper">
+                        <input
+                          type="password"
+                          id="confirm_password"
+                          name="confirm_password"
+                          placeholder="Confirm password"
+                          class="customer-confirm-password"
+                          required
+                          minlength="6"
+                        />
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility(this)">
+                          <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -375,6 +419,42 @@
               this.value === "customer" ? "block" : "none";
           });
       });
+    </script>
+
+    <!-- Password visibility toggle script -->
+    <script>
+      function togglePasswordVisibility(element) {
+        let input;
+        
+        // Handle both direct element and button in wrapper scenarios
+        if (element === 'password' || typeof element === 'string') {
+          // Direct element ID passed (signin form)
+          input = document.getElementById(element);
+        } else if (element.tagName === 'BUTTON') {
+          // Button passed, find the input in the wrapper
+          input = element.closest('.password-field-wrapper').querySelector('input');
+        }
+        
+        if (input) {
+          const isPassword = input.type === 'password';
+          input.type = isPassword ? 'text' : 'password';
+          
+          // Update eye icon
+          const icon = element.tagName === 'BUTTON' ? element : document.getElementById(element + '-toggle');
+          if (icon) {
+            const svg = icon.querySelector('svg');
+            if (svg) {
+              if (isPassword) {
+                // Changing to text - show closed eye icon
+                svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-5.07 5.93m-5.02-5.02a3 3 0 1 1 4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+              } else {
+                // Changing back to password - show open eye icon
+                svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+              }
+            }
+          }
+        }
+      }
     </script>
 
     <script src="{% static 'js/login.js' %}" defer></script>

@@ -232,6 +232,64 @@ input:focus, select:focus, textarea:focus {
   transform: translateY(-1px);
 }
 
+/* Password Field Wrapper */
+.password-field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.password-field-wrapper input {
+  padding-right: 45px;
+  margin-bottom: 0;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999999;
+  width: auto !important;
+  height: auto !important;
+  box-shadow: none !important;
+  font-size: 18px;
+  line-height: 1;
+  transform: none !important;
+}
+
+.password-toggle:hover {
+  background: none !important;
+  color: #999999 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.password-toggle:active {
+  color: #999999;
+  background: none !important;
+  transform: none !important;
+}
+
+.password-toggle:focus {
+  outline: none;
+}
+
+.eye-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+}
+
 button, button[type="submit"] {
   padding: 14px 35px;
   background: #2d7a3e;
