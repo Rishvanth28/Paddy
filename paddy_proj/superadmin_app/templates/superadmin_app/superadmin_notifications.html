@@ -1702,9 +1702,9 @@
                     // If session expired, suggest page reload
                     if (errorMessage.includes('Session expired') || errorMessage.includes('login')) {
                         setTimeout(() => {
-                            if (confirm('Your session has expired. Would you like to reload the page to login again?')) {
+                            showConfirm('Your session has expired. Would you like to reload the page to login again?', function() {
                                 location.reload();
-                            }
+                            });
                         }, 2000);
                     }
                 }

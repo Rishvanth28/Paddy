@@ -703,20 +703,20 @@
                             };
                             const rzp = new Razorpay(options);
                             rzp.on('payment.failed', function (response) {
-                                alert("Payment failed. Please try again or contact support.");
+                                showToast("Payment failed. Please try again or contact support.", 'error');
                                 makePaymentButton.disabled = false;
                                 makePaymentButton.innerHTML = originalText;
                             });
                             rzp.open();
                         } else {
-                            alert('Error: ' + data.message);
+                            showToast('Error: ' + data.message, 'error');
                             makePaymentButton.disabled = false;
                             makePaymentButton.innerHTML = originalText;
                         }
                     })
                     .catch(error => {
                         console.error('Payment initiation error:', error);
-                        alert('Payment processing error. Please try again.');
+                        showToast('Payment processing error. Please try again.', 'error');
                         makePaymentButton.disabled = false;
                         makePaymentButton.innerHTML = originalText;
                     });
@@ -739,9 +739,12 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        window.location.reload();
+                        showToast('Payment verified successfully!', 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
                     } else {
-                        alert('Payment verification failed. Please contact support if amount was deducted.');
+                        showToast('Payment verification failed. Please contact support if amount was deducted.', 'error');
                         if (makePaymentButton) {
                             makePaymentButton.disabled = false;
                             makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill me-2"></i>Pay ₹{{ payment_amount }} Now';
@@ -750,7 +753,7 @@
                 })
                 .catch (error => {
                 console.error('Verification error:', error);
-                alert('Verification error. Please contact support.');
+                showToast('Verification error. Please contact support.', 'error');
                 if (makePaymentButton) {
                     makePaymentButton.disabled = false;
                     makePaymentButton.innerHTML = '<i class="bi bi-credit-card-fill me-2"></i>Pay ₹{{ payment_amount }} Now';

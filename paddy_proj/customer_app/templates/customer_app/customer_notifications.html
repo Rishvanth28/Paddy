@@ -1455,14 +1455,12 @@ function markAsRead(notificationId) {
             });
     }    function markAllAsRead() {
         // Show a confirmation message to inform users about this behavior change
-        if (!confirm("Notifications will be marked as read in the system, but the indicators will remain until you actually open or interact with each notification. Continue?")) {
-            return;
-        }
-        
-        fetch('/notifications/mark-all-read/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        showConfirm("Notifications will be marked as read in the system, but the indicators will remain until you actually open or interact with each notification. Continue?", function() {
+            // User confirmed, proceed with marking as read
+            fetch('/notifications/mark-all-read/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             }
         })
@@ -1485,6 +1483,7 @@ function markAsRead(notificationId) {
                     window.dispatchEvent(event);
                 }
             });
+        }); // Close showConfirm callback
     }    // Function to update just the badge on the page title, not the indicators
     function updatePageBadgeOnly() {
         // While the page badge should show 0, we want to make sure UI indicators remain visible

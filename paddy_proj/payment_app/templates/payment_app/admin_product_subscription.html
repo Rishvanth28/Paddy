@@ -979,7 +979,7 @@
             e.preventDefault();
             
             if (selectedProducts.length === 0) {
-                alert('Please select at least one product.');
+                showToast('Please select at least one product.', 'warning');
                 return;
             }
 

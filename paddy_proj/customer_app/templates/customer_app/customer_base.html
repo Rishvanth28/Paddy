@@ -1220,6 +1220,112 @@
           closeBtn.addEventListener('click', closeToastHandler);
         }
       }
+      
+      // Global toast function for easy access
+      window.showToast = function(message, type = 'success') {
+        createToast(message, type);
+      };
+      
+      // Global confirmation dialog with custom styling
+      window.showConfirm = function(message, onConfirm, onCancel) {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+          animation: fadeIn 0.3s;
+        `;
+        
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+          background: white;
+          padding: 30px;
+          border-radius: 12px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+          max-width: 400px;
+          width: 90%;
+          animation: slideUp 0.3s;
+        `;
+        
+        modal.innerHTML = `
+          <h3 style="margin: 0 0 15px 0; color: #333; font-size: 1.3rem;">Confirmation</h3>
+          <p style="margin: 0 0 25px 0; color: #666; line-height: 1.6;">${message}</p>
+          <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button id="confirm-cancel-btn" style="
+              padding: 10px 24px;
+              border: 1px solid #ddd;
+              background: white;
+              color: #666;
+              border-radius: 6px;
+              cursor: pointer;
+              font-size: 1rem;
+              transition: all 0.2s;
+            ">Cancel</button>
+            <button id="confirm-ok-btn" style="
+              padding: 10px 24px;
+              border: none;
+              background: #17a2b8;
+              color: white;
+              border-radius: 6px;
+              cursor: pointer;
+              font-size: 1rem;
+              font-weight: 600;
+              transition: all 0.2s;
+            ">Confirm</button>
+          </div>
+          <style>
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            @keyframes slideUp {
+              from { transform: translateY(20px); opacity: 0; }
+              to { transform: translateY(0); opacity: 1; }
+            }
+            #confirm-ok-btn:hover {
+              background: #138496;
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+            }
+            #confirm-cancel-btn:hover {
+              background: #f8f9fa;
+              border-color: #adb5bd;
+            }
+          </style>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        const removeModal = () => {
+          overlay.style.animation = 'fadeOut 0.3s';
+          setTimeout(() => overlay.remove(), 300);
+        };
+        
+        document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+          removeModal();
+          if (onConfirm) onConfirm();
+        });
+        
+        document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
+          removeModal();
+          if (onCancel) onCancel();
+        });
+        
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) {
+            removeModal();
+            if (onCancel) onCancel();
+          }
+        });
+      };
     });
   </script>
   <script>

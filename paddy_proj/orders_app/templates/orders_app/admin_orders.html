@@ -3691,7 +3691,7 @@ window.confirmAction = function() {
             hideConfirmation();
         } else {
             console.error('processCashPaymentRequest function not found');
-            alert('Error: Payment processing function not available. Please refresh the page.');
+            showToast('Error: Payment processing function not available. Please refresh the page.', 'error');
         }
     } else {
         console.error('Missing pendingRequestId or pendingAction');
@@ -4750,7 +4750,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Order status update functions (these would need backend endpoints)
         window.updateOrderDeliveryStatus = function(orderId, status) {
-            if (confirm(`Are you sure you want to ${status === 1 ? 'mark this order as delivered' : 'change this order back to processing'}?`)) {
+            showConfirm(`Are you sure you want to ${status === 1 ? 'mark this order as delivered' : 'change this order back to processing'}?`, function() {
                 fetch('/api/update-order-delivery-status/', {
                     method: 'POST',
                     headers: {
@@ -4765,36 +4765,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        alert('Error: ' + data.error);
+                        showToast('Error: ' + data.error, 'error');
                         return;
                     }
                     
                     // Show success message
-                    alert('Order status updated successfully!');
+                    showToast('Order status updated successfully!', 'success');
                     
                     // Refresh orders to show updated status
                     fetchOrders();
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred while updating the order status.');
+                    showToast('An error occurred while updating the order status.', 'error');
                 });
-            }
+            });
         };
         
         window.recordPayment = function(orderId) {
             // Implementation would depend on your system's payment recording functionality
-            alert('Payment recording functionality to be implemented');
+            showToast('Payment recording functionality to be implemented', 'info');
         };
         
         window.viewPaymentHistory = function(orderId) {
             // Implementation would depend on your system's payment history tracking
-            alert('Payment history functionality to be implemented');
+            showToast('Payment history functionality to be implemented', 'info');
         };
         
         window.sendPaymentReminder = function(orderId) {
             // Implementation would depend on your system's notification functionality
-            alert('Payment reminder functionality to be implemented');
+            showToast('Payment reminder functionality to be implemented', 'info');
         };
         
         // Cash payment approval functions

@@ -3001,15 +3001,15 @@ if (order.cash_payment_requests && order.cash_payment_requests.length > 0) {
         }
         
         window.approveCashPayment = function(requestId) {
-    if (confirm("Are you sure you want to approve this cash payment request?")) {
+    showConfirm("Are you sure you want to approve this cash payment request?", function() {
         processCashPaymentRequest(requestId, 'approve');
-    }
+    });
 };
 
 window.rejectCashPayment = function(requestId) {
-    if (confirm("Are you sure you want to reject this cash payment request?")) {
+    showConfirm("Are you sure you want to reject this cash payment request?", function() {
         processCashPaymentRequest(requestId, 'reject');
-    }
+    });
 };
 
 function processCashPaymentRequest(requestId, action) {
@@ -3150,7 +3150,7 @@ function showAlert(message, type) {
         
         // Order status update functions (these would need backend endpoints)
         window.updateOrderDeliveryStatus = function(orderId, status) {
-            if (confirm(`Are you sure you want to ${status === 1 ? 'mark this order as delivered' : 'change this order back to processing'}?`)) {
+            showConfirm(`Are you sure you want to ${status === 1 ? 'mark this order as delivered' : 'change this order back to processing'}?`, function() {
                 fetch('/api/update-order-delivery-status/', {
                     method: 'POST',
                     headers: {
@@ -3165,7 +3165,7 @@ function showAlert(message, type) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        alert('Error: ' + data.error);
+                        showToast('Error: ' + data.error, 'error');
                         return;
                     }
                     

@@ -429,15 +429,17 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Payment successful! You now have access to the selected products.');
-                        window.location.href = "{% url 'admin_app:admin_dashboard' %}";
+                        showToast('Payment successful! You now have access to the selected products.', 'success');
+                        setTimeout(() => {
+                            window.location.href = "{% url 'admin_app:admin_dashboard' %}";
+                        }, 1500);
                     } else {
-                        alert('Payment verification failed. Please contact support if amount was deducted.');
+                        showToast('Payment verification failed. Please contact support if amount was deducted.', 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Payment verification failed. Please contact support.');
+                    showToast('Payment verification failed. Please contact support.', 'error');
                 });
             },
             theme: { 
@@ -457,7 +459,7 @@
         const rzp = new Razorpay(options);
         
         rzp.on('payment.failed', function (response) {
-            alert('Payment failed: ' + response.error.description);
+            showToast('Payment failed: ' + response.error.description, 'error');
         });
         
         rzp.open();
