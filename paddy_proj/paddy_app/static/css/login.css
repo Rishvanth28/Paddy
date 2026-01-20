@@ -1038,3 +1038,10 @@ button:hover {
     margin-bottom: 20px; /* Add bottom margin */
   }
 }
+
+/* ===== LARGE SCREEN (1440px+) - Password Toggle Positioning ===== */
+@media screen and (min-width: 1440px) {
+  .password-toggle {
+    right: -80px;
+  }
+}
