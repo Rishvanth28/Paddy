@@ -1,0 +1,470 @@
+/* Reports CSS - Styles for both admin and superadmin reports pages */
+
+/* Enhanced responsive styles for reports */
+.reports-container {
+    padding: 20px 15px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header Bar */
+.header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-left: 0.5rem;
+    margin-top: -1rem;
+}
+
+.page-title {
+    color: #333;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Filters Section */
+.filters-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filters-section h2 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    flex: 1;
+}
+
+.filter-group.date-field {
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+/* Filter Actions */
+.filter-actions-bar {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-actions button,
+.filter-actions-bar button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+/* Export Section */
+.export-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.export-section h2 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-export {
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-export.excel {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-export.excel:hover {
+    background-color: #1e7e34;
+    color: white;
+}
+
+.btn-export.pdf {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-export.pdf:hover {
+    background-color: #c82333;
+    color: white;
+}
+
+/* Export Actions (legacy) */
+.export-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.export-actions .btn {
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #1e7e34;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    color: white;
+}
+
+/* Reports Table Container */
+.reports-table-container {
+    margin-bottom: 30px;
+}
+
+.reports-table-container h2 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    /* border-bottom: 2px solid #007bff; */
+    padding-bottom: 5px;
+}
+
+/* Data Tables */
+.data-section {
+    margin-bottom: 30px;
+}
+
+.data-section h3 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.data-table,
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    font-size: 14px;
+}
+
+.data-table th,
+.reports-table th {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: 600;
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+
+.data-table td,
+.reports-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.data-table tbody tr:hover,
+.reports-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.data-table tbody tr:nth-child(even),
+.reports-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* Status badges */
+.status-delivered {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.status-pending {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.payment-paid {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.payment-not-paid {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Product type styling */
+.product-rice {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.product-paddy {
+    color: #795548;
+    font-weight: 500;
+}
+
+.product-pesticide {
+    color: #ff5722;
+    font-weight: 500;
+}
+
+/* Summary section */
+.summary-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.summary-section h4 {
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    padding: 2px 0;
+}
+
+.summary-item strong {
+    color: #333;
+}
+
+/* No data message */
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .reports-container {
+        padding: 15px 10px;
+    }
+    
+    .header-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .filter-row {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        min-width: auto;
+    }
+    
+    .filter-actions,
+    .filter-actions-bar,
+    .export-actions,
+    .export-buttons {
+        flex-direction: column;
+    }
+    
+    .filter-actions button,
+    .filter-actions-bar button,
+    .export-actions .btn,
+    .btn-export {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .data-table,
+    .reports-table {
+        font-size: 12px;
+    }
+    
+    .data-table th,
+    .data-table td,
+    .reports-table th,
+    .reports-table td {
+        padding: 8px 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.3rem;
+    }
+    
+    .data-table,
+    .reports-table {
+        font-size: 11px;
+    }
+    
+    .data-table th,
+    .data-table td,
+    .reports-table th,
+    .reports-table td {
+        padding: 6px 3px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .filters-section,
+    .export-section,
+    .export-actions,
+    .export-buttons,
+    .filter-actions,
+    .filter-actions-bar {
+        display: none;
+    }
+    
+    .reports-container {
+        padding: 0;
+        max-width: none;
+    }
+    
+    .data-table,
+    .reports-table {
+        font-size: 12px;
+    }
+    
+    .data-table th,
+    .data-table td,
+    .reports-table th,
+    .reports-table td {
+        padding: 4px;
+        border: 1px solid #333;
+    }
+}

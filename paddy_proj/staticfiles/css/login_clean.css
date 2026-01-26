@@ -9,8 +9,8 @@
 
 body, html {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f5f5;
-  color: #000000;
+  background-color: #f8f9fa;
+  color: #333;
   height: 100%;
   overflow: hidden; /* Prevent page scrolling on desktop */
   line-height: 1.6;
@@ -34,7 +34,7 @@ body, html {
   left: 30px;
   font-weight: 700;
   font-size: 28px;
-  color: #000000;
+  color: #333;
   z-index: 100;
   text-decoration: none;
 }
@@ -55,13 +55,13 @@ body, html {
 /* Desktop Image Area */
 .auth-right {
   width: 45%;
-  background-image: url('/static/media/login_cover.png');
+  background-image: url('/static/media/login.png');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   position: relative;
   height: 100vh;
-  background-color: #ffffff;
+  background-color: #f0f4ff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,7 +72,7 @@ body, html {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(45, 122, 62, 0.08) 0%, rgba(45, 122, 62, 0.03) 100%);
+  background: linear-gradient(135deg, rgba(78, 110, 242, 0.08) 0%, rgba(78, 110, 242, 0.03) 100%);
   pointer-events: none;
 }
 
@@ -95,9 +95,9 @@ body, html {
   position: relative;
   backdrop-filter: blur(10px);
   height: auto;
-  /* overflow: hidden; Ensure container clips overflow */
+  overflow: hidden; /* Ensure container clips overflow */
   box-sizing: border-box;
-  /* display: flex; */
+  display: flex;
   flex-direction: column;
 }
 
@@ -113,11 +113,11 @@ body, html {
   content: '';
   position: absolute;
   top: 0;
-  left: 12px;
-  right: 12px;
+  left: 0;
+  right: 0;
   height: 4px;
-  background: #2d7a3e;
-  border-radius: 40px 40px 0 0;
+  background: #333;
+  border-radius: 20px 20px 0 0;
 }
 
 /* Typography */
@@ -125,13 +125,13 @@ h1 {
   font-size: 28px;
   margin-bottom: 15px;
   text-align: center;
-  color: #333333;
+  color: #333;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .highlight {
-  color: #2d7a3e;
+  color: #4e6ef2;
   font-weight: 700;
 }
 
@@ -164,33 +164,32 @@ h1 {
 }
 
 .tab-btn {
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
   padding: 12px 28px;
   border-radius: 50px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid transparent;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: 15px;
   min-width: 130px;
   text-align: center;
-  color: #333333;
+  color: #666;
   position: relative;
 }
 
 .tab-btn:hover {
-  background-color: #2d7a3e;
-  color: #ffffff;
-  border-color: #2d7a3e;
+  background-color: #e9ecef;
+  border-color: #4e6ef2;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(45, 122, 62, 0.3);
+  box-shadow: 0 4px 12px rgba(78, 110, 242, 0.15);
 }
 
 .tab-btn.active {
-  background-color: #2d7a3e;
+  background-color: #333;
   color: white;
-  border-color: #2d7a3e;
-  box-shadow: 0 6px 20px rgba(45, 122, 62, 0.3);
+  border-color: #4e6ef2;
+  box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
   transform: translateY(-2px);
 }
 
@@ -206,14 +205,14 @@ label {
   font-weight: 600;
   margin-top: 10px;
   margin-bottom: 6px;
-  color: #333333;
+  color: #333;
   font-size: 14px;
   letter-spacing: 0.5px;
 }
 
 input, select, textarea {
   padding: 12px 14px;
-  border: 2px solid #d0d0d0;
+  border: 2px solid #e8ecef;
   border-radius: 12px;
   margin-bottom: 6px;
   width: 100%;
@@ -221,87 +220,20 @@ input, select, textarea {
   background-color: #ffffff;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
-  color: #000000;
+  color: #333;
   outline: none;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #2d7a3e;
-  box-shadow: 0 0 0 4px rgba(45, 122, 62, 0.1);
+  border-color: #4e6ef2;
+  box-shadow: 0 0 0 4px rgba(78, 110, 242, 0.1);
   background-color: #ffffff;
   transform: translateY(-1px);
 }
 
-/* Password Field Wrapper */
-.password-field-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 6px;
-}
-
-.password-field-wrapper input {
-  padding-right: 45px;
-  margin-bottom: 0;
-}
-
-.eye-icon {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  fill: none;
-}
-
-/* Password toggle button - ensure it's excluded from general button styling */
-.password-field-wrapper .password-toggle {
-  position: absolute;
-  right: 12px;
-  background: none !important;
-  border: none !important;
-  cursor: pointer;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999999;
-  width: auto !important;
-  height: auto !important;
-  box-shadow: none !important;
-  font-size: 18px;
-  line-height: 1;
-  transform: none !important;
-  min-width: unset !important;
-  max-width: unset !important;
-  letter-spacing: normal !important;
-  border-radius: 0 !important;
-  align-self: auto !important;
-}
-
-.password-field-wrapper .password-toggle:hover {
-  background: none !important;
-  color: #666666 !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-.password-field-wrapper .password-toggle:active {
-  color: #999999 !important;
-  background: none !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-.password-field-wrapper .password-toggle:focus {
-  outline: none;
-  background: none !important;
-  box-shadow: none !important;
-}
-
 button, button[type="submit"] {
   padding: 14px 35px;
-  background: #2d7a3e;
+  background: #333;
   color: white;
   border: none;
   border-radius: 12px;
@@ -310,13 +242,13 @@ button, button[type="submit"] {
   font-weight: 600;
   align-self: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 20px rgba(45, 122, 62, 0.3);
+  box-shadow: 0 6px 20px rgba(78, 110, 242, 0.3);
   letter-spacing: 0.5px;
 }
 
 /* Signin button - centered on desktop only */
 @media screen and (min-width: 769px) {
-  #signin button:not(.password-toggle), #signin button[type="submit"]:not(.password-toggle) {
+  #signin button, #signin button[type="submit"] {
     align-self: center;
     width: auto;
     min-width: 200px;
@@ -324,10 +256,10 @@ button, button[type="submit"] {
   }
 }
 
-button:not(.password-toggle):hover {
-  background: #256a33;
+button:hover {
+  background: #333;
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(45, 122, 62, 0.4);
+  box-shadow: 0 8px 25px rgba(78, 110, 242, 0.4);
 }
 
 /* Form Layout */
@@ -374,14 +306,14 @@ button:not(.password-toggle):hover {
   font-weight: 600;
   margin-top: 0;
   margin-bottom: 6px;
-  color: #333333;
+  color: #333;
   display: block;
 }
 
 #signup-role {
   width: 100%;
   padding: 12px;
-  border: 2px solid #d0d0d0;
+  border: 2px solid #e8ecef;
   border-radius: 10px;
   margin-bottom: 20px;
   font-size: 14px;
@@ -412,7 +344,7 @@ button:not(.password-toggle):hover {
   font-weight: 600;
   margin-top: 12px;
   margin-bottom: 4px;
-  color: #333333;
+  color: #333;
   display: block;
   width: 100%;
 }
@@ -422,7 +354,7 @@ button:not(.password-toggle):hover {
 #signup textarea {
   width: 100%;
   padding: 12px;
-  border: 2px solid #d0d0d0;
+  border: 2px solid #e8ecef;
   border-radius: 10px;
   margin-bottom: 12px;
   font-size: 14px;
@@ -434,8 +366,8 @@ button:not(.password-toggle):hover {
 #signup input:focus, 
 #signup select:focus, 
 #signup textarea:focus {
-  border-color: #2d7a3e;
-  box-shadow: 0 0 0 3px rgba(45, 122, 62, 0.1);
+  border-color: #4e6ef2;
+  box-shadow: 0 0 0 3px rgba(78, 110, 242, 0.1);
   outline: none;
 }
 
@@ -471,7 +403,7 @@ button:not(.password-toggle):hover {
 #signup button[type="submit"] {
   width: 100%;
   padding: 14px;
-  background: #2d7a3e;
+  background: #333;
   color: white;
   border: none;
   border-radius: 10px;
@@ -484,9 +416,9 @@ button:not(.password-toggle):hover {
 }
 
 #signup button[type="submit"]:hover {
-  background: #256a33;
+  background: #333;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(45, 122, 62, 0.3);
+  box-shadow: 0 8px 25px rgba(78, 110, 242, 0.3);
 }
 
 /* Custom scrollbar */
@@ -495,17 +427,17 @@ button:not(.password-toggle):hover {
 }
 
 #signup::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
 }
 
 #signup::-webkit-scrollbar-thumb {
-  background: rgba(45, 122, 62, 0.3);
+  background: rgba(78, 110, 242, 0.3);
   border-radius: 10px;
 }
 
 #signup::-webkit-scrollbar-thumb:hover {
-  background: rgba(45, 122, 62, 0.5);
+  background: rgba(78, 110, 242, 0.5);
 }
 
 /* ===== KEY FIX: MAKE SIGNUP CONTENT SCROLLABLE ===== */
@@ -543,64 +475,33 @@ button:not(.password-toggle):hover {
   width: 100%;
 }
 
-/* ===== TABLET RESPONSIVE (769px - 1023px) ===== */
-@media screen and (min-width: 769px) and (max-width: 1023px) {
-  .auth-left {
-    width: 60%;
-    padding: 40px 35px;
-  }
-
-  .auth-right {
-    width: 40%;
-    background-position: center center;
-  }
-
-  .content-wrapper {
-    max-width: 450px;
-  }
-
-  .login-section {
-    padding: 30px;
-    border-radius: 16px;
-  }
-
-  h1 {
-    font-size: 26px;
-  }
-  
-  /* Adjust scrollable area for signup */
-  #signup {
-    max-height: 60vh;
-  }
-}
-
 /* ===== MOBILE RESPONSIVE DESIGN (≤768px) - FIXED SCROLLING ===== */
 @media screen and (max-width: 768px) {
   body, html {
-    background-color: #f5f5f5;
+    background-color: #f8f9fa;
     overflow-x: hidden; /* Prevent horizontal scroll */
-    overflow-y: auto; /* Allow vertical scroll */
-    height: auto; /* Allow body to expand */
+    overflow-y: auto !important; /* Force vertical scroll */
+    height: auto !important; /* Allow body to expand */
     min-height: 100vh; /* Ensure minimum height */
   }
 
   .auth-container {
     flex-direction: column;
     min-height: 100vh; /* Use min-height instead of fixed height */
-    height: auto; /* Allow container to expand */
+    height: auto !important; /* Allow container to expand */
     box-shadow: none;
-    background-color: x5f5f5;
-    overflow: visible; /* Allow overflow for scrolling */
+    background-color: #f8f9fa;
+    overflow: visible !important; /* Allow overflow for scrolling */
     position: relative;
   }
 
   /* MOBILE: Image Section First (Fixed Height) */
   .auth-right {
     width: 100%;
-    height: 40vh; /* Fixed height for image area */
+    height: 30vh; /* Reduced height for image area */
     background-size: cover;
     background-position: center center;
-    background-color: #ffffff;
+    background-color: #f0f4ff;
     background-repeat: no-repeat;
     order: 1;
     position: relative;
@@ -615,16 +516,16 @@ button:not(.password-toggle):hover {
   }
 
   .auth-right::after {
-    background: linear-gradient(135deg, rgba(45, 122, 62, 0.08) 0%, rgba(45, 122, 62, 0.04) 100%);
+    background: linear-gradient(135deg, rgba(78, 110, 242, 0.08) 0%, rgba(78, 110, 242, 0.04) 100%);
     border-radius: 0;
   }
 
   /* MOBILE: Forms Section (Scrollable) */
   .auth-left {
     width: 100%;
-    min-height: 60vh; /* Minimum height */
-    height: auto; /* Allow expansion */
-    padding: 0 20px 40px; /* Add bottom padding for scroll space */
+    min-height: 70vh; /* Increase minimum height */
+    height: auto !important; /* Allow expansion */
+    padding: 0 20px 80px !important; /* Increase bottom padding significantly */
     background-color: transparent;
     position: relative;
     display: flex;
@@ -633,8 +534,8 @@ button:not(.password-toggle):hover {
     align-items: center;
     order: 2;
     z-index: 10;
-    margin-top: 0vh; /* Overlap with image */
-    overflow: visible; /* Allow content to overflow */
+    margin-top: -5vh; /* Reduce overlap */
+    overflow: visible !important; /* Allow content to overflow */
   }
   
   /* Mobile Content */
@@ -646,7 +547,7 @@ button:not(.password-toggle):hover {
     flex-direction: column;
     justify-content: flex-start; /* Align to top */
     padding-top: 20px;
-    padding-bottom: 40px; /* Add bottom padding */
+    padding-bottom: 80px !important; /* Increase bottom padding significantly */
   }
 
   /* Mobile Logo - Position on Image */
@@ -668,13 +569,14 @@ button:not(.password-toggle):hover {
     border-radius: 25px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     border: 1px solid rgba(0, 0, 0, 0.06);
-    margin: 0;
+    margin: 0 0 40px 0; /* Add bottom margin */
     width: 100%;
     position: relative;
-    min-height: auto; /* Allow expansion */
-    max-height: none; /* Remove height restriction */
+    min-height: auto !important; /* Allow expansion */
+    max-height: none !important; /* Remove height restriction */
+    height: auto !important; /* Dynamic height */
     backdrop-filter: blur(20px);
-    overflow: visible; /* Allow content to be visible */
+    overflow: visible !important; /* Allow content to be visible */
   }
 
   .login-section::before {
@@ -687,7 +589,7 @@ button:not(.password-toggle):hover {
     font-size: 22px;
     text-align: center;
     margin-bottom: 10px;
-    color: #333333;
+    color: #333;
     margin-top: 0;
     line-height: 1.3;
   }
@@ -695,17 +597,22 @@ button:not(.password-toggle):hover {
   /* Mobile Tab Navigation */
   .tab-container {
     margin-top: 12px;
-    overflow: visible; /* Allow tab content to be visible */
+    overflow: visible !important; /* Allow tab content to be visible */
+    height: auto !important; /* Dynamic height */
+    max-height: none !important; /* Remove restrictions */
   }
 
   .tab-content {
-    overflow: visible; /* Allow content to expand */
-    height: auto; /* Allow dynamic height */
-    min-height: auto; /* Remove minimum height restriction */
+    overflow: visible !important; /* Allow content to expand */
+    height: auto !important; /* Allow dynamic height */
+    max-height: none !important; /* Remove height restrictions */
+    min-height: auto !important; /* Remove minimum height restriction */
   }
 
   .tab-content.active {
-    height: auto; /* Dynamic height for active content */
+    height: auto !important; /* Dynamic height for active content */
+    max-height: none !important; /* Remove restrictions */
+    overflow: visible !important; /* Make content visible */
   }
 
   .tab-nav {
@@ -732,18 +639,20 @@ button:not(.password-toggle):hover {
 
   /* Mobile signin section - ensure button is visible */
   #signin {
-    overflow: visible; /* Allow signin content to be visible */
-    height: auto; /* Dynamic height */
-    min-height: auto; /* Remove height restrictions */
+    overflow: visible !important; /* Allow signin content to be visible */
+    height: auto !important; /* Dynamic height */
+    max-height: none !important; /* Remove restrictions */
+    min-height: auto !important; /* Remove height restrictions */
+    padding-bottom: 40px !important; /* Add bottom padding */
   }
 
   /* Mobile signup adjustments - PROPERLY SCROLLABLE */
   #signup {
-    max-height: none; /* Remove height restriction */
-    height: auto; /* Allow dynamic height */
+    max-height: none !important; /* Remove height restriction */
+    height: auto !important; /* Allow dynamic height */
     width: 100%;
-    overflow: visible; /* Make content visible */
-    padding-bottom: 20px; /* Add bottom padding */
+    overflow: visible !important; /* Make content visible */
+    padding-bottom: 40px !important; /* Add significant bottom padding */
   }
 
   /* Single column layout on mobile */
@@ -785,7 +694,7 @@ button:not(.password-toggle):hover {
     padding: 12px;
     font-size: 16px;
     margin-top: 15px;
-    margin-bottom: 20px; /* Add bottom margin */
+    margin-bottom: 40px !important; /* Add significant bottom margin */
     box-sizing: border-box;
   }
 
@@ -802,7 +711,7 @@ button:not(.password-toggle):hover {
     font-size: 16px;
     border-radius: 12px;
     margin-top: 18px;
-    margin-bottom: 20px; /* Add bottom margin for accessibility */
+    margin-bottom: 40px !important; /* Add significant bottom margin for accessibility */
   }
 
   /* Mobile Labels */
@@ -816,20 +725,20 @@ button:not(.password-toggle):hover {
 /* ===== SMALL MOBILE (≤480px) ===== */
 @media screen and (max-width: 480px) {
   .auth-right {
-    height: 30vh;
+    height: 25vh; /* Further reduce image height */
   }
 
   .auth-left {
-    min-height: 65vh; /* Minimum height */
-    height: auto; /* Allow expansion */
-    padding: 0 15px 40px; /* Increase bottom padding */
-    margin-top: 0vh;
+    min-height: 75vh !important; /* Increase minimum height */
+    height: auto !important; /* Allow expansion */
+    padding: 0 15px 100px !important; /* Increase bottom padding even more */
+    margin-top: -5vh;
   }
 
   .content-wrapper {
     max-width: 100%;
     padding-top: 15px;
-    padding-bottom: 40px; /* Add bottom padding */
+    padding-bottom: 100px !important; /* Increase bottom padding significantly */
   }
 
   .logo {
@@ -841,8 +750,10 @@ button:not(.password-toggle):hover {
   .login-section {
     padding: 20px;
     border-radius: 20px;
-    max-height: none; /* Remove height restriction */
-    min-height: auto; /* Allow dynamic height */
+    max-height: none !important; /* Remove height restriction */
+    height: auto !important; /* Allow dynamic height */
+    min-height: auto !important; /* Allow dynamic height */
+    margin: 0 0 60px 0; /* Increase bottom margin */
   }
 
   h1 {
@@ -852,11 +763,11 @@ button:not(.password-toggle):hover {
 
   /* Small mobile signup adjustments - PROPERLY SCROLLABLE */
   #signup {
-    max-height: none; /* Remove height restriction */
-    height: auto; /* Allow dynamic height */
+    max-height: none !important; /* Remove height restriction */
+    height: auto !important; /* Allow dynamic height */
     width: 100%;
-    overflow: visible; /* Make content visible */
-    padding-bottom: 30px; /* Add more bottom padding */
+    overflow: visible !important; /* Make content visible */
+    padding-bottom: 60px !important; /* Add more bottom padding */
   }
 
   #signup .form-row {
@@ -896,7 +807,7 @@ button:not(.password-toggle):hover {
     padding: 10px;
     font-size: 15px;
     margin-top: 12px;
-    margin-bottom: 30px; /* Add more bottom margin */
+    margin-bottom: 60px !important; /* Add more bottom margin */
     box-sizing: border-box;
   }
 
@@ -922,128 +833,12 @@ button:not(.password-toggle):hover {
     padding: 12px 18px;
     font-size: 15px;
     margin-top: 15px;
-    margin-bottom: 30px; /* Add bottom margin */
+    margin-bottom: 60px !important; /* Add significant bottom margin */
   }
   
   label {
     font-size: 13px;
     margin-top: 6px;
     margin-bottom: 3px;
-  }
-}
-
-/* ===== LANDSCAPE MOBILE ORIENTATION ===== */
-@media screen and (max-width: 768px) and (orientation: landscape) {
-  body, html {
-    overflow-y: auto; /* Ensure scrolling works in landscape */
-  }
-
-  .auth-container {
-    flex-direction: row;
-    min-height: 100vh;
-    height: auto; /* Allow expansion */
-  }
-  
-  .auth-right {
-    width: 40%;
-    height: 100vh;
-    order: 2;
-  }
-  
-  .auth-left {
-    width: 60%;
-    height: auto; /* Allow expansion */
-    min-height: 100vh;
-    margin-top: 0;
-    order: 1;
-    padding: 15px;
-    overflow-y: auto; /* Enable vertical scrolling */
-  }
-  
-  .login-section {
-    max-height: none; /* Remove height restriction */
-    min-height: auto; /* Allow dynamic height */
-    padding: 15px;
-    margin-bottom: 20px; /* Add bottom margin */
-  }
-
-  /* Landscape signup adjustments - PROPERLY SCROLLABLE */
-  #signup {
-    max-height: none; /* Remove height restriction */
-    height: auto; /* Allow dynamic height */
-    width: 100%;
-    overflow: visible; /* Make content visible */
-    padding-bottom: 20px; /* Add bottom padding */
-  }
-
-  /* Two column layout in landscape if space allows */
-  #signup .form-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 0;
-    width: 100%;
-  }
-
-  #signup .form-group {
-    width: 100%;
-  }
-
-  #signup input, 
-  #signup select, 
-  #signup textarea {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    margin-bottom: 6px;
-    box-sizing: border-box;
-  }
-
-  #signup label {
-    font-size: 12px;
-    margin-top: 4px;
-    margin-bottom: 2px;
-    width: 100%;
-  }
-
-  #signup textarea {
-    min-height: 50px;
-  }
-
-  #signup button[type="submit"] {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-    margin-top: 10px;
-    margin-bottom: 20px; /* Add bottom margin */
-    box-sizing: border-box;
-  }
-
-  #signup-role {
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  /* General landscape form adjustments */
-  .form-row {
-    gap: 8px;
-  }
-  
-  input, select, textarea {
-    padding: 8px 10px;
-    font-size: 14px;
-    margin-bottom: 5px;
-  }
-  
-  label {
-    font-size: 12px;
-    margin-top: 5px;
-    margin-bottom: 2px;
-  }
-  
-  button, button[type="submit"] {
-    padding: 10px 15px;
-    margin-top: 10px;
-    margin-bottom: 20px; /* Add bottom margin */
   }
 }

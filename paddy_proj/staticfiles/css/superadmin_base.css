@@ -1,0 +1,415 @@
+:root {
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 80px;
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #333333;
+  --sidebar-hover: rgba(0, 0, 0, 0.05);
+  --sidebar-active: rgba(0, 0, 0, 0.1);
+  --sidebar-border: #e0e0e0;
+  --primary-color: #000000;
+  --transition-speed: 0.3s;
+  --smooth-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --nav-item-height: 48px;
+  --nav-icon-size: 20px;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Language Selector */
+.language-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.language-selector select {
+  background-color: #ffffff;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.language-selector select:hover {
+  border-color: var(--primary-color);
+}
+
+/* Hamburger Menu - using shared styling from responsive.css */
+.hamburger {
+  display: none;
+  /* Other styles are inherited from responsive.css */
+}
+
+/* Sidebar with enhanced consistency and priority */
+.sidebar, 
+body.superadmin-page .sidebar {
+  width: var(--sidebar-width) !important;
+  height: 100vh !important; /* Changed from min-height to height to ensure consistency */
+  background-color: var(--sidebar-bg) !important;
+  color: var(--sidebar-text) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: transform var(--transition-speed) var(--smooth-easing) !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1000 !important;
+  box-shadow: var(--shadow) !important;
+  border-right: 1px solid var(--sidebar-border) !important;
+  overflow-y: auto !important; /* Enable vertical scrolling */
+  will-change: transform !important;
+  transform: translateX(0) !important;
+}
+
+.sidebar-header,
+body.superadmin-page .sidebar-header {
+  padding: 24px 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 12px !important;
+  border-bottom: 1px solid var(--sidebar-border) !important;
+  background-color: var(--sidebar-bg) !important;
+}
+
+.logo-link {
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.sidebar-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  text-align: center;
+}
+
+.sidebar-nav,
+body.superadmin-page .sidebar-nav {
+  flex: 1 !important;
+  padding: 20px 0 !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 200px) !important; /* Reserve space for header and footer */
+}
+
+.nav-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  position: relative;
+  margin: 4px 12px;
+}
+
+.nav-link,
+.submenu-toggle,
+body.superadmin-page .nav-link,
+body.superadmin-page .submenu-toggle {
+  display: flex !important;
+  align-items: center !important;
+  padding: 12px 16px !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  border-radius: 6px !important;
+  transition: all var(--transition-speed) ease !important;
+  height: var(--nav-item-height) !important;
+}
+
+.nav-link:hover,
+.submenu-toggle:hover,
+body.superadmin-page .nav-link:hover,
+body.superadmin-page .submenu-toggle:hover {
+  background-color: var(--sidebar-hover) !important;
+}
+
+.nav-item.active .nav-link,
+body.superadmin-page .nav-item.active .nav-link {
+  background-color: var(--sidebar-active) !important;
+  border-left: 3px solid var(--primary-color) !important;
+  font-weight: 600 !important;
+  color: var(--primary-color) !important;
+}
+
+.nav-link.active,
+.submenu-link.active,
+body.superadmin-page .nav-link.active,
+body.superadmin-page .submenu-link.active {
+  background-color: var(--sidebar-active) !important;
+  color: var(--primary-color) !important;
+  font-weight: 600 !important;
+  border-left: 3px solid var(--primary-color) !important;
+}
+
+.nav-icon {
+  width: var(--nav-icon-size);
+  height: var(--nav-icon-size);
+  margin-right: 12px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.nav-text {
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* Submenu */
+.has-submenu {
+  display: flex;
+  flex-direction: column;
+}
+
+.submenu-toggle {
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+}
+
+.chevron {
+  width: 16px;
+  height: 16px;
+  margin-left: 12px;
+  transition: transform var(--transition-speed) ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chevron::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--transition-speed) ease;
+}
+
+.has-submenu.open .chevron::before {
+  transform: rotate(45deg);
+}
+
+.submenu {
+  list-style: none;
+  padding-left: 16px;
+  margin-top: 4px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-speed) ease, padding var(--transition-speed) ease;
+}
+
+.has-submenu.open .submenu {
+  max-height: 500px;
+  padding: 8px 0;
+}
+
+.submenu-item {
+  margin: 4px 0;
+}
+
+.submenu-link {
+  display: block;
+  padding: 10px 16px 10px 40px;
+  text-decoration: none;
+  color: var(--sidebar-text);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all var(--transition-speed) ease;
+}
+
+.submenu-link:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--primary-color);
+}
+
+.submenu-item.active .submenu-link {
+  background-color: var(--sidebar-active);
+  color: var(--primary-color);
+  font-weight: 600;
+  border-left: 3px solid var(--primary-color);
+}
+
+.has-submenu.open>.submenu-toggle {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.submenu-link,
+.nav-link {
+  transition: background-color var(--transition-speed), color var(--transition-speed), border-left var(--transition-speed);
+}
+
+/* Sidebar Footer with enhanced consistency */
+.sidebar-footer,
+body.superadmin-page .sidebar-footer {
+  padding: 20px !important;
+  text-align: center !important;
+  border-top: 1px solid var(--sidebar-border) !important;
+  margin-top: auto !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  background-color: var(--sidebar-bg) !important; /* Ensure footer has same background as sidebar */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.05) !important; /* Subtle shadow to separate from content */
+}
+
+.footer-logo {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.logout-form {
+  width: 100%;
+}
+
+.logout-button,
+body.superadmin-page .logout-button {
+  width: 100% !important;
+  padding: 12px !important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background-color var(--transition-speed) ease !important;
+}
+
+.logout-button:hover,
+body.superadmin-page .logout-button:hover {
+  background-color: #1a1a1a !important;
+}
+
+/* Main Content with consistent positioning */
+.main-content,
+body.superadmin-page .main-content {
+  flex: 1 !important;
+  margin-left: var(--sidebar-width) !important;
+  min-height: 100vh !important;
+  transition: margin-left var(--transition-speed) var(--smooth-easing) !important;
+  background-color: #ffffff !important;
+  padding: 20px !important;
+  will-change: margin-left !important;
+}
+
+/* Responsive Styles with enhanced priority */
+@media (max-width: 992px) {
+  .sidebar,
+  body.superadmin-page .sidebar {
+    transform: translateX(-100%) !important;
+    width: 280px !important;
+    transition: transform var(--transition-speed) var(--smooth-easing) !important;
+    will-change: transform !important;
+  }
+
+  .sidebar.open,
+  body.superadmin-page .sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  .main-content,
+  body.superadmin-page .main-content {
+    margin-left: 0 !important;
+    transition: margin-left var(--transition-speed) var(--smooth-easing) !important;
+  }
+
+  .hamburger,
+  body.superadmin-page .hamburger {
+    display: flex !important;
+    transition: all var(--transition-speed) var(--smooth-easing) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .main-content,
+  body.superadmin-page .main-content {
+    padding: 15px !important;
+    transition: padding var(--transition-speed) var(--smooth-easing) !important;
+  }
+}
+
+/* Scrollbar for WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5; /* Light background track */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000; /* Black scrollbar */
+  border-radius: 10px;        /* Rounded corners */
+  border: 3px solid #f5f5f5;  /* Creates padding effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #1a1a1a;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 #f5f5f5;
+}
+
+/* Sidebar scrollbar inherits from general scrollbar styles above */
+
+.nav-link:hover, 
+.submenu-toggle:hover,
+body.superadmin-page .nav-link:hover,
+body.superadmin-page .submenu-toggle:hover {
+  background-color: var(--sidebar-hover) !important;
+  box-shadow: inset 4px 0 0 var(--primary-color) !important;
+}
+
+.submenu-link:hover,
+body.superadmin-page .submenu-link:hover {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--primary-color) !important;
+  box-shadow: inset 4px 0 0 var(--primary-color) !important;
+}
