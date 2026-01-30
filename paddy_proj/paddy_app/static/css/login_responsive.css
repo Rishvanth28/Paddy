@@ -9,93 +9,223 @@
 
 body, html {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
+  background: #ffffff;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(17, 153, 142, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(56, 239, 125, 0.05) 0%, transparent 50%);
   color: #333;
   height: 100%;
-  overflow: hidden; /* Prevent scrolling */
+  overflow: hidden;
   line-height: 1.6;
 }
 
-/* ===== DESKTOP DESIGN ===== */
+/* ===== CENTERED DESIGN ===== */
 .auth-container {
   display: flex;
-  flex-direction: row;
-  height: 100vh; /* Fixed height */
-  background-color: #ffffff;
-  position: relative;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-  overflow: hidden; /* Prevent container scrolling */
-}
-
-/* Logo */
-.logo {
-  position: absolute;
-  top: 25px;
-  left: 30px;
-  font-weight: 700;
-  font-size: 28px;
-  color: #333;
-  z-index: 100;
-  text-decoration: none;
-}
-
-/* Desktop Form Area */
-.auth-left {
-  width: 55%;
-  padding: 40px 50px; /* Reduced padding */
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
-  height: 100vh; /* Fixed height */
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
   position: relative;
-  overflow: hidden; /* No scrolling */
+  overflow: auto;
 }
 
-/* Desktop Image Area - PERFECTLY POSITIONED */
-.auth-right {
-  width: 45%;
-  background-image: url('/static/media/login.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  position: relative;
-  height: 100vh; /* Fixed height */
-  background-color: #f0f4ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Background Decoration */
+.background-decoration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-}
-
-.auth-right::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(78, 110, 242, 0.08) 0%, rgba(78, 110, 242, 0.03) 100%);
+  z-index: 0;
   pointer-events: none;
 }
 
-/* Content Wrapper */
-.content-wrapper {
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(17, 153, 142, 0.08), rgba(56, 239, 125, 0.04));
+  backdrop-filter: blur(60px);
+  animation: float 20s infinite ease-in-out;
+  border: 1px solid rgba(17, 153, 142, 0.1);
+}
+
+.circle-1 {
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  left: -100px;
+  animation-delay: 0s;
+}
+
+.circle-2 {
+  width: 300px;
+  height: 300px;
+  bottom: -50px;
+  right: -50px;
+  animation-delay: 7s;
+}
+
+.circle-3 {
+  width: 250px;
+  height: 250px;
+  top: 50%;
+  right: 10%;
+  animation-delay: 14s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+/* Center Auth Form */
+.auth-center {
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
+  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Logo Container with Professional styling */
+.logo-container {
+  text-align: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+/* Logo Styling */
+.logo-above-login {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+  transition: transform 0.3s ease;
+}
+
+.logo-above-login:hover {
+  transform: scale(1.05);
+}
+
+/* Leaf Accents for Professional Touch */
+.leaf-accent {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle at 30% 30%, rgba(17, 153, 142, 0.08), transparent);
+  border-radius: 50% 0 50% 50%;
+  opacity: 0.5;
+  animation: leafFloat 15s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.leaf-1 {
+  top: 10%;
+  left: 5%;
+  animation-delay: 3s;
+}
+
+.leaf-2 {
+  bottom: 15%;
+  right: 8%;
+  transform: rotate(180deg);
+  animation-delay: 8s;
+}
+
+@keyframes leafFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+  }
 }
 
 /* Form Styling */
 .login-section {
   background: #ffffff;
-  padding: 30px 25px; /* Reduced padding */
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
+  padding: 40px 35px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
+              0 0 0 1px rgba(17, 153, 142, 0.15) inset;
+  border: 2px solid rgba(17, 153, 142, 0.2);
   width: 100%;
   position: relative;
-  backdrop-filter: blur(10px);
-  /* max-height: 80vh; Limit height */
-  overflow: hidden; /* No scrolling */
+  overflow: hidden;
+}
+
+/* Decorative Corners */
+.decorative-corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(17, 153, 142, 0.5);
+  pointer-events: none;
+  transition: border-color 0.3s ease;
+}
+
+.corner-top-left {
+  top: 15px;
+  left: 15px;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 8px 0 0 0;
+}
+
+.corner-top-right {
+  top: 15px;
+  right: 15px;
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 8px 0 0;
+}
+
+.login-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 5px;
+  background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+  border-radius: 24px 24px 0 0;
+}
+
+/* Typography */
+h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  text-align: center;
+  color: #1a1a1a;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 25px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.highlight {
+  background: linear-gradient(135deg, #11998e 0%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
 }
 
 .login-section::before {
@@ -250,138 +380,127 @@ button:hover {
 
 /* ===== TABLET RESPONSIVE (769px - 1023px) ===== */
 @media screen and (min-width: 769px) and (max-width: 1023px) {
-  .auth-left {
-    width: 60%;
-    padding: 40px 35px;
-  }
-
-  .auth-right {
-    width: 40%;
-    background-size: contain;
-    background-position: center center;
-  }
-
-  .content-wrapper {
-    max-width: 450px;
+  .auth-center {
+    max-width: 500px;
   }
 
   .login-section {
-    padding: 30px;
-    border-radius: 16px;
+    padding: 35px 30px;
+    border-radius: 20px;
   }
 
   h1 {
-    font-size: 28px;
-    margin-bottom: 8px;
+    font-size: 30px;
+    margin-bottom: 18px;
+  }
+
+  .logo-above-login {
+    max-width: 240px !important;
+    margin-bottom: 25px !important;
   }
 }
 
 /* ===== MOBILE RESPONSIVE DESIGN (≤768px) ===== */
 @media screen and (max-width: 768px) {
   body, html {
-    background-color: #f8f9fa;
-    overflow: hidden; /* No scrolling on mobile */
+    overflow: auto;
   }
 
   .auth-container {
     flex-direction: column;
-    height: 100vh; /* Fixed height */
-    box-shadow: none;
-    background-color: #f8f9fa;
-    overflow: hidden; /* No container scrolling */
-    position: relative;
+    min-height: 100vh;
+    padding: 15px;
+    overflow: auto;
   }
 
-  /* MOBILE: Image Section - Minimized */
-  .auth-right {
-    width: 100%;
-    height: 15vh; /* Reduced height */
-    background-size: cover;
-    background-position: center center;
-    background-color: #f0f4ff;
-    background-repeat: no-repeat;
-    order: 1;
-    position: relative;
-    border-radius: 0;
-    box-shadow: none;
-    margin-top: 0;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .auth-right::after {
-    background: linear-gradient(135deg, rgba(78, 110, 242, 0.08) 0%, rgba(78, 110, 242, 0.04) 100%);
-    border-radius: 0;
-  }
-
-  /* MOBILE: Forms Section with Logo */
-  .auth-left {
-    width: 100%;
-    height: 85vh; /* More space for content */
-    padding: 40px 20px 20px; /* Extra top padding for arch visibility */
-    background-color: #ffffff;
-    position: relative;
-    overflow: hidden; /* No scrolling */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    order: 2;
-    z-index: 10;
-    margin-top: -25px; /* Pull up to show arch above content */
-    border-radius: 40px 40px 0 0; /* Prominent arch-like border radius at top */
-    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1); /* Shadow to emphasize the arch */
-  }  /* Mobile Content */
-  .content-wrapper {
-    width: 100%;
-    max-width: 380px; /* Reduced width */
-    margin: 0 auto;
-    height: 100%; /* Full height */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 0;
-  }
-
-  /* Mobile Logo - Position at Top */
-  .logo-above-login {
-    position: relative !important;
-    z-index: 20;
-    margin-top: 10px !important;
-    margin-bottom: 15px !important;
-  }
-
-  /* Mobile Subtitle */
-  .subtitle-text {
-    position: relative !important;
-    z-index: 20;
-  }
-
-  /* Mobile Login Section - Floating Above Image */
-  .login-section {
-    padding: 25px; /* Good padding for mobile */
-    /* background: #ffffff; */
-    border-radius: 25px; /* Large radius for modern look */
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15); /* Strong shadow for floating effect */
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    margin: 0;
-    width: 100%;    position: relative;
-    max-height: none; /* Remove height restriction */
-    overflow: hidden; /* Prevent content overflow */
-    backdrop-filter: blur(20px); /* Enhanced blur for glass effect */
-  }
-  .login-section::before {
-    height: 4px; /* Prominent accent */
-    border-radius: 25px 25px 0 0;
+  .background-decoration {
+    position: fixed;
   }
   
+  /* Scale down agricultural icons for mobile */
+  .agri-icon {
+    width: 50px;
+    height: 50px;
+    opacity: 0.3;
+  }
+  
+  .rice-icon {
+    top: 10%;
+    right: 5%;
+  }
+  
+  .pesticide-icon {
+    bottom: 15%;
+    left: 5%;
+  }
+  
+  .paddy-field-icon {
+    top: 45%;
+    left: 2%;
+  }
+
+  .circle-1 {
+    width: 250px;
+    height: 250px;
+    top: -50px;
+    left: -50px;
+  }
+
+  .circle-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -30px;
+    right: -30px;
+  }
+
+  .circle-3 {
+    width: 180px;
+    height: 180px;
+    top: 40%;
+    right: -20px;
+  }
+
+  .auth-center {
+    max-width: 100%;
+    padding: 20px 0;
+  }
+
+  .logo-above-login {
+    max-width: 200px !important;
+    margin-bottom: 25px !important;
+  }
+
+  .login-section {
+    padding: 30px 25px;
+    border-radius: 20px;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .tab-nav {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .tab-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+    min-width: 120px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
   /* Handle signup forms overflow */
   #signup {
     max-height: 60vh;
     overflow: auto;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Hide scrollbar but allow scrolling within signup tab only */
@@ -478,6 +597,27 @@ button:hover {
 @media screen and (max-width: 480px) {
   .auth-right {
     height: 15vh; /* Adjusted height */
+  }
+  
+  /* Further scale down agricultural icons */
+  .agri-icon {
+    width: 40px;
+    height: 40px;
+    opacity: 0.25;
+  }
+  
+  .rice-icon {
+    top: 8%;
+    right: 3%;
+  }
+  
+  .pesticide-icon {
+    bottom: 12%;
+    left: 3%;
+  }
+  
+  .paddy-field-icon {
+    display: none; /* Hide on very small screens to reduce clutter */
   }
 
   .auth-left {

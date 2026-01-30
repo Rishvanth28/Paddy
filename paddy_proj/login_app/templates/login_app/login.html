@@ -7,29 +7,143 @@
     <title>Login</title>
     <link rel="icon" type="image/png" href="{% static 'media/MA.png' %}?v=2" />
     <link rel="shortcut icon" href="{% static 'media/MA.png' %}?v=2" />
-    <link rel="stylesheet" href="{% static 'css/login_responsive.css' %}?v=3" />
-    <link rel="stylesheet" href="{% static 'css/login.css' %}?v=3" />
+    <link rel="stylesheet" href="{% static 'css/login_responsive.css' %}?v=11" />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}?v=11" />
     <!-- <link rel="stylesheet" href="{% static 'css/toast.css' %}">  -->
   </head>
 
   <body>
     <div class="auth-container">
-      <div class="auth-left">
-        <img
-          src="{% static 'media/FULL.png' %}"
-          alt="Logo"
-          class="logo-above-login"
-          style="max-width: 250px; height: auto; margin-bottom: 20px;"
-        />
-        <div class="subtitle-text" style="text-align: center; margin-bottom: 30px; color: #555; line-height: 1.8;">
-          <p style="font-size: 17px; margin: 0; font-weight: 500; font-style: italic;">"Where Every Grain Counts, Every Deal Shines Clear"</p>
-          <p style="font-size: 13px; margin: 8px 0 0 0; color: #777; letter-spacing: 0.5px;">Empowering Rice Mills with Trust & Clarity</p>
+      <div class="background-decoration">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        
+        <!-- Agricultural Icons -->
+        <div class="agri-icon rice-icon">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- Professional rice plant bundle -->
+            <defs>
+              <linearGradient id="riceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#11998e;stop-opacity:0.9" />
+                <stop offset="100%" style="stop-color:#11998e;stop-opacity:0.6" />
+              </linearGradient>
+            </defs>
+            <!-- Main stems -->
+            <path d="M50 95 Q48 70, 45 45 Q44 30, 42 20" stroke="url(#riceGrad)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M60 95 Q60 70, 60 45 Q60 30, 60 18" stroke="url(#riceGrad)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M70 95 Q72 70, 75 45 Q76 30, 78 20" stroke="url(#riceGrad)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Rice grains with glow effect -->
+            <g filter="url(#glow)">
+              <ellipse cx="38" cy="25" rx="4" ry="7" fill="#11998e" opacity="0.8"/>
+              <ellipse cx="42" cy="18" rx="4" ry="7" fill="#11998e" opacity="0.85"/>
+              <ellipse cx="46" cy="22" rx="4" ry="7" fill="#11998e" opacity="0.8"/>
+              <ellipse cx="56" cy="20" rx="4" ry="7" fill="#11998e" opacity="0.85"/>
+              <ellipse cx="60" cy="14" rx="4" ry="7" fill="#11998e" opacity="0.9"/>
+              <ellipse cx="64" cy="20" rx="4" ry="7" fill="#11998e" opacity="0.85"/>
+              <ellipse cx="74" cy="25" rx="4" ry="7" fill="#11998e" opacity="0.8"/>
+              <ellipse cx="78" cy="18" rx="4" ry="7" fill="#11998e" opacity="0.85"/>
+              <ellipse cx="82" cy="22" rx="4" ry="7" fill="#11998e" opacity="0.8"/>
+            </g>
+            <!-- Leaves -->
+            <path d="M42 40 Q35 38, 30 40" stroke="#11998e" stroke-width="1.5" fill="none" opacity="0.6"/>
+            <path d="M60 35 Q55 32, 52 30" stroke="#11998e" stroke-width="1.5" fill="none" opacity="0.6"/>
+            <path d="M78 40 Q85 38, 90 40" stroke="#11998e" stroke-width="1.5" fill="none" opacity="0.6"/>
+          </svg>
         </div>
+        
+        <div class="agri-icon pesticide-icon">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- Modern spray canister -->
+            <defs>
+              <linearGradient id="canisterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#11998e;stop-opacity:0.85" />
+                <stop offset="100%" style="stop-color:#11998e;stop-opacity:0.65" />
+              </linearGradient>
+            </defs>
+            <!-- Canister body -->
+            <rect x="45" y="55" width="30" height="45" rx="4" fill="url(#canisterGrad)"/>
+            <rect x="47" y="57" width="26" height="3" rx="1" fill="#ffffff" opacity="0.3"/>
+            <!-- Handle/trigger -->
+            <rect x="50" y="40" width="20" height="18" rx="3" fill="#11998e" opacity="0.8"/>
+            <path d="M55 40 L55 30 L65 30 L65 40" stroke="#11998e" stroke-width="3" fill="none" opacity="0.7" stroke-linecap="round"/>
+            <circle cx="60" cy="27" r="4" fill="#11998e" opacity="0.75"/>
+            <!-- Professional spray pattern -->
+            <g opacity="0.5">
+              <path d="M35 48 Q32 45, 28 43" stroke="#11998e" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <path d="M30 52 Q25 50, 20 48" stroke="#11998e" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <path d="M32 56 Q28 55, 24 54" stroke="#11998e" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle cx="25" cy="42" r="2" fill="#11998e" opacity="0.6"/>
+              <circle cx="18" cy="47" r="2" fill="#11998e" opacity="0.5"/>
+              <circle cx="22" cy="53" r="2" fill="#11998e" opacity="0.6"/>
+              <circle cx="28" cy="48" r="1.5" fill="#11998e" opacity="0.4"/>
+            </g>
+          </svg>
+        </div>
+        
+        <div class="agri-icon paddy-field-icon">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- Terraced paddy field -->
+            <defs>
+              <linearGradient id="fieldGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#11998e;stop-opacity:0.4" />
+                <stop offset="100%" style="stop-color:#11998e;stop-opacity:0.25" />
+              </linearGradient>
+            </defs>
+            <!-- Terraced fields -->
+            <path d="M15 85 L105 85 L105 95 L15 95 Z" fill="url(#fieldGrad1)"/>
+            <path d="M20 70 L100 70 L100 82 L20 82 Z" fill="#11998e" opacity="0.35"/>
+            <path d="M25 58 L95 58 L95 68 L25 68 Z" fill="#11998e" opacity="0.3"/>
+            <!-- Rice plants with varying heights -->
+            <g opacity="0.7">
+              <line x1="30" y1="70" x2="30" y2="52" stroke="#11998e" stroke-width="2"/>
+              <ellipse cx="28" cy="50" rx="3" ry="5" fill="#11998e"/>
+              <ellipse cx="32" cy="50" rx="3" ry="5" fill="#11998e"/>
+              
+              <line x1="45" y1="70" x2="45" y2="48" stroke="#11998e" stroke-width="2"/>
+              <ellipse cx="43" cy="46" rx="3" ry="5" fill="#11998e"/>
+              <ellipse cx="47" cy="46" rx="3" ry="5" fill="#11998e"/>
+              
+              <line x1="60" y1="70" x2="60" y2="50" stroke="#11998e" stroke-width="2"/>
+              <ellipse cx="58" cy="48" rx="3" ry="5" fill="#11998e"/>
+              <ellipse cx="62" cy="48" rx="3" ry="5" fill="#11998e"/>
+              
+              <line x1="75" y1="70" x2="75" y2="53" stroke="#11998e" stroke-width="2"/>
+              <ellipse cx="73" cy="51" rx="3" ry="5" fill="#11998e"/>
+              <ellipse cx="77" cy="51" rx="3" ry="5" fill="#11998e"/>
+              
+              <line x1="88" y1="70" x2="88" y2="49" stroke="#11998e" stroke-width="2"/>
+              <ellipse cx="86" cy="47" rx="3" ry="5" fill="#11998e"/>
+              <ellipse cx="90" cy="47" rx="3" ry="5" fill="#11998e"/>
+            </g>
+            <!-- Water ripples -->
+            <ellipse cx="40" cy="78" rx="8" ry="2" fill="#11998e" opacity="0.2"/>
+            <ellipse cx="70" cy="77" rx="10" ry="2" fill="#11998e" opacity="0.2"/>
+          </svg>
+        </div>
+        
+        <div class="leaf-accent leaf-1"></div>
+        <div class="leaf-accent leaf-2"></div>
+      </div>
+      
+      <div class="auth-center">
+        <div class="logo-container">
+          <img
+            src="{% static 'media/FULL.png' %}"
+            alt="Logo"
+            class="logo-above-login"
+            style="max-width: 280px; height: auto; margin-bottom: 30px;"
+          />
+        </div>
+       
         <div class="login-section">
+          <div class="decorative-corner corner-top-left"></div>
+          <div class="decorative-corner corner-top-right"></div>
           <h1>
             <span class="highlight">Hey !</span> <br />
             Welcome Back
           </h1>
+          <p class="subtitle">Enter your credentials to access your account</p>
 
           <!-- Main tabs -->
           <div class="tab-container">
@@ -51,7 +165,7 @@
 
                 <label class="text" for="password">PASSWORD</label>
                 <div class="password-field-wrapper">
-                  <input type="password" name="password" id="password" required />
+                  <input type="password" name="password" id="password" placeholder="Enter your password" required />
                   <button type="button" class="password-toggle" id="signin-password-toggle" onclick="togglePasswordVisibility('password', 'signin-password-toggle')">
                     <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -85,6 +199,7 @@
                       <input
                         type="text"
                         name="first_name"
+                        placeholder="Enter your first name"
                         required
                         pattern="[A-Za-z\s]+"
                         minlength="2"
@@ -95,6 +210,7 @@
                       <input
                         type="text"
                         name="last_name"
+                        placeholder="Enter your last name"
                         required
                         pattern="[A-Za-z\s]+"
                         minlength="1"
@@ -106,19 +222,21 @@
                   <input
                     type="tel"
                     name="phone_number"
+                    placeholder="Enter phone number"
                     required
                     pattern="[0-9]{10}"
                     maxlength="10"
                   />
 
                   <label>Email</label>
-                  <input type="email" name="email" required />
+                  <input type="email" name="email" placeholder="Enter your email" required />
 
                   <label>Password</label>
                   <div class="password-field-wrapper">
                     <input
                       type="password"
                       name="password"
+                      placeholder="Enter password"
                       class="admin-password"
                       required
                       minlength="6"
@@ -136,6 +254,7 @@
                     <input
                       type="password"
                       name="confirm_password"
+                      placeholder="Confirm password"
                       class="admin-confirm-password"
                       required
                       minlength="6"
@@ -318,15 +437,6 @@
             {% endfor %} {% endif %}
           </div>
         </div>
-      </div>
-
-      <div class="auth-right">
-        {% comment %}
-        <div class="welcome-text">
-          <h1>Welcome <span>Back</span></h1>
-          <p>Sign in to access your dashboard or create an account</p>
-        </div>
-        {% endcomment %}
       </div>
     </div>
 
