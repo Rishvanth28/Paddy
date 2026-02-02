@@ -3657,14 +3657,14 @@ function showConfirmation(requestId, action) {
         title.textContent = 'Approve Payment Request';
         message.textContent = 'Are you sure you want to approve this cash payment request?';
         actionBtn.className = 'confirmation-btn confirmation-btn-approve';
-        actionBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Approve';
+        actionBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Approve';
     } else {
         icon.className = 'confirmation-icon reject';
         iconSymbol.className = 'bi bi-x-circle';
         title.textContent = 'Reject Payment Request';
         message.textContent = 'Are you sure you want to reject this cash payment request?';
         actionBtn.className = 'confirmation-btn confirmation-btn-reject';
-        actionBtn.innerHTML = '<i class="bi bi-x-circle me-1"></i>Reject';
+        actionBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Reject';
     }
     
     // Scroll to top smoothly
@@ -4105,13 +4105,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 ${request.transaction_date ? `<div class="mb-2"><small class="text-muted">Transaction Date: ${formatDate(request.transaction_date)}</small></div>` : ''}
                                 ${request.transaction_id ? `<div class="mb-2"><small class="text-muted">Transaction ID: ${request.transaction_id}</small></div>` : ''}
-                                ${request.screenshot_url ? `<div class="mb-2"><a href="${request.screenshot_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-image me-1"></i>View Screenshot</a></div>` : ''}
+                                ${request.screenshot_url ? `<div class="mb-2"><a href="${request.screenshot_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-image me-2"></i>View Screenshot</a></div>` : ''}
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-success btn-sm" onclick="approveCashPayment(${request.request_id})">
-                                        <i class="bi bi-check-circle me-1"></i>Approve
+                                        <i class="bi bi-check-circle me-2"></i>Approve
                                     </button>
                                     <button class="btn btn-danger btn-sm" onclick="rejectCashPayment(${request.request_id})">
-                                        <i class="bi bi-x-circle me-1"></i>Reject
+                                        <i class="bi bi-x-circle me-2"></i>Reject
                                     </button>
                                 </div>
                             </div>
@@ -4479,15 +4479,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 ${request.transaction_date ? `<div class="mb-2"><small class="text-muted">Transaction Date: ${formatDate(request.transaction_date)}</small></div>` : ''}
                                 ${request.transaction_id ? `<div class="mb-2"><small class="text-muted">Transaction ID: ${request.transaction_id}</small></div>` : ''}
-                                ${request.screenshot_url ? `<div class="mb-2"><a href="${request.screenshot_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-image me-1"></i>View Screenshot</a></div>` : ''}
+                                ${request.screenshot_url ? `<div class="mb-2"><a href="${request.screenshot_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-image me-2"></i>View Screenshot</a></div>` : ''}
                                 ${request.reference ? `<div class="mb-2"><small class="text-muted">Reference: ${request.reference}</small></div>` : ''}
                                 ${request.notes ? `<div class="mb-2"><small class="text-muted">Notes: ${request.notes}</small></div>` : ''}
                                 <div class="d-flex justify-content-end gap-2 mt-3">
                                     <button class="btn btn-sm btn-success" onclick="approveCashPayment(${request.request_id})">
-                                        <i class="bi bi-check-circle me-1"></i> Approve
+                                        <i class="bi bi-check-circle me-2"></i> Approve
                                     </button>
                                     <button class="btn btn-sm btn-danger" onclick="rejectCashPayment(${request.request_id})">
-                                        <i class="bi bi-x-circle me-1"></i> Reject
+                                        <i class="bi bi-x-circle me-2"></i> Reject
                                     </button>
                                 </div>
                             </div>
