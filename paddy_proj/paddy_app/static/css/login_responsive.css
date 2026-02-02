@@ -949,15 +949,18 @@ input:focus, select:focus, textarea:focus, button:focus {
 
 /* ===== TOAST NOTIFICATIONS ===== */
 .toast-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  z-index: 999999 !important;
   display: flex;
   flex-direction: column;
   gap: 10px;
   max-width: 350px;
   pointer-events: none;
+  margin: 0 !important;
+  transform: none !important;
 }
 
 .toast {
@@ -996,7 +999,7 @@ input:focus, select:focus, textarea:focus, button:focus {
 
 .toast-close {
   position: absolute;
-  /* top: 50%; */
+  top: 50%;
   right: 12px;
   transform: translateY(-50%);
   background: transparent;
@@ -1005,7 +1008,7 @@ input:focus, select:focus, textarea:focus, button:focus {
   font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
   padding: 0;
   width: 24px;
   height: 24px;
@@ -1021,7 +1024,7 @@ input:focus, select:focus, textarea:focus, button:focus {
 .toast-close:hover {
   color: #333;
   background-color: rgba(0, 0, 0, 0.1);
-  transform: translateY(-50%) scale(1.1);
+  transform: translateY(-50%) scale(1.1) !important;
 }
 
 .toast-close:focus {
@@ -1054,10 +1057,10 @@ input:focus, select:focus, textarea:focus, button:focus {
 /* Mobile Toast Adjustments */
 @media screen and (max-width: 768px) {
   .toast-container {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    max-width: none;
+    top: 10px !important;
+    right: 10px !important;
+    left: auto !important;
+    max-width: 300px;
   }
   
   .toast {
@@ -1067,18 +1070,28 @@ input:focus, select:focus, textarea:focus, button:focus {
   }
   
   .toast-close {
-    right: 10px;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    right: 10px !important;
     width: 22px;
     height: 22px;
     font-size: 18px;
+    margin: 0 !important;
+    bottom: auto !important;
+  }
+  
+  .toast-close:hover {
+    transform: translateY(-50%) scale(1.1) !important;
   }
 }
 
 @media screen and (max-width: 480px) {
   .toast-container {
-    top: 5px;
-    right: 5px;
-    left: 5px;
+    top: 5px !important;
+    right: 5px !important;
+    left: auto !important;
+    max-width: 280px;
   }
   
   .toast {
@@ -1087,9 +1100,18 @@ input:focus, select:focus, textarea:focus, button:focus {
   }
   
   .toast-close {
-    right: 8px;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    right: 8px !important;
     width: 20px;
     height: 20px;
     font-size: 16px;
+    margin: 0 !important;
+    bottom: auto !important;
+  }
+  
+  .toast-close:hover {
+    transform: translateY(-50%) scale(1.1) !important;
   }
 }
