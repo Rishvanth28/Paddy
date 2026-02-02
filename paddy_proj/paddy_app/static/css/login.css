@@ -11,8 +11,8 @@ body, html {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #ffffff;
   background-image: 
-    radial-gradient(circle at 20% 50%, rgba(17, 153, 142, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(56, 239, 125, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(40, 167, 69, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(40, 167, 69, 0.05) 0%, transparent 50%);
   color: #000000;
   height: 100%;
   overflow: hidden;
@@ -46,11 +46,11 @@ body, html {
 .circle {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(17, 153, 142, 0.12), rgba(56, 239, 125, 0.06));
+  background: radial-gradient(circle at 30% 30%, rgba(40, 167, 69, 0.12), rgba(40, 167, 69, 0.06));
   backdrop-filter: blur(80px);
   animation: float 20s infinite ease-in-out;
-  border: 1.5px solid rgba(17, 153, 142, 0.15);
-  box-shadow: 0 8px 32px rgba(17, 153, 142, 0.1);
+  border: 1.5px solid rgba(40, 167, 69, 0.15);
+  box-shadow: 0 8px 32px rgba(40, 167, 69, 0.1);
 }
 
 .circle-1 {
@@ -112,13 +112,13 @@ body, html {
 
 /* Logo Styling */
 .logo-above-login {
-  filter: drop-shadow(0 4px 16px rgba(17, 153, 142, 0.25));
+  filter: drop-shadow(0 4px 16px rgba(40, 167, 69, 0.25));
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
 }
 
 .logo-above-login:hover {
   transform: scale(1.05) translateY(-2px);
-  filter: drop-shadow(0 8px 24px rgba(17, 153, 142, 0.35));
+  filter: drop-shadow(0 8px 24px rgba(40, 167, 69, 0.35));
 }
 
 /* Leaf Accents for Professional Touch */
@@ -126,7 +126,7 @@ body, html {
   position: absolute;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle at 30% 30%, rgba(17, 153, 142, 0.08), transparent);
+  background: radial-gradient(circle at 30% 30%, rgba(40, 167, 69, 0.08), transparent);
   border-radius: 50% 0 50% 50%;
   opacity: 0.5;
   animation: leafFloat 15s infinite ease-in-out;
@@ -163,13 +163,13 @@ body, html {
   opacity: 0.5;
   pointer-events: none;
   transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: drop-shadow(0 4px 12px rgba(17, 153, 142, 0.2));
+  filter: drop-shadow(0 4px 12px rgba(40, 167, 69, 0.2));
 }
 
 .agri-icon:hover {
   opacity: 0.8;
   transform: scale(1.15) rotate(5deg);
-  filter: drop-shadow(0 6px 20px rgba(17, 153, 142, 0.35));
+  filter: drop-shadow(0 6px 20px rgba(40, 167, 69, 0.35));
 }
 
 .rice-icon {
@@ -200,9 +200,9 @@ body, html {
   padding: 40px 35px;
   border-radius: 28px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.15),
-              0 8px 20px rgba(17, 153, 142, 0.1),
-              0 0 0 1px rgba(17, 153, 142, 0.15) inset;
-  border: 2px solid rgba(17, 153, 142, 0.25);
+              0 8px 20px rgba(40, 167, 69, 0.1),
+              0 0 0 1px rgba(40, 167, 69, 0.15) inset;
+  border: 2px solid rgba(40, 167, 69, 0.25);
   width: 100%;
   position: relative;
   height: auto;
@@ -214,8 +214,8 @@ body, html {
 
 .login-section:hover {
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.18),
-              0 12px 28px rgba(17, 153, 142, 0.15),
-              0 0 0 1px rgba(17, 153, 142, 0.2) inset;
+              0 12px 28px rgba(40, 167, 69, 0.15),
+              0 0 0 1px rgba(40, 167, 69, 0.2) inset;
   transform: translateY(-2px);
 }
 
@@ -224,7 +224,7 @@ body, html {
   position: absolute;
   width: 45px;
   height: 45px;
-  border: 3px solid rgba(17, 153, 142, 0.6);
+  border: 3px solid rgba(40, 167, 69, 0.6);
   pointer-events: none;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: cornerPulse 3s infinite ease-in-out;
@@ -273,7 +273,7 @@ body, html {
   left: 16px;
   right: 16px;
   height: 5px;
-  background: #11998e;
+  background: #28a745;
   border-radius: 24px 24px 0 0;
 }
 
@@ -299,7 +299,7 @@ h1 {
 }
 
 .highlight {
-  color: #11998e;
+  color: #28a745;
   font-weight: 800;
   position: relative;
   display: inline-block;
@@ -371,7 +371,7 @@ h1 {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(17, 153, 142, 0.1);
+  background: rgba(40, 167, 69, 0.1);
   transition: width 0.4s ease, height 0.4s ease, top 0.4s ease, left 0.4s ease;
   transform: translate(-50%, -50%);
 }
@@ -382,19 +382,19 @@ h1 {
 }
 
 .tab-btn:hover {
-  background: #11998e;
+  background: #28a745;
   color: #ffffff;
   border-color: transparent;
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(17, 153, 142, 0.35);
+  box-shadow: 0 8px 24px rgba(40, 167, 69, 0.35);
 }
 
 .tab-btn.active {
-  background: #11998e;
+  background: #28a745;
   color: white;
   border-color: transparent;
-  box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4),
-              0 0 0 3px rgba(17, 153, 142, 0.1);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4),
+              0 0 0 3px rgba(40, 167, 69, 0.1);
   transform: translateY(-2px) scale(1.02);
 }
 
@@ -442,8 +442,8 @@ input, select, textarea {
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #11998e;
-  box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.1);
+  border-color: #28a745;
+  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
   background-color: #ffffff;
   transform: translateY(-1px);
 }
@@ -517,7 +517,7 @@ input:focus, select:focus, textarea:focus {
 
 button, button[type="submit"] {
   padding: 15px 40px;
-  background: #11998e;
+  background: #28a745;
   color: white;
   border: none;
   border-radius: 12px;
@@ -526,7 +526,7 @@ button, button[type="submit"] {
   font-weight: 600;
   align-self: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 24px rgba(17, 153, 142, 0.4);
+  box-shadow: 0 8px 24px rgba(40, 167, 69, 0.4);
   letter-spacing: 0.5px;
 }
 
@@ -541,9 +541,9 @@ button, button[type="submit"] {
 }
 
 button:not(.password-toggle):hover {
-  background: #0d7a72;
+  background: #28a745;
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(17, 153, 142, 0.6);
+  box-shadow: 0 12px 32px rgba(40, 167, 69, 0.6);
 }
 
 /* Form Layout */
@@ -583,7 +583,7 @@ button:not(.password-toggle):hover {
   width: 100%;
   box-sizing: border-box;
   scrollbar-width: thin;
-  scrollbar-color: rgba(17, 153, 142, 0.3) transparent;
+  scrollbar-color: rgba(40, 167, 69, 0.3) transparent;
   
 }
 
@@ -596,12 +596,12 @@ button:not(.password-toggle):hover {
 }
 
 #signup::-webkit-scrollbar-thumb {
-  background-color: rgba(17, 153, 142, 0.3);
+  background-color: rgba(40, 167, 69, 0.3);
   border-radius: 3px;
 }
 
 #signup::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(17, 153, 142, 0.5);
+  background-color: rgba(40, 167, 69, 0.5);
 }
 
 /* Role selector at top */
@@ -670,7 +670,7 @@ button:not(.password-toggle):hover {
 #signup input:focus, 
 #signup select:focus, 
 #signup textarea:focus {
-  border-color: #2d7a3e;
+  border-color: #28a745;
   box-shadow: 0 0 0 3px rgba(45, 122, 62, 0.1);
   outline: none;
 }
@@ -707,7 +707,7 @@ button:not(.password-toggle):hover {
 #signup button[type="submit"] {
   width: 100%;
   padding: 14px;
-  background: #11998e;
+  background: #28a745;
   color: white;
   border: none;
   border-radius: 10px;
@@ -721,7 +721,7 @@ button:not(.password-toggle):hover {
 }
 
 #signup button[type="submit"]:hover {
-  background: #11998e;
+  background: #28a745;
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(45, 122, 62, 0.3);
 }
@@ -830,7 +830,7 @@ button:not(.password-toggle):hover {
     min-height: 100vh; /* Use min-height instead of fixed height */
     height: auto; /* Allow container to expand */
     box-shadow: none;
-    background-color: x5f5f5;
+    background-color: #f5f5f5;
     overflow: visible; /* Allow overflow for scrolling */
     position: relative;
   }
