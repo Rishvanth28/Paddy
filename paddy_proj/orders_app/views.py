@@ -28,25 +28,38 @@ def get_customer_by_phone(request):
             return JsonResponse({'success': False, 'message': 'Phone number is required'}, status=400)
         
         try:
+            # Get admin info to exclude themselves from results
+            admin_id = request.session.get('user_id')
+            admin = AdminTable.objects.get(admin_id=admin_id)
+            
             # Search for customers with phone numbers starting with the input
             customers = CustomerTable.objects.filter(phone_number__startswith=phone_number)[:10]  # Limit to 10 results
             
             if customers.exists():
-                customer_list = [{
-                    'customer_id': customer.customer_id,
-                    'first_name': customer.first_name,
-                    'last_name': customer.last_name,
-                    'phone_number': customer.phone_number,
-                    'email': customer.email,
-                    'company_name': customer.company_name,
-                    'gst': customer.GST,
-                    'address': customer.address,
-                } for customer in customers]
+                customer_list = []
+                for customer in customers:
+                    # Skip if customer is the admin themselves (by phone or email)
+                    if customer.phone_number == admin.phone_number or customer.email == admin.email:
+                        continue
+                    
+                    customer_list.append({
+                        'customer_id': customer.customer_id,
+                        'first_name': customer.first_name,
+                        'last_name': customer.last_name,
+                        'phone_number': customer.phone_number,
+                        'email': customer.email,
+                        'company_name': customer.company_name,
+                        'gst': customer.GST,
+                        'address': customer.address,
+                    })
                 
-                return JsonResponse({
-                    'success': True,
-                    'customers': customer_list
-                })
+                if customer_list:
+                    return JsonResponse({
+                        'success': True,
+                        'customers': customer_list
+                    })
+                else:
+                    return JsonResponse({'success': False, 'message': 'No customers found', 'customers': []})
             else:
                 return JsonResponse({'success': False, 'message': 'No customers found', 'customers': []})
         except Exception as e:
@@ -576,8 +589,14 @@ def place_order(request):
     if not admin_id:
         return redirect("login_app:login")
 
-    # Allow placing orders to any customer (platform-wide)
-    customers = CustomerTable.objects.all()
+    # Get admin info
+    admin = AdminTable.objects.get(admin_id=admin_id)
+    
+    # Allow placing orders to any customer (platform-wide), but exclude admin themselves
+    # Filter out customers that have the same phone number or email as the admin
+    customers = CustomerTable.objects.exclude(
+        Q(phone_number=admin.phone_number) | Q(email=admin.email)
+    )
     
     # Handle order submission - create order and redirect to dashboard
     if request.method == "POST":
@@ -623,6 +642,13 @@ def place_order(request):
             overall_amount = quantity * price_per_unit
             
             customer = CustomerTable.objects.get(customer_id=customer_id)
+            
+            # Prevent admin from placing orders to themselves
+            admin = AdminTable.objects.get(admin_id=admin_id)
+            if customer.phone_number == admin.phone_number or customer.email == admin.email:
+                messages.error(request, "You cannot place orders to yourself. Please select a different customer.")
+                return redirect('orders_app:place_order')
+            
             gst = customer.GST
 
             order = Orders.objects.create(
@@ -670,6 +696,13 @@ def place_order(request):
             # Multiple products order (Pesticides)
             customer_id = request.POST.get("customer")
             customer = CustomerTable.objects.get(customer_id=customer_id)
+            
+            # Prevent admin from placing orders to themselves
+            admin = AdminTable.objects.get(admin_id=admin_id)
+            if customer.phone_number == admin.phone_number or customer.email == admin.email:
+                messages.error(request, "You cannot place orders to yourself. Please select a different customer.")
+                return redirect('orders_app:place_order')
+            
             gst = customer.GST
             
             # Create order

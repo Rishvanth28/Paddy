@@ -191,22 +191,36 @@ def approve_cash_payment(request, request_id):
         if cash_request.status != 0:
             return JsonResponse({'success': False, 'message': 'This request is already processed.'}, status=400)
         
-        # Security check: Only allow admins to approve/reject their own orders
-        if request.session.get('role') == 'admin':
-            admin_id = request.session.get('user_id')
-            if cash_request.order.admin_id != admin_id:
+        # Security check: Allow approval based on role
+        user_id = request.session.get('user_id')
+        user_role = request.session.get('role')
+        
+        if user_role == 'admin':
+            # Admins can only approve requests for their own customers' orders
+            if cash_request.order.admin_id != user_id:
                 return JsonResponse({
                     'success': False, 
-                    'message': 'You can only process cash payment requests for your own orders.'
+                    'message': 'You can only process cash payment requests for your own customers\' orders.'
                 })
+        elif user_role == 'superadmin':
+            # Superadmin can only approve requests for orders placed by superadmin themselves
+            if cash_request.order.admin_id != user_id:
+                return JsonResponse({
+                    'success': False, 
+                    'message': 'You can only process payment requests for orders you placed.'
+                })
+        else:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Unauthorized to approve payment requests.'
+            })
         
         action = request.POST.get('action')
         
         if action not in ['approve', 'reject']:
             return JsonResponse({'success': False, 'message': 'Invalid action'})
         
-        admin_id = request.session.get('user_id')
-        admin = get_object_or_404(AdminTable, admin_id=admin_id)
+        admin = get_object_or_404(AdminTable, admin_id=user_id)
         
         if action == 'approve':
             # Update request status

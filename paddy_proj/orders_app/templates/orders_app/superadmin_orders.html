@@ -3745,6 +3745,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let searchQuery = '';
         let currentAdmin = 'all'; // For superadmin filtering
         let isSuperadmin = {% if request.session.role == 'superadmin' %}true{% else %}false{% endif %};
+        let userId = {{ request.session.user_id }};  // Get current user ID from session
         
         // DOM Elements
         const ordersList = document.getElementById('orders-list');
@@ -4477,17 +4478,24 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 ${request.transaction_date ? `<div class="mb-2"><small class="text-muted">Transaction Date: ${formatDate(request.transaction_date)}</small></div>` : ''}
                                 ${request.transaction_id ? `<div class="mb-2"><small class="text-muted">Transaction ID: ${request.transaction_id}</small></div>` : ''}
-                                ${request.screenshot_url ? `<div class="mb-2"><small class="text-muted">Screenshot: <a href="${request.screenshot_url}" target="_blank">View</a></small></div>` : ''}
+                                ${request.screenshot_url ? `<div class="mb-2"><a href="${request.screenshot_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-image me-1"></i>View Screenshot</a></div>` : ''}
                                 ${request.reference ? `<div class="mb-2"><small class="text-muted">Reference: ${request.reference}</small></div>` : ''}
                                 ${request.notes ? `<div class="mb-2"><small class="text-muted">Notes: ${request.notes}</small></div>` : ''}
-                                <div class="d-flex justify-content-end gap-2 mt-3">
-                                    <button class="btn btn-sm btn-success" onclick="approveCashPayment(${request.request_id})">
-                                        <i class="bi bi-check-circle me-1"></i> Approve
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="rejectCashPayment(${request.request_id})">
-                                        <i class="bi bi-x-circle me-1"></i> Reject
-                                    </button>
-                                </div>
+                                ${isSuperadmin && order.admin_id === userId ? `
+                                    <div class="d-flex gap-2 mt-3">
+                                        <button class="btn btn-success btn-sm" onclick="approveCashPayment(${request.request_id})">
+                                            <i class="bi bi-check-circle me-1"></i>Approve
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" onclick="rejectCashPayment(${request.request_id})">
+                                            <i class="bi bi-x-circle me-1"></i>Reject
+                                        </button>
+                                    </div>
+                                ` : `
+                                    <div class="alert alert-info mt-3 mb-0">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        <small>This request can only be approved by the respective admin or by you (if you placed the order).</small>
+                                    </div>
+                                `}
                             </div>
                         `;
                     });
@@ -4518,7 +4526,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 ${request.transaction_date ? `<div class="mb-2"><small class="text-muted">Transaction Date: ${formatDate(request.transaction_date)}</small></div>` : ''}
                                 ${request.transaction_id ? `<div class="mb-2"><small class="text-muted">Transaction ID: ${request.transaction_id}</small></div>` : ''}
-                                ${request.screenshot_url ? `<div class="mb-2"><small class="text-muted">Screenshot: <a href="${request.screenshot_url}" target="_blank">View</a></small></div>` : ''}
+                                ${request.screenshot_url ? `<div class="mb-2"><a href="${request.screenshot_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-image me-1"></i>View Screenshot</a></div>` : ''}
                                 ${request.reference ? `<div class="mb-2"><small class="text-muted">Reference: ${request.reference}</small></div>` : ''}
                                 ${request.notes ? `<div class="mb-2"><small class="text-muted">Notes: ${request.notes}</small></div>` : ''}
                             </div>
@@ -4792,6 +4800,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         // Cash payment approval functions
+        // Superadmin can approve requests for orders placed by superadmin themselves
+        // Respective admins can approve requests for their customers
 window.approveCashPayment = function(requestId) {
     showConfirmation(requestId, 'approve');
 };
@@ -4819,17 +4829,17 @@ window.processCashPaymentRequest = function(requestId, action) {
         showLoading(false);
         
         if (data.success) {
-            showAlert(data.message, 'success');
+            showToast(data.message, 'success');
             // Refresh the orders to show updated status
             fetchOrders();
         } else {
-            showAlert(data.message || 'An error occurred', 'error');
+            showToast(data.message || 'An error occurred', 'error');
         }
     })
     .catch(error => {
         showLoading(false);
         console.error('Error:', error);
-        showAlert('An error occurred while processing the request.', 'error');
+        showToast('An error occurred while processing the request.', 'error');
     });
 }
 

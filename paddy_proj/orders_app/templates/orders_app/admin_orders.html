@@ -4105,7 +4105,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 ${request.transaction_date ? `<div class="mb-2"><small class="text-muted">Transaction Date: ${formatDate(request.transaction_date)}</small></div>` : ''}
                                 ${request.transaction_id ? `<div class="mb-2"><small class="text-muted">Transaction ID: ${request.transaction_id}</small></div>` : ''}
-                                ${request.screenshot_url ? `<div class="mb-2"><small class="text-muted">Screenshot: <a href="${request.screenshot_url}" target="_blank">View</a></small></div>` : ''}
+                                ${request.screenshot_url ? `<div class="mb-2"><a href="${request.screenshot_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-image me-1"></i>View Screenshot</a></div>` : ''}
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-success btn-sm" onclick="approveCashPayment(${request.request_id})">
                                         <i class="bi bi-check-circle me-1"></i>Approve
@@ -4479,7 +4479,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 ${request.transaction_date ? `<div class="mb-2"><small class="text-muted">Transaction Date: ${formatDate(request.transaction_date)}</small></div>` : ''}
                                 ${request.transaction_id ? `<div class="mb-2"><small class="text-muted">Transaction ID: ${request.transaction_id}</small></div>` : ''}
-                                ${request.screenshot_url ? `<div class="mb-2"><small class="text-muted">Screenshot: <a href="${request.screenshot_url}" target="_blank">View</a></small></div>` : ''}
+                                ${request.screenshot_url ? `<div class="mb-2"><a href="${request.screenshot_url}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-image me-1"></i>View Screenshot</a></div>` : ''}
                                 ${request.reference ? `<div class="mb-2"><small class="text-muted">Reference: ${request.reference}</small></div>` : ''}
                                 ${request.notes ? `<div class="mb-2"><small class="text-muted">Notes: ${request.notes}</small></div>` : ''}
                                 <div class="d-flex justify-content-end gap-2 mt-3">
