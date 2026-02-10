@@ -1,4 +1,7 @@
-/* ===== RESPONSIVE SCROLLABLE LOGIN WITH ACCESSIBLE SIGNUP ===== */
+/* ===== CONSOLIDATED LOGIN PAGE STYLES ===== */
+/* All login page CSS in one file for better organization */
+
+/* ===================== BASE STYLES ===================== */
 
 /* Reset and Base Styles */
 * {
@@ -11,15 +14,17 @@ body, html {
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #ffffff;
   background-image: 
-    radial-gradient(circle at 20% 50%, rgba(40, 167, 69, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(40, 167, 69, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(17, 153, 142, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(56, 239, 125, 0.05) 0%, transparent 50%);
   color: #000000;
   height: 100%;
   overflow: hidden;
   line-height: 1.6;
 }
 
-/* ===== CENTERED DESIGN ===== */
+/* ===================== LAYOUT & CONTAINER ===================== */
+
+/* Centered Design */
 .auth-container {
   display: flex;
   justify-content: center;
@@ -31,7 +36,19 @@ body, html {
   overflow: hidden;
 }
 
-/* Background Decoration */
+/* Center Auth Form */
+.auth-center {
+  width: 100%;
+  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===================== BACKGROUND DECORATION ===================== */
+
 .background-decoration {
   position: absolute;
   top: 0;
@@ -46,11 +63,11 @@ body, html {
 .circle {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(40, 167, 69, 0.12), rgba(40, 167, 69, 0.06));
+  background: radial-gradient(circle at 30% 30%, rgba(17, 153, 142, 0.12), rgba(56, 239, 125, 0.06));
   backdrop-filter: blur(80px);
   animation: float 20s infinite ease-in-out;
-  border: 1.5px solid rgba(40, 167, 69, 0.15);
-  box-shadow: 0 8px 32px rgba(40, 167, 69, 0.1);
+  border: 1.5px solid rgba(17, 153, 142, 0.15);
+  box-shadow: 0 8px 32px rgba(17, 153, 142, 0.1);
 }
 
 .circle-1 {
@@ -92,41 +109,32 @@ body, html {
   }
 }
 
-/* Center Auth Form */
-.auth-center {
-  width: 100%;
-  max-width: 550px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
+/* ===================== LOGO ===================== */
 
-/* Logo Container with Professional styling */
 .logo-container {
   text-align: center;
   margin-bottom: 10px;
   position: relative;
 }
 
-/* Logo Styling */
 .logo-above-login {
-  filter: drop-shadow(0 4px 16px rgba(40, 167, 69, 0.25));
+  filter: drop-shadow(0 4px 16px rgba(17, 153, 142, 0.25));
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
 }
 
 .logo-above-login:hover {
   transform: scale(1.05) translateY(-2px);
-  filter: drop-shadow(0 8px 24px rgba(40, 167, 69, 0.35));
+  filter: drop-shadow(0 8px 24px rgba(17, 153, 142, 0.35));
 }
 
-/* Leaf Accents for Professional Touch */
+/* ===================== DECORATIVE ELEMENTS ===================== */
+
+/* Leaf Accents */
 .leaf-accent {
   position: absolute;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle at 30% 30%, rgba(40, 167, 69, 0.08), transparent);
+  background: radial-gradient(circle at 30% 30%, rgba(17, 153, 142, 0.08), transparent);
   border-radius: 50% 0 50% 50%;
   opacity: 0.5;
   animation: leafFloat 15s infinite ease-in-out;
@@ -155,7 +163,7 @@ body, html {
   }
 }
 
-/* Agricultural Icons - Pictorial Representations */
+/* Agricultural Icons */
 .agri-icon {
   position: absolute;
   width: 100px;
@@ -163,13 +171,13 @@ body, html {
   opacity: 0.5;
   pointer-events: none;
   transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: drop-shadow(0 4px 12px rgba(40, 167, 69, 0.2));
+  filter: drop-shadow(0 4px 12px rgba(17, 153, 142, 0.2));
 }
 
 .agri-icon:hover {
   opacity: 0.8;
   transform: scale(1.15) rotate(5deg);
-  filter: drop-shadow(0 6px 20px rgba(40, 167, 69, 0.35));
+  filter: drop-shadow(0 6px 20px rgba(17, 153, 142, 0.35));
 }
 
 .rice-icon {
@@ -193,16 +201,17 @@ body, html {
   animation-delay: 11s;
 }
 
-/* Form Styling */
+/* ===================== FORM CONTAINER ===================== */
+
 .login-section {
   background: #ffffff;
   backdrop-filter: blur(20px);
   padding: 40px 35px;
   border-radius: 28px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.15),
-              0 8px 20px rgba(40, 167, 69, 0.1),
-              0 0 0 1px rgba(40, 167, 69, 0.15) inset;
-  border: 2px solid rgba(40, 167, 69, 0.25);
+              0 8px 20px rgba(17, 153, 142, 0.1),
+              0 0 0 1px rgba(17, 153, 142, 0.15) inset;
+  border: 2px solid rgba(17, 153, 142, 0.25);
   width: 100%;
   position: relative;
   height: auto;
@@ -214,9 +223,20 @@ body, html {
 
 .login-section:hover {
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.18),
-              0 12px 28px rgba(40, 167, 69, 0.15),
-              0 0 0 1px rgba(40, 167, 69, 0.2) inset;
+              0 12px 28px rgba(17, 153, 142, 0.15),
+              0 0 0 1px rgba(17, 153, 142, 0.2) inset;
   transform: translateY(-2px);
+}
+
+.login-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 5px;
+  background: #11998e;
+  border-radius: 24px 24px 0 0;
 }
 
 /* Decorative Corners */
@@ -224,7 +244,7 @@ body, html {
   position: absolute;
   width: 45px;
   height: 45px;
-  border: 3px solid rgba(40, 167, 69, 0.6);
+  border: 3px solid rgba(17, 153, 142, 0.6);
   pointer-events: none;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: cornerPulse 3s infinite ease-in-out;
@@ -258,26 +278,8 @@ body, html {
   animation-delay: 1.5s;
 }
 
-/* Ensure tab container and content are properly contained */
-.tab-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0; /* Important for flex children with overflow */
-}
+/* ===================== TYPOGRAPHY ===================== */
 
-.login-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 16px;
-  right: 16px;
-  height: 5px;
-  background: #28a745;
-  border-radius: 24px 24px 0 0;
-}
-
-/* Typography */
 h1 {
   font-size: 34px;
   margin-bottom: 8px;
@@ -299,25 +301,14 @@ h1 {
 }
 
 .highlight {
-  color: #28a745;
+  color: #11998e;
   font-weight: 800;
   position: relative;
   display: inline-block;
 }
 
+/* ===================== TAB NAVIGATION ===================== */
 
-@keyframes highlightGlow {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scaleX(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scaleX(1.02);
-  }
-}
-
-/* Tab Navigation */
 .tab-container {
   margin-top: 15px;
   width: 100%;
@@ -328,13 +319,6 @@ h1 {
   display: flex;
   flex-direction: column;
   min-height: 0;
-}
-
-.tab-content {
-  flex: 1;
-  min-height: 0;
-  overflow-y: scroll;
-  overflow-x: hidden;
 }
 
 .tab-nav {
@@ -371,7 +355,7 @@ h1 {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(40, 167, 69, 0.1);
+  background: rgba(17, 153, 142, 0.1);
   transition: width 0.4s ease, height 0.4s ease, top 0.4s ease, left 0.4s ease;
   transform: translate(-50%, -50%);
 }
@@ -382,19 +366,19 @@ h1 {
 }
 
 .tab-btn:hover {
-  background: #28a745;
+  background: #11998e;
   color: #ffffff;
   border-color: transparent;
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(40, 167, 69, 0.35);
+  box-shadow: 0 8px 24px rgba(17, 153, 142, 0.35);
 }
 
 .tab-btn.active {
-  background: #28a745;
+  background: #11998e;
   color: white;
   border-color: transparent;
-  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4),
-              0 0 0 3px rgba(40, 167, 69, 0.1);
+  box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4),
+              0 0 0 3px rgba(17, 153, 142, 0.1);
   transform: translateY(-2px) scale(1.02);
 }
 
@@ -410,7 +394,27 @@ h1 {
   border-radius: 2px 2px 0 0;
 }
 
-/* Form Elements */
+/* Tab Content */
+.tab-content {
+  display: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tab-content.active {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: translateY(0);
+  height: 100%;
+}
+
+/* ===================== FORM ELEMENTS ===================== */
+
 form {
   display: flex;
   flex-direction: column;
@@ -442,8 +446,8 @@ input, select, textarea {
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+  border-color: #11998e;
+  box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.1);
   background-color: #ffffff;
   transform: translateY(-1px);
 }
@@ -469,7 +473,7 @@ input:focus, select:focus, textarea:focus {
   fill: none;
 }
 
-/* Password toggle button - ensure it's excluded from general button styling */
+/* Password toggle button */
 .password-field-wrapper .password-toggle {
   position: absolute;
   right: 12px;
@@ -515,9 +519,10 @@ input:focus, select:focus, textarea:focus {
   box-shadow: none !important;
 }
 
+/* Buttons */
 button, button[type="submit"] {
   padding: 15px 40px;
-  background: #28a745;
+  background: #11998e;
   color: white;
   border: none;
   border-radius: 12px;
@@ -526,7 +531,7 @@ button, button[type="submit"] {
   font-weight: 600;
   align-self: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 24px rgba(40, 167, 69, 0.4);
+  box-shadow: 0 8px 24px rgba(17, 153, 142, 0.4);
   letter-spacing: 0.5px;
 }
 
@@ -541,9 +546,9 @@ button, button[type="submit"] {
 }
 
 button:not(.password-toggle):hover {
-  background: #28a745;
+  background: #0d7a72;
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(40, 167, 69, 0.6);
+  box-shadow: 0 12px 32px rgba(17, 153, 142, 0.6);
 }
 
 /* Form Layout */
@@ -570,9 +575,23 @@ button:not(.password-toggle):hover {
   width: 100%;
 }
 
-/* ===== SIGNUP SECTION REDESIGN - PROPERLY ALIGNED ===== */
+.form-card[style*="display: none"] {
+  display: none !important;
+}
 
-/* Reset signup specific styles */
+.form-card[style*="display: block"] {
+  display: block !important;
+  width: 100%;
+}
+
+/* ===================== SIGNIN TAB ===================== */
+
+#signin {
+  overflow: visible;
+}
+
+/* ===================== SIGNUP TAB ===================== */
+
 #signup {
   max-height: 65vh;
   overflow-y: auto;
@@ -583,8 +602,7 @@ button:not(.password-toggle):hover {
   width: 100%;
   box-sizing: border-box;
   scrollbar-width: thin;
-  scrollbar-color: rgba(40, 167, 69, 0.3) transparent;
-  
+  scrollbar-color: rgba(17, 153, 142, 0.3) transparent;
 }
 
 #signup::-webkit-scrollbar {
@@ -596,15 +614,15 @@ button:not(.password-toggle):hover {
 }
 
 #signup::-webkit-scrollbar-thumb {
-  background-color: rgba(40, 167, 69, 0.3);
+  background-color: rgba(17, 153, 142, 0.3);
   border-radius: 3px;
 }
 
 #signup::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(40, 167, 69, 0.5);
+  background-color: rgba(17, 153, 142, 0.5);
 }
 
-/* Role selector at top */
+/* Role selector */
 #signup > label:first-of-type {
   font-size: 14px;
   font-weight: 600;
@@ -670,12 +688,12 @@ button:not(.password-toggle):hover {
 #signup input:focus, 
 #signup select:focus, 
 #signup textarea:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 3px rgba(45, 122, 62, 0.1);
+  border-color: #11998e;
+  box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
   outline: none;
 }
 
-/* Form row layout - FIXED GRID */
+/* Form row layout */
 #signup .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -707,7 +725,7 @@ button:not(.password-toggle):hover {
 #signup button[type="submit"] {
   width: 100%;
   padding: 14px;
-  background: #28a745;
+  background: #11998e;
   color: white;
   border: none;
   border-radius: 10px;
@@ -721,88 +739,135 @@ button:not(.password-toggle):hover {
 }
 
 #signup button[type="submit"]:hover {
-  background: #28a745;
+  background: #0d7a72;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(45, 122, 62, 0.3);
+  box-shadow: 0 8px 25px rgba(17, 153, 142, 0.3);
 }
 
-/* Custom scrollbar */
-#signup::-webkit-scrollbar {
-  width: 6px;
-}
+/* ===================== TOAST NOTIFICATIONS ===================== */
 
-#signup::-webkit-scrollbar-track {
-  background: #f5f5f5;
-  border-radius: 10px;
-}
-
-#signup::-webkit-scrollbar-thumb {
-  background: rgba(45, 122, 62, 0.3);
-  border-radius: 10px;
-}
-
-#signup::-webkit-scrollbar-thumb:hover {
-  background: rgba(45, 122, 62, 0.5);
-}
-
-/* ===== KEY FIX: MAKE SIGNUP CONTENT SCROLLABLE ===== */
-/* Container of tab contents */
-.tab-content {
-  display: none;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.tab-content.active {
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
-  opacity: 1;
-  transform: translateY(0);
-  height: 100%;
+  gap: 10px;
+  max-width: 350px;
+  pointer-events: none;
 }
 
-/* Signin tab - no scroll needed */
-#signin {
-  overflow: visible;
+.toast {
+  padding: 15px 45px 15px 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+  animation: slideInToast 0.3s ease-out forwards;
+  border-left: 4px solid #ccc;
+  word-wrap: break-word;
+  pointer-events: auto;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.4;
 }
 
-/* Hidden form styling */
-.form-card[style*="display: none"] {
-  display: none !important;
+.toast.success {
+  border-left-color: #000000;
 }
 
-.form-card[style*="display: block"] {
-  display: block !important;
-  width: 100%;
+.toast.info {
+  border-left-color: #000000;
 }
+
+.toast.warning {
+  border-left-color: #000000;
+}
+
+.toast.error {
+  border-left-color: #000000;
+}
+
+.toast-close {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+}
+
+.toast-close:hover {
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.toast-close:focus {
+  outline: 2px solid rgba(17, 153, 142, 0.5);
+  outline-offset: 1px;
+}
+
+@keyframes slideInToast {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutToast {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* ===================== RESPONSIVE STYLES ===================== */
 
 /* ===== TABLET RESPONSIVE (769px - 1023px) ===== */
 @media screen and (min-width: 769px) and (max-width: 1023px) {
-  .auth-left {
-    width: 60%;
-    padding: 40px 35px;
-  }
-
-  .auth-right {
-    width: 40%;
-    background-position: center center;
-  }
-
-  .content-wrapper {
-    max-width: 450px;
+  .auth-center {
+    max-width: 500px;
   }
 
   .login-section {
-    padding: 30px;
-    border-radius: 16px;
+    padding: 35px 30px;
+    border-radius: 20px;
   }
 
   h1 {
-    font-size: 26px;
+    font-size: 30px;
+  }
+
+  .logo-above-login {
+    max-width: 240px !important;
+    margin-bottom: 25px !important;
   }
   
   /* Adjust scrollable area for signup */
@@ -815,94 +880,84 @@ button:not(.password-toggle):hover {
   }
 }
 
-/* ===== MOBILE RESPONSIVE DESIGN (≤768px) - FIXED SCROLLING ===== */
+/* ===== MOBILE RESPONSIVE DESIGN (≤768px) ===== */
 @media screen and (max-width: 768px) {
   body, html {
     background-color: #f5f5f5;
-    overflow-x: hidden; /* Prevent horizontal scroll */
-    overflow-y: auto; /* Allow vertical scroll */
-    height: auto; /* Allow body to expand */
-    min-height: 100vh; /* Ensure minimum height */
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
   }
 
   .auth-container {
     flex-direction: column;
-    min-height: 100vh; /* Use min-height instead of fixed height */
-    height: auto; /* Allow container to expand */
+    min-height: 100vh;
+    height: auto;
     box-shadow: none;
     background-color: #f5f5f5;
-    overflow: visible; /* Allow overflow for scrolling */
+    overflow: visible;
     position: relative;
+    padding: 15px;
   }
 
-  /* MOBILE: Image Section First (Fixed Height) */
-  .auth-right {
-    width: 100%;
-    height: 40vh; /* Fixed height for image area */
-    background-size: cover;
-    background-position: center center;
-    background-color: #ffffff;
-    background-repeat: no-repeat;
-    order: 1;
-    position: relative;
-    border-radius: 0;
-    box-shadow: none;
-    margin-top: 0;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0; /* Prevent shrinking */
-  }
-
-  .auth-right::after {
-    background: linear-gradient(135deg, rgba(45, 122, 62, 0.08) 0%, rgba(45, 122, 62, 0.04) 100%);
-    border-radius: 0;
-  }
-
-  /* MOBILE: Forms Section (Scrollable) */
-  .auth-left {
-    width: 100%;
-    min-height: 60vh; /* Minimum height */
-    height: auto; /* Allow expansion */
-    padding: 0 20px 40px; /* Add bottom padding for scroll space */
-    background-color: transparent;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    order: 2;
-    z-index: 10;
-    margin-top: 0vh; /* Overlap with image */
-    overflow: visible; /* Allow content to overflow */
+  .background-decoration {
+    position: fixed;
   }
   
-  /* Mobile Content */
-  .content-wrapper {
-    width: 100%;
-    max-width: 380px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Align to top */
-    padding-top: 20px;
-    padding-bottom: 40px; /* Add bottom padding */
+  /* Scale down agricultural icons for mobile */
+  .agri-icon {
+    width: 50px;
+    height: 50px;
+    opacity: 0.3;
+  }
+  
+  .rice-icon {
+    top: 10%;
+    right: 5%;
+  }
+  
+  .pesticide-icon {
+    bottom: 15%;
+    left: 5%;
+  }
+  
+  .paddy-field-icon {
+    top: 45%;
+    left: 2%;
   }
 
-  /* Mobile Logo - Position on Image */
-  .logo {
-    position: absolute;
-    top: 25px;
-    left: 25px;
-    font-size: 24px;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 50;
-    font-weight: 700;
+  .circle-1 {
+    width: 250px;
+    height: 250px;
+    top: -50px;
+    left: -50px;
   }
 
-  /* Mobile Login Section - Scrollable Content */
+  .circle-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -30px;
+    right: -30px;
+  }
+
+  .circle-3 {
+    width: 180px;
+    height: 180px;
+    top: 40%;
+    right: -20px;
+  }
+
+  .auth-center {
+    max-width: 100%;
+    padding: 20px 0;
+  }
+
+  .logo-above-login {
+    max-width: 200px !important;
+    margin-bottom: 25px !important;
+  }
+
   .login-section {
     padding: 25px;
     background: #ffffff;
@@ -912,10 +967,10 @@ button:not(.password-toggle):hover {
     margin: 0;
     width: 100%;
     position: relative;
-    min-height: auto; /* Allow expansion */
-    max-height: none; /* Remove height restriction */
+    min-height: auto;
+    max-height: none;
     backdrop-filter: blur(20px);
-    overflow: visible; /* Allow content to be visible */
+    overflow: visible;
   }
 
   .login-section::before {
@@ -925,7 +980,7 @@ button:not(.password-toggle):hover {
   
   /* Mobile Typography */
   h1 {
-    font-size: 22px;
+    font-size: 24px;
     text-align: center;
     margin-bottom: 10px;
     color: #333333;
@@ -936,17 +991,17 @@ button:not(.password-toggle):hover {
   /* Mobile Tab Navigation */
   .tab-container {
     margin-top: 12px;
-    overflow: visible; /* Allow tab content to be visible */
+    overflow: visible;
   }
 
   .tab-content {
-    overflow: visible; /* Allow content to expand */
-    height: auto; /* Allow dynamic height */
-    min-height: auto; /* Remove minimum height restriction */
+    overflow: visible;
+    height: auto;
+    min-height: auto;
   }
 
   .tab-content.active {
-    height: auto; /* Dynamic height for active content */
+    height: auto;
   }
 
   .tab-nav {
@@ -971,20 +1026,20 @@ button:not(.password-toggle):hover {
     transform: translateY(-1px);
   }
 
-  /* Mobile signin section - ensure button is visible */
+  /* Mobile signin section */
   #signin {
-    overflow: visible; /* Allow signin content to be visible */
-    height: auto; /* Dynamic height */
-    min-height: auto; /* Remove height restrictions */
+    overflow: visible;
+    height: auto;
+    min-height: auto;
   }
 
-  /* Mobile signup adjustments - PROPERLY SCROLLABLE */
+  /* Mobile signup adjustments */
   #signup {
-    max-height: none; /* Remove height restriction */
-    height: auto; /* Allow dynamic height */
+    max-height: none;
+    height: auto;
     width: 100%;
-    overflow: visible; /* Make content visible */
-    padding-bottom: 20px; /* Add bottom padding */
+    overflow: visible;
+    padding-bottom: 20px;
   }
 
   /* Single column layout on mobile */
@@ -1005,7 +1060,7 @@ button:not(.password-toggle):hover {
   #signup textarea {
     width: 100%;
     padding: 12px;
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: 16px;
     margin-bottom: 10px;
     box-sizing: border-box;
   }
@@ -1026,7 +1081,7 @@ button:not(.password-toggle):hover {
     padding: 12px;
     font-size: 16px;
     margin-top: 15px;
-    margin-bottom: 20px; /* Add bottom margin */
+    margin-bottom: 20px;
     box-sizing: border-box;
   }
 
@@ -1036,14 +1091,31 @@ button:not(.password-toggle):hover {
     margin-bottom: 15px;
   }
 
-  /* Mobile Button - ensure visibility */
+  /* Mobile Form Layout */
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  /* Mobile Form Inputs */
+  input, select, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+
+  /* Mobile Button */
   button, button[type="submit"] {
     width: 100%;
     padding: 14px 22px;
     font-size: 16px;
     border-radius: 12px;
     margin-top: 18px;
-    margin-bottom: 20px; /* Add bottom margin for accessibility */
+    margin-bottom: 20px;
+    min-width: unset;
   }
 
   /* Mobile Labels */
@@ -1052,38 +1124,58 @@ button:not(.password-toggle):hover {
     margin-top: 8px;
     margin-bottom: 4px;
   }
+
+  /* Mobile Toast Adjustments */
+  .toast-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .toast {
+    padding: 12px 40px 12px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+  
+  .toast-close {
+    top: 5px!important;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    font-size: 18px;
+  }
 }
 
 /* ===== SMALL MOBILE (≤480px) ===== */
 @media screen and (max-width: 480px) {
-  .auth-right {
-    height: 30vh;
+  /* Further scale down agricultural icons */
+  .agri-icon {
+    width: 40px;
+    height: 40px;
+    opacity: 0.25;
   }
-
-  .auth-left {
-    min-height: 65vh; /* Minimum height */
-    height: auto; /* Allow expansion */
-    padding: 0 15px 40px; /* Increase bottom padding */
-    margin-top: 0vh;
+  
+  .rice-icon {
+    top: 8%;
+    right: 3%;
   }
-
-  .content-wrapper {
-    max-width: 100%;
-    padding-top: 15px;
-    padding-bottom: 40px; /* Add bottom padding */
+  
+  .pesticide-icon {
+    bottom: 12%;
+    left: 3%;
   }
-
-  .logo {
-    font-size: 22px;
-    top: 20px;
-    left: 20px;
+  
+  .paddy-field-icon {
+    display: none;
   }
 
   .login-section {
     padding: 20px;
     border-radius: 20px;
-    max-height: none; /* Remove height restriction */
-    min-height: auto; /* Allow dynamic height */
+    max-height: none;
+    min-height: auto;
   }
 
   h1 {
@@ -1091,13 +1183,13 @@ button:not(.password-toggle):hover {
     margin-bottom: 8px;
   }
 
-  /* Small mobile signup adjustments - PROPERLY SCROLLABLE */
+  /* Small mobile signup adjustments */
   #signup {
-    max-height: none; /* Remove height restriction */
-    height: auto; /* Allow dynamic height */
+    max-height: none;
+    height: auto;
     width: 100%;
-    overflow: visible; /* Make content visible */
-    padding-bottom: 30px; /* Add more bottom padding */
+    overflow: visible;
+    padding-bottom: 30px;
   }
 
   #signup .form-row {
@@ -1137,7 +1229,7 @@ button:not(.password-toggle):hover {
     padding: 10px;
     font-size: 15px;
     margin-top: 12px;
-    margin-bottom: 30px; /* Add more bottom margin */
+    margin-bottom: 30px;
     box-sizing: border-box;
   }
 
@@ -1163,7 +1255,7 @@ button:not(.password-toggle):hover {
     padding: 12px 18px;
     font-size: 15px;
     margin-top: 15px;
-    margin-bottom: 30px; /* Add bottom margin */
+    margin-bottom: 30px;
   }
   
   label {
@@ -1171,18 +1263,37 @@ button:not(.password-toggle):hover {
     margin-top: 6px;
     margin-bottom: 3px;
   }
+
+  /* Small mobile toast adjustments */
+  .toast-container {
+    top: 5px;
+    right: 5px;
+    left: 5px;
+  }
+  
+  .toast {
+    padding: 10px 35px 10px 10px;
+    font-size: 12px;
+  }
+  
+  .toast-close {
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+  }
 }
 
 /* ===== LANDSCAPE MOBILE ORIENTATION ===== */
 @media screen and (max-width: 768px) and (orientation: landscape) {
   body, html {
-    overflow-y: auto; /* Ensure scrolling works in landscape */
+    overflow-y: auto;
   }
 
   .auth-container {
     flex-direction: row;
     min-height: 100vh;
-    height: auto; /* Allow expansion */
+    height: auto;
   }
   
   .auth-right {
@@ -1193,28 +1304,28 @@ button:not(.password-toggle):hover {
   
   .auth-left {
     width: 60%;
-    height: auto; /* Allow expansion */
+    height: auto;
     min-height: 100vh;
     margin-top: 0;
     order: 1;
     padding: 15px;
-    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-y: auto;
   }
   
   .login-section {
-    max-height: none; /* Remove height restriction */
-    min-height: auto; /* Allow dynamic height */
+    max-height: none;
+    min-height: auto;
     padding: 15px;
-    margin-bottom: 20px; /* Add bottom margin */
+    margin-bottom: 20px;
   }
 
-  /* Landscape signup adjustments - PROPERLY SCROLLABLE */
+  /* Landscape signup adjustments */
   #signup {
-    max-height: none; /* Remove height restriction */
-    height: auto; /* Allow dynamic height */
+    max-height: none;
+    height: auto;
     width: 100%;
-    overflow: visible; /* Make content visible */
-    padding-bottom: 20px; /* Add bottom padding */
+    overflow: visible;
+    padding-bottom: 20px;
   }
 
   /* Two column layout in landscape if space allows */
@@ -1255,7 +1366,7 @@ button:not(.password-toggle):hover {
     padding: 8px;
     font-size: 14px;
     margin-top: 10px;
-    margin-bottom: 20px; /* Add bottom margin */
+    margin-bottom: 20px;
     box-sizing: border-box;
   }
 
@@ -1285,6 +1396,58 @@ button:not(.password-toggle):hover {
   button, button[type="submit"] {
     padding: 10px 15px;
     margin-top: 10px;
-    margin-bottom: 20px; /* Add bottom margin */
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .tab-container {
+    margin-top: 8px;
+  }
+
+  .tab-nav {
+    margin-bottom: 12px;
+    margin-top: 1vh;
+  }
+
+  .tab-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+}
+
+/* ===== ACCESSIBILITY & PERFORMANCE ===== */
+
+/* Focus States for Accessibility */
+input:focus, select:focus, textarea:focus, button:focus {
+  outline: 3px solid rgba(17, 153, 142, 0.3);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .auth-container {
+    box-shadow: none;
+    background: white;
+  }
+  
+  .auth-right {
+    display: none;
+  }
+  
+  .auth-left {
+    width: 100%;
+    padding: 20px;
   }
 }
