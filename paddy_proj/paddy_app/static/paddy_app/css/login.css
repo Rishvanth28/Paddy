@@ -238,7 +238,7 @@ body, html {
 }
 
 .login-section::before {
-  content: '';\n  position: absolute;
+  /* content: '';\n  position: absolute; */
   top: 0;
   left: 14px;
   right: 14px;
